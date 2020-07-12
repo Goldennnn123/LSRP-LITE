@@ -3,12 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 12, 2020 at 08:44 PM
+-- Generation Time: Jul 12, 2020 at 09:18 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.7
-
-
---สร้างใหม่----------
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -39,10 +36,6 @@ CREATE TABLE `ajail_logs` (
   `JailedBy` varchar(32) NOT NULL,
   `Time` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `ajail_logs`
---
 
 -- --------------------------------------------------------
 
@@ -139,10 +132,6 @@ CREATE TABLE `characters` (
   `pWeaponsAmmo12` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `characters`
---
-
 -- --------------------------------------------------------
 
 --
@@ -171,10 +160,6 @@ CREATE TABLE `masters` (
   `acc_email` varchar(255) NOT NULL,
   `admin` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `masters`
---
 
 --
 -- Indexes for dumped tables
@@ -224,7 +209,7 @@ ALTER TABLE `masters`
 -- AUTO_INCREMENT for table `ajail_logs`
 --
 ALTER TABLE `ajail_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `bannedlist`
@@ -242,7 +227,7 @@ ALTER TABLE `ban_logs`
 -- AUTO_INCREMENT for table `characters`
 --
 ALTER TABLE `characters`
-  MODIFY `char_dbid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `char_dbid` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `kick_logs`
@@ -254,7 +239,7 @@ ALTER TABLE `kick_logs`
 -- AUTO_INCREMENT for table `masters`
 --
 ALTER TABLE `masters`
-  MODIFY `acc_dbid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `acc_dbid` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

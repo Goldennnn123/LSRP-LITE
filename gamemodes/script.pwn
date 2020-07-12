@@ -5,6 +5,9 @@
 #undef MAX_PLAYERS
 #define MAX_PLAYERS (100)
 
+
+/////////Hellow world ////:
+
 //#include <progress2>    // Southclaws/progress2
 
 // YSI Include : aktah/YSI-Includes
@@ -63,7 +66,6 @@ new
 #include "includes/systems/vehicles.pwn"
 #include "includes/systems/car_rental.pwn"
 #include "includes/systems/job.pwn"
-#include "includes/systems/ui.pwn"
 #include "includes/systems/report.pwn"
 #include "includes/systems/weapon.pwn"
 

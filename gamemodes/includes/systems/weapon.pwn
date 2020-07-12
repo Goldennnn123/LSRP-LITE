@@ -73,3 +73,24 @@ stock TakePlayerGuns(playerid)
 	ResetPlayerWeapons(playerid); 
 	return 1;
 }
+
+stock GivePlayerGun(playerid, weaponid, ammo)
+{
+	new idx = ReturnWeaponIDSlot(weaponid); 
+	
+	if(PlayerInfo[playerid][pWeapons][idx])
+	{
+		RemovePlayerWeapon(playerid, PlayerInfo[playerid][pWeapons][idx]);
+		printf("A weapon was removed. Slot: %i, Weapon: %i", idx, PlayerInfo[playerid][pWeapons][idx]);
+	}
+	
+	GivePlayerWeapon(playerid, weaponid, ammo); 
+	
+	PlayerInfo[playerid][pWeapons][idx] = weaponid;
+	PlayerInfo[playerid][pWeaponsAmmo][idx] = ammo;
+	
+	PlayerInfo[playerid][pWeaponsImmune] = gettime();
+	
+	printf("Weapon given: IDX: %i, Weapon ID: %i", idx, PlayerInfo[playerid][pWeapons][idx]); 
+	return 1;
+}

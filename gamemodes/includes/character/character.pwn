@@ -242,22 +242,24 @@ ShowCharacterSelection(playerid) {
     characterPickTime[playerid] = 1;
 }
 
-CharacterSave(playerid, force = false, thread = MYSQL_TYPE_THREAD)
+CharacterSave(playerid, force = false)
 {
 	if(BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED) || force)
 	{
 		new query[MAX_STRING];
 
-		mysql_init("characters", "char_dbid", PlayerInfo[playerid][pDBID], thread); 
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastSkin = %i, pAdmin = %i, pTutorial = %i, pFaction = %i, pCash = %i, pLevel = %i, pSpawnPoint = %i,pSpawnHouse = %i WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pLastSkin],
+			PlayerInfo[playerid][pAdmin],
+			PlayerInfo[playerid][pTutorial],
+			PlayerInfo[playerid][pFaction],
+			PlayerInfo[playerid][pCash],
+			PlayerInfo[playerid][pLevel],
+			PlayerInfo[playerid][pSpawnPoint],
+			PlayerInfo[playerid][pSpawnHouse],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
 
-		mysql_int(query, "pLastSkin",PlayerInfo[playerid][pLastSkin]);
-		mysql_bool(query, "pTutorial",PlayerInfo[playerid][pTutorial]);
-		mysql_int(query, "pFaction",PlayerInfo[playerid][pFaction]);
- 	    mysql_int(query, "pCash",PlayerInfo[playerid][pCash]);
-		mysql_int(query, "pAdmin",PlayerInfo[playerid][pAdmin]);
-		mysql_int(query, "pLevel",PlayerInfo[playerid][pLevel]);
- 	   	mysql_int(query, "pSpawnPoint", PlayerInfo[playerid][pSpawnPoint]);
-		mysql_int(query, "pSpawnHouse", PlayerInfo[playerid][pSpawnHouse]);
 
 		if (PlayerInfo[playerid][pTimeout]) {
 			/* 
@@ -266,20 +268,21 @@ CharacterSave(playerid, force = false, thread = MYSQL_TYPE_THREAD)
 			GetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
 			GetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
 
-			mysql_flo(query, "pHealth", PlayerInfo[playerid][pHealth]);
-			mysql_flo(query, "pArmour", PlayerInfo[playerid][pArmour]);
-
 			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-
-			mysql_flo(query, "pLastPosX", PlayerInfo[playerid][pLastPosX]);
-			mysql_flo(query, "pLastPosY", PlayerInfo[playerid][pLastPosY]);
-			mysql_flo(query, "pLastPosZ", PlayerInfo[playerid][pLastPosZ]);
 
 			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
 			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
 
-			mysql_int(query, "pLastInterior",PlayerInfo[playerid][pLastInterior]);
-			mysql_int(query, "pLastWorld",PlayerInfo[playerid][pLastWorld]);
+			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pHealth = %f, pArmour = %f, pLastPosX = %f, pLastPosY = %f, pLastPosZ = %f, pLastInterior = %i, pLastWorld = %i WHERE char_dbid = %i",	
+				PlayerInfo[playerid][pHealth],
+				PlayerInfo[playerid][pArmour],
+				PlayerInfo[playerid][pLastPosX],
+				PlayerInfo[playerid][pLastPosY],
+				PlayerInfo[playerid][pLastPosZ],
+				PlayerInfo[playerid][pLastInterior],
+				PlayerInfo[playerid][pLastWorld],
+				PlayerInfo[playerid][pDBID]);
+			mysql_tquery(dbCon, query);
 			
 			printf("[%d] %s: save last data", playerid, ReturnPlayerName(playerid));
 		}
@@ -291,6 +294,15 @@ CharacterSave(playerid, force = false, thread = MYSQL_TYPE_THREAD)
 		mysql_int(query, "pPaycheck", PlayerInfo[playerid][pPaycheck]);
 		mysql_int(query, "pFishes", PlayerInfo[playerid][pFishes]);
 
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pJob = %i, pSideJob = %i, pCareer = %i, pPaycheck = %i, pFishes = %i WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pJob],
+			PlayerInfo[playerid][pSideJob],
+			PlayerInfo[playerid][pCareer],
+			PlayerInfo[playerid][pPaycheck],
+			PlayerInfo[playerid][pFishes],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 		mysql_format(dbCon, query, sizeof(query), "UPDATE masters SET forum_name = '%e', active_ip = '%e' WHERE acc_dbid = %i",	
 			e_pAccountData[playerid][mForumName],
 			PlayerInfo[playerid][pActiveIP],
@@ -300,6 +312,12 @@ CharacterSave(playerid, force = false, thread = MYSQL_TYPE_THREAD)
 
 		mysql_bool(query, "pAdminjailed",PlayerInfo[playerid][pAdminjailed]);
 		mysql_int(query, "pAdminjailTime", PlayerInfo[playerid][pAdminjailTime]);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pAdminjailed = %i, pAdminjailTime = %i WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pAdminjailed],
+			PlayerInfo[playerid][pAdminjailTime],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
 
 
 		for(new i = 0; i < 13; i++)

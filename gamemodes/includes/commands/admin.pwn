@@ -1,5 +1,8 @@
 CMD:acmds(playerid, params)
 {
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+	
     if(PlayerInfo[playerid][pAdmin] >= 1)
 	{
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /aduty, /forumname, /goto, /gethere, /a (achat), /showmain, /kick, /(o)ban, /(o)ajail,"); 
@@ -27,7 +30,7 @@ CMD:acmds(playerid, params)
 CMD:aduty(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
-		return 0;
+		return SendUnauthMessage(playerid);
 		
 	new str[128];
 		
@@ -63,7 +66,7 @@ CMD:aduty(playerid, params[])
 CMD:a(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
-		return 0;
+		return SendUnauthMessage(playerid);
 		
 	if(isnull(params)) return SendUsageMessage(playerid, "/a (แอดมินแชท) [ข้อความ]"); 
 	
@@ -414,6 +417,8 @@ CMD:setskin(playerid, params[])
 	
 	format(str, sizeof(str), "%s ตั้ง 'Skin' ให้ %s เป็น %d.", ReturnName(playerid), ReturnName(playerb), skinid);
 	SendAdminMessage(1, str);
+	CharacterSave(playerb);
+	
 	return 1;
 }
 

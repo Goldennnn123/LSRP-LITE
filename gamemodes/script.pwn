@@ -244,6 +244,18 @@ public OnPlayerSpawn(playerid) {
         SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
         return 1;
     }
+    if(PlayerInfo[playerid][pWeaponsSpawned] == false)
+	{
+		for(new i = 0; i < 13; i ++)
+		{
+			if(PlayerInfo[playerid][pWeapons][i] != 0)
+			{
+				GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
+			}
+		}	
+		SetPlayerArmedWeapon(playerid, 0);
+		PlayerInfo[playerid][pWeaponsSpawned] = true;
+	}
     switch (PlayerInfo[playerid][pSpawnPoint]) {
         case SPAWN_AT_DEFAULT: {
             SetPlayerVirtualWorld(playerid, 0);

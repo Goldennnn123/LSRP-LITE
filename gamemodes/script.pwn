@@ -6,7 +6,7 @@
 #define MAX_PLAYERS (100)
 
 
-/////////Hellow world ////:
+/////////Hellow world /
 
 //#include <progress2>    // Southclaws/progress2
 

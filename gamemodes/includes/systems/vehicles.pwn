@@ -612,3 +612,143 @@ stock NotifyVehicleOwner(vehicleid)
 	}
 	return 0;
 }
+
+
+forward Query_LoadPrivateVehicle(playerid);
+public Query_LoadPrivateVehicle(playerid)
+{
+	if(!cache_num_rows())
+		return SendErrorMessage(playerid, "ไม่มีรถอยู่ในสล็อตนี้"); 
+		
+	new rows; cache_get_row_count(rows); 
+	new str[128], vehicleid = INVALID_VEHICLE_ID; 
+	
+	for (new i = 0; i < rows && i < MAX_VEHICLES; i++)
+	{
+		vehicleid = CreateVehicle(cache_get_value_name_int(i, "VehicleModel", VehicleInfo[i][eVehicleModel]), 
+			cache_get_value_name_float(i, "VehicleParkPosX", VehicleInfo[i][eVehicleParkPos][0]),
+			cache_get_value_name_float(i, "VehicleParkPosY", VehicleInfo[i][eVehicleParkPos][1]),
+			cache_get_value_name_float(i, "VehicleParkPosZ", VehicleInfo[i][eVehicleParkPos][2]),
+			cache_get_value_name_float(i, "VehicleParkPosA", VehicleInfo[i][eVehicleParkPos][3]),
+			cache_get_value_name_int(i, "VehicleColor1", VehicleInfo[i][eVehicleColor1]),
+			cache_get_value_name_int(i, "VehicleColor2", VehicleInfo[i][eVehicleColor2]),
+			-1,
+			0);
+			
+		if(vehicleid != INVALID_VEHICLE_ID)
+		{
+			VehicleInfo[vehicleid][eVehicleExists] = true; 
+			cache_get_value_name_int(i, "VehicleDBID",VehicleInfo[vehicleid][eVehicleDBID]);
+
+			cache_get_value_name_int(i, "VehicleOwnerDBID",VehicleInfo[vehicleid][eVehicleOwnerDBID]);
+			cache_get_value_name_int(i, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
+			
+			cache_get_value_name_int(i, "VehicleModel",VehicleInfo[vehicleid][eVehicleModel]);
+			
+			cache_get_value_name_int(i, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);
+			cache_get_value_name_int(i, "VehicleColor2",VehicleInfo[vehicleid][eVehicleColor2]);
+			
+			cache_get_value_name_float(i, "VehicleParkPosX", VehicleInfo[vehicleid][eVehicleParkPos][0]);
+			cache_get_value_name_float(i, "VehicleParkPosY", VehicleInfo[vehicleid][eVehicleParkPos][1]);
+			cache_get_value_name_float(i, "VehicleParkPosZ", VehicleInfo[vehicleid][eVehicleParkPos][2]);
+			cache_get_value_name_float(i, "VehicleParkPosA", VehicleInfo[vehicleid][eVehicleParkPos][3]);
+			
+			cache_get_value_name_int(i, "VehicleParkInterior",VehicleInfo[vehicleid][eVehicleParkInterior]);
+			cache_get_value_name_int(i, "VehicleParkWorld",VehicleInfo[vehicleid][eVehicleParkWorld]);
+			
+
+			cache_get_value_name(i, "VehiclePlates",VehicleInfo[vehicleid][eVehiclePlates], 32);
+			cache_get_value_name_int(i, "VehicleLocked",VehicleInfo[vehicleid][eVehicleLocked]);
+			
+			cache_get_value_name_int(i, "VehicleImpounded",VehicleInfo[vehicleid][eVehicleImpounded]);
+			
+			cache_get_value_name_float(i, "VehicleImpoundPosX", VehicleInfo[vehicleid][eVehicleImpoundPos][0]);
+			cache_get_value_name_float(i, "VehicleImpoundPosY", VehicleInfo[vehicleid][eVehicleImpoundPos][1]);
+			cache_get_value_name_float(i, "VehicleImpoundPosZ", VehicleInfo[vehicleid][eVehicleImpoundPos][2]);
+			cache_get_value_name_float(i, "VehicleImpoundPosA", VehicleInfo[vehicleid][eVehicleImpoundPos][3]);
+			
+			cache_get_value_name_float(i, "VehicleFuel",VehicleInfo[vehicleid][eVehicleFuel]);
+			
+			cache_get_value_name_int(i, "VehicleXMR",VehicleInfo[vehicleid][eVehicleHasXMR]);
+			cache_get_value_name_int(i, "VehicleTimesDestroyed",VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
+			
+			cache_get_value_name_float(i, "VehicleEngine",VehicleInfo[vehicleid][eVehicleEngine]);
+			cache_get_value_name_float(i, "VehicleBattery",VehicleInfo[vehicleid][eVehicleBattery]);
+			
+			cache_get_value_name_int(i, "VehicleAlarmLevel",VehicleInfo[vehicleid][eVehicleAlarmLevel]);
+			cache_get_value_name_int(i, "VehicleLockLevel",VehicleInfo[vehicleid][eVehicleLockLevel]);
+			cache_get_value_name_int(i, "VehicleImmobLevel",VehicleInfo[vehicleid][eVehicleImmobLevel]);
+			
+			
+			cache_get_value_name_int(i, "VehiclePaintjob",VehicleInfo[vehicleid][eVehiclePaintjob]);
+
+			/*for(new j = 1; j < 15; j++)
+			{
+				format(str, sizeof(str), "VehicleMod%d", j);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleMod][j]);
+			}*/
+			
+			for(new j = 1; j < 6; j++)
+			{
+				format(str, sizeof(str), "VehicleWeapons%d", j);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleWeapons][j]);
+				
+				format(str, sizeof(str), "VehicleWeaponsAmmo%d", j);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][j]);
+			}
+			
+			for(new d = 1; d < 5; d++)
+			{
+				format(str, sizeof(str), "VehicleLastDrivers%d", d);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleLastDrivers][d]);
+				
+				format(str, sizeof(str), "VehicleLastPassengers%d", d);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleLastPassengers][d]);
+			}
+			
+			if(VehicleInfo[vehicleid][eVehicleParkInterior] != 0)
+			{
+				LinkVehicleToInterior(vehicleid, VehicleInfo[vehicleid][eVehicleParkInterior]); 
+				SetVehicleVirtualWorld(vehicleid, VehicleInfo[vehicleid][eVehicleParkWorld]);
+			}
+			
+			if(!isnull(VehicleInfo[vehicleid][eVehiclePlates]))
+			{
+				SetVehicleNumberPlate(vehicleid, VehicleInfo[vehicleid][eVehiclePlates]);
+				SetVehicleToRespawn(vehicleid); 
+			}
+			
+			if(VehicleInfo[vehicleid][eVehicleImpounded] == true)
+			{
+				SetVehiclePos(vehicleid, VehicleInfo[vehicleid][eVehicleImpoundPos][0], VehicleInfo[vehicleid][eVehicleImpoundPos][1], VehicleInfo[vehicleid][eVehicleImpoundPos][2]);
+				SetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleImpoundPos][3]); 
+			}
+			
+			if(VehicleInfo[vehicleid][eVehicleLocked] == false)
+				SetVehicleParamsEx(vehicleid, 0, 0, 0, 0, 0, 0, 0);
+				
+			else SetVehicleParamsEx(vehicleid, 0, 0, 0, 1, 0, 0, 0);
+			
+			VehicleInfo[vehicleid][eVehicleAdminSpawn] = false;
+			
+			
+			//LoadVeh(vehicleid);
+			
+			if(HasNoEngine(playerid))
+				ToggleVehicleEngine(vehicleid, true); 
+		}
+	}
+	
+	PlayerInfo[playerid][pVehicleSpawned] = true;
+	PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid; 
+	
+	SendClientMessageEx(playerid, COLOR_DARKGREEN, "%s รถได้ออกมาแล้ว", ReturnVehicleName(vehicleid));
+	SendClientMessageEx(playerid, COLOR_WHITE, "Lifespan: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%d]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
+	if(VehicleInfo[vehicleid][eVehicleImpounded]) SendClientMessage(playerid, COLOR_RED, "Your vehicle is impounded.");
+	
+	SendClientMessage(playerid, 0xFF00FFFF, "Hint: ไปตามจุดที่เราได้มาร์กไว้เพื่อไปที่รถ");
+	SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], 3.0);
+	
+	PlayerCheckpoint[playerid] = 1; 
+	return 1;
+}

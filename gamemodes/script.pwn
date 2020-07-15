@@ -178,6 +178,10 @@ public OnPlayerConnect(playerid) {
 		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
 	}
 
+    for(new i = 1; i < MAX_PLAYER_VEHICLES; i++) {
+		PlayerInfo[playerid][pOwnedVehicles][i] = 0; 
+	}
+
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;
@@ -219,6 +223,19 @@ public OnPlayerSpawn(playerid) {
 	if (!BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
 		Kick(playerid);
 
+    if(PlayerInfo[playerid][pWeaponsSpawned] == false)
+	{
+		for(new i = 0; i < 13; i ++)
+		{
+			if(PlayerInfo[playerid][pWeapons][i] != 0)
+			{
+				GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
+			}
+		}	
+		SetPlayerArmedWeapon(playerid, 0);
+		PlayerInfo[playerid][pWeaponsSpawned] = true;
+	}
+    
     if (PlayerInfo[playerid][pTimeout]) {
 
         // ตั้งค่าผู้เล่นให้กลับที่เดิมและสถานะบางอย่างเหมือนเดิม
@@ -244,18 +261,6 @@ public OnPlayerSpawn(playerid) {
         SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
         return 1;
     }
-    if(PlayerInfo[playerid][pWeaponsSpawned] == false)
-	{
-		for(new i = 0; i < 13; i ++)
-		{
-			if(PlayerInfo[playerid][pWeapons][i] != 0)
-			{
-				GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
-			}
-		}	
-		SetPlayerArmedWeapon(playerid, 0);
-		PlayerInfo[playerid][pWeaponsSpawned] = true;
-	}
     switch (PlayerInfo[playerid][pSpawnPoint]) {
         case SPAWN_AT_DEFAULT: {
             SetPlayerVirtualWorld(playerid, 0);

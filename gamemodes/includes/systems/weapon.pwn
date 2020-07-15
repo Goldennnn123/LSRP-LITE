@@ -74,7 +74,8 @@ stock TakePlayerGuns(playerid)
 	return 1;
 }
 
-stock GivePlayerGun(playerid, weaponid, ammo)
+forward GivePlayerGun(playerid, weaponid, ammo);
+public GivePlayerGun(playerid, weaponid, ammo)
 {
 	new idx = ReturnWeaponIDSlot(weaponid); 
 	

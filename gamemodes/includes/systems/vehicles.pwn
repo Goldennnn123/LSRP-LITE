@@ -4,6 +4,7 @@ new PlayerText:Unscrambler_PTD[MAX_PLAYERS][7];
 
 new gLastCar[MAX_PLAYERS];
 new gPassengerCar[MAX_PLAYERS];
+new playerInsertID[MAX_PLAYERS];
 
 static const UnscrambleWord[][] = {
 	"SPIDER", "DROP", "HIRE", "EARTH", "GOLD", "HEART", "FLOWER", "KNIFE",
@@ -77,14 +78,42 @@ stock ResetVehicleVars(vehicleid)
 {
 	if(vehicleid == INVALID_VEHICLE_ID)
 		return 0;
+		
+	VehicleInfo[vehicleid][eVehicleDBID] = 0; 
+	VehicleInfo[vehicleid][eVehicleExists] = false;
 	
-	vehicleData[vehicleid][eVehicleDBID] = 0; 
-	vehicleData[vehicleid][eVehicleOwnerDBID] = 0;
-	vehicleData[vehicleid][eVehicleFaction] = 0;
-
-	vehicleData[vehicleid][eVehicleFuel] = 100.0; 
-	vehicleData[vehicleid][eVehicleEngineStatus] = false;
-	vehicleData[vehicleid][eVehicleLights] = false;
+	VehicleInfo[vehicleid][eVehicleOwnerDBID] = 0;
+	VehicleInfo[vehicleid][eVehicleFaction] = 0;
+	
+	VehicleInfo[vehicleid][eVehicleImpounded] = false;
+	VehicleInfo[vehicleid][eVehiclePaintjob] = -1; 
+	
+	VehicleInfo[vehicleid][eVehicleFuel] = 100; 
+	
+	for(new i = 1; i < 6; i++)
+	{
+		VehicleInfo[vehicleid][eVehicleWeapons][i] = 0;
+		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][i] = 0;
+	}
+	
+	for(new i = 1; i < 5; i++)
+	{
+		VehicleInfo[vehicleid][eVehicleLastDrivers][i] = 0;
+		VehicleInfo[vehicleid][eVehicleLastPassengers][i] = 0;
+	}
+	
+	VehicleInfo[vehicleid][eVehicleTowCount] = 0;
+	VehicleInfo[vehicleid][eVehicleRepairCount] = 0;
+	
+	VehicleInfo[vehicleid][eVehicleHasXMR] = false;
+	VehicleInfo[vehicleid][eVehicleBattery] = 100.0;
+	VehicleInfo[vehicleid][eVehicleEngine] = 100.0;
+	VehicleInfo[vehicleid][eVehicleTimesDestroyed] = 0;
+	
+	VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+	VehicleInfo[vehicleid][eVehicleLights] = false;
+	
+	VehicleInfo[vehicleid][eVehicleTruck] = 0;
 	return 1;
 }
 
@@ -235,16 +264,16 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 		
-		if(!vehicleData[vehicleid][eVehicleEngineStatus] && !IsRentalVehicle(vehicleid))
+		if(!VehicleInfo[vehicleid][eVehicleEngineStatus] && !IsRentalVehicle(vehicleid))
 			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ (/engine)");
 	
-		if(vehicleData[vehicleid][eVehicleOwnerDBID] == PlayerInfo[playerid][pDBID])
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] == PlayerInfo[playerid][pDBID])
 			SendClientMessageEx(playerid, COLOR_WHITE, "ยินดีต้อนรับสู่ %s ของคุณ", ReturnVehicleName(vehicleid));
 
 		new oldcar = gLastCar[playerid];
 		if(oldcar != 0)
 		{
-			if((!vehicleData[oldcar][eVehicleDBID] && !vehicleData[oldcar][eVehicleAdminSpawn]) && !IsRentalVehicle(oldcar))
+			if((!VehicleInfo[oldcar][eVehicleDBID] && !VehicleInfo[oldcar][eVehicleAdminSpawn]) && !IsRentalVehicle(oldcar))
 			{
 				if(oldcar != vehicleid)
 				{
@@ -272,6 +301,19 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	return 1;
 }
 
+forward Query_AddPlayerVehicle(playerid, playerb);
+public Query_AddPlayerVehicle(playerid, playerb)
+{
+	PlayerInfo[playerb][pOwnedVehicles][playerInsertID[playerb]] = cache_insert_id(); 
+	
+	SendServerMessage(playerb, "คุณได้รับยานพาหนะจาก %s เข้าสู่สล็อตที่ %i.", ReturnName(playerid), playerInsertID[playerb]);
+	SendServerMessage(playerid, "คุณ %s ออกยานพาหนะใหม่", ReturnName(playerb));
+	
+	playerInsertID[playerb] = 0;
+	CharacterSave(playerb);
+	return 1;
+}
+
 CMD:engine(playerid, params[])
 {
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
@@ -282,15 +324,15 @@ CMD:engine(playerid, params[])
 	if(HasNoEngine(vehicleid))
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะคันนี้ไม่มีเครื่องยนต์"); 
 
-	if(!vehicleData[vehicleid][eVehicleDBID] && !vehicleData[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid))
+	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid))
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้สามารถใช้ได้เฉพาะยานพาหนะส่วนตัว แต่คุณอยู่ในยานพาหนะสาธารณะ (Static)");
 		
-	if(vehicleData[vehicleid][eVehicleFuel] <= 0.0 && !vehicleData[vehicleid][eVehicleAdminSpawn])
+	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0.0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะนี้ไม่มีเชื้อเพลิง!"); 
 	
-	if(vehicleData[vehicleid][eVehicleFaction] > 0)
+	if(VehicleInfo[vehicleid][eVehicleFaction] > 0)
 	{
-		if(PlayerInfo[playerid][pFaction] != vehicleData[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty])
+		if(PlayerInfo[playerid][pFaction] != VehicleInfo[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty])
 		{
 			return SendClientMessage(playerid, COLOR_LIGHTRED, "คุณไม่มีกุญแจสำหรับยานพาหนะคันนี้"); 
 		}
@@ -310,15 +352,15 @@ CMD:engine(playerid, params[])
 
 	*/
 	if(
-	!vehicleData[vehicleid][eVehicleFaction] && 
+	!VehicleInfo[vehicleid][eVehicleFaction] && 
 	PlayerInfo[playerid][pDuplicateKey] != vehicleid && 
-	vehicleData[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && 
-	!vehicleData[vehicleid][eVehicleAdminSpawn] && 
+	VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && 
+	!VehicleInfo[vehicleid][eVehicleAdminSpawn] && 
 	!IsRentalVehicle(vehicleid))
 	{
 		new idx, str[128];
 		
-		if(vehicleData[vehicleid][eVehicleEngineStatus] && !PlayerInfo[playerid][pAdminDuty])
+		if(VehicleInfo[vehicleid][eVehicleEngineStatus] && !PlayerInfo[playerid][pAdminDuty])
 			return GameTextForPlayer(playerid, "~g~ENGINE IS ALREADY ON", 3000, 3);
 		
 		PlayerInfo[playerid][pUnscrambling] = true;
@@ -330,7 +372,7 @@ CMD:engine(playerid, params[])
 		
 		PlayerInfo[playerid][pUnscrambleID] = idx;
 		
-		switch(vehicleData[vehicleid][eVehicleImmobLevel])
+		switch(VehicleInfo[vehicleid][eVehicleImmobLevel])
 		{
 			case 1: PlayerInfo[playerid][pUnscramblerTime] = 125; 
 			case 2: PlayerInfo[playerid][pUnscramblerTime] = 100; 
@@ -352,15 +394,15 @@ CMD:engine(playerid, params[])
 		return 1; 
 	}
 	
-	if(!vehicleData[vehicleid][eVehicleEngineStatus])
+	if(!VehicleInfo[vehicleid][eVehicleEngineStatus])
 	{
 		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s สตาร์ทเครื่องยนต์ของ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
-		ToggleVehicleEngine(vehicleid, true); vehicleData[vehicleid][eVehicleEngineStatus] = true;
+		ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
 	}
 	else
 	{
 		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s ดับเครื่องยนต์ของ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
-		ToggleVehicleEngine(vehicleid, false); vehicleData[vehicleid][eVehicleEngineStatus] = false;
+		ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 	}
 	return 1;
 }
@@ -387,12 +429,12 @@ CMD:unscramble(playerid, params[])
 		PlayerTextDrawSetString(playerid, Unscrambler_PTD[playerid][3], displayString); 
 		
 		//เวลาที่เพิ่มขึ้นจะขึ้นอยู่กับเลเวลของเตือนภัย:
-		PlayerInfo[playerid][pUnscramblerTime] += (7 - vehicleData[vehicleid][eVehicleImmobLevel]) * 2;
+		PlayerInfo[playerid][pUnscramblerTime] += (7 - VehicleInfo[vehicleid][eVehicleImmobLevel]) * 2;
 		PlayerInfo[playerid][pScrambleSuccess]++; 
 		
 		PlayerPlaySound(playerid, 1052, 0, 0, 0);
 		//จะต่อสายตรงได้สำเร็จนั้น ขึ้นอยู่กับเลเวลเตือนภัย:
-		if(PlayerInfo[playerid][pScrambleSuccess] >= (vehicleData[vehicleid][eVehicleImmobLevel] * 2) + 2)
+		if(PlayerInfo[playerid][pScrambleSuccess] >= (VehicleInfo[vehicleid][eVehicleImmobLevel] * 2) + 2)
 		{
 			stop PlayerInfo[playerid][pUnscrambleTimer];
 			PlayerInfo[playerid][pScrambleSuccess] = 0; 
@@ -407,7 +449,7 @@ CMD:unscramble(playerid, params[])
 			CreateUnscrambleTextdraw(playerid, false);
 			
 			SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s สตาร์ทเครื่องยนต์ของ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
-			ToggleVehicleEngine(vehicleid, true); vehicleData[vehicleid][eVehicleEngineStatus] = true;
+			ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
 		}	
 	}
 	else
@@ -447,6 +489,53 @@ CMD:unscramble(playerid, params[])
 		}
 	}
 	
+	return 1;
+}
+
+
+alias:vehicle("v")
+CMD:vehicle(playerid, params[])
+{
+	new oneString[30], secString[90];
+
+	if(sscanf(params, "s[30]S()[90]", oneString, secString))
+	{
+		SendUsageMessage(playerid, "/vehicle [action]");
+		SendServerMessage(playerid, "get, park, buypark, duplicatekey, buy");
+		SendServerMessage(playerid, "scrap, tow, lock, lights, find, stats");
+		SendServerMessage(playerid, "list, faction, unfaction, trunk, hood");
+		return 1;
+	}
+	if(!strcmp(oneString, "get"))
+	{
+		new
+			slotid
+		;
+
+		if(sscanf(secString, "d", slotid))
+			return SendUsageMessage(playerid, "/vehicle get [สล็อตรถ]");
+
+		if(slotid < 0)
+			return SendErrorMessage(playerid, "ไม่มีส็อตที่ต้องการ");
+
+		if(!PlayerInfo[playerid][pOwnedVehicles][slotid])
+			return SendErrorMessage(playerid, "ไม่มีรถในสล็อตนี้");
+
+		if(PlayerInfo[playerid][pVehicleSpawned] == true)
+			return SendErrorMessage(playerid, "มีรถถูกนำออกมาแล้ว");
+
+		new threadLoad[128];
+
+		for(new i = 0; i < MAX_VEHICLES; i++)
+		{
+			if(VehicleInfo[i][eVehicleDBID] == PlayerInfo[playerid][pOwnedVehicles][slotid])
+				return SendErrorMessage(playerid, "รถถูกนำออกมาอยู่แล้ว");
+		}
+		//Easiest way to prevent players with faction vehicles duplicating it.
+
+		mysql_format(dbCon, threadLoad, sizeof(threadLoad), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][slotid]);
+		mysql_tquery(dbCon, threadLoad, "Query_LoadPrivateVehicle", "i", playerid);
+	}
 	return 1;
 }
 
@@ -516,7 +605,7 @@ stock NotifyVehicleOwner(vehicleid)
 
 	foreach(new i : Player)
 	{
-		if(PlayerInfo[i][pDBID] == vehicleData[vehicleid][eVehicleOwnerDBID])
+		if(PlayerInfo[i][pDBID] == VehicleInfo[vehicleid][eVehicleOwnerDBID])
 		{
 			return SendClientMessage(playerid, COLOR_YELLOW2, "SMS: สัญญาณเตือนภัยยานพาหนะของคุณดังขึ้น, ผู้ส่ง: สัญญาณเตือนภัยของยานพาหนะ (ไม่ทราบ)");
 		}

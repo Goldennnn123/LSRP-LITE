@@ -1087,9 +1087,207 @@ CMD:noooc(playerid, params[])
 	}
 	return 1;
 }
+
+
+CMD:backup(playerid, params[])
+{
+	foreach(new i : Player)
+	{
+		CharacterSave(i);
+	}
+	return 1;
+}
+
+CMD:repair(playerid, params[])
+{
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+	    new veh = GetPlayerVehicleID(playerid);
+	    new	str[128], Float:angle;
+	
+
+		if(PlayerInfo[playerid][pAdmin] < 2)
+		return 0;
+
+
+		format(str, sizeof(str), "%s repaired vehicle ID %i.", ReturnName(playerid), veh);
+		SendAdminMessage(1, str);
+
+		RepairVehicle(veh);
+		SetVehicleHealth(veh, 900);
+
+		GetVehicleZAngle(veh, angle);
+		SetVehicleZAngle(veh, angle);
+		return 1;
+
+	}
+	
+	if(PlayerInfo[playerid][pAdmin] < 2)
+		return SendUnauthMessage(playerid);
+		
+	new 
+		str[128],
+		vehicleid,
+		Float:angle
+	;
+	
+	if(sscanf(params, "i", vehicleid))
+		return SendUsageMessage(playerid, "/repair [ไอดีรถ]");
+		
+	if(!IsValidVehicle(vehicleid))
+		return SendErrorMessage(playerid, "ไม่มีรถไอดีนี้");
+		
+	format(str, sizeof(str), "%s repaired vehicle ID %i.", ReturnName(playerid), vehicleid);
+	SendAdminMessage(1, str);
+	
+	RepairVehicle(vehicleid);
+	SetVehicleHealth(vehicleid, 900); 
+	
+	GetVehicleZAngle(vehicleid, angle);
+	SetVehicleZAngle(vehicleid, angle);
+	return 1; 
+}
 // Admin Level: 2;
 
 // Admin Level: 3:
+
+CMD:spawncar(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 3)
+		return SendUnauthMessage(playerid);
+
+	new vehicleid = INVALID_VEHICLE_ID, modelid, color1, color2, siren, str[128], Float:a;
+	new Float:X,Float:Y,Float:Z;
+	
+	if(sscanf(params, "iII(0)I(0)(0)", modelid, color1, color2, siren))
+	{
+		SendUsageMessage(playerid, "/spawncar [โทเดลรถ] [สีที่ 1] [สีที่ 2] [ระบบไซเรน]");
+		SendServerMessage(playerid, "เป็นการสร้างรถที่มีแค่เฉพาะผู้ดูแลระบบเท่านั้นที่จะสามารถใช้งานได้"); 
+		return 1;
+	}
+
+	if(!color1)
+		color1 = random(255);
+
+	if(!color2)
+		color2 = random(255);
+
+	if(modelid < 400 || modelid > 611)
+		return SendErrorMessage(playerid, "ไม่มีไอดีรถที่คุณต้องการ");
+		
+	if(color1 > 255 || color2 > 255)
+		return SendErrorMessage(playerid, "โปรดใส่สีให้ถูกด้วย");
+
+	GetPlayerFacingAngle(playerid, a);
+	GetPlayerPos(playerid, X, Y, Z);
+
+	vehicleid = CreateVehicle(modelid, X, Y, Z, a, color1, color2, -1, siren);
+	if(vehicleid != INVALID_VEHICLE_ID)
+	{
+		VehicleInfo[vehicleid][eVehicleAdminSpawn] = true;
+		VehicleInfo[vehicleid][eVehicleModel] = modelid;
+		
+		VehicleInfo[vehicleid][eVehicleColor1] = color1;
+		VehicleInfo[vehicleid][eVehicleColor2] = color2;
+	}
+	PutPlayerInVehicle(playerid, vehicleid, 0);
+	format(str, sizeof(str), "%s ได้เสกรถ แอดมิน %s ออกมา", ReturnName(playerid), ReturnVehicleName(vehicleid));
+	SendAdminMessage(3, str);
+	return 1;
+}
+
+CMD:despawncar(playerid, params[])
+{
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+	    new veh = GetPlayerVehicleID(playerid);
+	    new str[320];
+	    
+		if(PlayerInfo[playerid][pAdmin] < 3)
+		return 0;
+		
+		
+		if(VehicleInfo[veh][eVehicleAdminSpawn] == false)
+		return SendErrorMessage(playerid, "คุณไม่สามารถลบรถที่ไม่ใช่รถ แอดมิน ได้");
+
+		format(str, sizeof(str), "%s despawned %s (%d).", ReturnName(playerid), ReturnVehicleName(veh), veh);
+		SendAdminMessage(3, str);
+
+		ResetVehicleVars(veh); DestroyVehicle(veh);
+		return 1;
+		
+	}
+		
+	if(PlayerInfo[playerid][pAdmin] < 3)
+		return 0;
+		
+	new vehicleid, str[128];
+	
+	if(sscanf(params, "d", vehicleid))
+		return SendUsageMessage(playerid, "/despawncar [ไอดีรถ]");
+	
+	if(!IsValidVehicle(vehicleid))
+		return SendErrorMessage(playerid, "ไม่มีไอดีรถที่คุณต้องการ");
+		
+	if(VehicleInfo[vehicleid][eVehicleAdminSpawn] == false)
+		return SendErrorMessage(playerid, "คุณไม่สามารถลบรถที่ไม่ใช่รถเสกได้"); 
+	
+	format(str, sizeof(str), "%s ลบรถเสก %s (%d).", ReturnName(playerid), ReturnVehicleName(vehicleid), vehicleid);
+	SendAdminMessage(3, str);
+		
+	ResetVehicleVars(vehicleid); DestroyVehicle(vehicleid);
+	return 1;
+}
+
+CMD:pcar(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 3)
+		return SendUnauthMessage(playerid);
+		
+	new playerb, modelid, color1, color2;
+	
+	if(sscanf(params, "uiii", playerb, modelid, color1, color2))
+	{
+		SendUsageMessage(playerid, "/pcar [ชื่อ/ไอดี] [โมเดล-ไอดี] [สีที่ 1] [สีที่ 2]");
+		SendServerMessage(playerid, "ผู้เล่นจะได้รับรถที่คุณแอดไป");
+		return 1;
+	}
+	
+	if (!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+	
+	if(modelid < 400 || modelid > 611)
+		return SendErrorMessage(playerid, "ไม่มีไอดีรถที่ต้องการ");
+		
+	if(color1 < 0 || color2 < 0 || color1 > 255 || color2 > 255)
+		return SendErrorMessage(playerid, "โปรดเลือกสีให้ถูกต้อง"); 
+		
+	for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+	{
+		if(!PlayerInfo[playerb][pOwnedVehicles][i])
+		{
+			playerInsertID[playerb] = i;
+			break;
+		}
+	}
+	if(!playerInsertID[playerb])
+	{
+		SendErrorMessage(playerid, "%s doesn't have any free vehicle slots.", ReturnName(playerb));
+	}
+	else
+	{
+		new insertQuery[256];
+		
+		mysql_format(dbCon, insertQuery, sizeof(insertQuery), "INSERT INTO vehicles (`VehicleOwnerDBID`, `VehicleModel`, `VehicleColor1`, `VehicleColor2`, `VehicleParkPosX`, `VehicleParkPosY`, `VehicleParkPosZ`, `VehicleParkPosA`) VALUES(%i, %i, %i, %i, 1705.4175, -1485.9148, 13.3828, 87.5097)",
+			PlayerInfo[playerb][pDBID], modelid, color1, color2);
+		mysql_tquery(dbCon, insertQuery, "Query_AddPlayerVehicle", "ii", playerid, playerb); 
+	}
+	
+	return 1;
+}
 // Admin Level: 3;
 
 // Admin Level: 4:

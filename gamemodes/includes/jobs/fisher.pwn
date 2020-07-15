@@ -51,13 +51,13 @@ CMD:gofishing(playerid, params[]) {
     if (place == 1) {
 
         new vehicleid = GetPlayerVehicleID(playerid);
-        if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !vehicleData[vehicleid][eVehicleDBID] || vehicleData[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
+        if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !VehicleInfo[vehicleid][eVehicleDBID] || VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
             SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องอยู่ ใน/ใกล้ เรือของคุณเพื่อใช้งาน");
             return 1;
         }
         else {
             vehicleid = GetNearestVehicle(playerid);
-            if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !vehicleData[vehicleid][eVehicleDBID] || vehicleData[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
+            if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !VehicleInfo[vehicleid][eVehicleDBID] || VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
                 SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องอยู่ ใน/ใกล้ เรือของคุณเพื่อใช้งาน");
                 return 1;
             }
@@ -200,13 +200,13 @@ CMD:fish(playerid, params[]) {
                     if (IsPlayerInRangeOfPoint(playerid, 30.0, GoFishingPlace[rand][0],GoFishingPlace[rand][1],GoFishingPlace[rand][2])) {
                           
                         new vehicleid = GetPlayerVehicleID(playerid);
-                        if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !vehicleData[vehicleid][eVehicleDBID] || vehicleData[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
+                        if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !VehicleInfo[vehicleid][eVehicleDBID] || VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
                             SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องอยู่ ใน/ใกล้ เรือของคุณเพื่อใช้งาน");
                             return 1;
                         }
                         else {
                             vehicleid = GetNearestVehicle(playerid);
-                            if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !vehicleData[vehicleid][eVehicleDBID] || vehicleData[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
+                            if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !VehicleInfo[vehicleid][eVehicleDBID] || VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
                                 SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องอยู่ ใน/ใกล้ เรือของคุณเพื่อใช้งาน");
                                 return 1;
                             }

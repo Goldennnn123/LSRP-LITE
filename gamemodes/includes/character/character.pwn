@@ -331,6 +331,12 @@ CharacterSave(playerid, force = false)
 			mysql_tquery(dbCon, query);
 		}
 
+		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+		{
+			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pOwnedVehicles%d = %i WHERE char_dbid = %i", i, PlayerInfo[playerid][pOwnedVehicles][i], PlayerInfo[playerid][pDBID]);
+			mysql_tquery(dbCon, query);
+		}
+
 		mysql_finish(query);
 	}
 	return 1;
@@ -391,6 +397,12 @@ public Query_LoadCharacter(playerid)
 		
 		format(str, sizeof(str), "pWeaponsAmmo%d", i);
 		cache_get_value_name_int(0, str,PlayerInfo[playerid][pWeaponsAmmo][i]);
+	}
+
+	for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+	{	
+		format(str, sizeof(str), "pOwnedVehicles%d", i);
+		cache_get_value_name_int(0, str,PlayerInfo[playerid][pOwnedVehicles][i]);
 	}
 	return LoadCharacter(playerid);
 }

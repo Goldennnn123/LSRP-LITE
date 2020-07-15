@@ -66,6 +66,10 @@ enum E_PLAYER_DATA
 	pWeapons[13], 
 	pWeaponsAmmo[13],
 
+    pOwnedVehicles[6],
+	bool:pVehicleSpawned,
+	pVehicleSpawnedID,
+
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA];
@@ -79,31 +83,76 @@ enum P_MASTER_ACCOUNTS
 
 new e_pAccountData[MAX_PLAYERS][P_MASTER_ACCOUNTS]; 
 
-enum E_VEHICLE_DATA
+enum E_VEHICLE_SYSTEM
 {
 	eVehicleDBID, 
-    eVehicleOwnerDBID,
-    
-	eVehicleModel,
-    eVehicleFaction,
-
-    Float:eVehicleFuel,
-
+	bool:eVehicleExists,
+	
+	eVehicleOwnerDBID,
+	eVehicleFaction,
+	
+	eVehicleModel, 
+	eVehicleColor1,
+	eVehicleColor2,
+	eVehiclePaintjob,
+	
 	Float:eVehicleParkPos[4],
 	eVehicleParkInterior,
 	eVehicleParkWorld,
-
-    // Alert, Immob, ..
-    eVehicleImmobLevel,
-    eVehicleAlarmLevel,
-
+	
+	eVehiclePlates[32], 
+	bool:eVehicleLocked,
+	
+	bool:eVehicleImpounded,
+	Float:eVehicleImpoundPos[4], 
+	
+	eVehicleWeapons[6], //5;
+	eVehicleWeaponsAmmo[6], //5;
+	
+	Float:eVehicleFuel,
+	eVehicleSirens,
+	
+	eVehicleLastDrivers[5], //4;
+	eVehicleLastPassengers[5], //4;
+	
 	bool:eVehicleLights,
 	bool:eVehicleEngineStatus,
 	
-	bool:eVehicleAdminSpawn
+	bool:eVehicleAdminSpawn,
+	
+	Text3D:eVehicleTowDisplay,
+	eVehicleTowCount,
+	
+	bool:eVehicleHasXMR, 
+	bool:eVehicleXMROn,
+	eVehicleXMRURL[128],
+	
+	Float:eVehicleBattery,
+	Float:eVehicleEngine, 
+	eVehicleTimesDestroyed,
+	
+	eVehicleLockLevel,
+	eVehicleAlarmLevel, 
+	eVehicleImmobLevel,
+	
+	Text3D:eVehicleEnterTD,
+	eVehicleEnterTimer,
+	
+	bool:eVehicleHasCarsign,
+	Text3D:eVehicleCarsign,
+	
+	eVehicleRefillCount,
+	Text3D:eVehicleRefillDisplay,
+	
+	eVehicleTruck,
+	
+	Text3D:eVehicleRepairDisplay,
+	eVehicleRepairCount,
+    
+    eVehicleMod[14]
 }
 
-new vehicleData[MAX_VEHICLES][E_VEHICLE_DATA]; 
+new VehicleInfo[MAX_VEHICLES][E_VEHICLE_SYSTEM];
 
 
 enum G_REPORT_INFO

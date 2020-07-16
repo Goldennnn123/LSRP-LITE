@@ -59,6 +59,8 @@ new
 #include "includes/function.pwn"
 #include "includes/mysql/database.pwn"
 
+#include "includes/mysql/SaveVehicle.pwn"
+
 #include "includes/registration/login.pwn"
 #include "includes/character/character.pwn"
 
@@ -320,5 +322,11 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 			Log(adminactionlog, INFO, "%s: /%s %s", ReturnPlayerName(playerid), cmd, params);
 		}
 	}
+    return 1;
+}
+
+
+public OnPlayerEnterCheckpoint(playerid)
+{
     return 1;
 }

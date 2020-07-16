@@ -536,6 +536,39 @@ CMD:vehicle(playerid, params[])
 		mysql_format(dbCon, threadLoad, sizeof(threadLoad), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][slotid]);
 		mysql_tquery(dbCon, threadLoad, "Query_LoadPrivateVehicle", "i", playerid);
 	}
+	else if(!strcmp(oneString, "park"))
+	{
+		if(!IsPlayerInAnyVehicle(playerid))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในรถ");
+			
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
+
+		new 
+			vehicleid = GetPlayerVehicleID(playerid);
+			
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+			return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของรถ"); 
+			
+		if(!IsPlayerInRangeOfPoint(playerid, 5.0, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2]))
+		{
+			SendErrorMessage(playerid, "คุณไม่ได้อยู่ในพื้นที่จอดรถของคุณ");
+			SendClientMessage(playerid, 0xFF00FFFF, "ขับไปยังจุดที่เราได้ทำการ มาร์ากไว้ดังกล่าว");
+		
+			SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], 5.0);
+			PlayerCheckpoint[playerid] = 3;
+			return 1;
+		}
+		
+		PlayerInfo[playerid][pVehicleSpawned] = false; 
+		PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+		
+		SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้จัดเก็บรถ %s เรียบร้อย", ReturnVehicleName(vehicleid));
+		
+		SaveVehicle(vehicleid);
+		
+		ResetVehicleVars(vehicleid);
+		DestroyVehicle(vehicleid); 
+	}
 	else if(!strcmp(oneString, "list"))
 	{
 		ShowVehicleList(playerid);
@@ -545,7 +578,7 @@ CMD:vehicle(playerid, params[])
 
 stock ShowVehicleList(playerid)
 {
-	new thread[128];
+	new thread[MAX_STRING];
 
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "_________________Your vehicles(%i)_________________", CountPlayerVehicles(playerid));
 
@@ -707,17 +740,27 @@ public Query_LoadPrivateVehicle(playerid)
 		return SendErrorMessage(playerid, "ไม่มีรถอยู่ในสล็อตนี้"); 
 		
 	new rows; cache_get_row_count(rows); 
-	new str[128], vehicleid = INVALID_VEHICLE_ID; 
+	new str[MAX_STRING], vehicleid = INVALID_VEHICLE_ID; 
+
+	new VehicleModel,Float:VehicleParkPos[4],VehicleColor1,VehicleColor2;
 	
 	for (new i = 0; i < rows && i < MAX_VEHICLES; i++)
 	{
-		vehicleid = CreateVehicle(cache_get_value_name_int(i, "VehicleModel", VehicleInfo[i][eVehicleModel]), 
-			cache_get_value_name_float(i, "VehicleParkPosX", VehicleInfo[i][eVehicleParkPos][0]),
-			cache_get_value_name_float(i, "VehicleParkPosY", VehicleInfo[i][eVehicleParkPos][1]),
-			cache_get_value_name_float(i, "VehicleParkPosZ", VehicleInfo[i][eVehicleParkPos][2]),
-			cache_get_value_name_float(i, "VehicleParkPosA", VehicleInfo[i][eVehicleParkPos][3]),
-			cache_get_value_name_int(i, "VehicleColor1", VehicleInfo[i][eVehicleColor1]),
-			cache_get_value_name_int(i, "VehicleColor2", VehicleInfo[i][eVehicleColor2]),
+		cache_get_value_name_int(i, "VehicleModel", VehicleModel);
+		cache_get_value_name_float(i, "VehicleParkPosX", VehicleParkPos[0]);
+		cache_get_value_name_float(i, "VehicleParkPosY", VehicleParkPos[1]);
+		cache_get_value_name_float(i, "VehicleParkPosZ", VehicleParkPos[2]);
+		cache_get_value_name_float(i, "VehicleParkPosA", VehicleParkPos[3]);
+		cache_get_value_name_int(i, "VehicleColor1", VehicleColor1);
+		cache_get_value_name_int(i, "VehicleColor2", VehicleColor2);
+
+		vehicleid = CreateVehicle(VehicleModel, 
+			VehicleParkPos[0],
+			VehicleParkPos[1],
+			VehicleParkPos[2],
+			VehicleParkPos[3],
+			VehicleColor1,
+			VehicleColor1,
 			-1,
 			0);
 			
@@ -828,7 +871,7 @@ public Query_LoadPrivateVehicle(playerid)
 	PlayerInfo[playerid][pVehicleSpawned] = true;
 	PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
 	
-	SendClientMessageEx(playerid, COLOR_DARKGREEN, "%s รถได้ออกมาแล้ว", ReturnVehicleName(vehicleid));
+	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้นำรถ %s ออกมาแล้ว", ReturnVehicleName(vehicleid));
 	SendClientMessageEx(playerid, COLOR_WHITE, "Lifespan: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%d]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
 	if(VehicleInfo[vehicleid][eVehicleImpounded]) SendClientMessage(playerid, COLOR_RED, "Your vehicle is impounded.");
 	
@@ -836,5 +879,20 @@ public Query_LoadPrivateVehicle(playerid)
 	SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], 3.0);
 	
 	PlayerCheckpoint[playerid] = 1; 
+	return 1;
+}
+
+hook OnPlayerEnterCheckpoint(playerid)
+{
+	if(PlayerCheckpoint[playerid] == 1)
+	{
+		GameTextForPlayer(playerid, "~p~You have found it!", 3000, 3);
+		PlayerCheckpoint[playerid] = 0; DisablePlayerCheckpoint(playerid);
+	}
+	if(PlayerCheckpoint[playerid] == 3)
+	{
+		GameTextForPlayer(playerid, "~p~This is park vehicle!", 3000, 3);
+		PlayerCheckpoint[playerid] = 0; DisablePlayerCheckpoint(playerid);
+	}
 	return 1;
 }

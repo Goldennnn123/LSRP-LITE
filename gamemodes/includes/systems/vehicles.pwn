@@ -29,14 +29,14 @@ static stock g_arrVehicleNames[][] = {
     "Boxville", "Benson", "Mesa", "RC Goblin", "Hotring Racer A", "Hotring Racer B", "Bloodring Banger", "Rancher",
     "Super GT", "Elegant", "Journey", "Bike", "Mountain Bike", "Beagle", "Cropduster", "Stunt", "Tanker", "Roadtrain",
     "Nebula", "Majestic", "Buccaneer", "Shamal", "Hydra", "FCR-900", "NRG-500", "HPV1000", "Cement Truck", "Tow Truck",
-    "Fortune", "Cadrona", "FBI Truck", "Willard", "Forklift", "Tractor", "Combine", "Feltzer", "Remington", "Slamvan",
+    "Fortune", "Cadrona", "SWAT Truck", "Willard", "Forklift", "Tractor", "Combine", "Feltzer", "Remington", "Slamvan",
     "Blade", "Streak", "Freight", "Vortex", "Vincent", "Bullet", "Clover", "Sadler", "Firetruck", "Hustler", "Intruder",
     "Primo", "Cargobob", "Tampa", "Sunrise", "Merit", "Utility", "Nevada", "Yosemite", "Windsor", "Monster", "Monster",
     "Uranus", "Jester", "Sultan", "Stratum", "Elegy", "Raindance", "RC Tiger", "Flash", "Tahoma", "Savanna", "Bandito",
     "Freight Flat", "Streak Carriage", "Kart", "Mower", "Dune", "Sweeper", "Broadway", "Tornado", "AT-400", "DFT-30",
     "Huntley", "Stafford", "BF-400", "News Van", "Tug", "Trailer", "Emperor", "Wayfarer", "Euros", "Hotdog", "Club",
     "Freight Box", "Trailer", "Andromada", "Dodo", "RC Cam", "Launch", "LSPD Cruiser", "SFPD Cruiser", "LVPD Cruiser",
-    "Police Rancher", "Picador", "S.W.A.T. Tank", "Alpha", "Phoenix", "Glendale", "Sadler", "Luggage", "Luggage", "Stairs",
+    "Police Rancher", "Picador", "S.W.A.T", "Alpha", "Phoenix", "Glendale", "Sadler", "Luggage", "Luggage", "Stairs",
     "Boxville", "Tiller", "Utility Trailer"
 };
 
@@ -536,6 +536,92 @@ CMD:vehicle(playerid, params[])
 		mysql_format(dbCon, threadLoad, sizeof(threadLoad), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][slotid]);
 		mysql_tquery(dbCon, threadLoad, "Query_LoadPrivateVehicle", "i", playerid);
 	}
+	else if(!strcmp(oneString, "list"))
+	{
+		ShowVehicleList(playerid);
+	}
+	return 1;
+}
+
+stock ShowVehicleList(playerid)
+{
+	new thread[128];
+
+	SendClientMessageEx(playerid, COLOR_DARKGREEN, "_________________Your vehicles(%i)_________________", CountPlayerVehicles(playerid));
+
+	for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+	{
+		if(PlayerInfo[playerid][pOwnedVehicles][i])
+		{
+			mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][i]);
+			mysql_tquery(dbCon, thread, "Query_ShowVehicleList", "ii", playerid, i);
+		}
+	}
+
+	return 1;
+}
+
+stock CountPlayerVehicles(playerid)
+{
+	new
+		count = 0
+	;
+	
+	for(new i = 1; i < 6; i++)
+	{
+		if(PlayerInfo[playerid][pOwnedVehicles][i])
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
+forward Query_ShowVehicleList(playerid, idx);
+public Query_ShowVehicleList(playerid, idx)
+{
+	new rows; cache_get_row_count(rows);
+
+	new
+		vehicleDBID,
+		vehicleModel,
+		vehicleLockLevel,
+		vehicleAlarmLevel,
+		vehicleImmobLevel,
+		vehicleTimesDestroyed,
+		vehiclePlates[32],
+		bool:isSpawned = false,
+		color
+	;
+
+	for(new i = 0; i < rows; i++)
+	{
+		cache_get_value_name_int(0,"VehicleDBID",vehicleDBID);
+		cache_get_value_name_int(0,"VehicleModel",vehicleModel);
+
+		cache_get_value_name_int(0,"VehicleLockLevel",vehicleLockLevel);
+		cache_get_value_name_int(0,"VehicleAlarmLevel",vehicleAlarmLevel);
+		cache_get_value_name_int(0,"VehicleImmobLevel",vehicleImmobLevel);
+
+		cache_get_value_name_int(0,"vehicleTimesDestroyed",vehicleTimesDestroyed);
+
+		cache_get_value_name(0,"VehiclePlates",vehiclePlates,32);
+	}
+
+	for(new id = 0; id < MAX_VEHICLES; id++)
+	{
+		if(VehicleInfo[id][eVehicleDBID] == vehicleDBID)
+		{
+			isSpawned = true;
+		}
+	}
+
+	if(isSpawned)
+		color = COLOR_DARKGREEN;
+
+	else color = COLOR_WHITE;
+
+	SendClientMessageEx(playerid, color, "Vehicle %i: %s, Lock[%i], Alarm[%i], Immobiliser[%i], Times destroyed[%i], Plates[%s]", idx, ReturnVehicleModelName(vehicleModel), vehicleLockLevel, vehicleAlarmLevel, vehicleImmobLevel, vehicleTimesDestroyed, vehiclePlates);
 	return 1;
 }
 
@@ -740,7 +826,7 @@ public Query_LoadPrivateVehicle(playerid)
 	}
 	
 	PlayerInfo[playerid][pVehicleSpawned] = true;
-	PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid; 
+	PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
 	
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "%s รถได้ออกมาแล้ว", ReturnVehicleName(vehicleid));
 	SendClientMessageEx(playerid, COLOR_WHITE, "Lifespan: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%d]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);

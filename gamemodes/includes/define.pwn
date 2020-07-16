@@ -13,7 +13,7 @@
 #define	SPAWN_AT_HOUSE				1
 #define	SPAWN_AT_FACTION			2
 
-#define MAX_PLAYER_VEHICLES			(6)
+#define MAX_PLAYER_VEHICLES			(7)
 
 #define SendUsageMessage(%0,%1) \
 	SendClientMessageEx(%0, COLOR_WHITE, "USAGE: "%1) 

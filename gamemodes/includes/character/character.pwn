@@ -253,7 +253,7 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pAdmin],
 			PlayerInfo[playerid][pTutorial],
 			PlayerInfo[playerid][pFaction],
-			PlayerInfo[playerid][pCash],
+			GetPlayerMoney(playerid),
 			PlayerInfo[playerid][pLevel],
 			PlayerInfo[playerid][pSpawnPoint],
 			PlayerInfo[playerid][pSpawnHouse],
@@ -286,13 +286,28 @@ CharacterSave(playerid, force = false)
 			
 			printf("[%d] %s: save last data", playerid, ReturnPlayerName(playerid));
 		}
-		mysql_int(query, "pTimeout", PlayerInfo[playerid][pTimeout]);
-		
-		mysql_int(query, "pJob", PlayerInfo[playerid][pJob]);
-		mysql_int(query, "pSideJob", PlayerInfo[playerid][pSideJob]);
-		mysql_int(query, "pCareer", PlayerInfo[playerid][pCareer]);
-		mysql_int(query, "pPaycheck", PlayerInfo[playerid][pPaycheck]);
-		mysql_int(query, "pFishes", PlayerInfo[playerid][pFishes]);
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pTimeout = %i WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pTimeout],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pBank = %i WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pBank],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pFactionRank = %i WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pFactionRank],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pHasRadio = %i, pMainSlot = %i WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pFactionRank],
+			PlayerInfo[playerid][pMainSlot],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 
 		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pJob = %i, pSideJob = %i, pCareer = %i, pPaycheck = %i, pFishes = %i WHERE char_dbid = %i",	
 			PlayerInfo[playerid][pJob],
@@ -337,6 +352,15 @@ CharacterSave(playerid, force = false)
 			mysql_tquery(dbCon, query);
 		}
 
+		for(new i = 1; i < 3; i++)
+		{
+			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pRadio%i = %i WHERE char_dbid = %i", 
+				i, 
+				PlayerInfo[playerid][pRadio][i],
+				PlayerInfo[playerid][pDBID]);
+			mysql_tquery(dbCon, query);
+		}
+
 		mysql_finish(query);
 	}
 	return 1;
@@ -349,7 +373,9 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pLastSkin", PlayerInfo[playerid][pLastSkin]);
 	cache_get_value_name_bool(0, "pTutorial", PlayerInfo[playerid][pTutorial]);
 	cache_get_value_name_int(0, "pFaction", PlayerInfo[playerid][pFaction]);
+	cache_get_value_name_int(0, "pFactionRank", PlayerInfo[playerid][pFactionRank]);
 	cache_get_value_name_int(0, "pCash", PlayerInfo[playerid][pCash]);
+	cache_get_value_name_int(0, "pBank", PlayerInfo[playerid][pBank]);
 	cache_get_value_name_int(0, "pAdmin", PlayerInfo[playerid][pAdmin]);
 	cache_get_value_name_int(0, "pLevel", PlayerInfo[playerid][pLevel]);
 
@@ -404,6 +430,17 @@ public Query_LoadCharacter(playerid)
 		format(str, sizeof(str), "pOwnedVehicles%d", i);
 		cache_get_value_name_int(0, str,PlayerInfo[playerid][pOwnedVehicles][i]);
 	}
+
+	for(new i = 1; i < 3; i++)
+	{
+		format(str, sizeof(str), "pRadio%i", i);
+		cache_get_value_name_int(0, str,PlayerInfo[playerid][pRadio][i]);
+	}
+
+
+	cache_get_value_name_int(0, "pHasRadio",PlayerInfo[playerid][pHasRadio]);
+	cache_get_value_name_int(0, "pMainSlot", PlayerInfo[playerid][pMainSlot]);
+
 	return LoadCharacter(playerid);
 }
 

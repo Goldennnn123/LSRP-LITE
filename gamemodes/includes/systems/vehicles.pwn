@@ -873,7 +873,7 @@ public Query_LoadPrivateVehicle(playerid)
 	
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้นำรถ %s ออกมาแล้ว", ReturnVehicleName(vehicleid));
 	SendClientMessageEx(playerid, COLOR_WHITE, "Lifespan: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%d]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
-	if(VehicleInfo[vehicleid][eVehicleImpounded]) SendClientMessage(playerid, COLOR_RED, "Your vehicle is impounded.");
+	if(VehicleInfo[vehicleid][eVehicleImpounded]) SendClientMessage(playerid, COLOR_RED, "รถของคุณถูกยึด");
 	
 	SendClientMessage(playerid, 0xFF00FFFF, "Hint: ไปตามจุดที่เราได้มาร์กไว้เพื่อไปที่รถ");
 	SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], 3.0);

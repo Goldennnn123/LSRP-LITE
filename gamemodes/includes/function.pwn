@@ -18,6 +18,18 @@ stock GivePlayerExp(playerid, amount = 1) {
 	#endif
 }
 
+
+stock IsPlayerLogin(playerid)
+{
+	if(BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
+		return 0;
+
+	if(!BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
+		return 1;
+
+	return 1;
+}
+
 /**
  *  จัดรูปแบบตัวเลขให้เป็นในรูปของเงิน `,`
  * @param {number} เลขจำนวนเต็ม

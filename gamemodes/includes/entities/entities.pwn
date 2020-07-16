@@ -8,7 +8,9 @@ enum E_PLAYER_DATA
     pLevel,
     pExp,
     pCash,
+	pBank,
     pFaction,
+	pFactionRank,
     pTimeout,
     pSpawnPoint,
     pSpawnHouse,
@@ -69,6 +71,10 @@ enum E_PLAYER_DATA
     pOwnedVehicles[7],
 	bool:pVehicleSpawned,
 	pVehicleSpawnedID,
+
+	bool:pHasRadio,
+	pRadio[3],
+	pMainSlot
 
 };
 

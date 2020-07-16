@@ -134,7 +134,9 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pPaycheck] = 0;
     PlayerInfo[playerid][pFishes] = 0;
     PlayerInfo[playerid][pCash] = 0;
+    PlayerInfo[playerid][pBank] = 0;
     PlayerInfo[playerid][pFaction] = 0;
+    PlayerInfo[playerid][pFactionRank] = 0;
     PlayerInfo[playerid][pLevel] = 0;
     PlayerInfo[playerid][pExp] = 0;
     PlayerInfo[playerid][pLastSkin] = 264;
@@ -182,6 +184,13 @@ public OnPlayerConnect(playerid) {
 
     for(new i = 1; i < MAX_PLAYER_VEHICLES; i++) {
 		PlayerInfo[playerid][pOwnedVehicles][i] = 0; 
+	}
+
+    PlayerInfo[playerid][pHasRadio] = false;
+	PlayerInfo[playerid][pMainSlot] = 1; 
+	
+	for(new i = 1; i < 3; i++){
+		PlayerInfo[playerid][pRadio][i] = 0;
 	}
 
 	// vehicles.pwn

@@ -1288,6 +1288,314 @@ CMD:pcar(playerid, params[])
 	
 	return 1;
 }
+CMD:setstats(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 3)
+		return SendUnauthMessage(playerid);
+	
+	new 
+		playerb, 
+		statid, 
+		value,
+		str[128]
+	;
+	
+	if(sscanf(params, "uiI(-1)", playerb, statid, value))
+	{
+		SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] [stat code] [value]"); 
+		SendClientMessage(playerid, COLOR_WHITE, "1. Faction Rank, 2. Mask, 3. Radio, 4. Bank Money, 5. Level,");
+		SendClientMessage(playerid, COLOR_WHITE, "6. EXP, 7. Paycheck");
+		return 1;
+	}
+
+
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+		
+	if(IsPlayerLogin(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+
+	switch(statid)
+	{
+		case 1: 
+		{
+			if(value == -1)
+				return SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] 1 [value required]"); 
+		
+			if(value < 1 && value != -1 || value > 20)
+				return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งมีเพียงแต่ (1-20)");
+				
+			PlayerInfo[playerb][pFactionRank] = value;
+			CharacterSave(playerb); 
+			
+			format(str, sizeof(str), "%s ตั้งค่า %s ให้ดำรงยศ/ต่ำแหน่งไอดี  %i", ReturnName(playerid), ReturnName(playerb), value); 
+			SendAdminMessage(3, str); 
+		}
+		case 2:
+		{
+			if(!PlayerInfo[playerb][pHasMask])
+				PlayerInfo[playerb][pHasMask] = true;
+				
+			else PlayerInfo[playerb][pHasMask] = false;
+			
+			format(str, sizeof(str), "%s %s %s's Mask.", ReturnName(playerid), (PlayerInfo[playerb][pHasMask] != true) ? ("took") : ("set"), ReturnName(playerb));
+			SendAdminMessage(3, str); 
+		}
+		case 3:
+		{
+			if(!PlayerInfo[playerb][pHasRadio])
+				PlayerInfo[playerb][pHasRadio] = true;
+				
+			else PlayerInfo[playerb][pHasRadio] = false;
+			
+			format(str, sizeof(str), "%s %s %s's Radio.", ReturnName(playerid), (PlayerInfo[playerb][pHasRadio] != true) ? ("took") : ("set"), ReturnName(playerb));
+			SendAdminMessage(3, str);
+		}
+		case 4:
+		{
+			if(value == -1)
+				return SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] 4 [value required]"); 
+		
+			format(str, sizeof(str), "%s ตั้งค่า %s ให้มีเงินในธนาคาร: $%s (จากเดิม $%s)", ReturnName(playerid), ReturnName(playerb), MoneyFormat(value), MoneyFormat(PlayerInfo[playerb][pBank])); 
+			SendAdminMessage(3, str);
+			
+			PlayerInfo[playerb][pBank] = value;
+			CharacterSave(playerb);
+		}
+		case 5:
+		{
+			if(value == -1)
+				return SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] 5 [value required]"); 
+		
+			if(value < 1 && value != -1)
+				return SendErrorMessage(playerid, "เลเวลควรตั้งให้เหมาะสมกับในเกมส์ปกติ");
+
+			format(str, sizeof(str), "%s ตั้งค่า %s ให้เลเวลเป็น: %i (จากเดิม %i)", ReturnName(playerid), ReturnName(playerb), value, PlayerInfo[playerb][pLevel]);
+			SendAdminMessage(3, str); 
+			
+			PlayerInfo[playerb][pLevel] = value; SetPlayerScore(playerb, value);
+			CharacterSave(playerb);
+		}
+		case 6:
+		{
+			if(value == -1)
+				return SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] 6 [value required]"); 
+		
+			format(str, sizeof(str), "%s ตั้งค่า %s ให้ค่าประสบการณ์เป็น: %i (จากเดิม %i)", ReturnName(playerid), ReturnName(playerb), value, PlayerInfo[playerb][pExp]);
+			SendAdminMessage(3, str);
+			
+			PlayerInfo[playerb][pExp] = value;
+			CharacterSave(playerb);
+		}
+		case 7:
+		{
+			if(value == -1)
+				return SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] 7 [value required]");
+				
+			format(str, sizeof(str), "%s ตั้งค่า %s's ให่ค่าจ้างรายชั่วโมง: %i (จากเดิม %i)", ReturnName(playerid), ReturnName(playerb), value, PlayerInfo[playerb][pPaycheck]);
+			SendAdminMessage(3, str);
+			
+			PlayerInfo[playerb][pPaycheck] = value; 
+			CharacterSave(playerb);
+		}
+	}
+	return 1;
+}
+
+CMD:givemoney(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 3)
+		return SendUnauthMessage(playerid);
+		
+	new playerb, value, str[128];
+	
+	if(sscanf(params, "ui", playerb, value))
+		return SendUsageMessage(playerid, "/givemoney [ชื่อบางส่วน/ไอดี] [จำนวน]");
+		
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+		
+	if(IsPlayerLogin(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+		
+	GiveMoney(playerb, value);
+	SendServerMessage(playerb, "คุณได้รับเงินจำนวน $%s จาก ผู้ดูแลระบบ %s", MoneyFormat(value), ReturnName(playerid));
+
+	format(str, sizeof(str), "%s เสกเงินจำนวน $%s ให้กับ %s", ReturnName(playerid), MoneyFormat(value), ReturnName(playerb));
+	SendAdminMessage(3, str);
+	return 1;
+}
+
+CMD:setcar(playerid, params[])
+{
+	new	vehicleid, a_str[60], b_str[60];
+	new str[128], value, Float:life; 
+	
+	if(PlayerInfo[playerid][pAdmin] < 3)
+		return SendUnauthMessage(playerid);
+		
+	if(sscanf(params, "is[60]S()[60]", vehicleid, a_str, b_str))
+	{
+		SendUsageMessage(playerid, "/setcar [ไอดีรถ] [params]");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} locklvl, alarmlvl, immoblvl, timesdestroyed,");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} enginelife, batterylife, color1, color2, paintjob, plates."); 
+		return 1;
+	}
+	
+	if(!IsValidVehicle(vehicleid))
+		return SendErrorMessage(playerid, "ไม่มีไอดีรถที่ต้องการ"); 
+		
+	if(VehicleInfo[vehicleid][eVehicleAdminSpawn])
+		return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับรถส่วนบุคคล(รถเสก)ได้");
+		
+	if(!strcmp(a_str, "locklvl"))
+	{
+		if(sscanf(b_str, "i", value))
+			return SendUsageMessage(playerid, "/setcar vehicleid locklvl [1-4]"); 
+			
+		if(value > 4 || value < 1)
+			return SendErrorMessage(playerid, "ค่าต้องไม่ต่ำหรือไม่เกินกว่า:1-4");
+		
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบล็อคเป็น %i.", ReturnName(playerid), vehicleid, value); 
+		SendAdminMessage(3, str); 
+		
+		VehicleInfo[vehicleid][eVehicleLockLevel] = value; 
+		SaveVehicle(vehicleid);
+	}
+	else if(!strcmp(a_str, "alarmlvl"))
+	{
+		if(sscanf(b_str, "i", value))
+			return SendUsageMessage(playerid, "/setcar vehicleid alarmlvl [1-4]"); 
+			
+		if(value > 4 || value < 1)
+			return SendErrorMessage(playerid, "ค่าต้องไม่ต่ำหรือไม่เกินกว่า:1-4");
+		
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ระบบ 'Alarm' เป็นระดับ %i.", ReturnName(playerid), vehicleid, value); 
+		SendAdminMessage(3, str); 
+		
+		VehicleInfo[vehicleid][eVehicleAlarmLevel] = value; 
+		SaveVehicle(vehicleid);
+	}
+	else if(!strcmp(a_str, "immoblvl"))
+	{
+		if(sscanf(b_str, "i", value))
+			return SendUsageMessage(playerid, "/setcar vehicleid immoblvl [1-5]"); 
+			
+		if(value > 5 || value < 1)
+			return SendErrorMessage(playerid, "ค่าต้องไม่ต่ำหรือไม่เกินกว่า:1-5");
+		
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบ 'immobiliser' ไปในระดับ %i.", ReturnName(playerid), vehicleid, value); 
+		SendAdminMessage(3, str); 
+		
+		VehicleInfo[vehicleid][eVehicleImmobLevel] = value; 
+		SaveVehicle(vehicleid);
+	}
+	else if(!strcmp(a_str, "timesdestroyed"))
+	{
+		if(sscanf(b_str, "i", value))
+			return SendUsageMessage(playerid, "/setcar vehicleid timesdestroyed [value]");
+			
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบ 'time destroyed' ไปยังระดับ %i (จากเดิม %i)", ReturnName(playerid), vehicleid, value, VehicleInfo[vehicleid][eVehicleTimesDestroyed]); 
+		SendAdminMessage(3, str); 
+		
+		VehicleInfo[vehicleid][eVehicleTimesDestroyed] = value; 
+		SaveVehicle(vehicleid);
+	}
+	else if(!strcmp(a_str, "enginelife"))
+	{
+		if(sscanf(b_str, "f", life))
+			return SendUsageMessage(playerid, "/setcar vehicleid enginelife [float]");
+			
+		if(life > 100.00 || life < 0.00)
+			return SendErrorMessage(playerid, "ค่าต้องไม่ต่ำหรือไม่เกินกว่า (0.00 - 100.00)");
+			
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบ 'engine life' ไปยังระดับ %.2f. (จากเดิม %.2f)", ReturnName(playerid), vehicleid, life, VehicleInfo[vehicleid][eVehicleEngine]);
+		SendAdminMessage(3, str); 
+		
+		VehicleInfo[vehicleid][eVehicleEngine] = life;
+		SaveVehicle(vehicleid);
+	}
+	else if(!strcmp(a_str, "batterylife"))
+	{
+		if(sscanf(b_str, "f", life))
+			return SendUsageMessage(playerid, "/setcar vehicleid batterylife [float]");
+			
+		if(life > 100.00 || life < 0.00)
+			return SendErrorMessage(playerid, "ค่าต้องไม่ต่ำหรือไม่เกินกว่า (0.00 - 100.00)");
+			
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบ 'battery life' ไปยังระดับ %.2f. (จากเดิม %.2f)", ReturnName(playerid), vehicleid, life, VehicleInfo[vehicleid][eVehicleBattery]);
+		SendAdminMessage(3, str); 
+		
+		VehicleInfo[vehicleid][eVehicleBattery] = life;
+		SaveVehicle(vehicleid);
+	}
+	else if(!strcmp(a_str, "color1"))
+	{
+		if(sscanf(b_str, "i", value))
+			return SendUsageMessage(playerid, "/setcar vehicleid color1 [value]");
+			
+		if(value > 255 || value < 0)
+			return SendErrorMessage(playerid, "ค่าต้องไม่ต่ำหรือไม่เกินกว่า (0-255)");
+			
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบ 'color1' ไปยังระดับ %i (จากเดิม %i)", ReturnName(playerid), vehicleid, value, VehicleInfo[vehicleid][eVehicleColor1]);
+		SendAdminMessage(3, str);
+		
+		SendClientMessage(playerid, COLOR_WHITE, "โปรดนำรถเข้าไปเก็บแล้วเรียกออกมาใหม่");
+		
+		VehicleInfo[vehicleid][eVehicleColor1] = value;
+		SaveVehicle(vehicleid);
+	}
+	else if(!strcmp(a_str, "color2"))
+	{
+		if(sscanf(b_str, "i", value))
+			return SendUsageMessage(playerid, "/setcar vehicleid color2 [value]");
+			
+		if(value > 255 || value < 0)
+			return SendErrorMessage(playerid, "ค่าต้องไม่ต่ำหรือไม่เกินกว่า (0-255)");
+			
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบ 'color2' ไปยังระดับ %i (จากเดิม %i)", ReturnName(playerid), vehicleid, value, VehicleInfo[vehicleid][eVehicleColor2]);
+		SendAdminMessage(3, str);
+		
+		SendClientMessage(playerid, COLOR_WHITE, "โปรดนำรถเข้าไปเก็บแล้วเรียกออกมาใหม่");
+		
+		VehicleInfo[vehicleid][eVehicleColor2] = value;
+		SaveVehicle(vehicleid);
+	}
+	else if(!strcmp(a_str, "paintjob"))
+	{
+		if(sscanf(b_str, "i", value))
+			return SendUsageMessage(playerid, "/setcar vehicleid paintjob [0-2, 3 to remove]");
+			
+		if(value > 255 || value < 0)
+			return SendErrorMessage(playerid, "ค่าต้องไม่ต่ำหรือไม่เกินกว่า (0-255)");
+			
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบ 'paintjob' ไปยังระดับ %i. (จากเดิม %i)", ReturnName(playerid), vehicleid, value, VehicleInfo[vehicleid][eVehiclePaintjob]);
+		SendAdminMessage(3, str);
+		
+		SendClientMessage(playerid, COLOR_WHITE, "โปรดนำรถเข้าไปเก็บแล้วเรียกออกมาใหม่");
+		
+		VehicleInfo[vehicleid][eVehiclePaintjob] = value;
+		SaveVehicle(vehicleid);
+	}
+	else if(!strcmp(a_str, "plates"))
+	{
+		new
+			plates[32]; 
+			
+		if(sscanf(b_str, "s[32]", plates))
+			return SendUsageMessage(playerid, "/setcar vehicleid plates [plates]"); 
+			
+		if(strlen(plates) > 6 || strlen(plates) < 6)
+			return SendErrorMessage(playerid, "ป้ายทะเบียนต้องมีมากกว่า 6 ตัวอักษร (นี่คือตัวอย่างป้ายทะเบียนของ ประเทศ แคริสฟอเนีย: Q123Q1)");
+			
+		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบ 'plates' ไปยังระดับ \"%s\". (จากเดิม %s)", ReturnName(playerid), vehicleid, plates, VehicleInfo[vehicleid][eVehiclePlates]);
+		SendAdminMessage(3, str);
+		
+		format(VehicleInfo[vehicleid][eVehiclePlates], 32, "%s", plates); 
+		SaveVehicle(vehicleid);
+	}
+	return 1;
+}
 // Admin Level: 3;
 
 // Admin Level: 4:

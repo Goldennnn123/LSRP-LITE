@@ -41,6 +41,14 @@ stock SaveVehicle(vehicleid)
 		VehicleInfo[vehicleid][eVehicleImpoundPos][3],
 		VehicleInfo[vehicleid][eVehicleDBID]);
 	mysql_tquery(dbCon, query);
+
+
+	mysql_format(dbCon, query, sizeof(query), "UPDATE vehicles SET VehicleLockLevel = %i, VehicleAlarmLevel = %i, VehicleImmobLevel = %i WHERE VehicleDBID = %i",
+		VehicleInfo[vehicleid][eVehicleLockLevel],
+		VehicleInfo[vehicleid][eVehicleAlarmLevel],
+		VehicleInfo[vehicleid][eVehicleImmobLevel],
+		VehicleInfo[vehicleid][eVehicleDBID]);
+	mysql_tquery(dbCon, query);
 	
 	for(new i = 1; i < 6; i++)
 	{

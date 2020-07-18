@@ -1,6 +1,6 @@
 stock SaveVehicle(vehicleid)
 {
-	new query[256];
+	new query[MAX_STRING];
 	
 	mysql_format(dbCon, query, sizeof(query), "UPDATE vehicles SET VehicleOwnerDBID = %i, VehicleFaction = %i, VehicleColor1 = %i, VehicleColor2 = %i, VehiclePaintjob = %i, VehiclePlates = '%e', VehicleLocked = %i, VehicleSirens = %i, VehicleFuel = %i WHERE VehicleDBID = %i",
 		VehicleInfo[vehicleid][eVehicleOwnerDBID], 

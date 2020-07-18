@@ -61,6 +61,7 @@ new
 
 #include "includes/mysql/SaveVehicle.pwn"
 #include "includes/mysql/Savefaction.pwn"
+#include "includes/mysql/SaveHouse.pwn"
 
 #include "includes/registration/login.pwn"
 #include "includes/character/character.pwn"

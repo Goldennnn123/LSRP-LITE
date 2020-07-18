@@ -5,6 +5,7 @@ new PlayerCreHouse[MAX_PLAYERS][90],
     PlayerCreHousePrice[MAX_PLAYERS],
     PlayerCreHouseLevel[MAX_PLAYERS];
 
+new PlayerSelectHouse[MAX_PLAYERS];
 hook OnPlayerConnect(playerid)
 {
     PlayerCreHouse[playerid] = "";
@@ -126,4 +127,210 @@ Dialog:DIALOG_CRE_HOUSE(playerid, response, listitem, inputtext[])
 		SendAdminMessage(2, str);
     }
     return 1;
+}
+
+
+stock ShowSelectHouse(playerid)
+{
+    new str[MAX_STRING];
+
+    new id = PlayerSelectHouse[playerid];
+
+    new HouseNames[96];
+
+    format(HouseNames, sizeof(HouseNames), "HOUSE: %s",HouseInfo[id][HouseName]);
+
+    format(str, sizeof(str), "ไอดีบ้าน: %i\n\
+                              ชื่อบ้าน:  %s\n\
+                              ราคา:    %s\n\
+                              เลเวล:   %i\n\
+                              จุดหน้าบ้าน\n\
+                              จุดภายใน\n",HouseInfo[id][HouseDBID],HouseInfo[id][HouseName],MoneyFormat(HouseInfo[id][HousePrice]),HouseInfo[id][HouseLevel]);
+
+    Dialog_Show(playerid, DIALOG_SELETE_HOUSE, DIALOG_STYLE_LIST, HouseNames, str, "ยินยัน", "ยกเลิก",HouseInfo[id][HouseName]);
+
+    return 1;
+}
+
+Dialog:DIALOG_VIEWHOUSE(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return SendClientMessage(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} ยกเลิกการสร้างบ้าน");
+    
+    new str_h[MAX_STRING], str[MAX_STRING];
+    format(str_h, sizeof(str_h), "%d",listitem);
+
+    new id = GetPVarInt(playerid, str_h);
+    PlayerSelectHouse[playerid] = id;
+
+
+    if(!HouseInfo[id][HouseDBID] || id > MAX_HOUSE)
+        return 1;
+
+    new HouseNames[96];
+    format(HouseNames, sizeof(HouseNames), "HOUSE: %s",HouseInfo[id][HouseName]);
+
+    format(str, sizeof(str), "ไอดีบ้าน: %i\n\
+                              ชื่อบ้าน:  %s\n\
+                              ราคา:    %s\n\
+                              เลเวล:   %i\n\
+                              จุดหน้าบ้าน\n\
+                              จุดภายใน\n",HouseInfo[id][HouseDBID],HouseInfo[id][HouseName],MoneyFormat(HouseInfo[id][HousePrice]),HouseInfo[id][HouseLevel]);
+
+    Dialog_Show(playerid, DIALOG_SELETE_HOUSE, DIALOG_STYLE_LIST, HouseNames, str, "ยินยัน", "ยกเลิก",HouseInfo[id][HouseName]);
+    return 1;
+}
+
+Dialog:DIALOG_SELETE_HOUSE(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+    else
+    {
+        switch(listitem)
+        {
+            case 0: return ShowSelectHouse(playerid);
+            case 1:
+            {
+                return Dialog_Show(playerid, DIALOG_HOUSE_NAME, DIALOG_STYLE_INPUT, "ใส่ชื่อใหม่ของบ้าน", "เปลี่ยนชื่อบ้านหลังนี้:", "ยืนยัน", "ยกเลิก");
+            }
+            case 2:
+            {
+                return Dialog_Show(playerid, DIALOG_HOUSE_PRICE, DIALOG_STYLE_INPUT, "ใส่ราคาใหม่ของบ้าน", "เเปลี่ยนราคาของบ้านหลังนี้:", "ยืนยัน", "ยกเลิก");
+            }
+            case 3:
+            {
+                return Dialog_Show(playerid, DIALOG_HOUSE_LEVEL, DIALOG_STYLE_INPUT, "ใส่เลเวลใหม่ของบ้าน", "เเปลี่ยนเลเวลของบ้านหลังนี้:", "ยืนยัน", "ยกเลิก");
+            }
+            case 4:
+            {
+                new id = PlayerSelectHouse[playerid],Float:X,Float:Y,Float:Z;
+                GetPlayerPos(playerid,X,Y,Z);
+
+                HouseInfo[id][HouseEntrance][0] = X;
+                HouseInfo[id][HouseEntrance][1] = Y;
+                HouseInfo[id][HouseEntrance][2] = Z;
+                HouseInfo[id][HouseEntranceWorld] = GetPlayerVirtualWorld(playerid);
+                HouseInfo[id][HouseEntranceInterior] = GetPlayerInterior(playerid);
+
+                Savehouse(id);
+
+
+                if(IsValidDynamicPickup(HouseInfo[id][HousePickup]))
+                    DestroyDynamicPickup(HouseInfo[id][HousePickup]);
+        
+                if(HouseInfo[id][HouseOwnerDBID])
+                {
+                    HouseInfo[id][HousePickup] = CreateDynamicPickup(1272, 23, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2],-1,-1);
+                }
+                else
+                {
+                    HouseInfo[id][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2],-1,-1);
+                }
+            }
+            case 5:
+            {
+                new id = PlayerSelectHouse[playerid],Float:X,Float:Y,Float:Z;
+                GetPlayerPos(playerid,X,Y,Z);
+
+                HouseInfo[id][HouseInterior][0] = X;
+                HouseInfo[id][HouseInterior][1] = Y;
+                HouseInfo[id][HouseInterior][2] = Z;
+                
+                HouseInfo[id][HouseInteriorID] = GetPlayerInterior(playerid);
+
+                if(GetPlayerVirtualWorld(playerid) != 0)
+                {
+                    HouseInfo[id][HouseInteriorWorld] = GetPlayerVirtualWorld(playerid);
+                }
+                else
+                {
+                    HouseInfo[id][HouseInteriorWorld] = random(9000);
+                }
+                Savehouse(id);
+            }
+        }
+    }
+    return ShowSelectHouse(playerid);
+}
+
+Dialog:DIALOG_HOUSE_NAME(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return ShowSelectHouse(playerid);
+    
+    else
+    {
+        if(strlen(inputtext) > 90 || strlen(inputtext) < 3)
+        {   
+            SendClientMessage(playerid,COLOR_RED,"ใส่ชื่อไม่ถูกต้อง");
+            return ShowSelectHouse(playerid);
+        }
+
+        
+        new id = PlayerSelectHouse[playerid];
+
+        format(HouseInfo[id][HouseName], 90, "%s", inputtext);
+        Savehouse(id);
+    }
+    return ShowSelectHouse(playerid);
+}
+
+Dialog:DIALOG_HOUSE_PRICE(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+    
+    else
+    {
+        if(strlen(inputtext) > 90000000 || strlen(inputtext) < 1)
+        {   
+            SendClientMessage(playerid,COLOR_RED,"ใส่เลขไม่ถูกต้อง");
+            return ShowSelectHouse(playerid);
+        }
+
+        new price = strval(inputtext);
+
+        if(price < 1 || price > 90000000)
+        {   
+            SendClientMessage(playerid,COLOR_RED,"ใส่เลขไม่ถูกต้อง");
+            return ShowSelectHouse(playerid);
+        }
+
+        new id = PlayerSelectHouse[playerid];
+
+        HouseInfo[id][HousePrice] = price;
+        Savehouse(id);
+    }
+    return ShowSelectHouse(playerid);
+}
+
+Dialog:DIALOG_HOUSE_LEVEL(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+    
+    else
+    {
+        if(strlen(inputtext) > 90000000 || strlen(inputtext) < 1)
+        {   
+            SendClientMessage(playerid,COLOR_RED,"ใส่เลขไม่ถูกต้อง");
+            return ShowSelectHouse(playerid);
+        }
+
+        new Level = strval(inputtext);
+
+        if(Level < 1 || Level > 90000000)
+        {   
+            SendClientMessage(playerid,COLOR_RED,"ใส่เลขไม่ถูกต้อง");
+            return ShowSelectHouse(playerid);
+        }
+
+        new id = PlayerSelectHouse[playerid];
+
+        HouseInfo[id][HouseLevel] = Level;
+        Savehouse(id);
+    }
+    return ShowSelectHouse(playerid);
 }

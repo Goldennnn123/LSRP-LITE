@@ -1621,6 +1621,50 @@ CMD:factions(playerid, params[])
 // Admin Level: 4;
 
 // Admin Level: 5:
+CMD:makeleader(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+	new playerb, factionid, str[MAX_STRING];
+	
+	if(sscanf(params, "ud", playerb, factionid))
+		return SendUsageMessage(playerid, "/setpfaction [ชื่อบางส่วน/ไอดี] [faction id]");
+		
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+		
+	if(IsPlayerLogin(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+	if(!FactionInfo[factionid][eFactionDBID]) return SendErrorMessage(playerid, "ไม่มีเฟคชั่นที่คุณระบุ");
+
+	if(PlayerInfo[playerb][pFaction] != 0)
+	{
+		PlayerMakeleader[playerb] = playerid;
+		PLayerMakeleaderFacID[playerb] = factionid;
+		Dialog_Show(playerb, DIALOG_COM_FAC_INV, DIALOG_STYLE_MSGBOX, "คุณแน่ใจ?", "คุณมีเฟคชั่นอยู่แล้ว คุณมั่นใช่หรือไม่ที่จะเปลี่ยนเฟคชั่นไปเป็น %s", "ยินยัน", "ยกเลิก",FactionInfo[factionid][eFactionName]);
+		return 1;
+	}
+
+	PlayerInfo[playerb][pFaction] = factionid;
+	PlayerInfo[playerb][pFactionRank] = 1;
+
+	foreach (new i : Player)
+	{
+		if(PlayerInfo[i][pFaction] != factionid)
+			continue;
+		
+		SendClientMessageEx(i, -1, "{2ECC71}**((%s: ได้เข้าสู่เฟคชั่นของพวกคุณแล้ว))**", ReturnName(playerid));
+	}
+	SendClientMessageEx(playerid, -1,"{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} คุณได้ให้ให้ %s เป็นหัวหน้าเฟคชั่น ของ %s",ReturnRealName(playerb,0),FactionInfo[factionid][eFactionName]);
+
+	format(str, sizeof(str), "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} %s ตั้งค่าให้ %s เป็นหัวหน้ากลุ่มเฟคชั่น %s", ReturnRealName(playerid,0), ReturnRealName(playerb,0), FactionInfo[factionid][eFactionName]);
+	SendAdminMessage(4, str);
+
+	CharacterSave(playerb);
+	return 1;
+}
 // Admin Level: 5;
 
 

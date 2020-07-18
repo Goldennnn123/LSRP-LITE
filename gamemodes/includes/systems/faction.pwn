@@ -594,3 +594,35 @@ Dialog:DIALOG_FACTION_JOB(playerid, response, listitem, inputtext[])
 	return ShowFactionConfig(playerid);
 }
 
+
+new PlayerMakeleader[MAX_PLAYERS], PLayerMakeleaderFacID[MAX_PLAYERS];
+Dialog:DIALOG_COM_FAC_INV(playerid, response, listitem, inputtext[])
+{
+	new factionid = PLayerMakeleaderFacID[playerid], str[MAX_STRING];
+
+	if(!response)
+	{
+		SendClientMessageEx(PlayerMakeleader[playerid], -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF}%s ปฏิเสธการให้เป็นหัวหน้าเฟคชั่น",ReturnRealName(playerid,0));
+		return 1;
+	}
+	else
+	{
+		PlayerInfo[playerid][pFaction] = factionid;
+		PlayerInfo[playerid][pFactionRank] = 1;
+
+		foreach (new i : Player)
+		{
+			if(PlayerInfo[i][pFaction] != factionid)
+				continue;
+			
+			SendClientMessageEx(i, -1, "{2ECC71}**((%s: ได้เข้าสู่เฟคชั่นของพวกคุณแล้ว))**", ReturnRealName(playerid,0));
+		}
+		SendClientMessageEx(PlayerMakeleader[playerid], -1,"{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} คุณได้ให้ให้ %s เป็นหัวหน้าเฟคชั่น ของ %s",ReturnRealName(playerid,0),FactionInfo[factionid][eFactionName]);
+
+		format(str, sizeof(str), "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} %s ตั้งค่าให้ %s เป็นหัวหน้ากลุ่มเฟคชั่น %s", ReturnRealName(PlayerMakeleader[playerid],0), ReturnRealName(playerid,0), FactionInfo[factionid][eFactionName]);
+		SendAdminMessage(4, str);
+
+		CharacterSave(playerid);
+	}
+	return 1;
+}

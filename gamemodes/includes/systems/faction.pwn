@@ -6,6 +6,7 @@
 #define MEDIC (2)
 #define SHERIFF (3)
 #define SADCR (4)
+#define GOV (5)
 
 forward Query_InsertFaction(playerid, varName, varAbbrev, idx);
 public Query_InsertFaction(playerid, varName, varAbbrev, idx)
@@ -305,6 +306,28 @@ Dialog:DIALOG_FACTION_CONFIG(playerid, response, listitem, inputtext[])
 				return ShowFactionConfig(playerid);
 			}
 			case 8: return Dialog_Show(playerid, DIALOG_FACTION_ALTER_T, DIALOG_STYLE_INPUT, "Faction Configuration", "ใส่เลขยศ/ต่ำแหน่ง ที่คุณต้องการให้รียานพาหนะได้:", "ตกลง", "<<");
+			case 9: 
+			{
+				new str[MAX_STRING];
+				format(str, sizeof(str), "{D35400}[{FFEB3B} ! {D35400}]{FF5722} แก๊ง\n\
+										  {D35400}[{FFEB3B} ! {D35400}]{1976D2} รัฐบาล");
+				return Dialog_Show(playerid, DIALOG_FACTION_TYPE, DIALOG_STYLE_LIST, "Faction Configuration", str, "ตกลง", "<<");
+			}
+			case 10: 
+			{
+				if(FactionInfo[PlayerSelectFac[playerid]][eFactionType] != 2)
+				{
+					SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} เฟคชั่น {FFEE58}%s {FFFFFF}ไม่ได้เป็นเฟคชั่นรัฐบาล",FactionInfo[PlayerSelectFac[playerid]][eFactionName]);
+					return ShowFactionConfig(playerid);
+				}
+				new str[MAX_STRING];
+				format(str, sizeof(str), "{D35400}[{FFEB3B} ! {D35400}]{FFFFFF} ตำรวจ\n\
+										  {D35400}[{FFEB3B} ! {D35400}]{FFFFFF} หมอ\n\
+										  {D35400}[{FFEB3B} ! {D35400}]{FFFFFF} นายอำเภอ\n\
+										  {D35400}[{FFEB3B} ! {D35400}]{FFFFFF} กรมราชทัณฑ์\n\
+										  {D35400}[{FFEB3B} ! {D35400}]{FFFFFF} รัฐบาล\n");
+				return Dialog_Show(playerid, DIALOG_FACTION_JOB, DIALOG_STYLE_LIST, "Faction Configuration", str, "ตกลง", "<<");
+			}
         }
     }
     return 1;
@@ -321,7 +344,7 @@ Dialog:DIALOG_FACTION_NAME(playerid, response, listitem, inputtext[])
             return Dialog_Show(playerid, DIALOG_FACTION_NAME, DIALOG_STYLE_INPUT, "Faction Configuration", "ชื่อเฟคชั่นของคุณควรไม่เกิน 90 ตัวอักษร\n\nใส่ชื่อเฟคชั่นของคุณ:", "ตกลง", "<<");
         
         format(FactionInfo[PlayerSelectFac[playerid]][eFactionName], 90, "%s", inputtext);
-        SendServerMessage(playerid, "ชื่อเฟคชั่นของคุณ: \"%s\".", inputtext);
+        SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} ชื่อเฟคชั่นของคุณ: \"%s\".", inputtext);
         SaveFaction(PlayerSelectFac[playerid]);
         ShowFactionConfig(playerid);
         return 1;
@@ -340,7 +363,7 @@ Dialog:DIALOG_FACTION_ABBREV(playerid, response, listitem, inputtext[])
             return Dialog_Show(playerid, DIALOG_FACTION_ABBREV, DIALOG_STYLE_INPUT, "Faction Configuration", "ชื่อย่อเฟคชั่นของคุณควรไม่เกิน 30 ตัวอักษร\n\nใส่ชื่อย่อเฟคชั่นของคุณ:", "ตกลง", "<<"); 
                     
         format(FactionInfo[PlayerSelectFac[playerid]][eFactionAbbrev], 30, "%s", inputtext);
-        SendServerMessage(playerid, "ชื่อย่อเฟคชั่นใหม่ของคุณ: \"%s\".", inputtext);
+        SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} ชื่อย่อเฟคชั่นใหม่ของคุณ: \"%s\".", inputtext);
         SaveFaction(PlayerSelectFac[playerid]);
                 
         return ShowFactionConfig(playerid);
@@ -364,7 +387,7 @@ Dialog:DIALOG_FACTION_ALTER_R(playerid, response, listitem, inputtext[])
 			return Dialog_Show(playerid, DIALOG_FACTION_ALTER_R, DIALOG_STYLE_INPUT, "Faction Configuration", "เลขยศ/ตำแหน่ง ต้องไม่เกิน 1-20\n\nใส่เลขยศ/ต่ำแหน่งที่จะให้สามารถแก้ไขได้", "ตกลง", "<<"); 
 				
 		FactionInfo[PlayerSelectFac[playerid]][eFactionAlterRank] = rankid;
-		SendServerMessage(playerid, "เลขยศ/ต่ำแหน่งที่จะให้สามารถแก้ไขได้: %i.", rankid);
+		SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} เลขยศ/ต่ำแหน่งที่จะให้สามารถแก้ไขได้: %i.", rankid);
 		SaveFaction(PlayerSelectFac[playerid]);
 				
 		return ShowFactionConfig(playerid);
@@ -388,7 +411,7 @@ Dialog:DIALOG_FACTION_ALTER_J(playerid, response, listitem, inputtext[])
 			return Dialog_Show(playerid, DIALOG_FACTION_ALTER_J, DIALOG_STYLE_INPUT, "Faction Configuration", "เลขยศ/ต่ำแหน่งต้องไม่เกิน 1-20.\n\nใส่เลขยศ/ต่ำแหน่งที่จะให้เป็นยนเริ่มต้น:", "ตกลง", "<<"); 
 				
 		FactionInfo[PlayerSelectFac[playerid]][eFactionJoinRank] = rankid;
-		SendServerMessage(playerid, "เลขยศ/ต่ำแหน่งที่จะให้เป็นยนเริ่มต้น: %i.", rankid);
+		SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} เลขยศ/ต่ำแหน่งที่จะให้เป็นยนเริ่มต้น: %i.", rankid);
 		SaveFaction(PlayerSelectFac[playerid]);
 				
 		return ShowFactionConfig(playerid);
@@ -413,7 +436,7 @@ Dialog:DIALOG_FACTION_ALTER_C(playerid, response, listitem, inputtext[])
 			return Dialog_Show(playerid, DIALOG_FACTION_ALTER_C, DIALOG_STYLE_INPUT, "Faction Configuration", "เลขยศ/ต่ำแหน่งต้องไม่เกิน 1-20.\n\nใส่เลขยศ/ต่ำแหน่งที่จให้พิมพ์แชทกลุ่มได้:", "ตกลง", "<<"); 
 			
 		FactionInfo[PlayerSelectFac[playerid]][eFactionChatRank] = rankid;
-		SendServerMessage(playerid, "คุณได้เปลี่ยนให้ตั้งแต่ยศ: %i ขึ้นไปสามารถพิมพ์ระบบแชทกลุ่มได้(/f)", rankid);
+		SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} คุณได้เปลี่ยนให้ตั้งแต่ยศ: %i ขึ้นไปสามารถพิมพ์ระบบแชทกลุ่มได้(/f)", rankid);
 		SaveFaction(PlayerSelectFac[playerid]);
 			
 		return ShowFactionConfig(playerid);
@@ -468,7 +491,7 @@ Dialog:DIALOG_FACTION_RANKEDIT(playerid, response, listitem, inputtext[])
 			return Dialog_Show(playerid, DIALOG_FACTION_RANKEDIT, DIALOG_STYLE_INPUT, "Faction Configuration", str, "ตกลง", "<<"); 
 		}
 			
-		SendServerMessage(playerid, "คุณได้แก้ไขชือยศ %i (%s) เป็น: \"%s\". ", playerEditingRank[playerid], FactionRanks[PlayerSelectFac[playerid]][playerEditingRank[playerid]], inputtext);
+		SendServerMessage(playerid, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} คุณได้แก้ไขชือยศ %i (%s) เป็น: \"%s\". ", playerEditingRank[playerid], FactionRanks[PlayerSelectFac[playerid]][playerEditingRank[playerid]], inputtext);
 		format(FactionRanks[PlayerSelectFac[playerid]][playerEditingRank[playerid]], 60, "%s", inputtext);
 		
 		SaveFactionRanks(PlayerSelectFac[playerid]);
@@ -494,9 +517,80 @@ Dialog:DIALOG_FACTION_ALTER_T(playerid, response, listitem, inputtext[])
 
 		FactionInfo[PlayerSelectFac[playerid]][eFactionTowRank] = rankid;
 		SaveFaction(PlayerSelectFac[playerid]);
-		SendServerMessage(playerid, "เลขยศ/ต่ำแหน่งที่จะสามารถ รียานพาหนะได้: %i.", rankid);
+		SendServerMessage(playerid, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} เลขยศ/ต่ำแหน่งที่จะสามารถ รียานพาหนะได้: %i.", rankid);
 		return ShowFactionConfig(playerid);
 	}
 	return 1;
+}
+
+Dialog:DIALOG_FACTION_TYPE(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		return ShowFactionConfig(playerid);
+	
+	if(response)
+	{
+		switch(listitem)
+		{
+			case 0:
+			{
+				FactionInfo[PlayerSelectFac[playerid]][eFactionType] = 1;
+				FactionInfo[PlayerSelectFac[playerid]][eFactionJob] = 0;
+				SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF}คุณได้เปลี่ยนประเภทเฟคชั่น ของ {FFEB3B}%s {FFFFFF}เป็น 'แก๊ง' แล้วตอนนี้", FactionInfo[PlayerSelectFac[playerid]][eFactionName]);
+				SaveFaction(PlayerSelectFac[playerid]);
+			}
+			case 1:
+			{
+				FactionInfo[PlayerSelectFac[playerid]][eFactionType] = 2;
+				SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF}คุณได้เปลี่ยนประเภทเฟคชั่น ของ {FFEB3B}%s {FFFFFF}เป็น 'รัฐบาล' แล้วตอนนี้", FactionInfo[PlayerSelectFac[playerid]][eFactionName]);
+				SaveFaction(PlayerSelectFac[playerid]);
+			}
+		}
+	}
+	return ShowFactionConfig(playerid);
+}
+
+Dialog:DIALOG_FACTION_JOB(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		return ShowFactionConfig(playerid);
+	
+	if(response)
+	{
+		switch(listitem)
+		{
+			case 0:
+			{
+				FactionInfo[PlayerSelectFac[playerid]][eFactionJob] = 1;
+				SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF}คุณได้เปลี่ยนประเภทอาชีพเฟคชั่น ของ {FFEB3B}%s {FFFFFF}เป็น 'ตำรวจ' แล้วตอนนี้", FactionInfo[PlayerSelectFac[playerid]][eFactionName]);
+				SaveFaction(PlayerSelectFac[playerid]);
+			}
+			case 1:
+			{
+				FactionInfo[PlayerSelectFac[playerid]][eFactionJob] = 2;
+				SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF}คุณได้เปลี่ยนประเภทอาชีพเฟคชั่น ของ {FFEB3B}%s {FFFFFF}เป็น 'หมอ' แล้วตอนนี้", FactionInfo[PlayerSelectFac[playerid]][eFactionName]);
+				SaveFaction(PlayerSelectFac[playerid]);
+			}
+			case 2:
+			{
+				FactionInfo[PlayerSelectFac[playerid]][eFactionJob] = 3;
+				SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF}คุณได้เปลี่ยนประเภทอาชีพเฟคชั่น ของ {FFEB3B}%s {FFFFFF}เป็น 'นายอำเภอ' แล้วตอนนี้", FactionInfo[PlayerSelectFac[playerid]][eFactionName]);
+				SaveFaction(PlayerSelectFac[playerid]);
+			}
+			case 3:
+			{
+				FactionInfo[PlayerSelectFac[playerid]][eFactionJob] = 4;
+				SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF}คุณได้เปลี่ยนประเภทอาชีพเฟคชั่น ของ {FFEB3B}%s {FFFFFF}เป็น 'กรมราชทัณฑ์' แล้วตอนนี้", FactionInfo[PlayerSelectFac[playerid]][eFactionName]);
+				SaveFaction(PlayerSelectFac[playerid]);
+			}
+			case 4:
+			{
+				FactionInfo[PlayerSelectFac[playerid]][eFactionJob] = 5;
+				SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF}คุณได้เปลี่ยนประเภทอาชีพเฟคชั่น ของ {FFEB3B}%s {FFFFFF}เป็น 'รัฐบาล' แล้วตอนนี้", FactionInfo[PlayerSelectFac[playerid]][eFactionName]);
+				SaveFaction(PlayerSelectFac[playerid]);
+			}
+		}
+	}
+	return ShowFactionConfig(playerid);
 }
 

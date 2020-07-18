@@ -1601,6 +1601,8 @@ CMD:setcar(playerid, params[])
 // Admin Level: 4:
 CMD:factions(playerid, params[])
 {
+	if(PlayerInfo[playerid][pAdmin] < 4)
+		return SendUnauthMessage(playerid);
 	new str[182], longstr[556]; 
 
 	for (new i = 1; i < MAX_FACTIONS; i ++)

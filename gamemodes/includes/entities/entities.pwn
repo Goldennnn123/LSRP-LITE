@@ -1,3 +1,6 @@
+#define MAX_FACTION_RANKS       	(21)
+#define MAX_FACTIONS				(30)
+
 enum E_PLAYER_DATA
 {
     pDBID,
@@ -189,3 +192,31 @@ enum E_DROPPEDGUN_DATA
 }
 
 new WeaponDropInfo[200][E_DROPPEDGUN_DATA];
+
+
+enum E_FACTION_INFO
+{
+	eFactionDBID,
+	
+	eFactionName[90],
+	eFactionAbbrev[30], 
+	
+	Float: eFactionSpawn[3],
+	eFactionSpawnInt,
+	eFactionSpawnWorld,
+	
+	eFactionJoinRank,
+	eFactionAlterRank,
+	eFactionChatRank,
+	eFactionTowRank,
+	
+	bool:eFactionChatStatus,
+	eFactionChatColor,
+	
+	eFactionType,
+	eFactionJob,	
+}
+
+new FactionInfo[MAX_FACTIONS][E_FACTION_INFO]; 
+new FactionRanks[MAX_FACTIONS][MAX_FACTION_RANKS][60];
+new PlayerSelectFac[MAX_PLAYERS], playerEditingRank[MAX_PLAYERS];

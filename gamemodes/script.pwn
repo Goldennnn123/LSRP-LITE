@@ -60,6 +60,7 @@ new
 #include "includes/mysql/database.pwn"
 
 #include "includes/mysql/SaveVehicle.pwn"
+#include "includes/mysql/Savefaction.pwn"
 
 #include "includes/registration/login.pwn"
 #include "includes/character/character.pwn"
@@ -70,6 +71,7 @@ new
 #include "includes/systems/job.pwn"
 #include "includes/systems/report.pwn"
 #include "includes/systems/weapon.pwn"
+#include "includes/systems/faction.pwn"
 
 #include "includes/jobs/farmer.pwn"
 #include "includes/jobs/fisher.pwn"
@@ -96,6 +98,10 @@ public OnGameModeInit() {
     SetGameModeText(GM_VERSION);
 
     SetNameTagDrawDistance(NAME_TAG_DISTANCE);
+
+
+
+    mysql_tquery(dbCon, "SELECT * FROM factions ORDER BY dbid ASC", "Query_LoadFactions");
 	
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();

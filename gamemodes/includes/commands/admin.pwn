@@ -1599,6 +1599,23 @@ CMD:setcar(playerid, params[])
 // Admin Level: 3;
 
 // Admin Level: 4:
+CMD:factions(playerid, params[])
+{
+	new str[182], longstr[556]; 
+
+	for (new i = 1; i < MAX_FACTIONS; i ++)
+	{
+		if(!FactionInfo[i][eFactionDBID])
+			continue;
+			
+		format(str, sizeof(str), "{ADC3E7}%d \t %s \t [%d out of %d]\n", i, FactionInfo[i][eFactionName], ReturnOnlineMembers(i), ReturnTotalMembers(i));
+		strcat(longstr, str);
+
+	}
+	
+	Dialog_Show(playerid, DIALOG_EDITFACTION, DIALOG_STYLE_LIST, "Factions:", longstr, "<<", "");
+	return 1;
+}
 // Admin Level: 4;
 
 // Admin Level: 5:
@@ -1612,9 +1629,51 @@ CMD:setcar(playerid, params[])
 // Admin Level: 1337;
 
 // Admin Level: 1338:
+
 // Admin Level: 1338;
 
 // Admin Level: 1339:
+CMD:makefaction(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1339)
+		return SendUnauthMessage(playerid);
+		
+	new varAbbrev[30], varName[90]; 
+	
+	if(sscanf(params, "s[30]s[90]", varAbbrev, varName))
+	{
+		SendUsageMessage(playerid, "/makefaction [ชื่อย่อเฟคชั่น] [ชื่อเฟคชั่น]");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} จำเป็นต้องใส่ชื่อเฟคชั่นด้วย");
+		return 1; 
+	}
+	
+	if(strlen(varName) > 90)
+		return SendErrorMessage(playerid, "ชื่อย่อเฟคชั่นควรน้อยกว่า 90 ตัวอักษร"); 
+		
+	new idx = 0;
+	
+	for (new i = 1; i < MAX_FACTIONS; i ++)
+	{
+		if(!FactionInfo[i][eFactionDBID])
+		{
+			idx = i; 
+			break;
+		}
+	}
+	if(idx == 0)
+	{
+		return SendServerMessage(playerid, "การสร้างเฟคชั่นถึงขีดจำกัดแล้ว"); 
+	}
+
+	SendServerMessage(playerid, "กำลังสร้างเฟตชั่น......");
+	
+	new thread[128]; 
+	
+	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO factions (`FactionName`, `FactionAbbrev`) VALUES('%e', '%e')", varName, varAbbrev);
+	mysql_tquery(dbCon, thread, "Query_InsertFaction", "issi", playerid, varAbbrev, varName, idx);
+	
+	return 1;
+}
 CMD:makeadmin(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 1340)

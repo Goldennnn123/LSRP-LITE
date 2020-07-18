@@ -1725,6 +1725,32 @@ CMD:makehouse(playerid, params[])
 
 	return 1;
 }
+
+CMD:viewhouse(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+	
+	new str[182], longstr[556], str_h[MAX_STRING];
+	new Houseid; 
+	for (new i = 1; i < MAX_HOUSE; i ++)
+	{
+		if(!HouseInfo[i][HouseDBID])
+			continue;
+			
+		format(str, sizeof(str), "{ADC3E7}%d \t %s \t\n", i, HouseInfo[i][HouseName]);
+		strcat(longstr, str);
+
+		format(str_h, sizeof(str_h), "%d",Houseid);
+		SetPVarInt(playerid, str_h, i);
+
+		Houseid++;
+		
+	}
+	
+	Dialog_Show(playerid, DIALOG_VIEWHOUSE, DIALOG_STYLE_LIST, "HOUSE:", longstr, "เลือก", "ออก");
+	return 1;
+}
 // Admin Level: 5;
 
 

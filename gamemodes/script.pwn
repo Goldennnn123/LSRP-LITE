@@ -72,6 +72,7 @@ new
 #include "includes/systems/report.pwn"
 #include "includes/systems/weapon.pwn"
 #include "includes/systems/faction.pwn"
+#include "includes/systems/house.pwn"
 
 #include "includes/jobs/farmer.pwn"
 #include "includes/jobs/fisher.pwn"
@@ -102,6 +103,7 @@ public OnGameModeInit() {
 
 
     mysql_tquery(dbCon, "SELECT * FROM factions ORDER BY dbid ASC", "Query_LoadFactions");
+    mysql_tquery(dbCon, "SELECT * FROM House ORDER BY HouseDBID", "Query_LoadHouse");
 	
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();

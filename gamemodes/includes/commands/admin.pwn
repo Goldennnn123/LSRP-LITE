@@ -1014,7 +1014,26 @@ CMD:clearpguns(playerid, params[])
 
 CMD:gotohouse(playerid, params[])
 {
+	if(PlayerInfo[playerid][pAdmin] < 2)
+		return SendUnauthMessage(playerid);
 
+	new id;
+	
+	if(sscanf(params, "i", id))
+		return SendUsageMessage(playerid, "/gotohouse [ไอดี-บ้าน]");
+
+	if(!HouseInfo[id][HouseDBID] || id > MAX_HOUSE)
+		return SendErrorMessage(playerid, "ไม่มีบ้านที่ต้องการ");
+	
+	SetPlayerPos(playerid, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2]);
+	SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseEntranceWorld]);
+	SetPlayerInterior(playerid, HouseInfo[id][HouseEntranceInterior]);
+
+	if(PlayerInfo[playerid][pInsideBusiness] || PlayerInfo[playerid][pInsideProperty])
+	{
+		PlayerInfo[playerid][pInsideBusiness] = 0;
+		PlayerInfo[playerid][pInsideProperty] = 0;
+	}
 	return 1;
 }
 CMD:gotobusiness(playerid, params[])
@@ -1663,6 +1682,47 @@ CMD:makeleader(playerid, params[])
 	SendAdminMessage(4, str);
 
 	CharacterSave(playerb);
+	return 1;
+}
+
+
+CMD:makehouse(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+	
+	new price,level,str[MAX_STRING], name[90];
+
+	if(sscanf(params, "s[90]dd", name, price, level))
+		return SendUsageMessage(playerid, "/makehouse [ชื่อบ้าน(ควรใส่บ้านเลขที่)] [ราคา-บ้าน] [เลเวล-บ้าน]");
+
+	if(strlen(name) > 90)
+	{
+		SendClientMessage(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FFFFFF}คุณไม่สามารถตั้งชื่อบ้านเกิน 90 ตัวอักษรได้");
+		return SendUsageMessage(playerid, "/makehouse [ชื่อบ้าน(ควรใส่บ้านเลขที่)] [ราคา-บ้าน] [เลเวล-บ้าน]");
+	}
+	if(price < 1 || price > 90000000)
+	{
+		SendClientMessageEx(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FFFFFF}คุณไม่สามารถตั้งราคา $%s ได้เนื่องจากมีราคาเกินที่กำหนด/ไม่ถึงที่กำหนด 1 < || > 90,000,000",MoneyFormat(price));
+		return SendUsageMessage(playerid, "/makehouse [ชื่อบ้าน(ควรใส่บ้านเลขที่)] [ราคา-บ้าน] [เลเวล-บ้าน]");
+	}
+	if(level < 1 || level > 90000000)
+	{
+		SendClientMessageEx(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FFFFFF}คุณไม่สามารถตั้งเลเวล %i ได้เนื่องจากมีเลเวลเกินที่กำหนด/ไม่ถึงที่กำหนด 1 < || > 90000000",level);
+		return SendUsageMessage(playerid, "/makehouse [ชื่อบ้าน(ควรใส่บ้านเลขที่)] [ราคา-บ้าน] [เลเวล-บ้าน]");
+	}
+	
+	format(name, sizeof(name),name);
+	format(str, sizeof(str), "คุณกำลังจะสร้างบ้าน: %s\n\
+							  ราคา: $%s\n\
+							  เลวล: %i", name,MoneyFormat(price),level);
+
+	PlayerCreHouse[playerid] = name;
+	PlayerCreHousePrice[playerid] = price;
+    PlayerCreHouseLevel[playerid] = level;
+
+	Dialog_Show(playerid, DIALOG_CRE_HOUSE, DIALOG_STYLE_MSGBOX, "คุณมันใจ?", str, "ยืนยัน", "ยกเลิก");
+
 	return 1;
 }
 // Admin Level: 5;

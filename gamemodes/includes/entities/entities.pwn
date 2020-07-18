@@ -1,5 +1,6 @@
 #define MAX_FACTION_RANKS       	(21)
 #define MAX_FACTIONS				(30)
+#define MAX_HOUSE					(30)
 
 enum E_PLAYER_DATA
 {
@@ -220,3 +221,29 @@ enum E_FACTION_INFO
 new FactionInfo[MAX_FACTIONS][E_FACTION_INFO]; 
 new FactionRanks[MAX_FACTIONS][MAX_FACTION_RANKS][60];
 new PlayerSelectFac[MAX_PLAYERS], playerEditingRank[MAX_PLAYERS];
+
+enum E_HOUSE_INFO
+{
+	HouseDBID,
+	HouseName[90],
+	HouseOwnerDBID,
+
+	Float:HouseEntrance[3],
+	HouseEntranceWorld,
+	HouseEntranceInterior,
+
+	Float:HouseInterior[3],
+	HouseInteriorWorld,
+	HouseInteriorID,
+
+	HousePrice,
+	HouseLevel,
+
+	HouseWeapons[22],
+	HouseWeaponsAmmo[22],
+
+	Float:HousePlacePos[3],
+
+	HousePickup,
+}
+new HouseInfo[MAX_HOUSE][E_HOUSE_INFO];

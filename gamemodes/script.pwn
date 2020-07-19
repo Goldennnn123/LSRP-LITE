@@ -81,6 +81,7 @@ new
 #include "includes/commands/general.pwn"
 #include "includes/commands/admin.pwn"
 #include "includes/commands/roleplay.pwn"
+#include "includes/commands/housecmd.pwn"
 
 main()
 {
@@ -99,7 +100,7 @@ public OnGameModeInit() {
     SendRconCommand("hostname "GM_HOST_NAME"");
     SetGameModeText(GM_VERSION);
 
-    SetNameTagDrawDistance(NAME_TAG_DISTANCE);
+    SetNameTagDrawDistance(20.0);
 
 
 
@@ -115,6 +116,7 @@ public OnGameModeInit() {
 
     //Timer:
     SetTimer("FunctionPlayers", 1000, true);
+    SetTimer("OnPlayerNereHouseTime", 1000, true);
     //Timer:
 
     adminactionlog = CreateLog("server/admin_action");

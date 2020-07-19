@@ -91,3 +91,64 @@ CMD:mask(playerid, params[])
 		
 	return 1;
 }
+
+
+CMD:enter(playerid,params[])
+{
+	for(new p = 1; p < MAX_HOUSE; p++)
+	{
+		if(!HouseInfo[p][HouseDBID])
+			continue;
+
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[p][HouseEntrance][0], HouseInfo[p][HouseEntrance][1], HouseInfo[p][HouseEntrance][2]))
+		{
+			if(GetPlayerInterior(playerid) != HouseInfo[p][HouseEntranceWorld])
+				continue;
+					
+			if(GetPlayerVirtualWorld(playerid) != HouseInfo[p][HouseEntranceInterior])
+				continue;
+
+			if(HouseInfo[p][HouseLock] || PlayerInfo[playerid][pAdminDuty])
+				return GameTextForPlayer(playerid, "~r~Locked", 3000, 1);
+
+			if(!HouseInfo[p][HouseInterior][0] || !HouseInfo[p][HouseInterior][1] || !HouseInfo[p][HouseInterior][2])
+				return GameTextForPlayer(playerid, "~r~Close", 3000, 1);
+
+			PlayerInfo[playerid][pInsideProperty] = p;
+
+			SetPlayerPos(playerid, HouseInfo[p][HouseInterior][0], HouseInfo[p][HouseInterior][1], HouseInfo[p][HouseInterior][2] - 3);
+			
+			SetPlayerVirtualWorld(playerid, HouseInfo[p][HouseInteriorWorld]);
+			SetPlayerInterior(playerid, HouseInfo[p][HouseInteriorID]);
+			
+			TogglePlayerControllable(playerid, 0);
+			SetTimerEx("OnPlayerEnterProperty", 2000, false, "ii", playerid, p); 
+		}
+
+	}
+
+	return 1;
+}
+
+CMD:exit(playerid, params[])
+{
+	new 
+		id = PlayerInfo[playerid][pInsideProperty]
+		//b_id
+	;
+
+	if(id != 0)
+    {
+        if(!IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ประตูทางออก");
+		
+		SetPlayerPos(playerid, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2]);
+		
+		SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseEntranceWorld]);
+		SetPlayerInterior(playerid, HouseInfo[id][HouseEntranceInterior]);
+		PlayerInfo[playerid][pInsideProperty] = 0;
+		return 1;
+    }
+
+	return 1;
+}

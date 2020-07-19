@@ -245,5 +245,6 @@ enum E_HOUSE_INFO
 	Float:HousePlacePos[3],
 
 	HousePickup,
+	bool:HouseLock,
 }
 new HouseInfo[MAX_HOUSE][E_HOUSE_INFO];

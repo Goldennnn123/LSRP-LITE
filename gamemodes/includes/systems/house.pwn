@@ -6,6 +6,7 @@ new PlayerCreHouse[MAX_PLAYERS][90],
     PlayerCreHouseLevel[MAX_PLAYERS];
 
 new PlayerSelectHouse[MAX_PLAYERS];
+new OnPlayerNereHouse[MAX_PLAYERS][MAX_HOUSE];
 hook OnPlayerConnect(playerid)
 {
     PlayerCreHouse[playerid] = "";
@@ -43,6 +44,7 @@ public Query_LoadHouse()
 
         cache_get_value_name_int(i,"HousePrice",HouseInfo[i+1][HousePrice]);
         cache_get_value_name_int(i,"HouseLevel",HouseInfo[i+1][HouseLevel]);
+        cache_get_value_name_int(i,"HouseLock",HouseInfo[i+1][HouseLock]);
 
         cache_get_value_name_float(i,"HousePlacePosX",HouseInfo[i+1][HousePlacePos][0]);
         cache_get_value_name_float(i,"HousePlacePosY",HouseInfo[i+1][HousePlacePos][1]);
@@ -333,4 +335,127 @@ Dialog:DIALOG_HOUSE_LEVEL(playerid, response, listitem, inputtext[])
         Savehouse(id);
     }
     return ShowSelectHouse(playerid);
+}
+
+
+forward OnPlayerEnterProperty(playerid,id);
+public OnPlayerEnterProperty(playerid,id)
+{
+	SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]);
+	return TogglePlayerControllable(playerid, 1);
+}
+
+
+forward OnPlayerNereHouseTime();
+public OnPlayerNereHouseTime()
+{
+
+    foreach(new i : Player)
+    {
+        if(!BitFlag_Get(gPlayerBitFlag[i], IS_LOGGED))
+            continue;
+        
+        for(new p = 1; p < MAX_HOUSE; p++)
+		{
+            if(!HouseInfo[p][HouseDBID])
+				continue;
+            
+            if(IsPlayerInRangeOfPoint(i, 3.0, HouseInfo[p][HouseEntrance][0], HouseInfo[p][HouseEntrance][1], HouseInfo[p][HouseEntrance][2]))
+            {
+                if(gettime() - OnPlayerNereHouse[i][p] < 300)
+                    continue;
+                
+                if(GetPlayerInterior(i) != HouseInfo[p][HouseEntranceInterior])
+					continue;
+					
+				if(GetPlayerVirtualWorld(i) != HouseInfo[p][HouseEntranceWorld])
+					continue;
+                
+                if(HouseInfo[p][HouseOwnerDBID])
+                {
+                    SendClientMessageEx(i,-1,"{3498DB}บ้านเลขที่: {27AE60}%s {3498DB}เจ้าของบ้าน:{27AE60} %s", HouseInfo[p][HouseName],ReturnDBIDName(HouseInfo[p][HouseOwnerDBID]));
+                    SendClientMessage(i,-1,"สามารถพิมพ์ /ds(ตะโกนเข้าไปใน้บาน) /ddo(การกระทำที่ข้างในบ้านรู้) /enter(เข้าบ้าน)");
+                    OnPlayerNereHouse[i][p] = gettime();
+                }
+                else
+                {
+                    SendClientMessageEx(i,-1,"{3498DB}บ้านเลขที่: {27AE60}%s {3498DB}ราคา:{D35400} %s", HouseInfo[p][HouseName],MoneyFormat(HouseInfo[p][HousePrice]));
+                    SendClientMessageEx(i,-1,"{3498DB}เลเวล: {58D68D}%d", HouseInfo[p][HouseLevel]);
+                    OnPlayerNereHouse[i][p] = gettime();
+                }
+            }
+            else
+            {
+                OnPlayerNereHouse[i][p] = 0;
+            }
+        }
+    }
+    return 1;
+}
+
+
+stock CountPlayerProperties(playerid)
+{
+	new
+		count = 0
+	;
+
+	for(new i = 1; i < MAX_HOUSE; i++)
+	{
+		if(!HouseInfo[i][HouseDBID])
+			continue;
+			
+		if(HouseInfo[i][HouseOwnerDBID] == PlayerInfo[playerid][pDBID])
+			count++; 
+	}
+	return count; 
+}
+
+Dialog:DIALOG_SELL_HOUSE(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+    
+    if(response)
+    {
+        new id = PlayerInfo[playerid][pInsideProperty];
+
+        if(id == 0)
+            return 1;
+
+        if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+            return SendClientMessage(playerid, -1,"คุณไม่ใช่เจ้าของบ้าน");
+        
+        new Money = HouseInfo[id][HousePrice] / 2;
+
+        HouseInfo[id][HouseOwnerDBID] = 0;
+        HouseInfo[id][HouseLock] = true;
+
+        for(new w = 1; w < 22; w++)
+        {
+            HouseInfo[id][HouseWeapons][w] = 0;
+            HouseInfo[id][HouseWeaponsAmmo][w] = 0;
+        }
+
+        for(new pos = 0; pos < 3; pos++)
+        {
+            HouseInfo[id][HousePlacePos][pos] = 0;
+        }
+
+        GivePlayerMoney(playerid, Money);
+        SetPlayerPos(playerid,HouseInfo[id][HouseEntrance][0],HouseInfo[id][HouseEntrance][1],HouseInfo[id][HouseEntrance][2]);
+        SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseEntranceWorld]);
+        SetPlayerInterior(playerid, HouseInfo[id][HouseEntranceInterior]);
+
+
+        if(IsValidDynamicPickup(HouseInfo[id][HousePickup]))
+            DestroyDynamicPickup(HouseInfo[id][HousePickup]);
+
+        HouseInfo[id][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2],-1,-1);
+
+        SendClientMessageEx(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{009933} คุณได้ขายบ้านของคุณแล้วได้เงินมาจำนวน %s",MoneyFormat(Money));
+        Savehouse(id);
+        return 1;
+    }
+    return 1;
 }

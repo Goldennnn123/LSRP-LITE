@@ -1755,6 +1755,61 @@ CMD:viewhouse(playerid, params[])
 
 
 // Admin Level: 1336:
+CMD:makebusiness(playerid,params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+	new idx = 0;
+	
+    for (new i = 1; i < MAX_BUSINESS; i ++)
+    {
+        if(!BusinessInfo[i][BusinessDBID])
+        {
+            idx = i; 
+            break;
+        }
+	}
+    if(idx == 0)
+    {
+        return SendServerMessage(playerid, "สร้างกิจการเกินกว่านี้ไม่ได้แล้ว (30)"); 
+    }
+
+
+	new name[90],type;
+
+	if(sscanf(params, "d", type))
+	{
+		SendUsageMessage(playerid, "/makebusiness [ประเภท]");
+		SendUsageMessage(playerid, "Type: 1.ร้านค้า(24/7) 2.ร้านตัวแทนจำหน่ายรถ 3.ร้านปืน");
+		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร");
+		return 1;
+	}
+
+	if(strlen(name) > 90)
+	{	
+		SendClientMessageEx(playerid,-1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF0000} คุณไม่สามารถตั้งชื่อกิจการเกิน 90 ตัวอักษร");
+		SendUsageMessage(playerid, "/makebusiness [ประเภท]");
+		SendUsageMessage(playerid, "Type: 1.ร้านค้า(24/7) 2.ร้านตัวแทนจำหน่ายรถ 3.ร้านปืน");
+		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร");
+		return 1;
+	}
+	if(type < 1 || type > 5)
+	{	
+		SendClientMessageEx(playerid,-1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF0000} โปรดเลื่อกประเภทกิจการให้ถูก");
+		SendUsageMessage(playerid, "/makebusiness [ประเภท]");
+		SendUsageMessage(playerid, "Type: 1.ร้านค้า(24/7) 2.ร้านตัวแทนจำหน่ายรถ 3.ร้านปืน");
+		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร");
+		return 1;
+	}
+
+	format(name, sizeof(name),name);
+	new query[MAX_STRING];
+
+	mysql_format(dbCon, query, sizeof(query), "INSERT INTO business (`BusinessType`,`BusinessName`) VALUES(%i,'%e')", type,"BusinessName"); 
+	mysql_tquery(dbCon, query, "Query_InsertBusiness", "iii", playerid, idx, type); 
+	return 1;
+}
 // Admin Level: 1336;
 
 // Admin Level: 1337:

@@ -1,6 +1,7 @@
 #define MAX_FACTION_RANKS       	(21)
 #define MAX_FACTIONS				(30)
 #define MAX_HOUSE					(30)
+#define MAX_BUSINESS				(30)
 
 enum E_PLAYER_DATA
 {
@@ -248,3 +249,27 @@ enum E_HOUSE_INFO
 	bool:HouseLock,
 }
 new HouseInfo[MAX_HOUSE][E_HOUSE_INFO];
+
+enum E_BUSINESS_INFO
+{
+	BusinessDBID,
+	BusinessName[90],
+	BusinessOwnerDBID,
+
+	BusinessType,
+	
+	Float:BusinessEntrance[3],
+	BusinessEntranceWorld,
+	BusinessEntranceInterior,
+
+	Float:BusinessInterior[3],
+	BusinessInteriorWorld,
+	BusinessInteriorID,
+
+	BusinessBankPickup,
+	Float:BusinessBankPickupLoc[3],
+	BusinessBankWorld,
+
+	BusinessCash,
+}
+new BusinessInfo[MAX_BUSINESS][E_BUSINESS_INFO];

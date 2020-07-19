@@ -62,6 +62,7 @@ new
 #include "includes/mysql/SaveVehicle.pwn"
 #include "includes/mysql/Savefaction.pwn"
 #include "includes/mysql/SaveHouse.pwn"
+#include "includes/mysql/SaveBusiness.pwn"
 
 #include "includes/registration/login.pwn"
 #include "includes/character/character.pwn"
@@ -74,6 +75,7 @@ new
 #include "includes/systems/weapon.pwn"
 #include "includes/systems/faction.pwn"
 #include "includes/systems/house.pwn"
+#include "includes/systems/business.pwn"
 
 #include "includes/jobs/farmer.pwn"
 #include "includes/jobs/fisher.pwn"
@@ -106,6 +108,7 @@ public OnGameModeInit() {
 
     mysql_tquery(dbCon, "SELECT * FROM factions ORDER BY dbid ASC", "Query_LoadFactions");
     mysql_tquery(dbCon, "SELECT * FROM House ORDER BY HouseDBID", "Query_LoadHouse");
+    mysql_tquery(dbCon, "SELECT * FROM Business ORDER BY BusinessDBID", "Query_LoadBusiness");
 	
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();

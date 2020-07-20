@@ -139,6 +139,9 @@ CMD:enter(playerid,params[])
 			if(GetPlayerVirtualWorld(playerid) != BusinessInfo[b][BusinessEntranceInterior])
 				continue;
 
+			if(GetPlayerMoney(playerid) < BusinessInfo[b][BusinessEntrancePrice])
+				return GameTextForPlayer(playerid, "~r~You don't have money", 3000, 1);
+
 			if(!BusinessInfo[b][BusinessEntrance][0] || !BusinessInfo[b][BusinessEntrance][1] || !BusinessInfo[b][BusinessEntrance][2] || BusinessInfo[b][BusinessType] == BUSINESS_TYPE_DEALERVEHICLE)
 				return GameTextForPlayer(playerid, "~r~Close", 3000, 1);
 
@@ -151,6 +154,9 @@ CMD:enter(playerid,params[])
 			SetPlayerPos(playerid, BusinessInfo[b][BusinessInterior][0], BusinessInfo[b][BusinessInterior][1], BusinessInfo[b][BusinessInterior][2] - 3);
 			SetPlayerVirtualWorld(playerid, BusinessInfo[b][BusinessInteriorWorld]);
 			SetPlayerInterior(playerid, BusinessInfo[b][BusinessEntranceInterior]);
+
+			GivePlayerMoney(playerid, -BusinessInfo[b][BusinessEntrancePrice]);
+			BusinessInfo[b][BusinessCash] += BusinessInfo[b][BusinessEntrancePrice];
 
 			TogglePlayerControllable(playerid, 0);
 			SetTimerEx("OnPlayerEnterBusiness", 2000, false, "ii", playerid, b); 

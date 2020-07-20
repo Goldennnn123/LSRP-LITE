@@ -100,16 +100,16 @@ public Query_InsertBusiness(playerid,newid,type,name)
     BusinessInfo[newid][BusinessEntrance][1] = Y;
     BusinessInfo[newid][BusinessEntrance][2] = Z;
 
-    if(IsValidDynamicPickup(BusinessInfo[newid][BusinessBankPickup]))
-        DestroyDynamicPickup(BusinessInfo[newid][BusinessBankPickup]);
+    if(IsValidDynamicPickup(BusinessInfo[newid][BusinessEntrancePickUp]))
+        DestroyDynamicPickup(BusinessInfo[newid][BusinessEntrancePickUp]);
 
     if(BusinessInfo[newid][BusinessType] == BUSINESS_TYPE_RESTAURANT)
     {
-        BusinessInfo[newid][BusinessBankPickup] = CreateDynamicPickup(1274, 23, X, Y, Z,-1,-1);
+        BusinessInfo[newid][BusinessEntrancePickUp] = CreateDynamicPickup(1274, 23, X, Y, Z,-1,-1);
     }
     else
     {
-        BusinessInfo[newid][BusinessBankPickup] = CreateDynamicPickup(1239, 23, X, Y, Z,-1,-1);
+        BusinessInfo[newid][BusinessEntrancePickUp] = CreateDynamicPickup(1239, 23, X, Y, Z,-1,-1);
     }
 
     SendClientMessageEx(playerid, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF}คุณได้สร้างกิจการ %s ไอดี %d ขึ้นมา", BusinessInfo[newid][BusinessName],cache_insert_id());
@@ -542,6 +542,23 @@ stock IsPlayerNearBusiness(playerid)
 			return i;
 	}
 	return 0;
+}
+
+stock CountPlayerBusiness(playerid)
+{
+	new
+		count = 0
+	;
+	
+	for(new i = 1; i < MAX_BUSINESS; i++)
+	{
+		if(!BusinessInfo[i][BusinessDBID])
+			continue;
+			
+		if(BusinessInfo[i][BusinessOwnerDBID] == PlayerInfo[playerid][pDBID])
+			count++;
+	}
+	return count;
 }
 
 

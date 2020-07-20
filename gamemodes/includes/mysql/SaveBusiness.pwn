@@ -12,5 +12,30 @@ stock SaveBusiness(id)
         BusinessInfo[id][BusinessEntranceInterior],
         BusinessInfo[id][BusinessDBID]);
     mysql_tquery(dbCon, query);
+
+
+    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessInteriorX = %f, BusinessInteriorY = %f, BusinessInteriorZ = %f, BusinessInteriorWorld = %i, BusinessInteriorID = %i WHERE BusinessDBID = %i",
+        BusinessInfo[id][BusinessInterior][0],
+        BusinessInfo[id][BusinessInterior][1],
+        BusinessInfo[id][BusinessInterior][2],
+        BusinessInfo[id][BusinessInteriorWorld],
+        BusinessInfo[id][BusinessInteriorID],
+        BusinessInfo[id][BusinessDBID]);
+    mysql_tquery(dbCon, query);
+
+
+    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessBankPickupLocX = %f, BusinessBankPickupLocY = %f, BusinessBankPickupLocZ = %f, BusinessBankWorld = %i WHERE BusinessDBID = %i",
+        BusinessInfo[id][BusinessBankPickupLoc][0],
+        BusinessInfo[id][BusinessBankPickupLoc][1],
+        BusinessInfo[id][BusinessBankPickupLoc][2],
+        BusinessInfo[id][BusinessBankWorld],
+        BusinessInfo[id][BusinessDBID]);
+    mysql_tquery(dbCon, query);
+
+    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessCash = %d WHERE BusinessDBID = %i",
+        BusinessInfo[id][BusinessCash],
+        BusinessInfo[id][BusinessDBID]);
+    mysql_tquery(dbCon, query);
+
     return 1;
 }

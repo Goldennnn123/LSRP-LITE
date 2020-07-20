@@ -1810,6 +1810,16 @@ CMD:makebusiness(playerid,params[])
 	mysql_tquery(dbCon, query, "Query_InsertBusiness", "iii", playerid, idx, type); 
 	return 1;
 }
+
+CMD:viewbusiness(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+	
+
+	ShowViewBusiness(playerid);
+	return 1;
+}
 // Admin Level: 1336;
 
 // Admin Level: 1337:

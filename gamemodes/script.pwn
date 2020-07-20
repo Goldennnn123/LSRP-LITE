@@ -85,6 +85,8 @@ new
 #include "includes/commands/roleplay.pwn"
 #include "includes/commands/housecmd.pwn"
 
+#include "includes/Interior/Bank.pwn"
+
 main()
 {
     print("\n----------------------------------");

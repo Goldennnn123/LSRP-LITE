@@ -182,7 +182,7 @@ stock ReturnFactionJob(playerid)
 
 stock ShowFactionConfig(playerid)
 {
-	new rankCount, infoString[128], showString[256]; 
+	new rankCount, infoString[128], showString[256];
 	
 	format(infoString, sizeof(infoString), "ชื่อ: %s\n", FactionInfo[PlayerSelectFac[playerid]][eFactionName]);
 	strcat(showString, infoString); 

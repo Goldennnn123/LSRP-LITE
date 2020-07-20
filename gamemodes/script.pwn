@@ -84,8 +84,11 @@ new
 #include "includes/commands/admin.pwn"
 #include "includes/commands/roleplay.pwn"
 #include "includes/commands/housecmd.pwn"
+#include "includes/commands/businesscmd.pwn"
 
 #include "includes/Interior/Bank.pwn"
+#include "includes/Interior/House1.pwn"
+#include "includes/Interior/House2.pwn"
 
 main()
 {
@@ -132,6 +135,30 @@ public OnGameModeInit() {
 
 public OnGameModeExit() {
     DestroyLog(adminactionlog);
+
+    foreach(new i : Player)
+    {
+        if(!BitFlag_Get(gPlayerBitFlag[i], IS_LOGGED))
+            continue;
+
+        CharacterSave(i);
+    }
+    
+    for(new businessid = 0; businessid < MAX_BUSINESS; businessid++)
+    {
+        if(!BusinessInfo[businessid][BusinessDBID])
+            continue;
+        
+        SaveBusiness(businessid);
+    }
+
+    for(new houseid = 0; houseid < MAX_HOUSE; houseid++)
+    {
+        if(!HouseInfo[houseid][HouseDBID])
+            continue;
+        
+        Savehouse(houseid);
+    }
 
     return 1;
 }
@@ -250,19 +277,20 @@ public OnPlayerSpawn(playerid) {
 
 	if (!BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
 		Kick(playerid);
-
+    
     if(PlayerInfo[playerid][pWeaponsSpawned] == false)
-	{
-		for(new i = 0; i < 13; i ++)
-		{
-			if(PlayerInfo[playerid][pWeapons][i] != 0)
-			{
-				GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
-			}
-		}	
-		SetPlayerArmedWeapon(playerid, 0);
-		PlayerInfo[playerid][pWeaponsSpawned] = true;
-	}
+    {
+        for(new i = 0; i < 13; i ++)
+        {
+            if(PlayerInfo[playerid][pWeapons][i] != 0)
+            {
+                GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
+            }
+        }
+
+        SetPlayerArmedWeapon(playerid, 0);
+        PlayerInfo[playerid][pWeaponsSpawned] = true;
+    }
     
     if (PlayerInfo[playerid][pTimeout]) {
 
@@ -287,6 +315,7 @@ public OnPlayerSpawn(playerid) {
         SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInterior]);
 
         SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+        PlayerInfo[playerid][pSpectating] = INVALID_PLAYER_ID;
         return 1;
     }
     switch (PlayerInfo[playerid][pSpawnPoint]) {

@@ -15,6 +15,10 @@
 
 #define MAX_PLAYER_VEHICLES			(7)
 
+#define PLAYER_STATE_ALIVE (1)
+#define PLAYER_STATE_WOUNDED (2)
+#define PLAYER_STATE_DEAD (3)
+
 #define SendUsageMessage(%0,%1) \
 	SendClientMessageEx(%0, COLOR_WHITE, "USAGE: "%1) 
 	
@@ -22,6 +26,10 @@
 	SendClientMessageEx(%0, COLOR_RED, "ERROR: "%1)
 
 #define SendServerMessage(%0,%1) \
-	SendClientMessageEx(%0, COLOR_ACTION, "SERVER: "%1) 	
+	SendClientMessageEx(%0, COLOR_ACTION, "SERVER: "%1) 
+
+	
+#define RELEASED(%0) \
+	(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))	
 
 

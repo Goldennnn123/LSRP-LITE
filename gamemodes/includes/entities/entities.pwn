@@ -260,6 +260,7 @@ enum E_BUSINESS_INFO
 	BusinessPrice,
 	Businesslevel,
 	BusinessEntrancePrice,
+	bool:BusinessLock,
 	
 	BusinessEntrancePickUp,
 	Float:BusinessEntrance[3],

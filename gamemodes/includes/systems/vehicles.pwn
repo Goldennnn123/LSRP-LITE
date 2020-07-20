@@ -74,6 +74,26 @@ stock ReturnVehicleModelName(model)
 	return name;
 }
 
+
+stock GetVehicleBoot(vehicleid, &Float:x, &Float:y, &Float:z) 
+{ 
+    if (!GetVehicleModel(vehicleid) || vehicleid == INVALID_VEHICLE_ID) 
+        return (x = 0.0, y = 0.0, z = 0.0), 0; 
+
+    static 
+        Float:pos[7] 
+    ; 
+    GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, pos[0], pos[1], pos[2]); 
+    GetVehiclePos(vehicleid, pos[3], pos[4], pos[5]); 
+    GetVehicleZAngle(vehicleid, pos[6]); 
+
+    x = pos[3] - (floatsqroot(pos[1] + pos[1]) * floatsin(-pos[6], degrees)); 
+    y = pos[4] - (floatsqroot(pos[1] + pos[1]) * floatcos(-pos[6], degrees)); 
+    z = pos[5]; 
+
+    return 1; 
+} 
+
 stock ResetVehicleVars(vehicleid)
 {
 	if(vehicleid == INVALID_VEHICLE_ID)
@@ -893,6 +913,42 @@ hook OnPlayerEnterCheckpoint(playerid)
 	{
 		GameTextForPlayer(playerid, "~p~This is park vehicle!", 3000, 3);
 		PlayerCheckpoint[playerid] = 0; DisablePlayerCheckpoint(playerid);
+	}
+	return 1;
+}
+
+
+Dialog:DIALOG_VEHICLE_WEAPONS(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		new vehicleid = INVALID_VEHICLE_ID, str[128];
+				
+		if(!IsPlayerInAnyVehicle(playerid))
+			vehicleid = GetNearestVehicle(playerid);
+					
+		else
+		vehicleid = GetPlayerVehicleID(playerid);
+					
+		if(vehicleid == INVALID_VEHICLE_ID)
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้รถ"); 
+					
+		if(!VehicleInfo[vehicleid][eVehicleWeapons][listitem+1])
+			return SendErrorMessage(playerid, "");
+				
+		GivePlayerGun(playerid, VehicleInfo[vehicleid][eVehicleWeapons][listitem+1], VehicleInfo[vehicleid][eVehicleWeaponsAmmo][listitem+1]); 
+				
+		format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][listitem+1]), 
+		ReturnVehicleName(vehicleid)); 
+					
+		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+		SendClientMessage(playerid, COLOR_EMOTE, str);
+				
+		VehicleInfo[vehicleid][eVehicleWeapons][listitem+1] = 0; 
+		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][listitem+1] = 0; 
+				
+		SaveVehicle(vehicleid); CharacterSave(playerid);
+		return 1;
 	}
 	return 1;
 }

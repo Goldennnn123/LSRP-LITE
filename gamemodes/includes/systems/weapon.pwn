@@ -95,3 +95,30 @@ public GivePlayerGun(playerid, weaponid, ammo)
 	printf("Weapon given: IDX: %i, Weapon ID: %i", idx, PlayerInfo[playerid][pWeapons][idx]); 
 	return 1;
 }
+
+
+stock PlayerHasWeapons(playerid)
+{
+	new countWeapons = 0;
+	
+	for(new i = 0; i < 13; i ++)
+	{
+		if(PlayerInfo[playerid][pWeapons][i] != 0)
+			countWeapons++;
+	}
+	if(countWeapons == 0)
+		return 0;
+		
+	if(countWeapons > 0)
+		return 1;
+		
+	return 1;
+}
+
+stock PlayerHasWeapon(playerid, weaponid)
+{
+	if(PlayerInfo[playerid][pWeapons][ReturnWeaponIDSlot(weaponid)] != weaponid)
+		return 0;
+
+	return 1;
+}

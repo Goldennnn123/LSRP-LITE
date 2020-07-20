@@ -1,6 +1,4 @@
-
 #include <YSI\y_hooks>
-
 new PlayerCreHouse[MAX_PLAYERS][90],
     PlayerCreHousePrice[MAX_PLAYERS],
     PlayerCreHouseLevel[MAX_PLAYERS];
@@ -250,6 +248,19 @@ Dialog:DIALOG_SELETE_HOUSE(playerid, response, listitem, inputtext[])
                 {
                     HouseInfo[id][HouseInteriorWorld] = random(9000);
                 }
+
+
+                foreach(new i : Player)
+                {
+                    if(PlayerInfo[i][pInsideProperty] != id)
+                        continue;
+
+                    SetPlayerPos(i,HouseInfo[id][HouseInterior][0],HouseInfo[id][HouseInterior][1],HouseInfo[id][HouseInterior][2]);
+                    SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseInteriorWorld]);
+                    SetPlayerInterior(playerid, HouseInfo[id][HouseInteriorID]);
+                    SendServerMessage(i,"ขออภัยในความไม่สดวกเนื่องจากมีการเปลี่ยนแปลง ภายใน(Interior) อย่างกระทันหันจึงจำเป็นที่ต้องเคลื่อนย้ายตัวละครที่ท่านเล่นอยู่น  ณ ขณะนี้ไปที่ Interior");
+                    SendServerMessage(i,"....ใหม่");
+                }
                 Savehouse(id);
             }
         }
@@ -457,5 +468,47 @@ Dialog:DIALOG_SELL_HOUSE(playerid, response, listitem, inputtext[])
         Savehouse(id);
         return 1;
     }
+    return 1;
+}
+
+
+stock IsPlayerNearHouse(playerid)
+{
+	for(new i = 1; i < MAX_HOUSE; i++)
+	{
+		if(!HouseInfo[i][HouseDBID])
+			continue; 
+			
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[i][HouseEntrance][0], HouseInfo[i][HouseEntrance][1], HouseInfo[i][HouseEntrance][2]) && GetPlayerVirtualWorld(playerid) == HouseInfo[i][HouseEntranceWorld])
+			return i;
+	} 
+	return 0; 
+}
+
+
+Dialog:DIALOG_HOUSE_WEAPONS(playerid, response, listitem, inputtext[])
+{
+    if(response)
+	{
+		new
+		id = PlayerInfo[playerid][pInsideProperty],
+		str[128]
+		;
+				
+		if(!HouseInfo[id][HouseWeapons][listitem+1])
+			return SendErrorMessage(playerid, ""); 
+					
+		GivePlayerGun(playerid, HouseInfo[id][HouseWeapons][listitem+1], HouseInfo[id][HouseWeaponsAmmo][listitem+1]);
+				
+		format(str, sizeof(str), "* %s หยิบ %s ออกมาจากตู้เซฟ", ReturnName(playerid, 0), ReturnWeaponName(HouseInfo[id][HouseWeapons][listitem+1])); 
+		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+		SendClientMessage(playerid, COLOR_EMOTE, str); 
+				
+		HouseInfo[id][HouseWeapons][listitem+1] = 0; 
+		HouseInfo[id][HouseWeaponsAmmo][listitem+1] = 0; 
+			
+		CharacterSave(playerid); Savehouse(id);
+		return 1;
+	}
     return 1;
 }

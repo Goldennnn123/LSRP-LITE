@@ -28,6 +28,7 @@ public Query_LoadBusiness()
         cache_get_value_name_int(i,"BusinessPrice",BusinessInfo[i+1][BusinessPrice]);
         cache_get_value_name_int(i,"BusinessLevel",BusinessInfo[i+1][Businesslevel]);
         cache_get_value_name_int(i,"BusinessEntrancePrice",BusinessInfo[i+1][BusinessEntrancePrice]);
+        cache_get_value_name_int(i,"BusinessLock",BusinessInfo[i+1][BusinessLock]);
 
         cache_get_value_name_float(i, "BusinessEntranceX", BusinessInfo[i+1][BusinessEntrance][0]);
         cache_get_value_name_float(i, "BusinessEntranceY", BusinessInfo[i+1][BusinessEntrance][1]);
@@ -527,6 +528,20 @@ public OnPlayerNereBusinessTime()
         }
     }
     return 1;
+}
+
+
+stock IsPlayerNearBusiness(playerid)
+{
+	for(new i = 1; i < MAX_BUSINESS; i++)
+	{
+		if(!BusinessInfo[i][BusinessDBID])
+			continue;
+			
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, BusinessInfo[i][BusinessEntrance][0], BusinessInfo[i][BusinessEntrance][1], BusinessInfo[i][BusinessEntrance][2]))
+			return i;
+	}
+	return 0;
 }
 
 

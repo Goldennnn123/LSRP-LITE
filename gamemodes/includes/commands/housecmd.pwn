@@ -1,9 +1,10 @@
 CMD:housecmds(playerid, params[])
 {
-    SendClientMessage(playerid, COLOR_DARKGREEN, "______________________________________________");
+    SendClientMessage(playerid, COLOR_DARKGREEN, "____________________HOUSE COMMAND__________________________");
 
-    SendClientMessage(playerid, COLOR_GRAD2,"/buyhouse /sellhouse /lock /placepos");
-    SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
+    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /buyhouse /sellhouse /lock /placepos");
+
+    SendClientMessage(playerid, COLOR_GREEN,"________________________________________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
     return 1;
 }
@@ -64,5 +65,23 @@ CMD:sellhouse(playerid, params[])
                                                                                คุณจะได้เงินคืนแค่ครึ่งของราคาบ้านทั้งมหด\n\
                                                                                โปรดคิดให้ดีก่อนที่จะกดปุ่ม ยืนยัน", "ยืนยัน", "ยกเลิก");
 
+    return 1;
+}
+
+CMD:placepos(playerid,params[])
+{
+    new id = PlayerInfo[playerid][pInsideProperty];
+
+    if(!PlayerInfo[playerid][pInsideProperty])
+        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} คุณไม่ได้อยู่ในบ้าน");
+
+    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} บ้านหลังนี้ไม่ใช่บ้านของคุณ");
+
+    GetPlayerPos(playerid, HouseInfo[id][HousePlacePos][0], HouseInfo[id][HousePlacePos][1], HouseInfo[id][HousePlacePos][2]);
+
+
+    SendClientMessage(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FFFFFF} คุณได้วางจุดตู้เซฟไว้ตรงตำแหน่งตรงนี้แล้ว");
+    Savehouse(id);
     return 1;
 }

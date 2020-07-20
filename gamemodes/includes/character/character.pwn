@@ -418,7 +418,7 @@ public Query_LoadCharacter(playerid)
 	
 	for(new i = 0; i < 13; i++)
 	{
-		format(str, sizeof(str), "pWeapons%d", i);
+		format(str, sizeof(str), "pWeapon%d", i);
 		cache_get_value_name_int(0, str,PlayerInfo[playerid][pWeapons][i]);
 		
 		format(str, sizeof(str), "pWeaponsAmmo%d", i);

@@ -1,3 +1,4 @@
+#include <YSI\y_hooks>
 CMD:acmds(playerid, params)
 {
 	if(!PlayerInfo[playerid][pAdmin])
@@ -633,8 +634,8 @@ CMD:spec(playerid, params[])
 	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
 		
-	if(PlayerInfo[playerb][pSpectating] != INVALID_PLAYER_ID)
-		return SendErrorMessage(playerid, "คุณกำลังส่องผู้เล่นคนอื่นอยู่"); 
+	/*if(PlayerInfo[playerb][pSpectating] != INVALID_PLAYER_ID)
+		return SendErrorMessage(playerid, "คุณกำลังส่องผู้เล่นคนอื่นอยู่"); */
 		
 	//if(playerb == playerid) return SendErrorMessage(playerid, "You can't spectate yourself.");
 
@@ -648,6 +649,8 @@ CMD:spec(playerid, params[])
 			
 			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
 			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+			SendServerMessage(playerid,"X:%f Y:%f Z:%f", PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
 		}
 		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
 		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
@@ -656,7 +659,6 @@ CMD:spec(playerid, params[])
 		PlayerSpectateVehicle(playerid, vehicleid);
 			
 		PlayerInfo[playerid][pSpectating] = playerb; 
-		SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดพิมพ์", ReturnName(playerb));
 		return 1;
 	}
 	else
@@ -667,6 +669,8 @@ CMD:spec(playerid, params[])
 			
 			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
 			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+			SendServerMessage(playerid,"X:%f Y:%f Z:%f", PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
 		}
 		
 		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
@@ -676,7 +680,6 @@ CMD:spec(playerid, params[])
 		PlayerSpectatePlayer(playerid, playerb);
 			
 		PlayerInfo[playerid][pSpectating] = playerb; 
-		SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดพิมพ์", ReturnName(playerb));
 		return 1;
 	}
 }
@@ -904,6 +907,36 @@ CMD:listweapons(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_GRAD1, "%s [Ammo: %d]", ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
 	}
 		
+	return 1;
+}
+
+CMD:setplayerspawn(playerid, params[])
+{
+    if(!PlayerInfo[playerid][pAdmin])
+    return SendUnauthMessage(playerid);
+
+	new
+		playerb,
+		str[128]
+	;
+
+	if(sscanf(params, "u", playerb))
+		return SendUsageMessage(playerid, "/setplayerspawn [ชื่อบางส่วน/ไอดีผู้เล่น]");
+
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ในเซิฟ");
+
+	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลัง เข้าสู่ระบบ");
+
+	format(str, sizeof(str), "%s ได้ส่ง %s. ให้ไปเกิดที่จุดเกิดของเขาแล้ว", ReturnName(playerid), ReturnName(playerb));
+	SendAdminMessage(1, str);
+
+	SetPlayerTeam(playerb, PLAYER_STATE_ALIVE);
+	SetPlayerHealth(playerb, 100);
+	//ClearDamages(playerb);
+
+	SpawnPlayer(playerb);
 	return 1;
 }
 /// Admin Level: 1;
@@ -1979,4 +2012,73 @@ stock SendUnauthMessage(playerid)
 	SendAdminMessage(99, str);
 
 	return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ผู้ดูแลระบบ");
+}
+
+hook OnPlayerClickPlayer(playerid, clickedplayerid, source)
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return 1;
+
+	new playerb = clickedplayerid;
+
+	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER)
+	{
+		new vehicleid = GetPlayerVehicleID(playerb);
+
+		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+		{
+			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
+			SendServerMessage(playerid,"X:%f Y:%f Z:%f", PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
+		}
+
+		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
+		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
+		
+		TogglePlayerSpectating(playerid, true); 
+		PlayerSpectateVehicle(playerid, vehicleid);
+			
+		PlayerInfo[playerid][pSpectating] = playerb;
+
+		return 1;
+	}
+	else
+	{
+		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+		{
+			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
+			SendServerMessage(playerid,"X:%f Y:%f Z:%f", PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
+		}
+
+		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
+		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
+		
+		TogglePlayerSpectating(playerid, true); 
+		PlayerSpectatePlayer(playerid, playerb);
+			
+		PlayerInfo[playerid][pSpectating] = playerb;
+	}
+	return 1;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(RELEASED(KEY_WALK))
+	{
+		if(!PlayerInfo[playerid][pAdmin])
+			return 1;
+
+		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+			return 1;
+
+		
+		TogglePlayerSpectating(playerid, false);
+		return 1;
+	}
+	return 1;
 }

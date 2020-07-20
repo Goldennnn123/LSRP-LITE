@@ -37,5 +37,12 @@ stock SaveBusiness(id)
         BusinessInfo[id][BusinessDBID]);
     mysql_tquery(dbCon, query);
 
+    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessPrice = %d,BusinessLevel = %d,BusinessEntrancePrice = %d WHERE BusinessDBID = %i",
+        BusinessInfo[id][BusinessPrice],
+        BusinessInfo[id][Businesslevel],
+        BusinessInfo[id][BusinessEntrancePrice],
+        BusinessInfo[id][BusinessDBID]);
+    mysql_tquery(dbCon, query);
+
     return 1;
 }

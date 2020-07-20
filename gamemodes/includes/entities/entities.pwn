@@ -257,6 +257,9 @@ enum E_BUSINESS_INFO
 	BusinessOwnerDBID,
 
 	BusinessType,
+	BusinessPrice,
+	Businesslevel,
+	BusinessEntrancePrice,
 	
 	BusinessEntrancePickUp,
 	Float:BusinessEntrance[3],

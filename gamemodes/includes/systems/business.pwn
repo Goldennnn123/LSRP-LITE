@@ -25,6 +25,9 @@ public Query_LoadBusiness()
         cache_get_value_name_int(i,"BusinessOwnerDBID",BusinessInfo[i+1][BusinessOwnerDBID]);
 
         cache_get_value_name_int(i,"BusinessType",BusinessInfo[i+1][BusinessType]);
+        cache_get_value_name_int(i,"BusinessPrice",BusinessInfo[i+1][BusinessPrice]);
+        cache_get_value_name_int(i,"BusinessLevel",BusinessInfo[i+1][Businesslevel]);
+        cache_get_value_name_int(i,"BusinessEntrancePrice",BusinessInfo[i+1][BusinessEntrancePrice]);
 
         cache_get_value_name_float(i, "BusinessEntranceX", BusinessInfo[i+1][BusinessEntrance][0]);
         cache_get_value_name_float(i, "BusinessEntranceY", BusinessInfo[i+1][BusinessEntrance][1]);
@@ -186,6 +189,15 @@ stock ShowSelectBusiness(playerid)
         }
     }
 
+    format(infoString, sizeof(infoString), "ราคากิจการ: %s\n", MoneyFormat(BusinessInfo[id][BusinessPrice]));
+	strcat(showString, infoString);
+
+    format(infoString, sizeof(infoString), "เลเวลกิจการ: %d\n",BusinessInfo[id][Businesslevel]);
+	strcat(showString, infoString);
+
+    format(infoString, sizeof(infoString), "ค่าเข้ากิจการ: %s\n",MoneyFormat(BusinessInfo[id][BusinessEntrancePrice]));
+	strcat(showString, infoString);
+
     format(infoString, sizeof(infoString), "จุดหน้าร้าน:\n");
 	strcat(showString, infoString);
 
@@ -246,9 +258,12 @@ Dialog:DIALOG_EDITBUSINESS(playerid, response, listitem, inputtext[])
     switch(listitem)
     {
         case 0: return ShowSelectBusiness(playerid);
-        case 1: Dialog_Show(playerid, DIALOG_BU_NAME, DIALOG_STYLE_INPUT, "เปลี่ยนชื่อกิจการ","ใส่ชื่อกิจการใหม่ของคุณ:", "ยืนยัน", "ยกเลิก");
+        case 1: return Dialog_Show(playerid, DIALOG_BU_NAME, DIALOG_STYLE_INPUT, "เปลี่ยนชื่อกิจการ","ใส่ชื่อกิจการใหม่ของคุณ:", "ยืนยัน", "ยกเลิก");
         case 2: ShowSelectBusinessType(playerid);
-        case 3:
+        case 3: return Dialog_Show(playerid, DIALOG_BU_PRICE, DIALOG_STYLE_INPUT, "เปลี่ยนราคากิจการ","ใส่ราคากิจการใหม่ของคุณ:", "ยืนยัน", "ยกเลิก");
+        case 4: return Dialog_Show(playerid, DIALOG_BU_LEVEL, DIALOG_STYLE_INPUT, "เปลี่ยนเลเวลกิจการ","ใส่เลเวลใหม่ของกิจการคุณ:", "ยืนยัน", "ยกเลิก");
+        case 5: return Dialog_Show(playerid, DIALOG_BU_EN_PRICE, DIALOG_STYLE_INPUT, "เปลี่ยนค่าเข้ากิจการ","ใส่ค่าเข้ากิจการใหม่ของกิจการ:", "ยืนยัน", "ยกเลิก");
+        case 6:
         {
             new id = PlayerSelectBusiness[playerid];
             GetPlayerPos(playerid,BusinessInfo[id][BusinessEntrance][0],BusinessInfo[id][BusinessEntrance][1],BusinessInfo[id][BusinessEntrance][2]);
@@ -279,7 +294,7 @@ Dialog:DIALOG_EDITBUSINESS(playerid, response, listitem, inputtext[])
             SaveBusiness(id);
             return ShowSelectBusiness(playerid);
         }
-        case 4:
+        case 7:
         {
             new id = PlayerSelectBusiness[playerid];
             GetPlayerPos(playerid,BusinessInfo[id][BusinessInterior][0],BusinessInfo[id][BusinessInterior][1],BusinessInfo[id][BusinessInterior][2]);
@@ -320,7 +335,7 @@ Dialog:DIALOG_EDITBUSINESS(playerid, response, listitem, inputtext[])
             SaveBusiness(id);
             return ShowSelectBusiness(playerid);
         }
-        case 5:
+        case 8:
         {
             new id = PlayerSelectBusiness[playerid];
             GetPlayerPos(playerid,BusinessInfo[id][BusinessBankPickupLoc][0],BusinessInfo[id][BusinessBankPickupLoc][1],BusinessInfo[id][BusinessBankPickupLoc][2]);
@@ -420,6 +435,56 @@ Dialog:DIALOG_BU_TYPE(playerid, response, listitem, inputtext[])
     return ShowSelectBusiness(playerid);
 }
 
+Dialog:DIALOG_BU_PRICE(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return ShowSelectBusiness(playerid);
+    
+    new id = PlayerSelectBusiness[playerid];
+    new price = strval(inputtext);
+
+    if(price < 1 || price > 90000000)
+        return Dialog_Show(playerid, DIALOG_BU_PRICE, DIALOG_STYLE_INPUT, "เปลี่ยนราคากิจการ","คุณไม่สามารถใส่ราคาต่ำกว่า $1 และเกิน $90,000,000 ได้\nโปรดใส่ราคาที่ถูกต้องด้วย:", "ยืนยัน", "ยกเลิก");
+
+    BusinessInfo[id][BusinessPrice] = price;
+    SendClientMessageEx(playerid,-1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF} คุณได้เปลี่ยนราคากิจการเป็น {33FF33}$%s",MoneyFormat(price));
+    SaveBusiness(id);
+    return ShowSelectBusiness(playerid);
+}
+
+Dialog:DIALOG_BU_LEVEL(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return ShowSelectBusiness(playerid);
+    
+    new id = PlayerSelectBusiness[playerid];
+    new level = strval(inputtext);
+
+    if(level < 1 || level > 90000000)
+        return Dialog_Show(playerid, DIALOG_BU_PRICE, DIALOG_STYLE_INPUT, "เปลี่ยนราคากิจการ","คุณไม่สามารถใส่เลเวลต่ำกว่า 1 และเกิน 90,000,000 ได้\nโปรดใส่เลเวลที่ถูกต้องด้วย:", "ยืนยัน", "ยกเลิก");
+
+    BusinessInfo[id][Businesslevel] = level;
+    SendClientMessageEx(playerid,-1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF} คุณได้เปลี่ยนเลเวลกิจการเป็น {33FF33}%d",level);
+    SaveBusiness(id);
+    return ShowSelectBusiness(playerid);
+}
+
+Dialog:DIALOG_BU_EN_PRICE(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return ShowSelectBusiness(playerid);
+    
+    new id = PlayerSelectBusiness[playerid];
+    new price = strval(inputtext);
+
+    if(price < 1 || price > 90000000)
+        return Dialog_Show(playerid, DIALOG_BU_PRICE, DIALOG_STYLE_INPUT, "เปลี่ยนราคากิจการ","คุณไม่สามารถใส่ราคาต่ำกว่า $1 และเกิน $90,000,000 ได้\nโปรดใส่ราคาที่ถูกต้องด้วย:", "ยืนยัน", "ยกเลิก");
+
+    BusinessInfo[id][BusinessEntrancePrice] = price;
+    SendClientMessageEx(playerid,-1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF} คุณได้เปลี่ยนเลเวลกิจการเป็น {33FF33}$%s",MoneyFormat(price));
+    SaveBusiness(id);
+    return ShowSelectBusiness(playerid);
+}
 
 forward OnPlayerEnterBusiness(playerid,id);
 public OnPlayerEnterBusiness(playerid,id)
@@ -428,3 +493,40 @@ public OnPlayerEnterBusiness(playerid,id)
     SetPlayerPos(playerid, BusinessInfo[id][BusinessInterior][0], BusinessInfo[id][BusinessInterior][1], BusinessInfo[id][BusinessInterior][2]);
     return 1;
 }
+
+forward OnPlayerNereBusinessTime();
+public OnPlayerNereBusinessTime()
+{
+    new str[MAX_STRING];
+
+    foreach(new i : Player)
+    {
+        if(!BitFlag_Get(gPlayerBitFlag[i], IS_LOGGED))
+            continue;
+
+        for(new b = 1; b < MAX_BUSINESS; b++)
+        {
+            if(!IsPlayerInRangeOfPoint(i, 3.0, BusinessInfo[b][BusinessEntrance][0], BusinessInfo[b][BusinessEntrance][1], BusinessInfo[b][BusinessEntrance][2]))
+                continue;
+
+            if(GetPlayerInterior(i) != BusinessInfo[b][BusinessEntranceInterior])
+				continue;
+					
+			if(GetPlayerVirtualWorld(i) != BusinessInfo[b][BusinessEntranceWorld])
+				continue;
+
+            if(BusinessInfo[b][BusinessOwnerDBID])
+            {
+                format(str, sizeof(str), "%s~n~~w~Owned By : %s~n~Entrance Fee : ~g~$%d~n~~p~To use /enter", BusinessInfo[b][BusinessName], ReturnDBIDName(BusinessInfo[b][BusinessOwnerDBID]), BusinessInfo[b][BusinessEntrancePrice]); 
+            }
+            else
+            {
+                format(str, sizeof(str), "%s~n~~w~This business is for sale~n~Price : ~g~$%d~w~ Level : %d~n~~p~To buy use /buybiz", BusinessInfo[b][BusinessName], BusinessInfo[b][BusinessPrice], BusinessInfo[b][Businesslevel]); 
+            }
+            GameTextForPlayer(i, str, 3500, 3);
+        }
+    }
+    return 1;
+}
+
+

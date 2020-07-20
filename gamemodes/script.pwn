@@ -122,6 +122,7 @@ public OnGameModeInit() {
     //Timer:
     SetTimer("FunctionPlayers", 1000, true);
     SetTimer("OnPlayerNereHouseTime", 1000, true);
+    SetTimer("OnPlayerNereBusinessTime", 3000, true);
     //Timer:
 
     adminactionlog = CreateLog("server/admin_action");

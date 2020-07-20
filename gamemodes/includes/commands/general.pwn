@@ -159,8 +159,8 @@ CMD:enter(playerid,params[])
 CMD:exit(playerid, params[])
 {
 	new 
-		id = PlayerInfo[playerid][pInsideProperty]
-		//b_id
+		id = PlayerInfo[playerid][pInsideProperty],
+		b_id = PlayerInfo[playerid][pInsideBusiness]
 	;
 
 	if(id != 0)
@@ -175,6 +175,17 @@ CMD:exit(playerid, params[])
 		PlayerInfo[playerid][pInsideProperty] = 0;
 		return 1;
     }
+	if(b_id != 0)
+	{
+		if(!IsPlayerInRangeOfPoint(playerid, 3.0, BusinessInfo[b_id][BusinessInterior][0], BusinessInfo[b_id][BusinessInterior][1], BusinessInfo[b_id][BusinessInterior][2]))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ประตูทางออก");
+		
+		SetPlayerPos(playerid, BusinessInfo[b_id][BusinessEntrance][0], BusinessInfo[b_id][BusinessEntrance][1], BusinessInfo[b_id][BusinessEntrance][2]);
+		SetPlayerVirtualWorld(playerid, BusinessInfo[id][BusinessEntranceWorld]);
+		SetPlayerInterior(playerid, BusinessInfo[id][BusinessEntranceInterior]);
+		PlayerInfo[playerid][pInsideBusiness] = 0;
+		return 1;
+	}
 
 	return 1;
 }

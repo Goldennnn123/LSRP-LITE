@@ -46,24 +46,33 @@ public Query_LoadBusiness()
         cache_get_value_name_int(i,"BusinessCash",BusinessInfo[i+1][BusinessCash]);
 
 
-        if(IsValidDynamicPickup(BusinessInfo[i+1][BusinessBankPickup]))
-            DestroyDynamicPickup(BusinessInfo[i+1][BusinessBankPickup]);
+        if(IsValidDynamicPickup(BusinessInfo[i+1][BusinessEntrancePickUp]))
+            DestroyDynamicPickup(BusinessInfo[i+1][BusinessEntrancePickUp]);
 
         if(BusinessInfo[i+1][BusinessType] == BUSINESS_TYPE_RESTAURANT)
         {
             if(BusinessInfo[i+1][BusinessOwnerDBID])
             {
-                BusinessInfo[i+1][BusinessBankPickup] = CreateDynamicPickup(1239, 23, BusinessInfo[i+1][BusinessEntrance][0], BusinessInfo[i+1][BusinessEntrance][1], BusinessInfo[i+1][BusinessEntrance][2],-1,-1);
+                BusinessInfo[i+1][BusinessEntrancePickUp] = CreateDynamicPickup(1239, 23, BusinessInfo[i+1][BusinessEntrance][0], BusinessInfo[i+1][BusinessEntrance][1], BusinessInfo[i+1][BusinessEntrance][2],-1,-1);
             }
             else
             {
-                BusinessInfo[i+1][BusinessBankPickup] = CreateDynamicPickup(1274, 23, BusinessInfo[i+1][BusinessEntrance][0], BusinessInfo[i+1][BusinessEntrance][1], BusinessInfo[i+1][BusinessEntrance][2],-1,-1);
+                BusinessInfo[i+1][BusinessEntrancePickUp] = CreateDynamicPickup(1274, 23, BusinessInfo[i+1][BusinessEntrance][0], BusinessInfo[i+1][BusinessEntrance][1], BusinessInfo[i+1][BusinessEntrance][2],-1,-1);
             }
         }
         else
         {
-            BusinessInfo[i+1][BusinessBankPickup] = CreateDynamicPickup(1239, 23, BusinessInfo[i+1][BusinessEntrance][0], BusinessInfo[i+1][BusinessEntrance][1], BusinessInfo[i+1][BusinessEntrance][2],-1,-1);
+            BusinessInfo[i+1][BusinessEntrancePickUp] = CreateDynamicPickup(1239, 23, BusinessInfo[i+1][BusinessEntrance][0], BusinessInfo[i+1][BusinessEntrance][1], BusinessInfo[i+1][BusinessEntrance][2],-1,-1);
         }
+
+        if(BusinessInfo[i+1][BusinessType] == BUSINESS_TYPE_BANK)
+        {
+            if(IsValidDynamicPickup(BusinessInfo[i+1][BusinessBankPickup]))
+                    DestroyDynamicPickup(BusinessInfo[i+1][BusinessBankPickup]);
+                
+            BusinessInfo[i+1][BusinessBankPickup] = CreateDynamicPickup(1274, 23, BusinessInfo[i+1][BusinessBankPickupLoc][0], BusinessInfo[i+1][BusinessBankPickupLoc][1], BusinessInfo[i+1][BusinessBankPickupLoc][2],-1,-1);
+        }
+        
         countBusiness++;
     }
 
@@ -247,23 +256,23 @@ Dialog:DIALOG_EDITBUSINESS(playerid, response, listitem, inputtext[])
             BusinessInfo[id][BusinessEntranceWorld] = GetPlayerVirtualWorld(playerid);
             BusinessInfo[id][BusinessEntranceInterior] = GetPlayerInterior(playerid);
 
-            if(IsValidDynamicPickup(BusinessInfo[id][BusinessBankPickup]))
-                DestroyDynamicPickup(BusinessInfo[id][BusinessBankPickup]);
+            if(IsValidDynamicPickup(BusinessInfo[id][BusinessEntrancePickUp]))
+                DestroyDynamicPickup(BusinessInfo[id][BusinessEntrancePickUp]);
 
             if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_RESTAURANT)
             {
                 if(BusinessInfo[id][BusinessOwnerDBID])
                 {
-                    BusinessInfo[id][BusinessBankPickup] = CreateDynamicPickup(1239, 23, BusinessInfo[id][BusinessEntrance][0], BusinessInfo[id][BusinessEntrance][1], BusinessInfo[id][BusinessEntrance][2],-1,-1);
+                    BusinessInfo[id][BusinessEntrancePickUp] = CreateDynamicPickup(1239, 23, BusinessInfo[id][BusinessEntrance][0], BusinessInfo[id][BusinessEntrance][1], BusinessInfo[id][BusinessEntrance][2],-1,-1);
                 }
                 else
                 {
-                    BusinessInfo[id][BusinessBankPickup] = CreateDynamicPickup(1274, 23, BusinessInfo[id][BusinessEntrance][0], BusinessInfo[id][BusinessEntrance][1], BusinessInfo[id][BusinessEntrance][2],-1,-1);
+                    BusinessInfo[id][BusinessEntrancePickUp] = CreateDynamicPickup(1274, 23, BusinessInfo[id][BusinessEntrance][0], BusinessInfo[id][BusinessEntrance][1], BusinessInfo[id][BusinessEntrance][2],-1,-1);
                 }
             }
             else
             {
-                BusinessInfo[id][BusinessBankPickup] = CreateDynamicPickup(1239, 23, BusinessInfo[id][BusinessEntrance][0], BusinessInfo[id][BusinessEntrance][1], BusinessInfo[id][BusinessEntrance][2],-1,-1);
+                BusinessInfo[id][BusinessEntrancePickUp] = CreateDynamicPickup(1239, 23, BusinessInfo[id][BusinessEntrance][0], BusinessInfo[id][BusinessEntrance][1], BusinessInfo[id][BusinessEntrance][2],-1,-1);
             }
 
             SendClientMessage(playerid, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF} คุณได้เปลี่ยนจุดหน้าร้านแล้ว");
@@ -283,7 +292,7 @@ Dialog:DIALOG_EDITBUSINESS(playerid, response, listitem, inputtext[])
             {
                 BusinessInfo[id][BusinessInteriorWorld] = random(90000);
             }
-            BusinessInfo[id][BusinessEntranceInterior] = GetPlayerInterior(playerid);
+            BusinessInfo[id][BusinessInteriorID] = GetPlayerInterior(playerid);
 
             if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_BANK)
             {
@@ -292,6 +301,19 @@ Dialog:DIALOG_EDITBUSINESS(playerid, response, listitem, inputtext[])
                     BusinessInfo[id][BusinessBankPickupLoc][m] = 0;
                 }
                 SendClientMessage(playerid, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FF0033}เตือน!{D81B60} กรุณาไปวาง 'BankPickup ใหม่เนื่องจากมีการเปลี่ยน Inteior ภายใน'");
+            }
+
+            foreach(new i : Player)
+            {
+                if(PlayerInfo[i][pInsideBusiness] != id)
+                    continue;
+                
+                SetPlayerPos(i,BusinessInfo[id][BusinessInterior][0],BusinessInfo[id][BusinessInterior][1],BusinessInfo[id][BusinessInterior][2]);
+                SetPlayerVirtualWorld(i, BusinessInfo[id][BusinessInteriorWorld]);
+                SetPlayerInterior(i, BusinessInfo[id][BusinessInteriorID]);
+                PlayerInfo[i][pInsideBusiness] = id;
+
+                SendClientMessage(i, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFF00} ขออภัยในความไม่สดวกเนื่องจากมีการเปลี่ยน Interior กระทันหันจึงทำให้มีการวาปไป Interior ใหม่อัตโนมัต");
             }
 
             SendClientMessage(playerid, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF} คุณได้เปลี่ยนจุดภายในร้านแล้ว");
@@ -304,6 +326,10 @@ Dialog:DIALOG_EDITBUSINESS(playerid, response, listitem, inputtext[])
             GetPlayerPos(playerid,BusinessInfo[id][BusinessBankPickupLoc][0],BusinessInfo[id][BusinessBankPickupLoc][1],BusinessInfo[id][BusinessBankPickupLoc][2]);
             BusinessInfo[id][BusinessBankWorld] = GetPlayerVirtualWorld(playerid);
 
+            if(IsValidDynamicPickup(BusinessInfo[id][BusinessBankPickup]))
+                DestroyDynamicPickup(BusinessInfo[id][BusinessBankPickup]);
+            
+            BusinessInfo[id][BusinessBankPickup] = CreateDynamicPickup(1274, 23, BusinessInfo[id][BusinessBankPickupLoc][0], BusinessInfo[id][BusinessBankPickupLoc][1], BusinessInfo[id][BusinessBankPickupLoc][2],-1,-1);
             SendClientMessage(playerid, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF} เปลี่ยนจุด 'BankPickUp' แล่ว");
             SaveBusiness(id);
             return ShowSelectBusiness(playerid);
@@ -340,21 +366,49 @@ Dialog:DIALOG_BU_TYPE(playerid, response, listitem, inputtext[])
         case 0:
         {
             BusinessInfo[id][BusinessType] = BUSINESS_TYPE_STORE;
+            if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_BANK)
+            {
+                for(new m = 0; m < 3; m++)
+                {
+                    BusinessInfo[id][BusinessBankPickupLoc][m] = 0;
+                }
+            }
             SaveBusiness(id);
         }
         case 1:
         {
             BusinessInfo[id][BusinessType] = BUSINESS_TYPE_DEALERVEHICLE;
+            if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_BANK)
+            {
+                for(new m = 0; m < 3; m++)
+                {
+                    BusinessInfo[id][BusinessBankPickupLoc][m] = 0;
+                }
+            }
             SaveBusiness(id);
         }
         case 2:
         {
             BusinessInfo[id][BusinessType] = BUSINESS_TYPE_AMMUNITION;
+            if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_BANK)
+            {
+                for(new m = 0; m < 3; m++)
+                {
+                    BusinessInfo[id][BusinessBankPickupLoc][m] = 0;
+                }
+            }
             SaveBusiness(id);
         }
         case 3:
         {
             BusinessInfo[id][BusinessType] = BUSINESS_TYPE_RESTAURANT;
+            if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_BANK)
+            {
+                for(new m = 0; m < 3; m++)
+                {
+                    BusinessInfo[id][BusinessBankPickupLoc][m] = 0;
+                }
+            }
             SaveBusiness(id);
         }
         case 4:
@@ -366,4 +420,11 @@ Dialog:DIALOG_BU_TYPE(playerid, response, listitem, inputtext[])
     return ShowSelectBusiness(playerid);
 }
 
-//////saasaasa
+
+forward OnPlayerEnterBusiness(playerid,id);
+public OnPlayerEnterBusiness(playerid,id)
+{
+    TogglePlayerControllable(playerid, 1);
+    SetPlayerPos(playerid, BusinessInfo[id][BusinessInterior][0], BusinessInfo[id][BusinessInterior][1], BusinessInfo[id][BusinessInterior][2]);
+    return 1;
+}

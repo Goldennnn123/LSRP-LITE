@@ -126,6 +126,32 @@ CMD:enter(playerid,params[])
 		}
 
 	}
+	for(new b = 1; b < MAX_BUSINESS; b++)
+	{
+		if(!BusinessInfo[b][BusinessDBID])
+			continue;
+
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, BusinessInfo[b][BusinessEntrance][0], BusinessInfo[b][BusinessEntrance][1], BusinessInfo[b][BusinessEntrance][2]))
+		{
+			if(GetPlayerInterior(playerid) != BusinessInfo[b][BusinessEntranceWorld])
+				continue;
+					
+			if(GetPlayerVirtualWorld(playerid) != BusinessInfo[b][BusinessEntranceInterior])
+				continue;
+
+			if(!BusinessInfo[b][BusinessEntrance][0] || !BusinessInfo[b][BusinessEntrance][1] || !BusinessInfo[b][BusinessEntrance][2] || BusinessInfo[b][BusinessType] == BUSINESS_TYPE_DEALERVEHICLE)
+				return GameTextForPlayer(playerid, "~r~Close", 3000, 1);
+
+			PlayerInfo[playerid][pInsideBusiness] = b;
+
+			SetPlayerPos(playerid, BusinessInfo[b][BusinessInterior][0], BusinessInfo[b][BusinessInterior][1], BusinessInfo[b][BusinessInterior][2] - 3);
+			SetPlayerVirtualWorld(playerid, BusinessInfo[b][BusinessInteriorWorld]);
+			SetPlayerInterior(playerid, BusinessInfo[b][BusinessEntranceInterior]);
+
+			TogglePlayerControllable(playerid, 0);
+			SetTimerEx("OnPlayerEnterBusiness", 2000, false, "ii", playerid, b); 
+		}
+	}
 
 	return 1;
 }

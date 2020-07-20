@@ -258,6 +258,7 @@ enum E_BUSINESS_INFO
 
 	BusinessType,
 	
+	BusinessEntrancePickUp,
 	Float:BusinessEntrance[3],
 	BusinessEntranceWorld,
 	BusinessEntranceInterior,

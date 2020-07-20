@@ -1038,7 +1038,26 @@ CMD:gotohouse(playerid, params[])
 }
 CMD:gotobusiness(playerid, params[])
 {
+	if(PlayerInfo[playerid][pAdmin] < 2)
+		return SendUnauthMessage(playerid);
 
+	new id;
+	
+	if(sscanf(params, "i", id))
+		return SendUsageMessage(playerid, "/gotobusiness [ไอดี-กิจการ]");
+
+	if(!BusinessInfo[id][BusinessDBID] || id > MAX_BUSINESS)
+		return SendErrorMessage(playerid, "ไม่มีกิจการที่ต้องการ");
+	
+	SetPlayerPos(playerid, BusinessInfo[id][BusinessEntrance][0], BusinessInfo[id][BusinessEntrance][1], BusinessInfo[id][BusinessEntrance][2]);
+	SetPlayerVirtualWorld(playerid, BusinessInfo[id][BusinessEntranceWorld]);
+	SetPlayerInterior(playerid, BusinessInfo[id][BusinessEntranceInterior]);
+
+	if(PlayerInfo[playerid][pInsideBusiness] || PlayerInfo[playerid][pInsideProperty])
+	{
+		PlayerInfo[playerid][pInsideBusiness] = 0;
+		PlayerInfo[playerid][pInsideProperty] = 0;
+	}
 	return 1;
 }
 

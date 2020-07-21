@@ -6,7 +6,6 @@
 	"dependencies": [
 		"sampctl/samp-stdlib",
 		"Zeex/samp-plugin-crashdetect",
-		"aktah/YSI-Includes",
 		"pBlueG/SA-MP-MySQL",
 		"Southclaws/samp-whirlpool",
 		"aktah/easyDialog",
@@ -15,17 +14,11 @@
 		"oscar-broman/strlib",
 		"maddinat0r/sscanf",
 		"samp-incognito/samp-streamer-plugin",
-		"aktah/SAMP-CEFix"
+		"aktah/SAMP-CEFix",
+		"pawn-lang/YSI-Includes@5.x",
+		"Awsomedude/easyDialog"
 	],
 	"local": true,
-	"builds": [
-		{
-			"name": "main",
-			"includes": [
-				"includes"
-			]
-		}
-	],
 	"runtime": {
 		"version": "0.3.DL-R1",
 		"mode": "server",
@@ -64,5 +57,14 @@
 		"conncookies": true,
 		"cookielogging": false,
 		"output": true
-	}
+	},
+	"builds": [
+		{
+			"name": "main",
+			"includes": [
+				"includes"
+			],
+			"compiler": {}
+		}
+	]
 }

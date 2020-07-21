@@ -142,7 +142,7 @@ CMD:enter(playerid,params[])
 			if(GetPlayerMoney(playerid) < BusinessInfo[b][BusinessEntrancePrice])
 				return GameTextForPlayer(playerid, "~r~You don't have money", 3000, 1);
 
-			if(!BusinessInfo[b][BusinessEntrance][0] || !BusinessInfo[b][BusinessEntrance][1] || !BusinessInfo[b][BusinessEntrance][2] || BusinessInfo[b][BusinessType] == BUSINESS_TYPE_DEALERVEHICLE)
+			if(!BusinessInfo[b][BusinessInterior][0] || !BusinessInfo[b][BusinessInterior][1] || !BusinessInfo[b][BusinessInterior][2] || BusinessInfo[b][BusinessType] == BUSINESS_TYPE_DEALERVEHICLE)
 				return GameTextForPlayer(playerid, "~r~Close", 3000, 1);
 
 			if(BusinessInfo[b][BusinessLock] == true || PlayerInfo[playerid][pAdminDuty] || BusinessInfo[b][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
@@ -478,6 +478,38 @@ CMD:place(playerid, params[])
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4000); 
 		SendClientMessage(playerid, COLOR_EMOTE, str);
 		SaveVehicle(vehicleid); 
+	}
+	else if(IsPlayerInHouse(playerid) != 0)
+	{
+		new
+			id = IsPlayerInHouse(playerid),
+			pid
+		;
+
+		if(!IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[id][HousePlacePos][0], HouseInfo[id][HousePlacePos][1], HouseInfo[id][HousePlacePos][2]))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้จุดตู้เซฟ");
+
+		for(new i = 1; i < 22; i++)
+		{
+			if(!HouseInfo[id][HouseWeapons][i])
+			{
+				pid = i;
+				break;
+			}
+		}
+
+		HouseInfo[id][HouseWeapons][pid] = weaponid;
+		HouseInfo[id][HouseWeaponsAmmo][pid] = PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)];
+
+		PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
+		PlayerInfo[playerid][pWeapons][ReturnWeaponIDSlot(weaponid)] = 0;
+
+		RemovePlayerWeapon(playerid, weaponid);
+
+		format(str, sizeof(str), "* %s ได้วาง %s ไว้ในตู้เซฟ", ReturnName(playerid, 0), ReturnWeaponName(weaponid));
+		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4000); 
+		SendClientMessage(playerid, COLOR_EMOTE, str);
+		CharacterSave(playerid); Savehouse(id);
 	}
 	return 1;
 }

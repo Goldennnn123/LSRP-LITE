@@ -1,6 +1,6 @@
 //-----------------------==============[By DJordjevic Modern House Interior]==============-------------------------
 //-----------------------==============[Contact https://www.facebook.com/mihailo.djordjevic.90]==============-------------------------
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 hook OnGameModeInit()
 {

@@ -11,9 +11,13 @@
 //#include <progress2>    // Southclaws/progress2
 
 // YSI Include : aktah/YSI-Includes
-#include <YSI\y_timers>
-#include <YSI\y_hooks>
-#include <YSI\y_va>
+#define YSI_YES_HEAP_MALLOC
+#define YSI_NO_OPTIMISATION_MESSAGE
+#define YSI_NO_MODE_CACHE
+#define YSI_NO_VERSION_CHECK
+#include <YSI_Coding\y_timers>
+#include <YSI_Coding\y_hooks>
+#include <YSI_Coding\y_va>
 
 #include <streamer>      // maddinat0r/sscanf        //aktah/SAMP-CEFixs
 #include <sscanf2>      // maddinat0r/sscanf
@@ -24,7 +28,6 @@
 #include <log-plugin>   // maddinat0r/samp-log
 #include <strlib>
 #include <CEFix>
-
 /*======================================================================================================
 										[Macros]
 =======================================================================================================*/
@@ -126,6 +129,7 @@ public OnGameModeInit() {
     SetTimer("FunctionPlayers", 1000, true);
     SetTimer("OnPlayerNereHouseTime", 1000, true);
     SetTimer("OnPlayerNereBusinessTime", 3000, true);
+    SetTimer("OnWeaponsUpdate", 1000, true);
     //Timer:
 
     adminactionlog = CreateLog("server/admin_action");

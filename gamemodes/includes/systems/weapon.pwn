@@ -122,3 +122,36 @@ stock PlayerHasWeapon(playerid, weaponid)
 
 	return 1;
 }
+
+
+forward OnWeaponsUpdate();
+public OnWeaponsUpdate()
+{
+	foreach(new i : Player)
+	{
+		if(!BitFlag_Get(gPlayerBitFlag[i], IS_LOGGED))
+			continue;
+		
+		if(!PlayerHasWeapons(i))
+			continue;
+			
+		for (new w = 0; w < 13; w++)
+		{
+			new idx = WeaponDataSlot(PlayerInfo[i][pWeapons][w]); 
+			
+			if(PlayerInfo[i][pWeapons][w] != 0 && PlayerInfo[i][pWeaponsAmmo][w] > 0)
+			{
+				GetPlayerWeaponData(i, idx, PlayerInfo[i][pWeapons][w], PlayerInfo[i][pWeaponsAmmo][w]); 
+			}
+			
+			if(PlayerInfo[i][pWeapons][w] != 0 && PlayerInfo[i][pWeaponsAmmo][w] == 0)
+			{
+				PlayerInfo[i][pWeapons][w] = 0;
+				//Removing 0 ammo weapons;
+			}
+		}
+			
+		return 1;
+	}
+	return 1;
+}

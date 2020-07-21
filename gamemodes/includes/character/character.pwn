@@ -1,4 +1,4 @@
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 //Character Selection:
 #define MAX_CHARSELECT_TEXTDRAW		(20) // +1 if display server logo, +5 for New Character button
@@ -337,7 +337,7 @@ CharacterSave(playerid, force = false)
 
 		for(new i = 0; i < 13; i++)
 		{
-			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pWeapons%d = %i, pWeaponsAmmo%d = %i WHERE char_dbid = %i",
+			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pWeapon%d = %i, pWeaponsAmmo%d = %i WHERE char_dbid = %i",
 				i,
 				PlayerInfo[playerid][pWeapons][i],
 				i,

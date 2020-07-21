@@ -1,4 +1,4 @@
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 CMD:acmds(playerid, params)
 {
 	if(!PlayerInfo[playerid][pAdmin])

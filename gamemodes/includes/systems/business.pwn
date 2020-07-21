@@ -1,4 +1,4 @@
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 
 #define BUSINESS_TYPE_STORE         (1)
@@ -9,6 +9,12 @@
 
 
 new PlayerSelectBusiness[MAX_PLAYERS];
+
+hook OnPlayerConnect(playerid)
+{
+    PlayerSelectBusiness[playerid] = 0;
+    return 1;
+}
 
 forward Query_LoadBusiness();
 public Query_LoadBusiness()
@@ -560,5 +566,197 @@ stock CountPlayerBusiness(playerid)
 	}
 	return count;
 }
+
+
+Dialog:DIALOG_SELL_BU(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return SendClientMessage(playerid, -1, "ยกเลิกการขายกิจการแล้ว");
+
+    new id = PlayerInfo[playerid][pInsideBusiness];
+
+    if(id == 0)
+        return SendErrorMessage(playerid,"คุณไม่ได้อยู่ในกิจการ");
+
+    if(BusinessInfo[id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid,"คุณได้ม่ได้เป็นเจ้าของกิจการนี้");
+
+    new BusinessPrices = BusinessInfo[id][BusinessPrice] / 2;
+    new BusinessCashs = BusinessInfo[id][BusinessCash];
+
+    GivePlayerMoney(playerid, BusinessPrices + BusinessCashs);
+
+    SendClientMessageEx(playerid, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFF33} คุณได้ขายกิจการแล้ว คุณได้รับจากิจการทั้งหมด $%s ซึ่งเป็นเงินจาก ราคากิจการ หารครึ่ง และเงินเก็บใน",MoneyFormat(BusinessPrices + BusinessCashs));
+    SendClientMessage(playerid, -1,"{FFFF33}กิจการของคุณ");
+
+    BusinessInfo[id][BusinessCash] = 0;
+    BusinessInfo[id][BusinessOwnerDBID] = 0;
+    SaveBusiness(id); CharacterSave(playerid);
+    return 1;
+}
+
+stock ShowPlayerBusiness(playerid)
+{
+    new str[MAX_STRING];
+
+    for(new b_id = 1; b_id < MAX_BUSINESS; b_id++)
+    {
+        if(BusinessInfo[b_id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
+            continue;
+        
+        format(str, sizeof(str), "ชื่อกิจการ: %s\n\
+                                  ค่าทางเข้ากิจการ: %s\n\
+                                  เงินในกิจการ: %s",BusinessInfo[b_id][BusinessName],MoneyFormat(BusinessInfo[b_id][BusinessEntrancePrice]),MoneyFormat(BusinessInfo[b_id][BusinessCash]));
+        
+        PlayerSelectBusiness[playerid] = b_id;
+    }
+
+    Dialog_Show(playerid, DIALOG_BU_EDIT, DIALOG_STYLE_LIST, "Business Managment", str, "ยืนยัน", "ยกเลิก");
+    return 1;
+}
+
+Dialog:DIALOG_BU_EDIT(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+    
+    //new id = PlayerSelectBusiness[playerid];
+
+    switch(listitem)
+    {
+        case 0: return ShowPlayerBusiness(playerid);
+        case 1:
+        {
+            Dialog_Show(playerid, DIALOG_BU_CH_ENTERPRICE, DIALOG_STYLE_INPUT, "Business Managment: เปลี่ยนค่าทางเข้า", "ใส่ราคาทางเข้าใหม่ของกิจการ:", "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+        case 2:
+        {
+            new str[600];
+
+            format(str, sizeof(str), "ถอนเงินกิจการ:\n\
+                                      นำเงินเข้ากิจการ:");
+
+            Dialog_Show(playerid, DIALOG_BU_CASH, DIALOG_STYLE_LIST, "Business Managment: เงินกิจการ", str, "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+    }
+    return 1;
+}
+
+Dialog:DIALOG_BU_CH_ENTERPRICE(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return ShowPlayerBusiness(playerid);
+    
+    new price = strval(inputtext);
+
+
+    new id = PlayerSelectBusiness[playerid];
+
+    if(price > 1500)
+        return Dialog_Show(playerid, DIALOG_BU_CH_ENTERPRICE, DIALOG_STYLE_INPUT, "Business Managment: เปลี่ยนค่าทางเข้า", "คุณใส่ราคาเกิน $1,500 โปรดใส่ราคาให้ถูกต้อง:", "ยืนยัน", "ยกเลิก");
+
+    BusinessInfo[id][BusinessEntrancePrice] = price;
+    SaveBusiness(id);
+    return ShowPlayerBusiness(playerid);
+}
+Dialog:DIALOG_BU_CASH(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return ShowPlayerBusiness(playerid);
+    
+    //new id = PlayerSelectBusiness[playerid];
+
+    switch(listitem)
+    {
+        case 0: return Dialog_Show(playerid, DIALOG_BU_CASH_WIHDRAW, DIALOG_STYLE_INPUT, "Business Managment: ถอนเงินกิจการ", "ใส่จำนวนเงินที่จะถอนจากกิจการ:", "ยืนยัน", "ยกเลิก");
+        case 1: return Dialog_Show(playerid, DIALOG_BU_CASH_DEPOSIT, DIALOG_STYLE_INPUT, "Business Managment: ฝากเงินกิจการ", "ใส่จำนวนเงินที่จะฝากเข้ากิจการ:", "ยืนยัน", "ยกเลิก");
+    }
+
+    return 1;
+}
+
+Dialog:DIALOG_BU_CASH_WIHDRAW(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+    {
+        new str[600];
+
+        format(str, sizeof(str), "ถอนเงินกิจการ:\n\
+                                  นำเงินเข้ากิจการ:");
+
+        Dialog_Show(playerid, DIALOG_BU_CASH, DIALOG_STYLE_LIST, "Business Managment: เงินกิจการ", str, "ยืนยัน", "ยกเลิก");
+        return 1;
+    }
+
+    new id = PlayerSelectBusiness[playerid];
+
+    new witdraw = strval(inputtext);
+
+    if(witdraw < 1)
+    {
+        new str[600];
+
+        format(str, sizeof(str), "ถอนเงินกิจการ:\n\
+                                  นำเงินเข้ากิจการ:");
+
+        Dialog_Show(playerid, DIALOG_BU_CASH, DIALOG_STYLE_LIST, "Business Managment: เงินกิจการ", str, "ยืนยัน", "ยกเลิก");
+        return 1;
+    }
+
+    if(witdraw > BusinessInfo[id][BusinessCash])
+        return Dialog_Show(playerid, DIALOG_BU_CASH_WIHDRAW, DIALOG_STYLE_INPUT, "Business Managment: ถอนเงินกิจการ", "เงินในกิจการของคุณไม่เพียง กรุณาใส่จำนวนให้ถูกต้อง:", "ยืนยัน", "ยกเลิก");
+
+    BusinessInfo[id][BusinessCash] -= witdraw;
+    GivePlayerMoney(playerid, witdraw);
+    SendClientMessageEx(playerid, -1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF5722} คุณได้ถอนเงินจากกิจการของคุณจำนวน {4CAF50}$%s {FF5722}เงินในกิจการของคุณเหลือ {42A5F5}$%s",MoneyFormat(witdraw),MoneyFormat(BusinessInfo[id][BusinessCash]));
+    SaveBusiness(id); CharacterSave(playerid);
+    return ShowPlayerBusiness(playerid);
+}
+
+Dialog:DIALOG_BU_CASH_DEPOSIT(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+    {
+        new str[600];
+
+        format(str, sizeof(str), "ถอนเงินกิจการ:\n\
+                                  นำเงินเข้ากิจการ:");
+
+        Dialog_Show(playerid, DIALOG_BU_CASH, DIALOG_STYLE_LIST, "Business Managment: เงินกิจการ", str, "ยืนยัน", "ยกเลิก");
+        return 1;
+    }
+
+    new id = PlayerSelectBusiness[playerid];
+
+    new deposit = strval(inputtext);
+    new Mymoney = GetPlayerMoney(playerid);
+
+    if(deposit < 1)
+    {
+        new str[600];
+
+        format(str, sizeof(str), "ถอนเงินกิจการ:\n\
+                                  นำเงินเข้ากิจการ:");
+
+        Dialog_Show(playerid, DIALOG_BU_CASH, DIALOG_STYLE_LIST, "Business Managment: เงินกิจการ", str, "ยืนยัน", "ยกเลิก");
+        return 1;
+    }
+
+    if(deposit > Mymoney)
+        return Dialog_Show(playerid, DIALOG_BU_CASH_DEPOSIT, DIALOG_STYLE_INPUT, "Business Managment: ฝากเงินเข้ากิจการ", "เงินในตัวของคุณไม่เพียง กรุณาใส่จำนวนให้ถูกต้อง:", "ยืนยัน", "ยกเลิก");
+
+    BusinessInfo[id][BusinessCash] += deposit;
+    GivePlayerMoney(playerid, -deposit);
+    SendClientMessageEx(playerid, -1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF5722} คุณได้ฝากเงินเข้ากิจการของคุณจำนวน {4CAF50}$%s {FF5722}เงินในตัวของคุณเหลือ {42A5F5}$%s",MoneyFormat(deposit),MoneyFormat(deposit - Mymoney));
+    SaveBusiness(id); CharacterSave(playerid);
+    return ShowPlayerBusiness(playerid);
+}
+
+
+
+
+
 
 

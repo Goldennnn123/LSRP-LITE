@@ -3,7 +3,6 @@ CMD:bizcmd(playerid, params[])
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________________BUSINESS COMMAND__________________________");
 
     SendClientMessage(playerid, COLOR_GRAD2,"[BUSINESS] /buybiz /sellbiz /lock /biz");
-
     SendClientMessage(playerid, COLOR_GREEN,"________________________________________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
     return 1;
@@ -53,3 +52,30 @@ CMD:buybiz(playerid,params[])
     else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้บริเวณกิจการที่ต้องการ ซื้อ");
     return 1;
 }
+
+CMD:sellbiz(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideBusiness];
+    new str[MAX_STRING];
+    
+    if(id != 0)
+    {
+        if(BusinessInfo[id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
+            return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของกิจการ");
+
+        format(str, sizeof(str), "{FFFFFF}คุณแน่ในหรือป่าวที่จะ ขายกิจการของคุณ การขายกิจการนี้คุณจะได้รับเงินจำนวน {2ECC71}$%s{FFFFFF} เงินจำนวนนี้คือเงินครึ่งนึงของราคาเต็มในกิจการหากคุณขายกิจการแล้ว\n\
+                                  คุณจะไม่สามารถจัดการกิจการของคุณได้อีกเลย ขอให้คุณคิดให้ดีก่อนจะตอบ 'ยืนยัน'",MoneyFormat(BusinessInfo[id][BusinessPrice] / 2));
+        Dialog_Show(playerid, DIALOG_SELL_BU, DIALOG_STYLE_MSGBOX, "คุณมั่นใจ?", str, "ยินยัน", "ยกเลิก");
+        return 1;
+    }
+    else SendErrorMessage(playerid, "คุณไม่ได้อยู่ในกิจการ");
+    return 1;
+}
+
+CMD:biz(playerid,params[])
+{   
+    ShowPlayerBusiness(playerid);
+    return 1;
+}
+
+

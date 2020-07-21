@@ -1,4 +1,4 @@
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 new PlayerCreHouse[MAX_PLAYERS][90],
     PlayerCreHousePrice[MAX_PLAYERS],
     PlayerCreHouseLevel[MAX_PLAYERS];
@@ -511,4 +511,17 @@ Dialog:DIALOG_HOUSE_WEAPONS(playerid, response, listitem, inputtext[])
 		return 1;
 	}
     return 1;
+}
+
+stock IsPlayerInHouse(playerid)
+{
+	if(PlayerInfo[playerid][pInsideProperty])
+	{
+		for(new i = 1; i < MAX_HOUSE; i++)
+		{
+			if(i == PlayerInfo[playerid][pInsideProperty] && GetPlayerVirtualWorld(playerid) == HouseInfo[i][HouseInteriorWorld])
+				return i;
+		}
+	}
+	return 0;
 }

@@ -1,4 +1,4 @@
-#include <YSI\y_hooks> // pawn-lang/YSI-Includes
+#include <YSI_Coding\y_hooks> // pawn-lang/YSI-Includes
 
 #define MAX_COOLDOWNS 4
 

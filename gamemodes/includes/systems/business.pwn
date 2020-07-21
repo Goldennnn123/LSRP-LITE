@@ -106,6 +106,9 @@ public Query_InsertBusiness(playerid,newid,type,name)
     BusinessInfo[newid][BusinessEntrance][1] = Y;
     BusinessInfo[newid][BusinessEntrance][2] = Z;
 
+    BusinessInfo[newid][BusinessPrice] = 5000;
+    BusinessInfo[newid][Businesslevel] = 1;
+
     if(IsValidDynamicPickup(BusinessInfo[newid][BusinessEntrancePickUp]))
         DestroyDynamicPickup(BusinessInfo[newid][BusinessEntrancePickUp]);
 
@@ -118,14 +121,14 @@ public Query_InsertBusiness(playerid,newid,type,name)
         BusinessInfo[newid][BusinessEntrancePickUp] = CreateDynamicPickup(1239, 23, X, Y, Z,-1,-1);
     }
 
-    SendClientMessageEx(playerid, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF}คุณได้สร้างกิจการ %s ไอดี %d ขึ้นมา", BusinessInfo[newid][BusinessName],cache_insert_id());
+    SendClientMessageEx(playerid, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF}คุณได้สร้างกิจการ %s ไอดี %d ขึ้นมา", BusinessInfo[newid][BusinessName],newid);
 
     new str[MAX_STRING];
 
-    format(str, sizeof(str), "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF} %s {FFFFFF}ได้สร้างกิจการ ID {66FFFF}%d {FFFFFF}แล้ว",ReturnRealName(playerid),cache_insert_id());
+    format(str, sizeof(str), "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFFFF} %s {FFFFFF}ได้สร้างกิจการ ID {66FFFF}%d {FFFFFF}แล้ว",ReturnRealName(playerid),newid);
 	SendAdminMessage(2, str);
 
-    SaveBusiness(cache_insert_id());
+    SaveBusiness(newid);
     return 1;
 }
 
@@ -752,6 +755,56 @@ Dialog:DIALOG_BU_CASH_DEPOSIT(playerid, response, listitem, inputtext[])
     SendClientMessageEx(playerid, -1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF5722} คุณได้ฝากเงินเข้ากิจการของคุณจำนวน {4CAF50}$%s {FF5722}เงินในตัวของคุณเหลือ {42A5F5}$%s",MoneyFormat(deposit),MoneyFormat(deposit - Mymoney));
     SaveBusiness(id); CharacterSave(playerid);
     return ShowPlayerBusiness(playerid);
+}
+
+stock RemoveBusiness(playerid,id)
+{
+    new delBusiness[MAX_STRING];
+
+    mysql_format(dbCon, delBusiness, sizeof(delBusiness), "DELETE FROM business WHERE BusinessDBID = %d", BusinessInfo[id][BusinessDBID]);
+	mysql_tquery(dbCon, delBusiness); 
+
+    BusinessInfo[id][BusinessDBID] = 0;
+    format(BusinessInfo[id][BusinessName], BusinessInfo[id][BusinessName], "");
+    BusinessInfo[id][BusinessOwnerDBID] = 0;
+    BusinessInfo[id][BusinessType] = 0;
+    BusinessInfo[id][BusinessEntrance][0] = 0;
+    BusinessInfo[id][BusinessEntrance][1] = 0;
+    BusinessInfo[id][BusinessEntrance][2] = 0;
+    BusinessInfo[id][BusinessEntranceWorld] = 0;
+    BusinessInfo[id][BusinessEntranceInterior] = 0;
+
+    BusinessInfo[id][BusinessInterior][0] = 0;
+    BusinessInfo[id][BusinessInterior][1] = 0;
+    BusinessInfo[id][BusinessInterior][2] = 0;
+    BusinessInfo[id][BusinessInteriorWorld] = 0;
+    BusinessInfo[id][BusinessInteriorID] = 0;
+
+    BusinessInfo[id][BusinessBankPickupLoc][0] = 0;
+    BusinessInfo[id][BusinessBankPickupLoc][1] = 0;
+    BusinessInfo[id][BusinessBankPickupLoc][2] = 0;
+    BusinessInfo[id][BusinessBankWorld] = 0;
+
+    BusinessInfo[id][BusinessCash] = 0;
+
+    BusinessInfo[id][BusinessPrice] = 0;
+    BusinessInfo[id][Businesslevel] = 0;
+    BusinessInfo[id][BusinessEntrancePrice] = 0;
+
+    BusinessInfo[id][BusinessLock] = true;
+
+    if(IsValidDynamicPickup(BusinessInfo[id][BusinessEntrancePickUp]))
+        DestroyDynamicPickup(BusinessInfo[id][BusinessEntrancePickUp]);
+
+    if(IsValidDynamicPickup(BusinessInfo[id][BusinessBankPickup]))
+        DestroyDynamicPickup(BusinessInfo[id][BusinessBankPickup]);
+
+
+    new str[MAX_STRING];
+    format(str, sizeof(str), "ผู้ดูแล %d: %s ได้ลบกิจการ ไอดี %d ออกจากเซืฟเวร์แล้ว", PlayerInfo[playerid][pAdmin], ReturnRealName(playerid), id);
+    SendAdminMessage(5,str);
+
+    return 1;
 }
 
 

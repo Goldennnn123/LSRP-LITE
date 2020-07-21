@@ -1872,6 +1872,62 @@ CMD:viewbusiness(playerid, params[])
 	ShowViewBusiness(playerid);
 	return 1;
 }
+
+alias:deletebusiness("delbusiness")
+CMD:deletebusiness(playerid,params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+    new id;
+	if(sscanf(params, "d", id))
+	{
+		SendUsageMessage(playerid,"/del(ete)business [ไอดี-กิจการ]");
+		return 1;
+	}
+
+	if(!BusinessInfo[id][BusinessDBID] || id > MAX_BUSINESS)
+		return SendErrorMessage(playerid, "ไม่มี ไอดี กิจการที่คุณต้องการ");
+
+	if(!BusinessInfo[id][BusinessOwnerDBID])
+	{	
+		RemoveBusiness(playerid,id);
+		return 1;
+	}
+
+	if(BusinessInfo[id][BusinessOwnerDBID])
+	{
+		new OwnerBusiness = BusinessInfo[id][BusinessOwnerDBID];
+		new AddMoney[MAX_STRING];
+		
+		foreach(new i : Player)
+		{
+			
+			if(PlayerInfo[i][pDBID] != OwnerBusiness)
+			{
+				mysql_format(dbCon, AddMoney, sizeof(AddMoney), "UPDATE characters SET pBank = %d WHERE char_dbid = %i",	
+					BusinessInfo[id][BusinessPrice] + BusinessInfo[id][BusinessCash],
+					OwnerBusiness);
+				mysql_tquery(dbCon, AddMoney);
+			}
+			else
+			{	
+				GivePlayerMoney(i, BusinessInfo[id][BusinessPrice]);
+
+				if(BusinessInfo[id][BusinessCash])
+					GivePlayerMoney(i, BusinessInfo[id][BusinessCash]);
+				
+				SendClientMessage(playerid, -1, "{33FF66}BUSINESS {F57C00}SYSTEM:{FF0000} ขออภัยในความไม่สดวกเนื่องจากมีการลบกิจการของท่านออกจากเซืฟเวอร์ไปแล้ว โดยผู้ดูแลระบบจึงจำเป็น");
+				SendClientMessageEx(playerid, -1, "{FF0000}...จะต้องขอประทานทภัยด้วยถ้าหากผู้ดูแลระบบไม่ได้แจ้งเตือนท่านล่วงหน้าหากมีข้อสงสัยสามารถสอบถามได้ที่ฟอรั่มหรือ /report [สอบถามกิจการ]");
+				CharacterSave(i);
+			}
+		}
+
+		RemoveBusiness(playerid,id);
+		return 1;
+	}
+	return 1;
+}
 // Admin Level: 1336;
 
 // Admin Level: 1337:
@@ -1925,10 +1981,6 @@ CMD:makefaction(playerid, params[])
 }
 CMD:makeadmin(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 1340)
-		return SendUnauthMessage(playerid);
-
-    
     return 1;
 }
 // Admin Level: 1339;

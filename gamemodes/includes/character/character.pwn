@@ -324,10 +324,6 @@ CharacterSave(playerid, force = false)
 			e_pAccountData[playerid][mDBID]);
 		mysql_tquery(dbCon, query);
 
-
-		mysql_bool(query, "pAdminjailed",PlayerInfo[playerid][pAdminjailed]);
-		mysql_int(query, "pAdminjailTime", PlayerInfo[playerid][pAdminjailTime]);
-
 		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pAdminjailed = %i, pAdminjailTime = %i WHERE char_dbid = %i",	
 			PlayerInfo[playerid][pAdminjailed],
 			PlayerInfo[playerid][pAdminjailTime],

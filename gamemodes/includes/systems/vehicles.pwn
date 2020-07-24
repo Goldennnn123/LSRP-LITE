@@ -593,6 +593,10 @@ CMD:vehicle(playerid, params[])
 	{
 		ShowVehicleList(playerid);
 	}
+	else if(!strcmp(oneString, "buy"))
+	{
+		ShowVehicleBuy(playerid);
+	}
 	return 1;
 }
 

@@ -23,7 +23,7 @@
 #include <sscanf2>      // maddinat0r/sscanf
 #include <whirlpool>    // Southclaws/samp-whirlpool
 #include <a_mysql>      // pBlueG/SA-MP-MySQL 
-#include <PAWN.CMD>     // urShadow/Pawn.CMD
+#include <Pawn.CMD>     // urShadow/Pawn.CMD
 #include <easyDialog>   // aktah/easyDialog
 #include <log-plugin>   // maddinat0r/samp-log
 #include <strlib>
@@ -79,6 +79,8 @@ new
 #include "includes/systems/faction.pwn"
 #include "includes/systems/house.pwn"
 #include "includes/systems/business.pwn"
+
+#include "includes/systems/textdraw/ui_vehiclebuy.pwn"
 
 #include "includes/jobs/farmer.pwn"
 #include "includes/jobs/fisher.pwn"

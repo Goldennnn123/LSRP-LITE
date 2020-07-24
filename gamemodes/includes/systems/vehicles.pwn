@@ -6,6 +6,16 @@ new gLastCar[MAX_PLAYERS];
 new gPassengerCar[MAX_PLAYERS];
 new playerInsertID[MAX_PLAYERS];
 
+
+new PlayerVehicleScrap[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	PlayerVehicleScrap[playerid] = 0;
+	return 1;
+}
+
 static const UnscrambleWord[][] = {
 	"SPIDER", "DROP", "HIRE", "EARTH", "GOLD", "HEART", "FLOWER", "KNIFE",
 	"POOL", "BEACH", "HEEL", "APPLE", "ART", "BEAN", "BEHIND", "AWAY",
@@ -134,6 +144,8 @@ stock ResetVehicleVars(vehicleid)
 	VehicleInfo[vehicleid][eVehicleLights] = false;
 	
 	VehicleInfo[vehicleid][eVehicleTruck] = 0;
+
+	VehicleInfo[vehicleid][eVehiclePrice] = 0;
 	return 1;
 }
 
@@ -589,13 +601,105 @@ CMD:vehicle(playerid, params[])
 		ResetVehicleVars(vehicleid);
 		DestroyVehicle(vehicleid); 
 	}
+	else if(!strcmp(oneString, "buypark"))
+	{
+		if(!IsPlayerInAnyVehicle(playerid))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
+		
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
+
+		if(PlayerInfo[playerid][pVehicleSpawned] == false) return SendErrorMessage(playerid, "รถของคุณไม่ได้ถูกนำออกมา");
+
+		if(PlayerInfo[playerid][pCash] < 5000)
+			return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ");
+
+		new  vehicleid = GetPlayerVehicleID(playerid);
+
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+			return SendErrorMessage(playerid, "คุณไม่ไช่เจ้าของรถ");
+
+		GetVehiclePos(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2]);
+		GetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][3]); 
+		
+		VehicleInfo[vehicleid][eVehicleParkInterior] = GetPlayerInterior(playerid);
+		VehicleInfo[vehicleid][eVehicleParkWorld] = GetPlayerVirtualWorld(playerid); 
+		
+		SendServerMessage(playerid, "คุณได้ซื้อพื้นที่จอดรถใหม่ในราคา $5,000.");
+		GiveMoney(playerid, -5000);
+		SaveVehicle(vehicleid);
+	}
 	else if(!strcmp(oneString, "list"))
 	{
 		ShowVehicleList(playerid);
 	}
 	else if(!strcmp(oneString, "buy"))
 	{
+		new id = IsPlayerNearBusiness(playerid);
+		
+		if(id == 0)
+			return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
+
+		if(BusinessInfo[id][BusinessType] != 2)
+			return SendErrorMessage(playerid,"คุณไม่ได้อยู่ร้านขายรถ");
+
+		
 		ShowVehicleBuy(playerid);
+	}
+	else if(!strcmp(oneString, "duplicatekey"))
+	{
+		if(!IsPlayerInAnyVehicle(playerid))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
+
+		if(PlayerInfo[playerid][pVehicleSpawned] == false) return SendErrorMessage(playerid, "รถของคุณไม่ได้ถูกนำออกมา");
+
+		new 
+			playerb, vehicleid = GetPlayerVehicleID(playerid);
+
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+			return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของรถ");
+
+		if(sscanf(params, "u", playerb))
+			return SendUsageMessage(playerid, "/vehicle duplicatekey [ชื่อบางส่วน/ไอดี]");
+
+		if(playerb == playerid)return SendErrorMessage(playerid, "คุณไม่สามารถให้กุญแจสำรองกับตัวเองได้");
+
+		if(!IsPlayerConnected(playerb))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+
+		if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+			return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+		
+		if(!IsPlayerNearPlayer(playerid, playerb, 5.0))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ได้ให้ชุดกุญแจสำรองกับ %s", ReturnName(playerid, 0), ReturnName(playerb, 0));
+		SendServerMessage(playerb, "%s ได้ให้ชุดกุญแจสำรองกับคุณ", ReturnName(playerid, 0));
+		
+		GiveMoney(playerid, -500);
+		SendServerMessage(playerid, "คุณได้ให้ชุดกุญแจสำรองกับ %s  และเสียเงิน $500", ReturnName(playerb, 0));
+		PlayerInfo[playerb][pDuplicateKey] = vehicleid;
+	}
+	else if(!strcmp(oneString, "scrap"))
+	{
+		if(!IsPlayerInAnyVehicle(playerid))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภภายในรถ");
+			
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับรถ");
+			
+		if(PlayerInfo[playerid][pVehicleSpawned] == false) return SendErrorMessage(playerid, "รถของคุณยังไม่ได้ถูกนำออกมา");
+
+		new 
+			str[160], 
+			vehicleid = GetPlayerVehicleID(playerid)
+		;
+
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+			return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของรถ");
+
+		PlayerVehicleScrap[playerid] = vehicleid;
+
+		format(str, sizeof(str), "คุณมั่นใจใช่ไหมที่จะขายรถของคุณทิ้ง ถ้าคุณขายรถของคุณคุณจะได้รับเงิน $%s ซึ่งเป็นเงินหาร 2 ของราคาเต็มของรถ\nแล้วโปรดจงจำไว้ว่ารถของคุณจะไม่สามารถนำกลับมาได้อีกได้อีก",MoneyFormat(VehicleInfo[vehicleid][eVehiclePrice] / 2));
+		Dialog_Show(playerid, DIALOG_VEH_SELL, DIALOG_STYLE_MSGBOX, "คุณแน่ในใช่ไหม?", str, "ยืนยัน", "ยกเลิก");
 	}
 	return 1;
 }
@@ -784,7 +888,7 @@ public Query_LoadPrivateVehicle(playerid)
 			VehicleParkPos[2],
 			VehicleParkPos[3],
 			VehicleColor1,
-			VehicleColor1,
+			VehicleColor2,
 			-1,
 			0);
 			
@@ -834,6 +938,8 @@ public Query_LoadPrivateVehicle(playerid)
 			
 			
 			cache_get_value_name_int(i, "VehiclePaintjob",VehicleInfo[vehicleid][eVehiclePaintjob]);
+
+			cache_get_value_name_int(i, "VehiclePrice",VehicleInfo[vehicleid][eVehiclePrice]);
 
 			/*for(new j = 1; j < 15; j++)
 			{
@@ -953,6 +1059,48 @@ Dialog:DIALOG_VEHICLE_WEAPONS(playerid, response, listitem, inputtext[])
 				
 		SaveVehicle(vehicleid); CharacterSave(playerid);
 		return 1;
+	}
+	return 1;
+}
+
+Dialog:DIALOG_VEH_SELL(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		return SendServerMessage(playerid,"คุณยกเลิกการขายรถของคุณแล้ว");
+
+	if(!IsPlayerInAnyVehicle(playerid))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถแล้วในตอนนี้ทำให้ยกเลิกในการขายยานพาหนะในตอนนี้ทันที");
+	
+	new vehicleid = PlayerVehicleScrap[playerid];
+	new id = IsPlayerNearBusiness(playerid);
+	new dbid = VehicleInfo[vehicleid][eVehicleDBID];
+	new cash_back = VehicleInfo[vehicleid][eVehiclePrice] / 2;
+
+	if(!id)
+		return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านขายรถ");
+	
+	new delQuery[128];
+		
+	mysql_format(dbCon, delQuery, sizeof(delQuery), "DELETE FROM vehicles WHERE VehicleDBID = %i", dbid);
+	mysql_tquery(dbCon, delQuery);
+
+	SendServerMessage(playerid, "คุณได้ขายรถ รุ่น %s ออกจากตัวคุณแล้ว", ReturnVehicleName(GetPlayerVehicleID(playerid))); 
+	SendServerMessage(playerid, "และคุณได้รับเงินคืนในจำนวน $%s", MoneyFormat(cash_back));
+	GiveMoney(playerid, cash_back);
+	BusinessInfo[id][BusinessCash] -= cash_back;
+
+	ResetVehicleVars(GetPlayerVehicleID(playerid)); 
+	DestroyVehicle(GetPlayerVehicleID(playerid));
+
+	PlayerInfo[playerid][pVehicleSpawned] = false;
+	PlayerInfo[playerid][pVehicleSpawnedID] = 0;
+		
+	for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+	{
+		if(PlayerInfo[playerid][pOwnedVehicles][i] == dbid)
+		{
+			PlayerInfo[playerid][pOwnedVehicles][i] = 0;
+		}
 	}
 	return 1;
 }

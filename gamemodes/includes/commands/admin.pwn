@@ -762,7 +762,7 @@ CMD:gotocar(playerid, params[])
 	GetVehiclePos(vehicleid, fetchPos[0], fetchPos[1], fetchPos[2]);
 	
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-		SetVehiclePos(GetPlayerVehicleID(playerid), fetchPos[0], fetchPos[1], fetchPos[2]);
+		SetVehiclePos(GetPlayerVehicleID(playerid), fetchPos[0], fetchPos[1], fetchPos[2] + 2);
 	
 	else
 		SetPlayerPos(playerid, fetchPos[0], fetchPos[1], fetchPos[2]);
@@ -1230,7 +1230,7 @@ CMD:spawncar(playerid, params[])
 	new vehicleid = INVALID_VEHICLE_ID, modelid, color1, color2, siren, str[128], Float:a;
 	new Float:X,Float:Y,Float:Z;
 	
-	if(sscanf(params, "iII(0)I(0)(0)", modelid, color1, color2, siren))
+	if(sscanf(params, "iI(0)I(0)(0)", modelid, color1, color2, siren))
 	{
 		SendUsageMessage(playerid, "/spawncar [โทเดลรถ] [สีที่ 1] [สีที่ 2] [ระบบไซเรน]");
 		SendServerMessage(playerid, "เป็นการสร้างรถที่มีแค่เฉพาะผู้ดูแลระบบเท่านั้นที่จะสามารถใช้งานได้"); 
@@ -1346,7 +1346,7 @@ CMD:pcar(playerid, params[])
 	}
 	if(!playerInsertID[playerb])
 	{
-		SendErrorMessage(playerid, "%s doesn't have any free vehicle slots.", ReturnName(playerb));
+		SendErrorMessage(playerid, "%s รถในตัวของคุณเต็ม สล็อตแล้ว", ReturnName(playerb));
 	}
 	else
 	{

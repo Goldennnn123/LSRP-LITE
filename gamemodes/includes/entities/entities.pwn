@@ -160,7 +160,9 @@ enum E_VEHICLE_SYSTEM
 	Text3D:eVehicleRepairDisplay,
 	eVehicleRepairCount,
     
-    eVehicleMod[14]
+    eVehicleMod[14],
+
+	eVehiclePrice
 }
 
 new VehicleInfo[MAX_VEHICLES][E_VEHICLE_SYSTEM];

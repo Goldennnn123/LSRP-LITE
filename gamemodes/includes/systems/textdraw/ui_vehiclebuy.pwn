@@ -1,5 +1,8 @@
 #include <YSI_Coding\y_hooks>
 
+new possibleVehiclePlates[][] = 
+	{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+
 new PlayerText:VehiclebuyTD[MAX_PLAYERS][14];
 new PlayerText:VehicleBuySelect[MAX_PLAYERS][9];
 
@@ -1747,7 +1750,85 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
     }
     if(playertextid == VehicleBuySelect[playerid][7])
     {
-        
+        if(PlayerInfo[playerid][pCash] < PLayerVehiclePrice[playerid])
+        {
+            for(new v = 0; v < 9; v++)
+            {
+                PlayerTextDrawDestroy(playerid, VehicleBuySelect[playerid][v]);
+            }
+
+            PlayerSeleteVehicle[playerid] = 0;
+            PlayerVehicleColor1[playerid] = 0;
+            PlayerVehicleColor2[playerid] = 0;
+
+            SendErrorMessage(playerid,"คุณมีเงินไม่เพียงพอต่อการซื้อ ยังขาดอเงินอยู่ ($%s)",MoneyFormat(PLayerVehiclePrice[playerid] - PlayerInfo[playerid][pCash]));
+            ShowVehicleBuy(playerid);
+            return 1;
+        }
+
+        new
+			idx,
+            id = IsPlayerNearBusiness(playerid),
+			plates[32],
+			randset[3],
+			insert[256],
+			Float:X = 1658.7107,
+			Float:Y = -1089.3168,
+			Float:Z = 23.6117,
+			Float:A = 88.6202
+			;
+
+        if(id == 0)
+        {
+            for(new v = 0; v < 9; v++)
+            {
+                PlayerTextDrawDestroy(playerid, VehicleBuySelect[playerid][v]);
+            }
+
+            PlayerSeleteVehicle[playerid] = 0;
+            PlayerVehicleColor1[playerid] = 0;
+            PlayerVehicleColor2[playerid] = 0;
+			return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
+        }
+
+		if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_DEALERVEHICLE)
+        {
+            for(new v = 0; v < 9; v++)
+            {
+                PlayerTextDrawDestroy(playerid, VehicleBuySelect[playerid][v]);
+            }
+
+            PlayerSeleteVehicle[playerid] = 0;
+            PlayerVehicleColor1[playerid] = 0;
+            PlayerVehicleColor2[playerid] = 0;
+            return SendErrorMessage(playerid,"คุณไม่ได้อยู่ร้านขายรถ");
+        }
+        	
+		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+		{
+			if(!PlayerInfo[playerid][pOwnedVehicles][i])
+			{
+				idx = i;
+				break;
+			}
+		}
+
+        new modelid = PlayerSeleteVehicle[playerid];
+        new Price = PLayerVehiclePrice[playerid];
+
+        randset[0] = random(sizeof(possibleVehiclePlates)); 
+		randset[1] = random(sizeof(possibleVehiclePlates)); 
+		randset[2] = random(sizeof(possibleVehiclePlates));
+
+        format(plates, 32, "%d%s%s%s%d%d%d", random(9), possibleVehiclePlates[randset[0]], possibleVehiclePlates[randset[1]], possibleVehiclePlates[randset[2]], random(9), random(9)); 
+		GiveMoney(playerid, -Price);
+        BusinessInfo[id][BusinessCash] += Price;
+        SendClientMessage(playerid, 0xB9E35EFF, "PROCESSING: ยานพาหนะของคุณกำลังติดตั้ง.");
+
+        mysql_format(dbCon, insert, sizeof(insert), "INSERT INTO vehicles (VehicleOwnerDBID, VehicleModel, VehicleParkPosX, VehicleParkPosY, VehicleParkPosZ, VehicleParkPosA,VehiclePrice) VALUES(%i, %i, %f, %f, %f, %f, %d)",
+			PlayerInfo[playerid][pDBID], modelid, X, Y, Z, A,Price);
+        mysql_tquery(dbCon, insert, "OnPlayerVehiclePurchase", "iisffff", playerid, idx, plates, X, Y, Z, A);
+
         return 1;
     }
     return 1;
@@ -1893,11 +1974,136 @@ stock ShowVehicleSelect(playerid)
     PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][8], 1);
     PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][8], 1);
 
-    for(new v = 0; v < 10; v++)
+    for(new v = 0; v < 9; v++)
     {
         PlayerTextDrawShow(playerid, VehicleBuySelect[playerid][v]);
     }
+
     SelectTextDraw(playerid, 0xFFFFFF95);
 
+    return 1;
+}
+
+
+forward OnPlayerVehiclePurchase(playerid, id, plates[], Float:x, Float:y, Float:z, Float:a);
+public OnPlayerVehiclePurchase(playerid, id, plates[], Float:x, Float:y, Float:z, Float:a)
+{
+    new modelid = PlayerSeleteVehicle[playerid];
+    new color1 = PlayerVehicleColor1[playerid];
+    new color2 = PlayerVehicleColor2[playerid];
+    new Price = PLayerVehiclePrice[playerid];
+
+    new
+		vehicleid = INVALID_VEHICLE_ID
+	;
+
+    vehicleid = 
+		CreateVehicle(modelid, x, y, z, a, color1, color2, -1);
+
+    SetVehicleNumberPlate(vehicleid, plates); 
+	SetVehicleToRespawn(vehicleid); 
+
+    PutPlayerInVehicle(playerid, vehicleid, 0);
+    PlayerInfo[playerid][pOwnedVehicles][id] = cache_insert_id();
+
+    if(vehicleid != INVALID_VEHICLE_ID)
+	{
+		VehicleInfo[vehicleid][eVehicleDBID] = cache_insert_id();
+		VehicleInfo[vehicleid][eVehicleOwnerDBID] = PlayerInfo[playerid][pDBID]; 
+		
+		VehicleInfo[vehicleid][eVehicleModel] = modelid;
+		
+		VehicleInfo[vehicleid][eVehicleColor1] = color1;
+		VehicleInfo[vehicleid][eVehicleColor2] = color2;
+		
+		VehicleInfo[vehicleid][eVehiclePaintjob] = -1;
+		
+		VehicleInfo[vehicleid][eVehicleParkPos][0] = x;
+		VehicleInfo[vehicleid][eVehicleParkPos][1] = y;
+		VehicleInfo[vehicleid][eVehicleParkPos][2] = z;
+		VehicleInfo[vehicleid][eVehicleParkPos][3] = a;
+		
+		format(VehicleInfo[vehicleid][eVehiclePlates], 32, "%s", plates); 
+		
+		VehicleInfo[vehicleid][eVehicleLocked] = false;
+		VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+		
+		VehicleInfo[vehicleid][eVehicleFuel] = 50; 
+		
+		VehicleInfo[vehicleid][eVehicleBattery] = 100.0;
+		VehicleInfo[vehicleid][eVehicleEngine] = 100.0; 
+		
+		VehicleInfo[vehicleid][eVehicleHasXMR] = false;
+		VehicleInfo[vehicleid][eVehicleTimesDestroyed] = 0;
+		
+		VehicleInfo[vehicleid][eVehicleAlarmLevel] = 0;
+		VehicleInfo[vehicleid][eVehicleLockLevel] = 0; 
+		VehicleInfo[vehicleid][eVehicleImmobLevel] = 0; 
+
+        VehicleInfo[vehicleid][eVehiclePrice] = Price;
+		
+		for(new i = 1; i< 6; i++)
+		{
+			VehicleInfo[vehicleid][eVehicleWeapons][i] = 0;
+			VehicleInfo[vehicleid][eVehicleWeaponsAmmo][i] = 0; 
+		}
+		
+		SaveVehicle(vehicleid);
+		
+		PlayerInfo[playerid][pVehicleSpawned] = true;
+		PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
+	}
+
+    SendClientMessageEx(playerid, 0xB9E35EFF, "PROCESSED: คุณได้ทำการซื้อรถรุ่น %s ด้วยเงิน $%s  เรียบร้อยแล้ว", ReturnVehicleName(vehicleid), MoneyFormat(Price));
+
+    PlayerSeleteVehicle[playerid] = 0;
+    PlayerVehicleColor1[playerid] = 0;
+    PlayerVehicleColor2[playerid] = 0;
+    PLayerVehiclePrice[playerid] = 0;
+
+    for(new v = 0; v < 9; v++)
+    {
+        PlayerTextDrawDestroy(playerid, VehicleBuySelect[playerid][v]);
+    }
+    return 1;
+}
+
+Dialog:DIALOG_VEH_COLOR1(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+    new color1 = strval(inputtext);
+
+    if(color1 > 255)
+        return SendErrorMessage(playerid,"โปรดใส่สีให้ถุกต้อง");
+
+    PlayerVehicleColor1[playerid] = color1;
+
+    for(new v = 0; v < 9; v++)
+    {
+        PlayerTextDrawHide(playerid, VehicleBuySelect[playerid][v]);
+    }
+    ShowVehicleSelect(playerid);
+    return 1;
+}
+
+Dialog:DIALOG_VEH_COLOR2(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+    new color2 = strval(inputtext);
+
+    if(color2 > 255)
+        return SendErrorMessage(playerid,"โปรดใส่สีให้ถุกต้อง");
+
+    PlayerVehicleColor2[playerid] = color2;
+
+    for(new v = 0; v < 9; v++)
+    {
+        PlayerTextDrawHide(playerid, VehicleBuySelect[playerid][v]);
+    }
+    ShowVehicleSelect(playerid);
     return 1;
 }

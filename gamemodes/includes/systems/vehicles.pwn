@@ -9,10 +9,15 @@ new playerInsertID[MAX_PLAYERS];
 
 new PlayerVehicleScrap[MAX_PLAYERS];
 
+new bool:playerTowingVehicle[MAX_PLAYERS] = false;
+new	playerTowTimer[MAX_PLAYERS] = 0;
+
 
 hook OnPlayerConnect(playerid)
 {
 	PlayerVehicleScrap[playerid] = 0;
+	playerTowingVehicle[playerid] = false;
+	playerTowTimer[playerid] = 0;
 	return 1;
 }
 
@@ -534,8 +539,7 @@ CMD:vehicle(playerid, params[])
 	{
 		SendUsageMessage(playerid, "/vehicle [action]");
 		SendServerMessage(playerid, "get, park, buypark, duplicatekey, buy");
-		SendServerMessage(playerid, "scrap, tow, lock, lights, find, stats");
-		SendServerMessage(playerid, "list, faction, unfaction, trunk, hood");
+		SendServerMessage(playerid, "scrap, tow, find, stats, list");
 		return 1;
 	}
 	if(!strcmp(oneString, "get"))
@@ -701,6 +705,253 @@ CMD:vehicle(playerid, params[])
 		format(str, sizeof(str), "คุณมั่นใจใช่ไหมที่จะขายรถของคุณทิ้ง ถ้าคุณขายรถของคุณคุณจะได้รับเงิน $%s ซึ่งเป็นเงินหาร 2 ของราคาเต็มของรถ\nแล้วโปรดจงจำไว้ว่ารถของคุณจะไม่สามารถนำกลับมาได้อีกได้อีก",MoneyFormat(VehicleInfo[vehicleid][eVehiclePrice] / 2));
 		Dialog_Show(playerid, DIALOG_VEH_SELL, DIALOG_STYLE_MSGBOX, "คุณแน่ในใช่ไหม?", str, "ยืนยัน", "ยกเลิก");
 	}
+	else if(!strcmp(oneString, "tow"))
+	{
+		if(PlayerInfo[playerid][pVehicleSpawned] == false) 
+			return SendErrorMessage(playerid, "คุณไม่ได้นำรถออกมา");
+			
+		if(IsVehicleOccupied(PlayerInfo[playerid][pVehicleSpawnedID]))
+			return SendErrorMessage(playerid, "รถคันนี้ยังเคลื่อนที่อยู่");
+
+		if(playerTowingVehicle[playerid])
+			return SendErrorMessage(playerid, "คุณกำลังส่งรถกลับอยู่....");
+
+		VehicleInfo[PlayerInfo[playerid][pVehicleSpawnedID]][eVehicleTowDisplay] = 
+			Create3DTextLabel("(( | ))\nTOWING VEHICLE", COLOR_DARKGREEN, 0.0, 0.0, 0.0, 25.0, 0, 1);
+		
+		Attach3DTextLabelToVehicle(VehicleInfo[PlayerInfo[playerid][pVehicleSpawnedID]][eVehicleTowDisplay], PlayerInfo[playerid][pVehicleSpawnedID], -0.0, -0.0, -0.0);
+
+		playerTowingVehicle[playerid] = true;
+		playerTowTimer[playerid] = SetTimerEx("OnVehicleTow", 5000, true, "i", playerid);
+		
+		SendServerMessage(playerid, "คุณได้ส่งคำขอให้ประกันนำรถ %s มาไว้ที่จุดเกิดแล้ว", ReturnVehicleName(PlayerInfo[playerid][pVehicleSpawnedID]));
+	}
+	else if(!strcmp(oneString, "find"))
+	{
+		if(PlayerInfo[playerid][pVehicleSpawned] == false) 
+			return SendErrorMessage(playerid, "คุณไม่ได้นำรถออกมา");
+			
+		if(IsVehicleOccupied(PlayerInfo[playerid][pVehicleSpawnedID]))
+			return SendErrorMessage(playerid, "รถของคุณยังมีการเคลื่อนที่อยู่");
+			
+		new 
+			Float:fetchPos[3];
+		
+		GetVehiclePos(PlayerInfo[playerid][pVehicleSpawnedID], fetchPos[0], fetchPos[1], fetchPos[2]);
+		SetPlayerCheckpoint(playerid, fetchPos[0], fetchPos[1], fetchPos[2], 3.0);
+	}
+	else if(!strcmp(oneString, "stats"))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+			return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของรถ");
+			
+		SendClientMessageEx(playerid, COLOR_WHITE, "Life Span: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%i]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Security: Lock Level[%i], Alarm Level[%i], Immobilizer[%i]", VehicleInfo[vehicleid][eVehicleLockLevel], VehicleInfo[vehicleid][eVehicleAlarmLevel], VehicleInfo[vehicleid][eVehicleImmobLevel]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Misc: Primary Color[%d], Secondary Color[%d], License Plate[%s]",VehicleInfo[vehicleid][eVehicleColor1],VehicleInfo[vehicleid][eVehicleColor2], VehicleInfo[vehicleid][eVehiclePlates]);
+	}
+	return 1;
+}
+
+CMD:lights(playerid, params[])
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+		
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในรถ");
+			
+	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
+		
+	if(VehicleInfo[vehicleid][eVehicleLights] == false)
+	{
+		ToggleVehicleLights(vehicleid, true);
+	}		
+	else ToggleVehicleLights(vehicleid, false);
+
+	return 1;
+}
+
+CMD:trunk(playerid, params[])
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z
+	;
+		
+	new engine, lights, alarm, doors, bonnet, boot, objective;
+	
+	if(!IsPlayerInAnyVehicle(playerid) && GetNearestVehicle(playerid) != INVALID_VEHICLE_ID)
+	{
+		GetVehicleBoot(GetNearestVehicle(playerid), x, y, z); 
+			
+		new 
+			vehicleid = GetNearestVehicle(playerid)
+		;
+		new str[MAX_STRING];
+				
+		if(VehicleInfo[vehicleid][eVehicleLocked])
+			return SendServerMessage(playerid, "รถคันนี้ถูกล็อคอยู่"); 
+			
+		if(!IsPlayerInRangeOfPoint(playerid, 2.5, x, y, z))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ฝากระโปรงท้ายรถ");
+			
+		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+			
+		if(!boot)
+		{
+
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, 1, objective);
+				
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้ทำการเปิดฝากระโปรงท้ายรถ");
+			SendClientMessage(playerid, COLOR_WHITE, "สามารถพิมพ์ /check หรือ /place ได้");
+
+			format(str, sizeof(str), "* %s ได้เปิดฝากระโปรงรถ %s", ReturnRealName(playerid, 0),ReturnVehicleName(vehicleid)); 
+						
+			SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+			SendClientMessage(playerid, COLOR_EMOTE, str);
+		}
+		else
+		{
+
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, 0, objective);
+				
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้ปิดฝากระโปรงท้ายรถ");
+
+			format(str, sizeof(str), "* %s ได้ปิดฝากระโปรงรถ %s", ReturnRealName(playerid, 0),ReturnVehicleName(vehicleid)); 
+						
+			SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+			SendClientMessage(playerid, COLOR_EMOTE, str);
+		}
+	}
+	else if(IsPlayerInAnyVehicle(playerid))
+	{
+		new
+			vehicleid = GetPlayerVehicleID(playerid)
+		;
+		new str[MAX_STRING];
+			
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
+			return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
+			
+		if(PlayerInfo[playerid][pDBID] != VehicleInfo[vehicleid][eVehicleOwnerDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid)
+			return SendErrorMessage(playerid, "คุณไม่ได้มีกุญแจ"); 
+			
+		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+			
+		if(!boot)
+		{
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, 1, objective);
+				
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้ทำการเปิดฝากระโปรงท้ายรถ");
+			SendClientMessage(playerid, COLOR_WHITE, "สามารถพิมพ์ /check หรือ /place ได้"); 
+
+			format(str, sizeof(str), "* %s ได้เปิดฝากระโปรงรถ %s", ReturnRealName(playerid, 0),ReturnVehicleName(vehicleid)); 
+						
+			SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+			SendClientMessage(playerid, COLOR_EMOTE, str);
+		}
+		else
+		{
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, 0, objective);
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้ปิดฝากระโปรงท้ายรถ");
+
+			format(str, sizeof(str), "* %s ได้ปิดฝากระโปรงรถ %s", ReturnRealName(playerid, 0),ReturnVehicleName(vehicleid)); 
+						
+			SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+			SendClientMessage(playerid, COLOR_EMOTE, str);
+		}
+	}
+	else SendErrorMessage(playerid, "คุณได้อยู่ใกล้/ในรถ ของคุณ");
+	return 1;
+}
+
+CMD:hood(playerid, params[])
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z
+	;
+
+	new str[MAX_STRING];
+		
+	new engine, lights, alarm, doors, bonnet, boot, objective;
+	
+	if(!IsPlayerInAnyVehicle(playerid) && GetNearestVehicle(playerid) != INVALID_VEHICLE_ID)
+	{
+		GetVehicleHood(GetNearestVehicle(playerid), x, y, z); 
+			
+		new 
+			vehicleid = GetNearestVehicle(playerid)
+		;
+				
+		if(VehicleInfo[vehicleid][eVehicleLocked])
+			return SendServerMessage(playerid, "รถคันนี้ถูกล็อคอยู่"); 
+			
+		if(!IsPlayerInRangeOfPoint(playerid, 2.5, x, y, z))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ฝากระโปรงหน้ารถ");
+			
+		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+			
+		if(!bonnet)
+		{
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, 1, boot, objective);
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้เปิดฝากระโปรงหน้ารถ");
+
+			format(str, sizeof(str), "* %s ได้เปิดฝากระโปรงหน้ารถ %s", ReturnRealName(playerid, 0),ReturnVehicleName(vehicleid)); 
+						
+			SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+			SendClientMessage(playerid, COLOR_EMOTE, str);
+		}
+		else
+		{
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, 0, boot, objective);
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้เปิดฝากระโปรงหน้ารถ");
+
+			format(str, sizeof(str), "* %s ได้ปิดฝากระโปรงหน้ารถ %s", ReturnRealName(playerid, 0),ReturnVehicleName(vehicleid)); 
+						
+			SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+			SendClientMessage(playerid, COLOR_EMOTE, str);
+		}
+	}
+	else if(IsPlayerInAnyVehicle(playerid))
+	{
+		new
+			vehicleid = GetPlayerVehicleID(playerid)
+		;
+			
+		if(PlayerInfo[playerid][pDBID] != VehicleInfo[vehicleid][eVehicleOwnerDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid)
+			return SendErrorMessage(playerid, "คุณไม่มีกุญแจรถ"); 
+				
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
+			return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
+				
+		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+			
+		if(!bonnet)
+		{
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, 1, boot, objective);
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้เปิดฝากระโปรงหน้ารถ");
+
+			format(str, sizeof(str), "* %s ได้เปิดฝากระโปรงหน้ารถ %s", ReturnRealName(playerid, 0),ReturnVehicleName(vehicleid)); 
+						
+			SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+			SendClientMessage(playerid, COLOR_EMOTE, str);
+		}
+		else
+		{
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, 0, boot, objective);
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้เปิดฝากระโปรงหน้ารถ");
+
+			format(str, sizeof(str), "* %s ได้ปิดฝากระโปรงหน้ารถ %s", ReturnRealName(playerid, 0),ReturnVehicleName(vehicleid)); 
+						
+			SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+			SendClientMessage(playerid, COLOR_EMOTE, str);
+		}
+	}
+	else return SendServerMessage(playerid, "คุณไม่ได้อยู่ใกล้รถ");
 	return 1;
 }
 
@@ -1104,3 +1355,89 @@ Dialog:DIALOG_VEH_SELL(playerid, response, listitem, inputtext[])
 	}
 	return 1;
 }
+
+stock IsVehicleOccupied(vehicleid)
+{
+	foreach(new i : Player){
+		if(IsPlayerInVehicle(i, vehicleid))return true; 
+	}
+	return false;
+}
+
+forward OnVehicleTow(playerid);
+public OnVehicleTow(playerid)
+{
+	new vehicleid = PlayerInfo[playerid][pVehicleSpawnedID], newDisplay[128]; 
+	
+	if(IsVehicleOccupied(vehicleid))
+	{
+		KillTimer(playerTowTimer[playerid]);
+		SendServerMessage(playerid, "การนำรถกลับมยังจุดเกิดนั้นถูกขัดด้วยอะไรบางอย่าง"); 
+		
+		playerTowingVehicle[playerid] = false;	
+		Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleTowDisplay]);
+		
+		VehicleInfo[vehicleid][eVehicleTowCount] = 0;
+		return 1;
+	}
+	
+	VehicleInfo[vehicleid][eVehicleTowCount]++;
+	
+	if(VehicleInfo[vehicleid][eVehicleTowCount] == 1) newDisplay = "(( || ))\nTOWING VEHICLE"; 
+	if(VehicleInfo[vehicleid][eVehicleTowCount] == 2) newDisplay = "(( ||| ))\nTOWING VEHICLE"; 
+	if(VehicleInfo[vehicleid][eVehicleTowCount] == 3) newDisplay = "(( |||| ))\nTOWING VEHICLE"; 
+	if(VehicleInfo[vehicleid][eVehicleTowCount] == 4) newDisplay = "(( ||||| ))\nTOWING VEHICLE"; 
+	if(VehicleInfo[vehicleid][eVehicleTowCount] == 5) newDisplay = "(( |||||| ))\nTOWING VEHICLE"; 
+	if(VehicleInfo[vehicleid][eVehicleTowCount] == 6) newDisplay = "(( ||||||| ))\nTOWING VEHICLE"; 
+	if(VehicleInfo[vehicleid][eVehicleTowCount] == 7) newDisplay = "(( |||||||| ))\nTOWING VEHICLE"; 
+	if(VehicleInfo[vehicleid][eVehicleTowCount] == 8) newDisplay = "(( |||||||| ))\nTOWING VEHICLE"; 
+	
+	Update3DTextLabelText(VehicleInfo[vehicleid][eVehicleTowDisplay], COLOR_DARKGREEN, newDisplay);
+	
+	if(VehicleInfo[vehicleid][eVehicleTowCount] == 9)
+	{
+		SendServerMessage(playerid, "รถของคุณถูกส่งกลับจุดเกิดแล้ว");
+		GiveMoney(playerid, -2000);
+		
+		playerTowingVehicle[playerid] = false;	
+		SetVehicleToRespawn(vehicleid); 
+		
+		Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleTowDisplay]);
+		KillTimer(playerTowTimer[playerid]);
+		
+		VehicleInfo[vehicleid][eVehicleTowCount] = 0; 
+		return 1;
+	}
+	
+	return 1;
+}
+
+stock ToggleVehicleLights(vehicleid, bool:lightstate)
+{
+	new engine, lights, alarm, doors, bonnet, boot, objective;
+
+	GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+	SetVehicleParamsEx(vehicleid, engine, lightstate, alarm, doors, bonnet, boot, objective);
+	
+	VehicleInfo[vehicleid][eVehicleLights] = lightstate;
+	return 1;
+}
+
+stock GetVehicleHood(vehicleid, &Float:x, &Float:y, &Float:z) 
+{ 
+    if (!GetVehicleModel(vehicleid) || vehicleid == INVALID_VEHICLE_ID) 
+        return (x = 0.0, y = 0.0, z = 0.0), 0; 
+
+    static 
+        Float:pos[7] 
+    ; 
+    GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, pos[0], pos[1], pos[2]); 
+    GetVehiclePos(vehicleid, pos[3], pos[4], pos[5]); 
+    GetVehicleZAngle(vehicleid, pos[6]); 
+
+    x = pos[3] + (floatsqroot(pos[1] + pos[1]) * floatsin(-pos[6], degrees)); 
+    y = pos[4] + (floatsqroot(pos[1] + pos[1]) * floatcos(-pos[6], degrees)); 
+    z = pos[5]; 
+
+    return 1; 
+} 

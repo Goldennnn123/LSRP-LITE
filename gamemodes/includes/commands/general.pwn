@@ -293,8 +293,48 @@ CMD:lock(playerid,params[])
 		return 1;
 
 	}
-	else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ");
-
+	else
+	{
+		new bool:foundCar = false, vehicleid, Float:fetchPos[3];
+		
+		for (new i = 0; i < MAX_VEHICLES; i++)
+		{
+			GetVehiclePos(i, fetchPos[0], fetchPos[1], fetchPos[2]);
+			if(IsPlayerInRangeOfPoint(playerid, 4.0, fetchPos[0], fetchPos[1], fetchPos[2]))
+			{
+				foundCar = true;
+				vehicleid = i; 
+				break; 
+			}
+		}
+		if(foundCar == true)
+		{
+			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid)
+				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้"); 
+				
+			new statusString[90]; 
+			new engine, lights, alarm, doors, bonnet, boot, objective; 
+	
+			GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+			
+			if(VehicleInfo[vehicleid][eVehicleLocked])
+			{
+				format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
+			
+				SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
+				VehicleInfo[vehicleid][eVehicleLocked] = false;
+			}
+			else 
+			{
+				format(statusString, sizeof(statusString), "~r~%s LOCKED", ReturnVehicleName(vehicleid));
+				
+				SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
+				VehicleInfo[vehicleid][eVehicleLocked] = true;
+			}
+			GameTextForPlayer(playerid, statusString, 3000, 3);
+		}
+		else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ/รถ");
+	}
 	return 1;
 }
 
@@ -328,8 +368,8 @@ CMD:check(playerid,params[])
 		new engine, lights, alarm, doors, bonnet, boot, objective;
 		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 
-		/*if(!bonnet)
-			return SendClientMessage(playerid, COLOR_YELLOWEX, "กระโปรงท้ายรถยังไม่ได้ถูกเปิด"); */
+		if(!bonnet)
+			return SendClientMessage(playerid, COLOR_YELLOWEX, "กระโปรงท้ายรถยังไม่ได้ถูกเปิด");
 		
 		for(new i = 1; i < 6; i++)
 		{

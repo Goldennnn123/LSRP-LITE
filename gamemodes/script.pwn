@@ -40,6 +40,8 @@ DEFINE_HOOK_REPLACEMENT(OnPlayer, OP_);
 new
     Logger:adminactionlog;
 
+new globalWeather = 2;
+
 /*======================================================================================================
 										[Modules]
 =======================================================================================================*/
@@ -243,9 +245,15 @@ public OnPlayerConnect(playerid) {
 		PlayerInfo[playerid][pRadio][i] = 0;
 	}
 
+    PlayerInfo[playerid][pLastDamagetime] = 0;
+    PlayerInfo[playerid][pDeathFix] = 0;
+    PlayerInfo[playerid][pRespawnTime] = 0;
+
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;
+
+    SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
 
 	new query[90];
 
@@ -389,5 +397,35 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 
 public OnPlayerEnterCheckpoint(playerid)
 {
+    return 1;
+}
+
+public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+{
+    return 1;
+}
+
+
+public OnPlayerUpdate(playerid)
+{
+    if(PlayerInfo[playerid][pAdminDuty])
+		SetPlayerHealth(playerid, 250);
+		
+	//PlayerInfo[playerid][pPauseCheck] = GetTickCount(); 
+	
+	new
+		string[128];
+
+    if(GetPlayerTeam(playerid) == PLAYER_STATE_WOUNDED)
+	{
+		format(string, sizeof(string), "(( ผู้เล่นคนนี้ได้รับบาดเจ็บมา %d นาที พิมพ์ /damages %d ))", TotalPlayerDamages[playerid], playerid);
+		SetPlayerChatBubble(playerid, string, COLOR_RED, 30.0, 2500); 
+		
+		ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 0, 1, 1, 1, 0, 1);	
+	}
+	else if(GetPlayerTeam(playerid) == PLAYER_STATE_DEAD)
+	{
+		SetPlayerChatBubble(playerid, "(( ผู้เล่นคนนี้เสียชีวิตแล้ว ))", COLOR_RED, 30.0, 2500); 
+	}
     return 1;
 }

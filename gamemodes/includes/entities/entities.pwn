@@ -79,7 +79,11 @@ enum E_PLAYER_DATA
 
 	bool:pHasRadio,
 	pRadio[3],
-	pMainSlot
+	pMainSlot,
+
+	pLastDamagetime,
+	pDeathFix,
+	pRespawnTime
 
 };
 
@@ -280,3 +284,19 @@ enum E_BUSINESS_INFO
 	BusinessCash,
 }
 new BusinessInfo[MAX_BUSINESS][E_BUSINESS_INFO];
+
+enum E_DAMAGE_INFO
+{
+	eDamageTaken,
+	eDamageTime,
+	
+	eDamageWeapon,
+	
+	eDamageBodypart,
+	eDamageArmor,
+	
+	eDamageBy
+}
+
+new DamageInfo[MAX_PLAYERS][100][E_DAMAGE_INFO]; 
+new TotalPlayerDamages[MAX_PLAYERS];

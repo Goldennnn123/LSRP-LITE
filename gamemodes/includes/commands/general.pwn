@@ -108,7 +108,7 @@ CMD:enter(playerid,params[])
 			if(GetPlayerVirtualWorld(playerid) != HouseInfo[p][HouseEntranceInterior])
 				continue;
 
-			if(HouseInfo[p][HouseLock] || PlayerInfo[playerid][pAdminDuty] || HouseInfo[p][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+			if(HouseInfo[p][HouseLock] == true)
 				return GameTextForPlayer(playerid, "~r~Locked", 3000, 1);
 
 			if(!HouseInfo[p][HouseInterior][0] || !HouseInfo[p][HouseInterior][1] || !HouseInfo[p][HouseInterior][2])
@@ -566,5 +566,41 @@ CMD:myweapon(playerid, params[])
 			else format(longstr, sizeof(longstr), "%s%d. %s[กระสุน: %d]\n", longstr, i, ReturnWeaponName(PlayerInfo[playerid][pWeapons][i]), PlayerInfo[playerid][pWeaponsAmmo][i]); 
 	}
 	Dialog_Show(playerid, DIALOG_MYEAPON, DIALOG_STYLE_LIST, "Weapons:", longstr, "ตกลง", "ยกเลิก");
+	return 1;
+}
+
+CMD:damages(playerid, params[])
+{
+	new playerb;
+	
+	if(sscanf(params, "u", playerb))
+		return SendUsageMessage(playerid, "/damages [ชื่อบางส่วน/ไอดี]");
+		
+	if(!IsPlayerConnected(playerb))	
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้ทำการเชื่อมต่อเข้าเซืฟเวอร์");
+		
+	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+		
+	if(PlayerInfo[playerid][pAdminDuty])
+	{
+		ShowPlayerDamages(playerb, playerid, 1); 
+	}
+	else
+	{
+		if(!IsPlayerNearPlayer(playerid, playerb, 5.0))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ผู้เล่น");
+			
+		ShowPlayerDamages(playerb, playerid, 0); 
+	}
+	return 1;
+}
+
+CMD:acceptdeath(playerid, params[])
+{
+	if(GetPlayerTeam(playerid) != PLAYER_STATE_WOUNDED)
+		return SendErrorMessage(playerid, "คุณยังไม่ได้รับบาดเจ็บ");
+		
+	CallLocalFunction("OnPlayerDead", "iii", playerid, INVALID_PLAYER_ID, -1, 0); 
 	return 1;
 }

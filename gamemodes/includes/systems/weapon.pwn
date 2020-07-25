@@ -1,3 +1,11 @@
+#define BODY_PART_CHEST	(3)
+#define BODY_PART_GROIN (4)
+#define BODY_PART_LEFT_ARM (5)
+#define BODY_PART_RIGHT_ARM (6)
+#define BODY_PART_LEFT_LEG (7)
+#define BODY_PART_RIGHT_LEG (8)
+#define BODY_PART_HEAD (9)
+
 stock ReturnWeaponName(weaponid)
 {
 	new weapon[22];
@@ -153,5 +161,263 @@ public OnWeaponsUpdate()
 			
 		return 1;
 	}
+	return 1;
+}
+
+hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+{
+	if(issuerid != INVALID_PLAYER_ID)
+	{
+		new
+			Float:health,
+			Float:armor,
+			Float:amount_armour
+		;
+		
+		PlayerInfo[playerid][pLastDamagetime] = gettime();
+		GetPlayerHealth(playerid, health);
+		GetPlayerArmour(playerid, armor);
+		
+		if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE && PlayerInfo[playerid][pDeathFix])
+			SetPlayerHealth(playerid, health); 
+		
+		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE)
+		{
+			if(weaponid == 24)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					if(armor)
+					{
+						amount_armour = 35;
+						amount = 25;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 45;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+				else
+				{
+					if(armor)
+					{
+						amount_armour = 15;
+						amount = 5;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 20;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+			}
+			//SetPlayerHealth(playerid, health - amount); 
+			CallbackDamages(playerid, issuerid, bodypart, weaponid, amount, armor); 
+		}
+		
+		if(health - amount <= 4)
+		{
+			if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE)
+			{
+				if(IsPlayerInAnyVehicle(playerid))
+					ClearAnimations(playerid); 
+				
+				CallLocalFunction("OnPlayerWounded", "iii", playerid, issuerid, weaponid); 
+				return 0;
+			}
+			
+			return 0;
+		}
+		
+		if(GetPlayerTeam(playerid) == PLAYER_STATE_WOUNDED)
+		{
+			if(!PlayerInfo[playerid][pDeathFix])
+			{				
+				CallLocalFunction("OnPlayerDead", "iiii", playerid, issuerid, weaponid, 1);
+				return 0;
+			}
+			
+			return 0;
+		}
+		
+		if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE)
+		{
+			SetPlayerHealth(playerid, health);
+			return 0;
+		}
+	}
+	return 1;
+}
+
+
+stock ReturnBodypartName(bodypart)
+{
+	new bodyname[20];
+	
+	switch(bodypart)
+	{
+		case BODY_PART_CHEST:bodyname = "ลำตัว";
+		case BODY_PART_GROIN:bodyname = "หน้าขา";
+		case BODY_PART_LEFT_ARM:bodyname = "แขนซ้าย";
+		case BODY_PART_RIGHT_ARM:bodyname = "แขนขวา";
+		case BODY_PART_LEFT_LEG:bodyname = "ขาซ้าย";
+		case BODY_PART_RIGHT_LEG:bodyname = "ขาขวา";
+		case BODY_PART_HEAD:bodyname = "หัว";
+	}
+	
+	return bodyname;
+}
+
+stock CallbackDamages(playerid, issuerid, bodypart, weaponid, Float:amount, Float:armor)
+{
+	new
+		id
+	;
+	
+	TotalPlayerDamages[playerid] ++; 
+	
+	for(new i = 0; i < 100; i++)
+	{
+		if(!DamageInfo[playerid][i][eDamageTaken])
+		{
+			id = i;
+			break;
+		}
+	}
+	
+	if(armor > 1.0 && bodypart == BODY_PART_CHEST)
+		DamageInfo[playerid][id][eDamageArmor] = floatround(armor, floatround_round);
+		
+	else DamageInfo[playerid][id][eDamageArmor] = 0;
+	
+	DamageInfo[playerid][id][eDamageTaken] = floatround(amount, floatround_round); 
+	DamageInfo[playerid][id][eDamageWeapon] = weaponid;
+	
+	DamageInfo[playerid][id][eDamageBodypart] = bodypart; 
+	DamageInfo[playerid][id][eDamageTime] = gettime();
+	
+	DamageInfo[playerid][id][eDamageBy] = PlayerInfo[issuerid][pDBID]; 
+	return 1; 
+}
+
+stock ShowPlayerDamages(damageid, playerid, adminView)
+{
+	new
+		caption[33],
+		str[355], 
+		longstr[1200]
+	; 
+	
+	format(caption, sizeof(caption), "%s", ReturnName(damageid));
+	
+	if (TotalPlayerDamages[damageid] < 1)
+		return Dialog_Show(playerid, DIALOG_DEFAULT, DIALOG_STYLE_LIST, caption, "ไม่ได้รับความเสียหาย...", "<<", ""); 
+
+	switch(adminView)
+	{
+		case 0:
+		{
+			for(new i = 0; i < 100; i ++)
+			{
+				if(!DamageInfo[damageid][i][eDamageTaken])
+					continue;
+					
+				format(str, sizeof(str), "%d ดาเมจ จาก %s โดย %s (เกราะ: %d) %d วินาทีที่แล้ว\n", DamageInfo[damageid][i][eDamageTaken], ReturnWeaponName(DamageInfo[damageid][i][eDamageWeapon]), ReturnBodypartName(DamageInfo[damageid][i][eDamageBodypart]), DamageInfo[damageid][i][eDamageArmor], gettime() - DamageInfo[damageid][i][eDamageTime]); 
+				strcat(longstr, str); 
+			}
+			
+			Dialog_Show(playerid, DIALOG_DEFAULT, DIALOG_STYLE_LIST, caption, longstr, "<<", ""); 
+		}
+		case 1:
+		{
+			for(new i = 0; i < 100; i ++)
+			{
+				if(!DamageInfo[damageid][i][eDamageTaken])
+					continue;
+					
+				format(str, sizeof(str), "{FF6346}(%s){FFFFFF} %d ดาเมจ จาก %s โดย %s (เกราะ: %d) %d วินาทีที่แล้ว\n", ReturnDBIDName(DamageInfo[damageid][i][eDamageBy]), DamageInfo[damageid][i][eDamageTaken], ReturnWeaponName(DamageInfo[damageid][i][eDamageWeapon]), ReturnBodypartName(DamageInfo[damageid][i][eDamageBodypart]), DamageInfo[damageid][i][eDamageArmor], gettime() - DamageInfo[damageid][i][eDamageTime]); 
+				strcat(longstr, str); 
+			}
+			
+			Dialog_Show(playerid, DIALOG_DEFAULT, DIALOG_STYLE_LIST, caption, longstr, "<<", ""); 
+		}
+	}
+	return 1;
+}
+
+stock ClearDamages(playerid)
+{
+	for(new i = 0; i < 100; i++)
+	{
+		DamageInfo[playerid][i][eDamageTaken] = 0;
+		DamageInfo[playerid][i][eDamageBy] = 0; 
+		
+		DamageInfo[playerid][i][eDamageArmor] = 0;
+		DamageInfo[playerid][i][eDamageBodypart] = 0;
+		
+		DamageInfo[playerid][i][eDamageTime] = 0;
+		DamageInfo[playerid][i][eDamageWeapon] = 0; 
+	}
+	
+	return 1;
+}
+
+forward OnPlayerWounded(playerid, killerid, reason);
+public OnPlayerWounded(playerid, killerid, reason)
+{
+	new
+		str[128]
+	;
+	
+	PlayerInfo[playerid][pDeathFix] = 1; 
+	
+	format(str, sizeof(str), "%s ถูกสังหารโดย %s. (%s)", ReturnName(playerid), ReturnName(killerid), ReturnWeaponName(reason)); 
+	SendAdminMessageEx(COLOR_RED, 1, str); 
+
+	GameTextForPlayer(playerid, "~b~BRUTALLY WOUNDED", 5000, 3);
+	TogglePlayerControllable(playerid, 0);
+	ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 0, 1, 1, 1, 0, 1);		
+	
+	SetPlayerHealth(playerid, 26); 
+	//SetPlayerWeather(playerid, 250); 
+	
+	GiveMoney(playerid, -200); 
+	SetPlayerTeam(playerid, PLAYER_STATE_WOUNDED); 
+
+
+	SendClientMessage(playerid, COLOR_RED, "ตอนนี้คุณบาดเจ็บสาหัสคุณยังไม่ตาย");
+	SendClientMessage(playerid, COLOR_RED, "สามารถยอมรับการตายโดยการพิมพ์: /acceptdeath."); 
+	return 1;
+}
+
+forward OnPlayerDead(playerid, killerid, reason, executed);
+public OnPlayerDead(playerid, killerid, reason, executed)
+{
+	new
+		str[128]
+	;
+	
+	if(executed == 1)
+	{
+		format(str, sizeof(str), "%s โดนสังหารซ้ำโดย %s. (%s)", ReturnName(playerid), ReturnName(killerid), ReturnWeaponName(reason)); 
+		SendAdminMessageEx(COLOR_RED, 1, str); 
+	}
+	
+	SetPlayerTeam(playerid, PLAYER_STATE_DEAD); 
+	PlayerInfo[playerid][pRespawnTime] = gettime(); 
+	
+	SendClientMessage(playerid, COLOR_YELLOWEX, "-> ตอนนี้คุณได้เสียชีวิตแล้วคุณจะสามารถเกิดได้ในอีก 60 วินาที ถึงจะพิมพ์/respawnme เพื่อไปเกิดได้"); 
+	
+	ClearAnimations(playerid, 1);
+	for(new i =0; i <4; i++)
+		ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 0, 1, 1, 1, 0, 1);	
+	
+	TogglePlayerControllable(playerid, 0);
+	SetPlayerWeather(playerid, globalWeather); 
 	return 1;
 }

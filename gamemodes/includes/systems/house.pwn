@@ -486,6 +486,7 @@ stock IsPlayerNearHouse(playerid)
 }
 
 
+
 Dialog:DIALOG_HOUSE_WEAPONS(playerid, response, listitem, inputtext[])
 {
     if(response)

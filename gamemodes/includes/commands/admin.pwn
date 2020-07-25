@@ -874,7 +874,36 @@ CMD:aooc(playerid, params[])
 
 CMD:revice(playerid, params[])
 {
-
+	new 
+		playerb,
+		str[128]
+	;
+		
+	if(sscanf(params, "u", playerb))
+		return SendUsageMessage(playerid, "/revive [ชื่อบางส่วน/ไอดี]"); 
+		
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+		
+	if(GetPlayerTeam(playerb) == PLAYER_STATE_ALIVE)
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้รับบาดเจ็บ");
+	
+	format(str, sizeof(str), "%s ทำให้ %s ฝื้นจากการบาดเจ็บ", ReturnName(playerid), ReturnName(playerb));
+	SendAdminMessage(1, str); 
+	
+	SetPlayerTeam(playerb, PLAYER_STATE_ALIVE); 
+	SetPlayerHealth(playerb, 100); 
+	
+	TogglePlayerControllable(playerb, 1); 
+	SetPlayerWeather(playerb, globalWeather);  
+	
+	SetPlayerChatBubble(playerb, "(( เกิด ))", COLOR_WHITE, 21.0, 3000); 
+	GameTextForPlayer(playerb, "~b~You were revived", 3000, 4);
+	
+	ClearDamages(playerb);
 	return 1;
 }
 
@@ -1230,7 +1259,7 @@ CMD:spawncar(playerid, params[])
 	new vehicleid = INVALID_VEHICLE_ID, modelid, color1, color2, siren, str[128], Float:a;
 	new Float:X,Float:Y,Float:Z;
 	
-	if(sscanf(params, "iI(0)I(0)(0)", modelid, color1, color2, siren))
+	if(sscanf(params, "iII(0)I(0)(0)", modelid, color1, color2, siren))
 	{
 		SendUsageMessage(playerid, "/spawncar [โทเดลรถ] [สีที่ 1] [สีที่ 2] [ระบบไซเรน]");
 		SendServerMessage(playerid, "เป็นการสร้างรถที่มีแค่เฉพาะผู้ดูแลระบบเท่านั้นที่จะสามารถใช้งานได้"); 
@@ -1934,6 +1963,28 @@ CMD:deletebusiness(playerid,params[])
 // Admin Level: 1337;
 
 // Admin Level: 1338:
+CMD:restart(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1338)
+	    return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
+	    
+	foreach (new i : Player)
+	{
+		SetPlayerName(i, e_pAccountData[i][mAccName]);
+		CharacterSave(i);
+	}
+
+	//Saving systems:
+	/*SaveFactions();
+	SaveProperties();
+	SaveBusinesses();*/
+
+	//Closing database:
+	mysql_close(dbCon);
+	SendRconCommand("gmx");
+	return 1;
+	
+}
 
 // Admin Level: 1338;
 
@@ -1981,6 +2032,45 @@ CMD:makefaction(playerid, params[])
 }
 CMD:makeadmin(playerid, params[])
 {
+	if(PlayerInfo[playerid][pAdmin] < 1339)
+		return SendUnauthMessage(playerid);
+
+	new playerb, level;
+	if(sscanf(params,"ui",playerb,level))
+	{
+		SendUsageMessage(playerid, "/makeadmin [ชื่อบางส่วน/ไอดี] [เลเวล]");
+		return 1;
+	}
+
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+
+	if(IsPlayerLogin(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+	if(!PlayerInfo[playerb][pAdmin])
+		return SendErrorMessage(playerid, "ผู้เล่นคนนี้ไม่ได้เป็นผู้ดูแลระบบอยู่แล้ว");
+	
+	if(PlayerInfo[playerb][pAdmin] > PlayerInfo[playerid][pAdmin])
+		return SendErrorMessage(playerid, "คุณไม่สามารถปรับต่ำแหน่งผู้ดูแลระบบที่สูงกว่าคุณได้");
+	
+	if(level == 0)
+	{
+		PlayerInfo[playerb][pAdmin] = 0;
+		SendClientMessageEx(playerb, -1, "{FF5722}ADMIN SYSTEM:{FFFFFF}คุณได้ถูกลบจากการเป็นผู้ดูแลระบบแล้ว ขอบคุณที่เคยเป็นส่วนนึงในตำแหน่งนี้");
+		CharacterSave(playerb);
+		return 1;
+	}
+	if(level > 1339)
+		return SendErrorMessage(playerid, "คุณไม่สามารถให้ต่ำแหน่งผู้ดูแลระบบที่มากกว่า (1339) ได้");
+
+	PlayerInfo[playerb][pAdmin] = level;
+	SendClientMessageEx(playerb, -1, "{FF5722}ADMIN SYSTEM:{FFFFFF}คุณได้รับต่ำแหน่งผู้ดูแลระบบ (%d)",level);
+	new str[MAX_STRING];
+	format(str, sizeof(str), "%s ได้เพื่มต่ำแหน่งผู้ดูแลระบบ %d ให้กับ %s",ReturnRealName(playerid,0),level,ReturnRealName(playerb,0));
+	SendAdminMessage(4,str);
+
+
     return 1;
 }
 // Admin Level: 1339;
@@ -1995,7 +2085,7 @@ stock SendAdminMessage(level, const str[])
 	
 	foreach(new i : Player)
 	{
-		if(PlayerInfo[i][pAdmin] >= level)
+		if(PlayerInfo[i][pAdminDuty] == true)
 		{
 			SendClientMessage(i, COLOR_YELLOWEX, newString);
 		}

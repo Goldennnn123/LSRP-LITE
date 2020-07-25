@@ -271,6 +271,17 @@ public FunctionPlayers()
 				SpawnPlayer(i);
 			}
 		}
+		if(gettime() - PlayerInfo[i][pRespawnTime] == 60)
+		{
+			PlayerInfo[i][pRespawnTime] = 0;
+			SetPlayerChatBubble(i, "Respawned", COLOR_WHITE, 20.0, 1500);
+			SetPlayerTeam(i, PLAYER_STATE_ALIVE); 
+			
+			TogglePlayerControllable(i, 1);
+			SetPlayerHealth(i, 100);
+			ClearDamages(i);
+			SpawnPlayer(i);
+		}
 	}
 	return 1;
 }

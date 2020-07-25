@@ -662,7 +662,7 @@ CMD:vehicle(playerid, params[])
 		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
 			return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของรถ");
 
-		if(sscanf(params, "u", playerb))
+		if(sscanf(secString, "u", playerb))
 			return SendUsageMessage(playerid, "/vehicle duplicatekey [ชื่อบางส่วน/ไอดี]");
 
 		if(playerb == playerid)return SendErrorMessage(playerid, "คุณไม่สามารถให้กุญแจสำรองกับตัวเองได้");

@@ -478,6 +478,7 @@ public LoadCharacter(playerid)
 	GivePlayerMoney(playerid, PlayerInfo[playerid][pCash]);
 
 	SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
+	SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
 	return 1;
 }
 

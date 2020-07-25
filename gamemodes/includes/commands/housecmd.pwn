@@ -85,3 +85,80 @@ CMD:placepos(playerid,params[])
     Savehouse(id);
     return 1;
 }
+
+CMD:ds(playerid, params[])
+{
+    if(!PlayerInfo[playerid][pInsideProperty] && !IsPlayerNearHouse(playerid))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่หน้า/ใน บ้าน");
+
+    if(isnull(params))
+	    return SendClientMessage(playerid, COLOR_GRAD2, "/ds [ข้อความ]");
+    
+    new str[128];
+	if (strlen(params) > 80) {
+	    format(str, sizeof(str), "%s ตะโกน: %.80s", ReturnRealName(playerid, 0), params);
+	    ProxDetector(playerid, 30.0, str);
+
+	    format(str, sizeof(str), "... %s!", params[80]);
+	    ProxDetector(playerid, 30.0, str);
+
+        foreach(new i : Player)
+        {
+            if(IsPlayerInHouse(i) != IsPlayerNearHouse(playerid) || IsPlayerInHouse(playerid) != IsPlayerNearHouse(i))
+                continue;
+
+            SendClientMessage(i, COLOR_GRAD1, str);
+        }
+	}
+	else 
+    {
+        format(str, sizeof(str), "%s ตะโกน: %s!", ReturnRealName(playerid, 0), params), ProxDetector(playerid, 30.0, str);
+
+        foreach(new i : Player)
+        {
+            if(IsPlayerInHouse(i) != IsPlayerNearHouse(playerid) || IsPlayerInHouse(playerid) != IsPlayerNearHouse(i))
+                continue;
+
+            SendClientMessage(i, COLOR_GRAD1, str);
+        }
+
+    }
+
+    return 1;
+}
+
+CMD:ddo(playerid, params[])
+{
+    if(!PlayerInfo[playerid][pInsideProperty] && !IsPlayerNearHouse(playerid))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่หน้า/ใน บ้าน");
+
+    if(isnull(params))
+	    return SendSyntaxMessage(playerid, "/ddo [action]");
+    
+    if(strlen(params) > 80)
+    {
+        SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %.80s", params);
+	    SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "... %s (( %s ))", params[80], ReturnRealName(playerid, 0));
+
+        foreach(new i : Player)
+        {
+            if(IsPlayerInHouse(i) != IsPlayerNearHouse(playerid) || IsPlayerInHouse(playerid) != IsPlayerNearHouse(i))
+                continue;
+
+            SendClientMessageEx(i, COLOR_PURPLE, "* %.80s",params);
+            SendClientMessageEx(i, COLOR_PURPLE, "... %s (( %s ))",params[80],ReturnRealName(playerid, 0));
+        }
+    }
+    else
+    {
+        SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s (( %s ))", params, ReturnRealName(playerid, 0));
+        foreach(new i : Player)
+        {
+            if(IsPlayerInHouse(i) != IsPlayerNearHouse(playerid) || IsPlayerInHouse(playerid) != IsPlayerNearHouse(i))
+                continue;
+
+            SendClientMessageEx(i, COLOR_PURPLE, "* %s (( %s ))",params,ReturnRealName(playerid, 0));
+        }
+    }
+    return 1;
+}

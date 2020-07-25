@@ -577,7 +577,7 @@ CMD:vehicle(playerid, params[])
 		if(!IsPlayerInAnyVehicle(playerid))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในรถ");
 			
-		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับรถ");
 
 		new 
 			vehicleid = GetPlayerVehicleID(playerid);

@@ -1,6 +1,6 @@
 {
-    "user": "Leaks",
-    "repo": "samp-open-roleplay",
+    "user": "Backerss",
+    "repo": "Samp-Project-RolePlay",
     "entry": "gamemodes/script.pwn",
     "output": "gamemodes/script.amx",
     "dependencies": [

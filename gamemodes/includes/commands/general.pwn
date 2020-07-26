@@ -604,3 +604,36 @@ CMD:acceptdeath(playerid, params[])
 	CallLocalFunction("OnPlayerDead", "iii", playerid, INVALID_PLAYER_ID, -1, 0); 
 	return 1;
 }
+
+CMD:stats(playerid, params[])
+{
+	new playerb;
+	
+	if(PlayerInfo[playerid][pAdmin])
+	{
+		if (sscanf(params, "I(-1)", playerb))
+			return 1; 
+			
+		if(playerb == -1)
+		{
+			return ShowCharacterStats(playerid, playerid);
+		}
+		else
+		{
+			if(!IsPlayerConnected(playerb))
+				return SendErrorMessage(playerid, "ผู้เล่นไม่ได้ทำการเชื่อมต่อเข้าเซืฟเวอร์");
+				
+			if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+				return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+				
+			ShowCharacterStats(playerb, playerid); 
+		}
+	}
+	else return ShowCharacterStats(playerid, playerid);
+	return 1;
+}
+
+CMD:pc(playerid, params[])
+{
+	return SelectTextDraw(playerid, COLOR_GRAD1);
+}

@@ -1,5 +1,6 @@
 #include <YSI_Coding\y_hooks>
-CMD:acmds(playerid, params)
+
+CMD:acmds(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
 		return SendUnauthMessage(playerid);

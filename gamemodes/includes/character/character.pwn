@@ -343,6 +343,20 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastOnline = '%e', pLastOnlineTime = %d, pTimeplayed = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pLastOnline],
+			PlayerInfo[playerid][pLastOnlineTime],
+			PlayerInfo[playerid][pTimeplayed],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pPhone = %d, pPhonePower = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pPhone],
+			PlayerInfo[playerid][pPhonePower],
+			PlayerInfo[playerid][pTimeplayed],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 
 		for(new i = 0; i < 13; i++)
 		{
@@ -419,8 +433,15 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pFishes", PlayerInfo[playerid][pFishes]);
 	
 
+	cache_get_value_name(0, "pLastOnline",PlayerInfo[playerid][pAdminjailed], 90);
+	cache_get_value_name_int(0, "pLastOnlineTime", PlayerInfo[playerid][pLastOnlineTime]);
+	cache_get_value_name_int(0, "pTimeplayed", PlayerInfo[playerid][pTimeplayed]);
+
 	cache_get_value_name_int(0, "pAdminjailed",PlayerInfo[playerid][pAdminjailed]);
 	cache_get_value_name_int(0, "pAdminjailTime", PlayerInfo[playerid][pAdminjailTime]);
+
+	cache_get_value_name_int(0, "pPhone",PlayerInfo[playerid][pPhone]);
+	cache_get_value_name_int(0, "pPhonePower", PlayerInfo[playerid][pPhonePower]);
 
 
 	new str[MAX_STRING];

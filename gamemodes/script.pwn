@@ -83,6 +83,7 @@ new globalWeather = 2;
 #include "includes/systems/business.pwn"
 
 #include "includes/systems/textdraw/ui_vehiclebuy.pwn"
+#include "includes/systems/phone.pwn"
 
 #include "includes/jobs/farmer.pwn"
 #include "includes/jobs/fisher.pwn"
@@ -121,6 +122,7 @@ public OnGameModeInit() {
     mysql_tquery(dbCon, "SELECT * FROM factions ORDER BY dbid ASC", "Query_LoadFactions");
     mysql_tquery(dbCon, "SELECT * FROM House ORDER BY HouseDBID", "Query_LoadHouse");
     mysql_tquery(dbCon, "SELECT * FROM Business ORDER BY BusinessDBID", "Query_LoadBusiness");
+    mysql_tquery(dbCon, "SELECT * FROM phonebook ORDER BY PhoneDBID", "LoadPhoneBook");
 	
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();
@@ -248,6 +250,11 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pLastDamagetime] = 0;
     PlayerInfo[playerid][pDeathFix] = 0;
     PlayerInfo[playerid][pRespawnTime] = 0;
+    
+
+    PlayerInfo[playerid][pPhone] = 0;
+    PlayerInfo[playerid][pPhonePower] = 100;
+    PlayerInfo[playerid][pGUI] = false;
 
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
@@ -278,6 +285,10 @@ public OnPlayerDisconnect(playerid, reason) {
 		PlayerInfo[playerid][pTimeout] = gettime();
     }
 
+    new playerTime = NetStats_GetConnectedTime(playerid);
+	new secondsConnection = (playerTime % (1000*60*60)) / (1000*60);
+	
+	PlayerInfo[playerid][pLastOnlineTime] = secondsConnection;
     CharacterSave(playerid);
 }
 

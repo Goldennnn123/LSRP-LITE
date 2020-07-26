@@ -532,3 +532,62 @@ public OnPlayerDead(playerid, killerid, reason, executed)
 	SetPlayerWeather(playerid, globalWeather); 
 	return 1;
 }
+
+
+stock ShowPlayerWeapons(playerid, slotid)
+{
+	new returnStr[60];
+	
+	switch(slotid)
+	{
+		case 1:
+		{
+			new str_1slot[60];
+			
+			if(!PlayerInfo[playerid][pWeapons][0])
+				str_1slot = "ไม่มี"; 
+				
+			else
+				format(str_1slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pWeapons][0]));
+				
+			returnStr = str_1slot;
+		}
+		case 2:
+		{
+			new str_2slot[60];
+			
+			if(!PlayerInfo[playerid][pWeapons][1])
+				str_2slot = "ไม่มี"; 
+				
+			else
+				format(str_2slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pWeapons][1]));
+				
+			returnStr = str_2slot;
+		}
+		case 3:
+		{
+			new str_3slot[60];
+			
+			if(!PlayerInfo[playerid][pWeapons][2])
+				str_3slot = "ไม่มี"; 
+				
+			else
+				format(str_3slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pWeapons][2]));
+				
+			returnStr = str_3slot;
+		}
+		case 4:
+		{
+			new str_4slot[60];
+			
+			if(!PlayerInfo[playerid][pWeapons][3])
+				str_4slot = "ไม่มี"; 
+				
+			else
+				format(str_4slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pWeapons][3]));
+				
+			returnStr = str_4slot;
+		}
+	}
+	return returnStr;
+}

@@ -300,3 +300,67 @@ stock PlayNearbySound(playerid, sound)
 	}
 	return 1;
 }
+
+stock ShowCharacterStats(playerid, playerb)
+{
+	// playerid = player's statistics;
+	// playerb = player receiving stats;
+	
+	new 
+		vehicle_key[20],
+		duplicate_key[20],
+		business_key[20] = "None"
+	;
+	
+	if(!PlayerInfo[playerid][pVehicleSpawned])
+		vehicle_key = "ไม่มี";
+	else format(vehicle_key, 32, "%d", PlayerInfo[playerid][pVehicleSpawnedID]);
+	
+	if(PlayerInfo[playerid][pDuplicateKey] == INVALID_VEHICLE_ID)
+		duplicate_key = "ไม่มี";
+	else format(duplicate_key, 32, "%d", PlayerInfo[playerid][pDuplicateKey]); 
+	
+	for(new i = 1; i < MAX_BUSINESS; i++)
+	{
+		if(!BusinessInfo[i][BusinessDBID])
+			continue;
+			
+		if(BusinessInfo[i][BusinessOwnerDBID] == PlayerInfo[playerid][pDBID])
+			format(business_key, 20, "%d", BusinessInfo[i][BusinessDBID]); 
+	}
+	
+	SendClientMessageEx(playerb, COLOR_DARKGREEN, "|__________________%s [%s]__________________|", ReturnRealName(playerid, 0), ReturnDate());
+
+	SendClientMessageEx(playerb, COLOR_GRAD2, "ตัวละคร: กลุ่ม/แก๊ง:[%s] ตำแหน่ง:[%s]", ReturnFactionName(playerid), ReturnFactionRank(playerid));
+	SendClientMessageEx(playerb, COLOR_GRAD1, "ประสบการณ์: เลเวล:[%d] ค่าประสบการณ์:[%d/%d] เวลาออนไลน์:[%d ชัวโมง]", PlayerInfo[playerid][pLevel], PlayerInfo[playerid][pExp], ((PlayerInfo[playerid][pLevel]) * 4 + 2), PlayerInfo[playerid][pTimeplayed]);
+	SendClientMessageEx(playerb, COLOR_GRAD2, "อาวุธ: อาวุธ หลัก:[%s] กระสุน:[%d] อาวุธสำรอง:[%s] กระสุน:[%d]", ShowPlayerWeapons(playerid, 4), PlayerInfo[playerid][pWeaponsAmmo][3], ShowPlayerWeapons(playerid, 3), PlayerInfo[playerid][pWeaponsAmmo][2]);
+	SendClientMessageEx(playerb, COLOR_GRAD1, "ช่องเก็บของ: เบอร์โทรสัพท์:[%d] วิทยุ:[%s] แชแนล:[%d] แมส:[%s] Melee:[%s]", PlayerInfo[playerid][pPhone], (PlayerInfo[playerid][pHasRadio] != true) ? ("ไม่มี") : ("มี"), PlayerInfo[playerid][pRadio][PlayerInfo[playerid][pMainSlot]], (PlayerInfo[playerid][pHasMask] != true) ? ("ไม่มี") : ("มี"), ShowPlayerWeapons(playerid, 1));
+	SendClientMessageEx(playerb, COLOR_GRAD2, "การเงิน: เงินในตัว:[$%s] เงินในธนาคาร:[$%s] เงินรายชัวโมง:[$%s]", MoneyFormat(PlayerInfo[playerid][pCash]), MoneyFormat(PlayerInfo[playerid][pBank]), MoneyFormat(PlayerInfo[playerid][pPaycheck]));
+	SendClientMessageEx(playerb, COLOR_GRAD1, "อื่นๆ: กุญแจรถ:[%s] กุญแจสำรอง:[%s] กุณแจธุรกิจ:[%s]", vehicle_key, duplicate_key, business_key);	
+	
+	if(PlayerInfo[playerb][pAdmin])
+	{
+		SendClientMessageEx(playerb, COLOR_GRAD1, "สำหรับแอดมิน: DBID:[%d] UCP:[%s (%d)] Interior:[%d] World:[%d]", PlayerInfo[playerid][pDBID], e_pAccountData[playerid][mAccName], e_pAccountData[playerid][mDBID], GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid));
+		
+		SendClientMessageEx(playerb, COLOR_GRAD2, "การเชื่อมต่อ: IP:[%s] ออนไลน์ล่าสุด:[%s] ชัวโมงออนไลน์:[%d นาที]", ReturnIP(playerid), ReturnLastOnline(playerid), PlayerInfo[playerid][pLastOnlineTime]);
+		
+		SendClientMessageEx(playerb, COLOR_GRAD1, "MISC: InsideProperty:[%i] InsideBusiness:[%i]", IsPlayerInHouse(playerid), IsPlayerInBusiness(playerid)); 
+	}
+	
+	SendClientMessageEx(playerb, COLOR_DARKGREEN, "|__________________%s [%s]__________________|", ReturnRealName(playerid, 0), ReturnDate());
+	
+	return 1;
+}
+
+stock ReturnLastOnline(playerid)
+{
+	new returnString[90]; 
+	
+	if(!PlayerInfo[playerid][pLastOnline])
+		returnString = "Never";
+	
+	else
+		format(returnString, 90, "%s", PlayerInfo[playerid][pLastOnline]);
+	
+	return returnString;
+}

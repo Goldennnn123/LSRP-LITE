@@ -807,6 +807,23 @@ stock RemoveBusiness(playerid,id)
     return 1;
 }
 
+stock IsPlayerInBusiness(playerid)
+{
+	if(PlayerInfo[playerid][pInsideBusiness])
+	{
+		for(new i = 1; i < MAX_BUSINESS; i++)
+		{
+			if(!BusinessInfo[i][BusinessDBID])
+				continue;
+				
+			if(i == PlayerInfo[playerid][pInsideBusiness] && GetPlayerVirtualWorld(playerid) == BusinessInfo[i][BusinessInteriorWorld])
+				return i;
+		}
+	}
+	return 0;
+}
+
+
 
 
 

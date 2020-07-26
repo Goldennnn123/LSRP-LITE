@@ -2,6 +2,7 @@
 #define MAX_FACTIONS				(30)
 #define MAX_HOUSE					(30)
 #define MAX_BUSINESS				(30)
+#define MAX_PHONEBOOK				(700)
 
 enum E_PLAYER_DATA
 {
@@ -83,8 +84,17 @@ enum E_PLAYER_DATA
 
 	pLastDamagetime,
 	pDeathFix,
-	pRespawnTime
+	pRespawnTime,
 
+	pTimeplayed,
+	pLastOnline[90],
+	pLastOnlineTime,
+
+	pPhone,
+	pPhonePower,
+	bool:pPhoneOff,
+
+	bool:pGUI,
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS];
@@ -253,6 +263,7 @@ enum E_HOUSE_INFO
 
 	HousePickup,
 	bool:HouseLock,
+	
 }
 new HouseInfo[MAX_HOUSE][E_HOUSE_INFO];
 
@@ -300,3 +311,14 @@ enum E_DAMAGE_INFO
 
 new DamageInfo[MAX_PLAYERS][100][E_DAMAGE_INFO]; 
 new TotalPlayerDamages[MAX_PLAYERS];
+
+
+enum E_PONEBOOK_DATA
+{
+	PhoneDBID,
+	PhoneOwnerDBID,
+
+	PhoneName[60],
+	PhoneNumber,
+}
+new PhoneInfo[MAX_PHONEBOOK][E_PONEBOOK_DATA];

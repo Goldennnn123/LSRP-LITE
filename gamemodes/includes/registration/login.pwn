@@ -132,3 +132,29 @@ Dialog:DIALOG_REGISTER(playerid, response, listitem, inputtext[])
 
     return 1;
 }
+
+Dialog:DIALOG_SET_USERNAME(playerid, response, listitem, inputtext[])
+{
+	if (!response)
+        Kick(playerid);
+	
+	if(strlen(inputtext) < 1 || strlen(inputtext) > 90)
+		return Dialog_Show(playerid, DIALOG_SET_USERNAME, DIALOG_STYLE_INPUT, "ใส่ชื่อ Username ที่คุณต้องการ", "คุณใส่ชื่อ Usenrame ห้ามน้อยกว่า 1 หรือมากกว่า 90 ตัวอักษร โปรดใส่ใหม่:", "ยืนยน", "ยกเลิก");
+
+	new maxusername = strlen(inputtext);
+
+	for(new i=0; i<maxusername; i++)
+	{
+		if(inputtext[i] == '_')
+		{
+			return Dialog_Show(playerid, DIALOG_SET_USERNAME, DIALOG_STYLE_INPUT, "ใส่ชื่อ Username ที่คุณต้องการ", "ห้าม!ใส่เครื่องหมาย _ ลงไปในชื่อ Username ของคุณ:", "ยืนยน", "ยกเลิก");
+		}
+	}
+	SetPlayerName(playerid, inputtext);
+
+	new existCheck[129];
+	
+	mysql_format(dbCon, existCheck, sizeof(existCheck), "SELECT COUNT(acc_name) FROM `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
+	mysql_tquery(dbCon, existCheck, "OnPlayerJoin", "d", playerid);
+	return 1;
+}

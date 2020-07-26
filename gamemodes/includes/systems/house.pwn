@@ -526,3 +526,46 @@ stock IsPlayerInHouse(playerid)
 	}
 	return 0;
 }
+
+stock RemoveHouse(playerid,id)
+{
+    new delHouse[MAX_STRING];
+
+    mysql_format(dbCon, delHouse, sizeof(delHouse), "DELETE FROM house WHERE HouseDBID = %d", HouseInfo[id][HouseDBID]);
+	mysql_tquery(dbCon, delHouse); 
+
+    HouseInfo[id][HouseDBID] = 0;
+    format(HouseInfo[id][HouseName], HouseInfo[id][HouseName], "");
+    HouseInfo[id][HouseOwnerDBID] = 0;
+    HouseInfo[id][HouseEntrance][0] = 0;
+    HouseInfo[id][HouseEntrance][1] = 0;
+    HouseInfo[id][HouseEntrance][2] = 0;
+    HouseInfo[id][HouseEntranceWorld] = 0;
+    HouseInfo[id][HouseEntranceInterior] = 0;
+
+    HouseInfo[id][HouseInterior][0] = 0;
+    HouseInfo[id][HouseInterior][1] = 0;
+    HouseInfo[id][HouseInterior][2] = 0;
+    HouseInfo[id][HouseInteriorWorld] = 0;
+    HouseInfo[id][HouseInteriorID] = 0;
+
+    HouseInfo[id][HousePrice] = 0;
+    HouseInfo[id][HouseLevel] = 0;
+
+    HouseInfo[id][HouseLock] = true;
+
+    for(new w = 0; w < 22; w++)
+    {
+        HouseInfo[id][HouseWeapons][w] = 0;
+        HouseInfo[id][HouseWeaponsAmmo][w] = 0;
+    }
+
+    if(IsValidDynamicPickup(HouseInfo[id][HousePickup]))
+        DestroyDynamicPickup(HouseInfo[id][HousePickup]);
+
+    new str[MAX_STRING];
+    format(str, sizeof(str), "¼Ùé´ÙáÅ %d: %s ä´éÅººéÒ¹ äÍ´Õ %d ÍÍ¡¨Ò¡à«×¿àÇÃìáÅéÇ", PlayerInfo[playerid][pAdmin], ReturnRealName(playerid), id);
+    SendAdminMessage(5,str);
+
+    return 1;
+}

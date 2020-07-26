@@ -8,22 +8,41 @@ CMD:acmds(playerid, params)
 	{
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /aduty, /forumname, /goto, /gethere, /a (achat), /showmain, /kick, /(o)ban, /(o)ajail,"); 
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /unjail, /setint, /setworld, /skin, /health, /reports, /ar (accept), /dr (disregard),"); 
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /slap, /mute, /freeze, /thaw, /awp, /watchoff, /stats (id), /gotols, /respawncar,"); 
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /gotocar, /getcar, /listmasks, /dropinfo, /aooc, /revive, /arecord, /towcars (aduty), /listweapons");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /slap, /mute, /freeze, /unfreeze, /spec, /specoff, /stats (id), /gotols, /respawncar,"); 
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /gotocar, /getcar, /listmasks, /dropinfo, /aooc, /revice, /towcars (aduty), /listweapons");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /armor, /clearreports, /p2p, /givegun, /clearpguns, /gotoproperty, /gotofaction, /gotopoint,");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /setarmour, /clearreports, /givegun, /clearpguns, /gotohouse, /gotofaction, /gotopoint,");
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /gotobusiness, /noooc, /backup, /repair.");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 3:{FFFFFF} /spawncar, /despawncar, /pcar, /setstats, /givemoney, /setcar, /setcarparams.");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 3:{FFFFFF} /spawncar, /despawncar, /pcar, /setstats, /givemoney, /setcar.");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 4)
 	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 4:{FFFFFF} /makefaction, /editfaction, /setpfaction, /makeproperty, /editproperty, /makexmrcat, /makexmrstation.");
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 4:{FFFFFF} /makebusiness, /editbusiness, /callpaycheck.");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 4:{FFFFFF} /factions");
+	}
+	if(PlayerInfo[playerid][pAdmin] >= 5)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 5:{FFFFFF} /makeleader, /makehouse, /viewhouse");
+	}
+	if(PlayerInfo[playerid][pAdmin] >= 1336)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1336:{FFFFFF} /makebusiness, /viewbusiness");
+	}
+	if(PlayerInfo[playerid][pAdmin] >= 1337)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1337:{FFFFFF} /maketester");
+	}
+	if(PlayerInfo[playerid][pAdmin] >= 1338)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1338:{FFFFFF} /restart");
+	}
+	if(PlayerInfo[playerid][pAdmin] >= 1339)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1339:{FFFFFF} /makefaction, /makeadmin");
 	}
     return 1;
 }
@@ -1953,6 +1972,59 @@ CMD:deletebusiness(playerid,params[])
 		}
 
 		RemoveBusiness(playerid,id);
+		return 1;
+	}
+	return 1;
+}
+
+alias:deletehouse("delhouse")
+CMD:deletehouse(playerid,params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+    new id;
+	if(sscanf(params, "d", id))
+	{
+		SendUsageMessage(playerid,"/del(ete)house [ไอดี-บ้าน]");
+		return 1;
+	}
+
+	if(!HouseInfo[id][HouseDBID] || id > MAX_HOUSE)
+		return SendErrorMessage(playerid, "ไม่มี ไอดี บเานที่คุณต้องการ");
+
+	if(!HouseInfo[id][HouseOwnerDBID])
+	{	
+		RemoveHouse(playerid,id);
+		return 1;
+	}
+
+	if(HouseInfo[id][HouseOwnerDBID])
+	{
+		new OwnerHouse = HouseInfo[id][HouseOwnerDBID];
+		new AddMoney[MAX_STRING];
+		
+		foreach(new i : Player)
+		{
+			
+			if(PlayerInfo[i][pDBID] != OwnerHouse)
+			{
+				mysql_format(dbCon, AddMoney, sizeof(AddMoney), "UPDATE characters SET pBank = %d WHERE char_dbid = %i",	
+					HouseInfo[id][HousePrice],
+					OwnerHouse);
+				mysql_tquery(dbCon, AddMoney);
+			}
+			else
+			{	
+				GivePlayerMoney(i, HouseInfo[id][HousePrice]);
+				
+				SendClientMessage(i, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} ขออภัยในความไม่สดวกเนื่องจากมีการลบบ้านของท่านออกจากเซืฟเวอร์ไปแล้ว โดยผู้ดูแลระบบจึงจำเป็น");
+				SendClientMessageEx(i, -1, "{FF0000}...จะต้องขอประทานทภัยด้วยถ้าหากผู้ดูแลระบบไม่ได้แจ้งเตือนท่านล่วงหน้าหากมีข้อสงสัยสามารถสอบถามได้ที่ฟอรั่มหรือ /report [สอบถามบ้าน]");
+				CharacterSave(i);
+			}
+		}
+
+		RemoveHouse(playerid,id);
 		return 1;
 	}
 	return 1;

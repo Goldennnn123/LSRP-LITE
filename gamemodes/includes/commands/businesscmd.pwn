@@ -78,4 +78,29 @@ CMD:biz(playerid,params[])
     return 1;
 }
 
+CMD:eat(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideBusiness];
+
+    if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_RESTAURANT)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ร้านขายอาหาร");
+
+    ShowPlayerBuyFood(playerid);
+    return 1;
+}
+
+CMD:buy(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideBusiness];
+    
+
+    if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านสดวกซื้อ");
+
+    MenuStore_AddItem(playerid, 1, 18919, "Mask", 5000, "Mask use /mask", 200);
+    MenuStore_AddItem(playerid, 2, 367, "Camera", 15000, "Cemara To Take Photo", 200);
+    MenuStore_AddItem(playerid, 3, 325, "Flower", 300, "Flower", 200);
+    MenuStore_Show(playerid, Shop, "SHOP");
+    return 1;
+}
 

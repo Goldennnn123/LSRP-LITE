@@ -1279,7 +1279,7 @@ CMD:spawncar(playerid, params[])
 	new vehicleid = INVALID_VEHICLE_ID, modelid, color1, color2, siren, str[128], Float:a;
 	new Float:X,Float:Y,Float:Z;
 	
-	if(sscanf(params, "iII(0)I(0)(0)", modelid, color1, color2, siren))
+	if(sscanf(params, "iI(0)I(0)I(0)", modelid, color1, color2, siren))
 	{
 		SendUsageMessage(playerid, "/spawncar [โทเดลรถ] [สีที่ 1] [สีที่ 2] [ระบบไซเรน]");
 		SendServerMessage(playerid, "เป็นการสร้างรถที่มีแค่เฉพาะผู้ดูแลระบบเท่านั้นที่จะสามารถใช้งานได้"); 
@@ -1309,6 +1309,7 @@ CMD:spawncar(playerid, params[])
 		
 		VehicleInfo[vehicleid][eVehicleColor1] = color1;
 		VehicleInfo[vehicleid][eVehicleColor2] = color2;
+		VehicleInfo[vehicleid][eVehicleFuel] = 50;
 	}
 	PutPlayerInVehicle(playerid, vehicleid, 0);
 	format(str, sizeof(str), "%s ได้เสกรถ แอดมิน %s ออกมา", ReturnName(playerid), ReturnVehicleName(vehicleid));
@@ -1356,6 +1357,25 @@ CMD:despawncar(playerid, params[])
 	SendAdminMessage(3, str);
 		
 	ResetVehicleVars(vehicleid); DestroyVehicle(vehicleid);
+	return 1;
+}
+
+CMD:despawncars(playerid, params[])
+{
+	new str[128];
+
+	if(PlayerInfo[playerid][pAdmin] < 3)
+		return SendUnauthMessage(playerid);
+
+	for(new v = 1; v < MAX_VEHICLES; v++)
+	{
+		if(VehicleInfo[v][eVehicleAdminSpawn] == false)
+			continue;
+
+		ResetVehicleVars(v); DestroyVehicle(v);
+	}
+	format(str, sizeof(str), "%s ลบรถเสกทั้งหมด", ReturnRealName(playerid, 0));
+	SendAdminMessage(3, str);
 	return 1;
 }
 
@@ -1749,7 +1769,7 @@ CMD:makeleader(playerid, params[])
 	new playerb, factionid, str[MAX_STRING];
 	
 	if(sscanf(params, "ud", playerb, factionid))
-		return SendUsageMessage(playerid, "/setpfaction [ชื่อบางส่วน/ไอดี] [faction id]");
+		return SendUsageMessage(playerid, "/makeleader [ชื่อบางส่วน/ไอดี] [faction id]");
 		
 	if(!IsPlayerConnected(playerb))
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
@@ -1895,7 +1915,7 @@ CMD:makebusiness(playerid,params[])
 		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร");
 		return 1;
 	}
-	if(type < 1 || type > 5)
+	if(type < 1 || type > 6)
 	{	
 		SendClientMessageEx(playerid,-1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF0000} โปรดเลื่อกประเภทกิจการให้ถูก");
 		SendUsageMessage(playerid, "/makebusiness [ประเภท]");
@@ -2145,6 +2165,19 @@ CMD:makeadmin(playerid, params[])
 
 
     return 1;
+}
+
+CMD:randomphone(playerid, params[])
+{
+	foreach(new i : Player)
+	{
+		if(PlayerInfo[i][pPhone])
+			continue;
+
+		PlayerInfo[i][pPhone] = random(99999);
+		CharacterSave(i);
+	}
+	return 1;
 }
 // Admin Level: 1339;
 

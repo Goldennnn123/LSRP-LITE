@@ -28,6 +28,7 @@
 #include <log-plugin>   // maddinat0r/samp-log
 #include <strlib>
 #include <CEFix>
+#include <MenuStore>
 /*======================================================================================================
 										[Macros]
 =======================================================================================================*/
@@ -84,6 +85,8 @@ new globalWeather = 2;
 
 #include "includes/systems/textdraw/ui_vehiclebuy.pwn"
 #include "includes/systems/phone.pwn"
+#include "includes/systems/ui_buy.pwn"
+#include "includes/systems/dmv.pwn"
 
 #include "includes/jobs/farmer.pwn"
 #include "includes/jobs/fisher.pwn"
@@ -97,6 +100,7 @@ new globalWeather = 2;
 #include "includes/Interior/Bank.pwn"
 #include "includes/Interior/House1.pwn"
 #include "includes/Interior/House2.pwn"
+#include "includes/Interior/pizza.pwn"
 
 main()
 {
@@ -136,6 +140,7 @@ public OnGameModeInit() {
     SetTimer("OnPlayerNereHouseTime", 1000, true);
     SetTimer("OnPlayerNereBusinessTime", 3000, true);
     SetTimer("OnWeaponsUpdate", 1000, true);
+    SetTimer("OnVehicleUpdate", 100, true);
     //Timer:
 
     adminactionlog = CreateLog("server/admin_action");
@@ -255,6 +260,8 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pPhone] = 0;
     PlayerInfo[playerid][pPhonePower] = 100;
     PlayerInfo[playerid][pGUI] = false;
+    PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
+    PlayerInfo[playerid][pCalling] = 0;
 
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
@@ -363,12 +370,12 @@ public OnPlayerSpawn(playerid) {
 
 public OnPlayerText(playerid, text[]) {
 
-    new str[144];
+    /*new str[144];
 
     format(str, sizeof(str), "%s ¾Ù´ÇèÒ: %s", ReturnRealName(playerid, 0), text);
     ProxDetector(playerid, 20.0, str);
 
-	printf("[%d]%s: %s", playerid, ReturnPlayerName(playerid), text);
+	printf("[%d]%s: %s", playerid, ReturnPlayerName(playerid), text);*/
 
 	return 0;
 }

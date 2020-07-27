@@ -1,6 +1,7 @@
 #include <YSI_Coding\y_hooks>
 
 new PlayerText:Unscrambler_PTD[MAX_PLAYERS][7]; 
+new PlayerText:Statsvehicle[MAX_PLAYERS][2];
 
 new gLastCar[MAX_PLAYERS];
 new gPassengerCar[MAX_PLAYERS];
@@ -300,7 +301,8 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
-		
+
+		ShowspeedVehicle(playerid, vehicleid);
 		if(!VehicleInfo[vehicleid][eVehicleEngineStatus] && !IsRentalVehicle(vehicleid))
 			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ (/engine)");
 	
@@ -329,6 +331,11 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			}
 		}
 		gLastCar[playerid] = vehicleid;
+	}
+	else
+	{
+		PlayerTextDrawDestroy(playerid, Statsvehicle[playerid][0]);
+		PlayerTextDrawDestroy(playerid, Statsvehicle[playerid][1]);
 	}
 
 	if (newstate == PLAYER_STATE_PASSENGER) {
@@ -1440,4 +1447,71 @@ stock GetVehicleHood(vehicleid, &Float:x, &Float:y, &Float:z)
     z = pos[5]; 
 
     return 1; 
-} 
+}
+
+stock ShowspeedVehicle(playerid, vehicleid)
+{
+	Statsvehicle[playerid][0] = CreatePlayerTextDraw(playerid, 529.000000, 384.000000, "100 KPH/MPH");
+	PlayerTextDrawFont(playerid, Statsvehicle[playerid][0], 2);
+	PlayerTextDrawLetterSize(playerid, Statsvehicle[playerid][0], 0.333332, 2.049998);
+	PlayerTextDrawTextSize(playerid, Statsvehicle[playerid][0], 646.000000, 17.000000);
+	PlayerTextDrawSetOutline(playerid, Statsvehicle[playerid][0], 1);
+	PlayerTextDrawSetShadow(playerid, Statsvehicle[playerid][0], 0);
+	PlayerTextDrawAlignment(playerid, Statsvehicle[playerid][0], 1);
+	PlayerTextDrawColor(playerid, Statsvehicle[playerid][0], -1);
+	PlayerTextDrawBackgroundColor(playerid, Statsvehicle[playerid][0], 255);
+	PlayerTextDrawBoxColor(playerid, Statsvehicle[playerid][0], 50);
+	PlayerTextDrawUseBox(playerid, Statsvehicle[playerid][0], 0);
+	PlayerTextDrawSetProportional(playerid, Statsvehicle[playerid][0], 1);
+	PlayerTextDrawSetSelectable(playerid, Statsvehicle[playerid][0], 0);
+
+	Statsvehicle[playerid][1] = CreatePlayerTextDraw(playerid, 549.000000, 404.000000, "100%");
+	PlayerTextDrawFont(playerid, Statsvehicle[playerid][1], 1);
+	PlayerTextDrawLetterSize(playerid, Statsvehicle[playerid][1], 0.370833, 1.299999);
+	PlayerTextDrawTextSize(playerid, Statsvehicle[playerid][1], 595.000000, 17.000000);
+	PlayerTextDrawSetOutline(playerid, Statsvehicle[playerid][1], 1);
+	PlayerTextDrawSetShadow(playerid, Statsvehicle[playerid][1], 0);
+	PlayerTextDrawAlignment(playerid, Statsvehicle[playerid][1], 1);
+	PlayerTextDrawColor(playerid, Statsvehicle[playerid][1], -1);
+	PlayerTextDrawBackgroundColor(playerid, Statsvehicle[playerid][1], 255);
+	PlayerTextDrawBoxColor(playerid, Statsvehicle[playerid][1], 50);
+	PlayerTextDrawUseBox(playerid, Statsvehicle[playerid][1], 0);
+	PlayerTextDrawSetProportional(playerid, Statsvehicle[playerid][1], 1);
+	PlayerTextDrawSetSelectable(playerid, Statsvehicle[playerid][1], 0);
+
+
+	PlayerTextDrawShow(playerid, Statsvehicle[playerid][0]);
+	PlayerTextDrawShow(playerid, Statsvehicle[playerid][1]);
+
+	new str[MAX_STRING];
+
+	format(str, sizeof(str), "%d %",VehicleInfo[vehicleid][eVehicleFuel]);
+	PlayerTextDrawSetString(playerid, Statsvehicle[playerid][1], str);
+	return 1;
+}
+
+forward OnVehicleUpdate(playerid);
+public OnVehicleUpdate(playerid)
+{
+	new str[120];
+	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+
+		format(str, sizeof(str), "%d KPH/MPH",GetVehicleSpeed(vehicleid));
+		PlayerTextDrawSetString(playerid, Statsvehicle[playerid][0], str);
+	}
+}
+
+stock GetVehicleSpeed(vehicleid)
+{
+    new
+        Float:x,
+        Float:y,
+        Float:z,
+        vel;
+    GetVehicleVelocity( vehicleid, x, y, z );
+    vel = floatround( floatsqroot( x*x + y*y + z*z ) * 180 );           // KM/H
+//  vel = floatround( floatsqroot( x*x + y*y + z*z ) * 180 / MPH_KMH ); // Mph
+    return vel;
+}

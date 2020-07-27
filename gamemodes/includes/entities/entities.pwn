@@ -93,6 +93,9 @@ enum E_PLAYER_DATA
 	pPhone,
 	pPhonePower,
 	bool:pPhoneOff,
+	pPhoneline,
+	pCalling,
+	bool:pPhonespeaker,
 
 	bool:pGUI,
 };

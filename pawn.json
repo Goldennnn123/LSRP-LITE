@@ -15,7 +15,8 @@
         "pawn-lang/YSI-Includes@5.x",
         "Awsomedude/easyDialog",
         "urShadow/Pawn.CMD",
-        "samp-incognito/samp-streamer-plugin"
+        "samp-incognito/samp-streamer-plugin",
+        "Coystark/MenuStore"
     ],
     "local": true,
     "runtime": {

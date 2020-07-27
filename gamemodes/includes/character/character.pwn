@@ -353,7 +353,6 @@ CharacterSave(playerid, force = false)
 		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pPhone = %d, pPhonePower = %d WHERE char_dbid = %i",	
 			PlayerInfo[playerid][pPhone],
 			PlayerInfo[playerid][pPhonePower],
-			PlayerInfo[playerid][pTimeplayed],
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 

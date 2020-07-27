@@ -64,7 +64,7 @@ CMD:mask(playerid, params[])
 	if(PlayerInfo[playerid][pLevel] < 3 && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "คุณเลเวลยังไม่พอที่จะสวมใส่ Mask ได้ (เลเวลต้องมากกว่า 3 ขึ้นไป)"); 
 		
-	if(!PlayerInfo[playerid][pHasMask] && !PlayerInfo[playerid][pAdmin])
+	if(!PlayerInfo[playerid][pHasMask] /*&& !PlayerInfo[playerid][pAdmin]*/)
 		return SendErrorMessage(playerid, "คุณไม่มี Mask"); 
 	
 	if(!PlayerInfo[playerid][pMasked])
@@ -145,7 +145,7 @@ CMD:enter(playerid,params[])
 			if(!BusinessInfo[b][BusinessInterior][0] || !BusinessInfo[b][BusinessInterior][1] || !BusinessInfo[b][BusinessInterior][2] || BusinessInfo[b][BusinessType] == BUSINESS_TYPE_DEALERVEHICLE)
 				return GameTextForPlayer(playerid, "~r~Close", 3000, 1);
 
-			if(BusinessInfo[b][BusinessLock] == true || PlayerInfo[playerid][pAdminDuty] || BusinessInfo[b][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
+			if(BusinessInfo[b][BusinessLock] == true && !PlayerInfo[playerid][pAdminDuty] && BusinessInfo[b][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
 				return GameTextForPlayer(playerid, "~r~Lock", 3000, 1);
 
 
@@ -153,13 +153,14 @@ CMD:enter(playerid,params[])
 
 			SetPlayerPos(playerid, BusinessInfo[b][BusinessInterior][0], BusinessInfo[b][BusinessInterior][1], BusinessInfo[b][BusinessInterior][2] - 3);
 			SetPlayerVirtualWorld(playerid, BusinessInfo[b][BusinessInteriorWorld]);
-			SetPlayerInterior(playerid, BusinessInfo[b][BusinessEntranceInterior]);
+			SetPlayerInterior(playerid, BusinessInfo[b][BusinessInteriorID]);
 
 			GivePlayerMoney(playerid, -BusinessInfo[b][BusinessEntrancePrice]);
 			BusinessInfo[b][BusinessCash] += BusinessInfo[b][BusinessEntrancePrice];
 
 			TogglePlayerControllable(playerid, 0);
 			SetTimerEx("OnPlayerEnterBusiness", 2000, false, "ii", playerid, b); 
+			SendBusinessType(playerid, b);
 		}
 	}
 
@@ -232,7 +233,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = IsPlayerNearHouse(playerid);
 
-		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] || PlayerInfo[playerid][pAdminDuty])
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของบ้านหลังนี้");
 
 		if(HouseInfo[id][HouseLock])
@@ -253,7 +254,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = PlayerInfo[playerid][pInsideBusiness];
 
-		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID])
+		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID] || PlayerInfo[playerid][pAdminDuty])
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของกิจการนี้");
 
 		if(BusinessInfo[id][BusinessLock] == true)
@@ -275,7 +276,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = IsPlayerNearBusiness(playerid);
 
-		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID])
+		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdminDuty])
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของกิจการนี้");
 
 		if(BusinessInfo[id][BusinessLock] == true)
@@ -637,3 +638,6 @@ CMD:pc(playerid, params[])
 {
 	return SelectTextDraw(playerid, COLOR_GRAD1);
 }
+
+
+

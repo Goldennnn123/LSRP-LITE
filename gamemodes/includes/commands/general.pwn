@@ -1,5 +1,3 @@
-
-
 CMD:help(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "______________________________________________");
@@ -639,5 +637,183 @@ CMD:pc(playerid, params[])
 	return SelectTextDraw(playerid, COLOR_GRAD1);
 }
 
+CMD:admins(playerid, params[])
+{
+	new bool:adminOn = false;
+	
+	foreach (new i : Player)
+	{
+		if (PlayerInfo[playerid][pAdmin]) adminOn = true;
+	}
+	
+	if(adminOn == true)
+	{
+		SendClientMessage(playerid, COLOR_GREY, "Admins Online:");
+		
+		foreach(new i : Player)
+		{
+			if(PlayerInfo[i][pAdmin] > 1 && PlayerInfo[i][pAdmin] < 5)
+			{
+				if(PlayerInfo[i][pAdminDuty])
+				{
+					SendClientMessageEx(playerid, COLOR_DARKGREEN, "(Level: %d) %s (%s) - On Duty: Yes", PlayerInfo[i][pAdmin], ReturnRealName(i, 0), e_pAccountData[i][mForumName]);
+				}
+				else SendClientMessageEx(playerid, COLOR_GREY, "(Level: %d) %s (%s) - On Duty: No", PlayerInfo[i][pAdmin], ReturnRealName(i, 0), e_pAccountData[i][mForumName]);
+			}
+		}
+	}
+	else
+	{
+		return SendClientMessage(playerid, COLOR_GREY, "Admins Online:");
+	}
 
+	return 1;
+}
+
+alias:ooc("o")
+CMD:ooc(playerid, params[])
+{
+	if(isnull(params))
+		return SendUsageMessage(playerid, "/(o)oc [text]"); 
+		
+	if(!oocEnabled && !PlayerInfo[playerid][pAdmin])
+		return SendErrorMessage(playerid, "OOC ถูกปิดการใช้งานในเวลานี้"); 
+		
+	if(PlayerInfo[playerid][pAdminDuty])
+		SendClientMessageToAllEx(COLOR_SAMP, "{adc3e7}[OOC] {FB8C00}%s{adc3e7}: %s", ReturnRealName(playerid, 0), params); 
+		
+	else SendClientMessageToAllEx(COLOR_SAMP, "{adc3e7}[OOC] %s: %s", ReturnRealName(playerid, 0), params);
+	return 1;
+}
+
+CMD:pay(playerid, params[])
+{
+	new playerb, amount, emote[90], str[128]; 
+
+	if(sscanf(params, "uiS('None')[90]", playerb, amount, emote))
+		return SendUsageMessage(playerid, "/pay [ชื่อบางส่วน/ไอดี] [จำนวน] [การกระทำ (ถ้ามี)]");
+
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์");
+
+	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+
+	if(!IsPlayerNearPlayer(playerid, playerb, 5.0))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+
+	if(amount > PlayerInfo[playerid][pCash])
+		return SendErrorMessage(playerid, "คุณไม่มีเงินพอที่จะให้");
+
+	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); PlayerPlaySound(playerb, 1052, 0.0, 0.0, 0.0);
+
+	SendClientMessageEx(playerid, COLOR_GREY, " คุณได้ทำการจ่ายเงินให้ %s จำนวน $%s.", ReturnRealName(playerb, 0), MoneyFormat(amount)); 
+	SendClientMessageEx(playerb, COLOR_GREY, " คุณได้รับเงิน จำนวน $%s จาก %s", MoneyFormat(amount), ReturnRealName(playerid, 0));
+
+	if(!strcmp(emote, "None"))
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ได้ควักเงินบางส่วนออกมาจากกระเป๋าและมอบให้กับ %s", ReturnName(playerid, 0), ReturnName(playerb, 0)); 
+
+	else SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s %s %s", ReturnName(playerid, 0), emote, ReturnName(playerb, 0));
+
+	if(PlayerInfo[playerid][pLevel] <= 3 && PlayerInfo[playerb][pLevel] <= 3 || amount >= 50000)
+	{
+		format(str, sizeof(str), "%s ได้จ่ายเงิน จำนวน $%s ให้กับ %s ซึ่งเหมือนจะเป็นการผิดกฏเซือเวอร์โปรดตรวจสอบด้วย", ReturnName(playerid), MoneyFormat(amount), ReturnName(playerb)); 
+		SendAdminMessage(1, str);
+	}
+	
+	GiveMoney(playerid, -amount); GiveMoney(playerb, amount);
+	return 1;
+}
+
+CMD:setchannel(playerid, params[])
+{
+	new 
+		slot, 
+		channel
+	;
+	
+	if(sscanf(params, "ii", channel, slot))
+		return SendUsageMessage(playerid, "/setchannel [แชลเเนว] [ส็อต]"); 
+		
+	if(!PlayerInfo[playerid][pHasRadio])
+		return SendErrorMessage(playerid, "คุณไม่มี วิทยุ"); 
+		
+	if(slot > 10 || slot < 1)
+		return SendErrorMessage(playerid, "ส็อตจะสามารถปรับได้เพียงแค่ (1-10)");
+		
+	if(channel < 1 || channel > 1000000)
+		return SendErrorMessage(playerid, "คุณไม่สามารถปรับแชลแนวเกิน (1-1000000)"); 
+		
+	for(new i = 1; i < 3; i++)
+	{
+		if(PlayerInfo[i][pRadio][i] == channel)
+		{
+			SendErrorMessage(playerid, "ตอนนี้คุณปรับแชลแนวเป็น %i %i.", i, channel);
+			return 1;
+		}
+	}
+	
+	if(channel == 911)
+	{
+		if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+			return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่สามารถตั้งค่า คลื่นวิทยุนี้ได้เนื่องจากคุณไม่ใช่หน่วยงานรัฐบาล"); 
+	}
+	
+	PlayerInfo[playerid][pRadio][slot] = channel;
+	PlayerInfo[playerid][pMainSlot] = slot;
+	SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ปรับวิทยุไปที่คลื่น %i ภายใต้ สล็อต %i.", channel, slot);
+	CharacterSave(playerid); 
+	return 1;
+}
+
+
+alias:radio("r")
+CMD:radio(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pHasRadio])
+		return SendUsageMessage(playerid, "คุณไม่มีวิทยุ");
+
+	new
+		local,
+		channel
+	;
+		
+	local = PlayerInfo[playerid][pMainSlot]; 
+	channel = PlayerInfo[playerid][pRadio][local]; 
+	
+	if(!PlayerInfo[playerid][pRadio][local])
+		return SendErrorMessage(playerid, "คุณยังไม่ได้เซ็ต สล็อต"); 
+		
+	if(isnull(params))
+		return SendUsageMessage(playerid, "/r [ข้อความ], /rlow [ข้อความ], /r[ch] [ข้อความ], /r[ch]low [ข้อความ]");
+		
+	foreach(new i : Player)
+	{
+		for(new r = 1; r < 3; r ++)
+		{
+			if(PlayerInfo[i][pRadio][r] == channel)
+			{
+				if(r != PlayerInfo[i][pMainSlot])
+					SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+					
+				else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+			}
+		}
+	}
+	
+	new Float:posx, Float:posy, Float:posz;
+	GetPlayerPos(playerid, posx,posy,posz);
+
+	foreach(new i : Player)
+	{
+	   	if(i == playerid)
+	       continue;
+
+		else if(IsPlayerInRangeOfPoint(i, 20.0, posx,posy,posz))
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD1, "(วิทยุ) %s พูดว่า: %s", ReturnName(playerid, 0), params);
+		}
+	}
+	return 1;
+}
 

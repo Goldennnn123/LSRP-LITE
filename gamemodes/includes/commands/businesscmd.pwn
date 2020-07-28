@@ -104,3 +104,68 @@ CMD:buy(playerid, params[])
     return 1;
 }
 
+CMD:bank(playerid, params[])
+{
+	new
+		id = IsPlayerInBusiness(playerid),
+		amount
+	;
+		
+	if(!id)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในธนาคาร");
+		
+	if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_BANK)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในธนาคาร"); 
+		
+	if(sscanf(params, "d", amount))
+		return SendUsageMessage(playerid, "/bank [จำนวนงินที่จะฝาก]");
+		
+	if(amount < 1 || amount > PlayerInfo[playerid][pCash])
+		return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ"); 
+		
+	PlayerInfo[playerid][pBank]+= amount;
+	GiveMoney(playerid, -amount); 
+	
+	SendClientMessageEx(playerid, COLOR_ACTION, "คุณได้ฝากเงินจำนวน $%s เข้าในบัญชีธนาคารของคุณ จากเดิม:$%s", MoneyFormat(amount), MoneyFormat(PlayerInfo[playerid][pBank]));
+	CharacterSave(playerid);
+	return 1; 
+}
+
+CMD:withdraw(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideBusiness], amount;
+
+    if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE && BusinessInfo[id][BusinessType] != BUSINESS_TYPE_BANK)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในธนาคารหรือร้านสดวกซื้อ");
+
+    if(sscanf(params, "i", amount))
+		return SendUsageMessage(playerid, "/withdraw [จำนวนเงิน]");
+
+    if(amount < 1 || amount > PlayerInfo[playerid][pBank])
+		return SendErrorMessage(playerid, "คุณมีเงินในบัญชีธนาคารไม่เพียงพอ"); 
+
+    PlayerInfo[playerid][pBank]-= amount;
+	GiveMoney(playerid, amount);
+    SendClientMessageEx(playerid, COLOR_ACTION, "คุณได้ถอนเงินจำนวน $%s จากบัญชีธนาคารของคุณ ยอดเดิม:$%s", MoneyFormat(amount), MoneyFormat(PlayerInfo[playerid][pBank]));
+	CharacterSave(playerid);
+    return 1;
+}
+
+CMD:balance(playerid, params[])
+{
+	new
+		id = IsPlayerInBusiness(playerid)
+	;
+		
+	if(!id)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในธนาคารหรือร้านสดวกซื้อ");
+		
+	if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE && BusinessInfo[id][BusinessType] != BUSINESS_TYPE_BANK)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในธนาคารหรือร้านสดวกซื้อ"); 
+	
+	SendClientMessageEx(playerid, COLOR_ACTION, "คุณมีเงินอยู่ในบัญชีธนาคาร $%s และมีค่าจ้างรายชั่วโมง $%s  (%s)", MoneyFormat(PlayerInfo[playerid][pBank]), MoneyFormat(PlayerInfo[playerid][pPaycheck]), ReturnDate());	
+	return 1;
+}
+
+
+

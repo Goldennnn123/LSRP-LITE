@@ -364,3 +364,13 @@ stock ReturnLastOnline(playerid)
 	
 	return returnString;
 }
+
+stock GetChannelSlot(playerid, chan)
+{
+	for(new i = 1; i < 3; i++)
+	{
+		if(PlayerInfo[playerid][pRadio][i] == chan)
+			return i;
+	}
+	return 0; 
+}

@@ -41,6 +41,9 @@ DEFINE_HOOK_REPLACEMENT(OnPlayer, OP_);
 new
     Logger:adminactionlog;
 
+new
+    Logger:allcmdlog;
+
 new globalWeather = 2;
 
 /*======================================================================================================
@@ -144,12 +147,14 @@ public OnGameModeInit() {
     //Timer:
 
     adminactionlog = CreateLog("server/admin_action");
+    allcmdlog = CreateLog("server/allcmdlog");
 
     return 1;
 }
 
 public OnGameModeExit() {
     DestroyLog(adminactionlog);
+    DestroyLog(allcmdlog);
 
     foreach(new i : Player)
     {
@@ -409,6 +414,9 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 			Log(adminactionlog, INFO, "%s: /%s %s", ReturnPlayerName(playerid), cmd, params);
 		}
 	}
+
+
+    Log(allcmdlog, INFO, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
     return 1;
 }
 

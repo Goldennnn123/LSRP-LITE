@@ -371,7 +371,7 @@ CMD:engine(playerid, params[])
 	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid))
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้สามารถใช้ได้เฉพาะยานพาหนะส่วนตัว แต่คุณอยู่ในยานพาหนะสาธารณะ (Static)");
 		
-	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0.0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
+	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะนี้ไม่มีเชื้อเพลิง!"); 
 	
 	if(VehicleInfo[vehicleid][eVehicleFaction] > 0)
@@ -1182,7 +1182,7 @@ public Query_LoadPrivateVehicle(playerid)
 			cache_get_value_name_float(i, "VehicleImpoundPosZ", VehicleInfo[vehicleid][eVehicleImpoundPos][2]);
 			cache_get_value_name_float(i, "VehicleImpoundPosA", VehicleInfo[vehicleid][eVehicleImpoundPos][3]);
 			
-			cache_get_value_name_float(i, "VehicleFuel",VehicleInfo[vehicleid][eVehicleFuel]);
+			cache_get_value_name_int(i, "VehicleFuel",VehicleInfo[vehicleid][eVehicleFuel]);
 			
 			cache_get_value_name_int(i, "VehicleXMR",VehicleInfo[vehicleid][eVehicleHasXMR]);
 			cache_get_value_name_int(i, "VehicleTimesDestroyed",VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
@@ -1485,7 +1485,7 @@ stock ShowspeedVehicle(playerid, vehicleid)
 
 	new str[MAX_STRING];
 
-	format(str, sizeof(str), "%d %",VehicleInfo[vehicleid][eVehicleFuel]);
+	format(str, sizeof(str), "%d%",VehicleInfo[vehicleid][eVehicleFuel]);
 	PlayerTextDrawSetString(playerid, Statsvehicle[playerid][1], str);
 	return 1;
 }

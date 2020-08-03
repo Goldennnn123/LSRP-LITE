@@ -374,3 +374,115 @@ stock GetChannelSlot(playerid, chan)
 	}
 	return 0; 
 }
+
+forward OnCallPaycheck(playerid, response);
+public OnCallPaycheck(playerid, response)
+{
+	new
+		str[128]
+	;
+	
+	if(response)
+	{
+		format(str, sizeof(str), "%s called a paycheck.", ReturnName(playerid));
+		SendAdminMessage(3, str);
+		
+		CallPaycheck(); 
+	}
+	return 1;
+}
+
+forward FunctionPaychecks();
+public FunctionPaychecks()
+{
+	new 
+		hour, 
+		minute, 
+		seconds
+	;
+
+	gettime(hour, minute, seconds); 
+	
+	if(minute == 00 && seconds == 59)
+	{
+		CallPaycheck(); 
+		SetWorldTime(hour + 1); 
+	}
+	
+	return 1;
+}
+
+forward CallPaycheck();
+public CallPaycheck()
+{
+	foreach(new i : Player)
+	{
+		if(!BitFlag_Get(gPlayerBitFlag[i], IS_LOGGED))
+			continue;
+			
+		new
+			str[128],
+			total_paycheck = 0
+		; 
+		
+		new
+			Float: interest,
+			interest_convert,
+			total_tax
+		; 
+		
+		PlayerInfo[i][pTimeplayed]++; 
+		PlayerInfo[i][pExp]++; 
+		
+		if(PlayerInfo[i][pLevel] == 1)
+			total_paycheck+= 2000; 
+			
+		else if(PlayerInfo[i][pLevel] == 2)
+			total_paycheck+= 1500; 
+			
+		//Add an auto-level up on paycheck for level 1 and 2 to prevent paycheck farming.
+			
+		interest = (PlayerInfo[i][pBank] / 100) * 0.1; 
+		interest_convert = floatround(interest, floatround_round); 
+		
+		total_tax = PlayerInfo[i][pBank] / 50;
+		
+		SendClientMessageEx(i, COLOR_WHITE, "SERVER TIME:[ %s ]", ReturnHour()); 
+		
+		SendClientMessage(i, COLOR_WHITE, "|___ BANK STATEMENT ___|"); 
+		SendClientMessageEx(i, COLOR_GREY, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank])); 
+		SendClientMessage(i, COLOR_GREY, "   อัตราดอกเบี้ย: 0.1");
+		SendClientMessageEx(i, COLOR_GREY, "   ได้รับดอกเบี้ย: $%s", MoneyFormat(interest_convert));
+		SendClientMessageEx(i, COLOR_GREY, "   ภาษี: $%s", MoneyFormat(total_tax)); 
+		SendClientMessage(i, COLOR_WHITE, "|________________________|");
+		
+		PlayerInfo[i][pPaycheck]+= total_paycheck; 
+		PlayerInfo[i][pBank]+= interest_convert;
+		PlayerInfo[i][pBank]+= total_paycheck;
+		PlayerInfo[i][pBank]-= total_tax;
+		
+		SendClientMessageEx(i, COLOR_WHITE, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank]));
+		
+		if(PlayerInfo[i][pLevel] == 1)
+			SendClientMessage(i, COLOR_WHITE, "((คุณได้รับ $2,000 จากการเป็นเลเวล 1 ))");
+			
+		else if(PlayerInfo[i][pLevel] == 2)
+			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $1,500 จากการเป็นเลเวล 2. ))");
+		
+		format(str, sizeof(str), "~y~Payday~n~~w~Paycheck~n~~g~$%d", total_paycheck);
+		GameTextForPlayer(i, str, 3000, 1); 
+	
+		CharacterSave(i); 
+	}
+	return 1;
+}
+
+stock ReturnHour()
+{
+	new time[36]; 
+	
+	gettime(time[0], time[1], time[2]);
+	
+	format(time, sizeof(time), "%02d:%02d", time[0], time[1]);
+	return time;
+}

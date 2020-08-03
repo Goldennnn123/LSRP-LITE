@@ -2082,6 +2082,15 @@ CMD:restart(playerid, params[])
 // Admin Level: 1338;
 
 // Admin Level: 1339:
+CMD:callpaycheck(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1339)
+		return 0;
+		
+	Dialog_Show(playerid,  DIALOG_CALLPAYCHECK, DIALOG_STYLE_MSGBOX,"Confirmation", "คุณมั่นใจใช่ไหมที่จะทำการชดเชยค่ารายชัวโมงในเวลานี้?\n\nการกระทำของคุณอาจจะผิดกฏของผู้ดูแลระบบได้", "ยืนยัน", "ยกเลิก"); 
+	return 1;
+}
+
 CMD:makefaction(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1339)
@@ -2328,5 +2337,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		TogglePlayerSpectating(playerid, false);
 		return 1;
 	}
+	return 1;
+}
+
+Dialog:DIALOG_CALLPAYCHECK(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		return 1;
+	
+	CallPaycheck();
 	return 1;
 }

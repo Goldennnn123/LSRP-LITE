@@ -817,3 +817,317 @@ CMD:radio(playerid, params[])
 	return 1;
 }
 
+CMD:rlow(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pHasRadio])
+		return SendUsageMessage(playerid, "คุณไม่มีวิทยุ");
+
+	new
+		local,
+		channel
+	;
+		
+	local = PlayerInfo[playerid][pMainSlot]; 
+	channel = PlayerInfo[playerid][pRadio][local]; 
+	
+	if(!PlayerInfo[playerid][pRadio][local])
+		return SendErrorMessage(playerid, "คุณยังไม่ได้เซ็ตสล็อต"); 
+		
+	if(isnull(params))
+		return SendUsageMessage(playerid, "/rlow [ข้อความ]");
+		
+	foreach(new i : Player)
+	{
+		for(new r = 1; r < 3; r ++)
+		{
+			if(PlayerInfo[i][pRadio][r] == channel)
+			{
+				if(r != PlayerInfo[i][pMainSlot])
+					SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+					
+				else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+			}
+		}
+	}
+	
+	new Float:posx, Float:posy, Float:posz;
+	GetPlayerPos(playerid, posx,posy,posz);
+
+	foreach(new i : Player)
+	{
+	   	if(i == playerid)
+	       continue;
+
+		else if(IsPlayerInRangeOfPoint(i, 5.0, posx,posy,posz))
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD1, "(วิทยุ) %s พูดว่า[เบา]: %s", ReturnName(playerid, 0), params);
+		}
+	}
+	return 1;
+}
+
+CMD:r2(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pHasRadio])
+		return SendUsageMessage(playerid, "คุณไม่มีวิทยุ");
+
+	new
+		channel
+	;
+		
+	channel = PlayerInfo[playerid][pRadio][2]; 
+	
+	if(!PlayerInfo[playerid][pRadio][2])
+		return SendErrorMessage(playerid, "คุณยังไม่ได้เซ็ตสล็อต");
+		
+	if(isnull(params))
+		return SendUsageMessage(playerid, "/r2 [ข้อความ]");
+		
+	foreach(new i : Player)
+	{
+		for(new r = 1; r < 3; r ++)
+		{
+			if(PlayerInfo[i][pRadio][r] == channel)
+			{
+				if(r != PlayerInfo[i][pMainSlot])
+					SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+					
+				else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+			}
+		}
+	}
+	
+	new Float:posx, Float:posy, Float:posz;
+	GetPlayerPos(playerid, posx,posy,posz);
+
+	foreach(new i : Player)
+	{
+	   	if(i == playerid)
+	       continue;
+
+		else if(IsPlayerInRangeOfPoint(i, 20.0, posx,posy,posz))
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD1, "(วิทยุ) %s พูดว่า: %s", ReturnName(playerid, 0), params);
+		}
+	}
+	return 1;
+}
+
+CMD:r2low(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pHasRadio])
+		return SendUsageMessage(playerid, "คุณไม่มีวิทยุ");
+
+	new
+		channel
+	;
+		
+	channel = PlayerInfo[playerid][pRadio][2]; 
+	
+	if(!PlayerInfo[playerid][pRadio][2])
+		return SendErrorMessage(playerid, "คุณยังไม่ได้เซ็ตสล็อต");
+		
+	if(isnull(params))
+		return SendUsageMessage(playerid, "/r2low [ข้อความ]");
+		
+	foreach(new i : Player)
+	{
+		for(new r = 1; r < 3; r ++)
+		{
+			if(PlayerInfo[i][pRadio][r] == channel)
+			{
+				if(r != PlayerInfo[i][pMainSlot])
+					SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+					
+				else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+			}
+		}
+	}
+	
+	new Float:posx, Float:posy, Float:posz;
+	GetPlayerPos(playerid, posx,posy,posz);
+
+	foreach(new i : Player)
+	{
+	   	if(i == playerid)
+	       continue;
+
+		else if(IsPlayerInRangeOfPoint(i, 6.0, posx,posy,posz))
+		{
+			SendClientMessageEx(playerid, COLOR_GRAD1, "(วิทยุ) %s พูดว่า[เบา]: %s", ReturnName(playerid, 0), params);
+		}
+	}
+	return 1;
+}
+
+
+CMD:setspawn(playerid, params[])
+{
+	new 
+		id;
+
+	if(sscanf(params, "i", id))
+	{
+		SendUsageMessage(playerid, "/setspawn [spawn id]");
+		SendClientMessage(playerid, COLOR_WHITE, "1. สนามบิน, 2. บ้าน, 3. เฟคชั่น");
+		return 1;
+	}
+
+	if(id > 3 || id < 1)
+		return SendErrorMessage(playerid, "ไอ้ดีสปาว มีเพียง (1-3)");
+
+	switch(id)
+	{
+		case 1:
+		{
+			if(PlayerInfo[playerid][pSpawnPoint] == 0)
+				return SendErrorMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น สนามบินอยู่แล้ว");
+
+			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_DEFAULT; 
+			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น สนามบิน");
+		}
+		case 2:
+		{
+			new id_house = IsPlayerInHouse(playerid);
+
+			if(id_house == 0)
+				return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในบ้าน");
+
+			if(HouseInfo[id_house][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+				return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของบ้าน");
+
+			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_HOUSE;
+			PlayerInfo[playerid][pSpawnHouse] = id_house;
+			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น บ้าน");
+		}
+		case 3:
+		{
+			new id_fac = PlayerInfo[playerid][pFaction];
+
+			if(id_fac == 0)
+				return SendErrorMessage(playerid, "คุณไม่มีเฟคชั่น");
+			
+			if(!FactionInfo[id_fac][eFactionSpawn][0] || !FactionInfo[id_fac][eFactionSpawn][1] || !FactionInfo[id_fac][eFactionSpawn][2])
+				return SendErrorMessage(playerid, "เฟคชั่นของคุณยังไม่มีการเซ็ตจุดเกิด");
+
+			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_FACTION;
+			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น เฟคชั่น");
+		}
+	}
+	return 1;
+}
+
+
+alias:leavegun("lg")
+CMD:leavegun(playerid, params[])
+{
+	new 
+		weaponid, 
+		idx,
+		id, 
+		Float:x,
+		Float:y,
+		Float:z
+	;
+	
+	if(sscanf(params, "i", weaponid))
+	{
+		SendUsageMessage(playerid, "/leavegun [ไอดีอาวุธ]");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF}คุณสามารถหยิบปืนขึ้นมาโดยการพิมพ์ /grabgun."); 
+		return 1;
+	}
+	
+	if(weaponid < 1 || weaponid > 46 || weaponid == 35 || weaponid == 36 || weaponid == 37 || weaponid == 38 || weaponid == 39)
+	    return SendErrorMessage(playerid, "อาวุธเหล่านี้ถูกจัดเป็นอาวุธต้องห้ามภายในเซืฟเวอร์");
+		
+	if(!PlayerHasWeapon(playerid, weaponid))
+		return SendErrorMessage(playerid, "คุณไม่ได้มีอาวุธชนิดดังกล่าว"); 
+		
+	for(new i = 0; i < sizeof(WeaponDropInfo); i++)
+	{
+		if(!WeaponDropInfo[i][eWeaponDropped])
+		{
+			idx = i;
+			break;
+		}
+	}
+	
+	id = ReturnWeaponIDSlot(weaponid); 
+	GetPlayerPos(playerid, x, y, z); 
+	
+	WeaponDropInfo[idx][eWeaponDropped] = true;
+	WeaponDropInfo[idx][eWeaponDroppedBy] = PlayerInfo[playerid][pDBID]; 
+	
+	WeaponDropInfo[idx][eWeaponWepID] = weaponid;
+	WeaponDropInfo[idx][eWeaponWepAmmo] = PlayerInfo[playerid][pWeaponsAmmo][id];
+	
+	WeaponDropInfo[idx][eWeaponPos][0] = x;
+	WeaponDropInfo[idx][eWeaponPos][1] = y;
+	WeaponDropInfo[idx][eWeaponPos][2] = z;
+	
+	WeaponDropInfo[idx][eWeaponInterior] = GetPlayerInterior(playerid);
+	WeaponDropInfo[idx][eWeaponWorld] = GetPlayerVirtualWorld(playerid); 
+	
+	RemovePlayerWeapon(playerid, weaponid);
+	PlayerInfo[playerid][pWeapons][id] = 0;
+	PlayerInfo[playerid][pWeaponsAmmo][id] = 0; 
+	
+	WeaponDropInfo[idx][eWeaponObject] = CreateDynamicObject(
+		ReturnWeaponsModel(weaponid),
+		x,
+		y,
+		z - 1,
+		80.0,
+		0.0,
+		0.0,
+		GetPlayerVirtualWorld(playerid),
+		GetPlayerInterior(playerid)); 
+		
+	WeaponDropInfo[idx][eWeaponTimer] = SetTimerEx("OnPlayerLeaveWeapon", 600000, false, "i", idx); 
+	SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} อาวุธของคุณจะยังคงอยู่บนพื้นได้ถึง 10 นาทีก่อนจะถูกลบออกจากเซืฟเวอร์");
+	return 1;
+}
+
+alias:grabgun("gg")
+CMD:grabgun(playerid, params[])
+{	
+	new
+		bool:foundWeapon = false,
+		id,
+		str[128]
+	;
+
+	for(new i = 0; i < sizeof(WeaponDropInfo); i++)
+	{
+		if(!WeaponDropInfo[i][eWeaponDropped])
+			continue; 
+	
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, WeaponDropInfo[i][eWeaponPos][0], WeaponDropInfo[i][eWeaponPos][1], WeaponDropInfo[i][eWeaponPos][2]))
+		{
+			if(GetPlayerVirtualWorld(playerid) == WeaponDropInfo[i][eWeaponWorld])
+			{
+				foundWeapon = true;
+				id = i;
+			}							
+		}
+	}
+	
+	if(foundWeapon)
+	{
+		GivePlayerGun(playerid, WeaponDropInfo[id][eWeaponWepID], WeaponDropInfo[id][eWeaponWepAmmo]);
+		
+		format(str, sizeof(str), "* %s หยิบ %s ขึ้นมาจากพื้น", ReturnName(playerid, 0), ReturnWeaponName(WeaponDropInfo[id][eWeaponWepID]));
+		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 3000);
+		SendClientMessage(playerid, COLOR_EMOTE, str);
+		
+		WeaponDropInfo[id][eWeaponDropped] = false; 
+		WeaponDropInfo[id][eWeaponDroppedBy] = 0;
+		
+		WeaponDropInfo[id][eWeaponWepID] = 0; WeaponDropInfo[id][eWeaponWepAmmo] = 0; 
+		
+		KillTimer(WeaponDropInfo[id][eWeaponTimer]); 
+		DestroyDynamicObject(WeaponDropInfo[id][eWeaponObject]); 
+	}
+	else return SendServerMessage(playerid, "ไม่มีอาวุธหรือสิ่งๆใดภายในบริเวณรนี้");
+	return 1;
+}

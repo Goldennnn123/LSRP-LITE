@@ -522,7 +522,76 @@ Dialog:DIALOG_PHONE_SELETE_ID(playerid, response, listitem, inputtext[])
         case 1: return Dialog_Show(playerid, DIALOG_PHONE_EDIT_NUMBER, DIALOG_STYLE_INPUT, "แก้ไขเบอร์ติดต่อ:", "โปรดใส่หมายเลขโทรศัพท์ใหม่ของรายชื่อนี้ของคุณ:", "ยืนยัน", "ยกเลิก");
         case 2:
         {
-            callcmd::call(playerid, PhoneInfo[id][PhoneNumber]);
+            new playerb = INVALID_PLAYER_ID, str[128];
+            new Number = PhoneInfo[id][PhoneNumber];
+
+            foreach(new i : Player)
+            { 
+                if(PlayerInfo[i][pPhone] != Number)
+                    continue;
+                
+                if(PlayerInfo[i][pPhone] == Number)
+                {
+                    playerb = i;
+                }
+            }
+            
+            format(str, sizeof(str), "* %s กดหมายเลขโทรสัพท์และกดปุ่มโทรออก", ReturnRealName(playerid, 0));
+            SendClientMessageEx(playerid, -1,"คุณกำลังโทรหาเบอร์ %d",Number);
+            SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 3000);
+            SendClientMessage(playerid, COLOR_EMOTE, str); 
+            
+            SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
+            PlayerPlaySound(playerid, 3600, 0.0, 0.0, 0.0);
+            
+            if(Number == 911)
+            {
+                PlayerInfo[playerid][pPhoneline] = 999;
+                PlayerInfo[playerid][pCalling] = 1; 
+            
+                Player911Timer[0][playerid] = SetTimerEx("On911Call", 2000, false, "i", playerid);
+                return 1;
+            }
+
+            if(!IsPlayerConnected(playerb))
+            {
+                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 4500, false, "ii", playerid, 1); 
+                return 1;
+            }
+            
+            if(playerb == INVALID_PLAYER_ID)
+            {
+                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 4500, false, "ii", playerid, 1); 
+                return 1;
+            }
+            
+            if(PlayerInfo[playerb][pPhoneOff])
+            {
+                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 3000, false, "ii", playerid, 2); 
+                return 1;
+            }
+            
+            if(PlayerInfo[playerb][pCalling])
+            {
+                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 3000, false, "ii", playerid, 3);
+                return 1;
+            }
+            
+            if(PlayerInfo[playerb][pPhoneline] != INVALID_PLAYER_ID)
+            {
+                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 3300, false, "ii", playerid, 4);
+                return 1;
+            }
+            
+            SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "* %s มีเสียงกริ๊งโทรสัพท์ดังขึ้น", ReturnRealName(playerid, 0)); 
+            SendClientMessageEx(playerb, COLOR_GREY, "[ ! ] คุณสามารถรับสายโดยการกดปุ่มรับสายโดยการพิมพ์ /p(ickup) เพื่อรับสายเรียกเข้า Phone: %i", PlayerInfo[playerid][pPhone]); 
+            
+            PlayerInfo[playerid][pCalling] = 1; PlayerInfo[playerb][pCalling] = 1;
+            
+            PlayerInfo[playerid][pPhoneline] = playerb;
+            PlayerInfo[playerb][pPhoneline] = playerid; 
+            
+            playerPhone[playerb] = SetTimerEx("OnSuccessCall", 3000, true, "i", playerid); 
             return 1;
         }
         case 3:
@@ -726,6 +795,9 @@ CMD:call(playerid, params[])
 		
 	if(sscanf(params, "i", phone_number))
 		return SendUsageMessage(playerid, "/call [หมายเลขโทรสัพท์]");
+
+    if(phone_number < 4)
+        return SendUsageMessage(playerid, "/call [หมายเลขโทรสัพท์ (5 ตัว)]");
 
     foreach(new i : Player)
     { 

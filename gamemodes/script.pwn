@@ -144,6 +144,7 @@ public OnGameModeInit() {
     SetTimer("OnPlayerNereBusinessTime", 3000, true);
     SetTimer("OnWeaponsUpdate", 1000, true);
     SetTimer("OnVehicleUpdate", 100, true);
+    SetTimer("FunctionPaychecks", 1000, true);
     //Timer:
 
     adminactionlog = CreateLog("server/admin_action");
@@ -363,10 +364,21 @@ public OnPlayerSpawn(playerid) {
             SetPlayerFacingAngle(playerid, DEFAULT_SPAWN_LOCATION_A);
         }
         case SPAWN_AT_FACTION: {
-            // to add
+            new id = PlayerInfo[playerid][pFaction];
+
+            SetPlayerVirtualWorld(playerid, FactionInfo[id][eFactionSpawnWorld]);
+            SetPlayerInterior(playerid, FactionInfo[id][eFactionSpawnInt]);
+            SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0], FactionInfo[id][eFactionSpawn][1], FactionInfo[id][eFactionSpawn][2]);
         }
         case SPAWN_AT_HOUSE: {
-            // to add
+            
+            new id = PlayerInfo[playerid][pSpawnHouse];
+
+            SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseInteriorWorld]);
+            SetPlayerInterior(playerid, HouseInfo[id][HouseInteriorID]);
+            SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]);
+
+            PlayerInfo[playerid][pInsideProperty] = id;
         }
     }
 

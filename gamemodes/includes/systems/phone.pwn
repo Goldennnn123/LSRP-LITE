@@ -863,6 +863,7 @@ CMD:call(playerid, params[])
 }
 
 
+alias:hangup("h")
 CMD:hangup(playerid, params[])
 {
 	if(PlayerInfo[playerid][pPhoneOff])
@@ -953,6 +954,8 @@ CMD:hangup(playerid, params[])
 	return 1;
 }
 
+
+alias:pickup("p")
 CMD:pickup(playerid, params[])
 {
 	if(PlayerInfo[playerid][pPhoneOff])
@@ -978,6 +981,28 @@ CMD:pickup(playerid, params[])
 	
 	playerPhone[playerid] = 0; playerPhone[ PlayerInfo[playerid][pPhoneline] ] = 0; 
 	return 1;
+}
+
+CMD:loudspeaker(playerid, params[])
+{
+	if(PlayerInfo[playerid][pPhoneOff])
+		return SendErrorMessage(playerid, "โทรสัพท์ของคุณปิดเครื่องอยู่");
+		
+	/*if(PlayerInfo[playerid][pHandcuffed])
+		return SendErrorMessage(playerid, "คุณถูกใส่กุญแจมืออยู่"); */
+		
+	if(PlayerInfo[playerid][pPhonespeaker])
+	{
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ปิดลำโพงโทรสัพท์", ReturnName(playerid, 0));
+		PlayerInfo[playerid][pPhonespeaker] = false;
+	}
+	else
+	{
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s เปิดลำโพงโทรสัพท์", ReturnName(playerid, 0));
+		PlayerInfo[playerid][pPhonespeaker] = true;
+	}
+	
+	return 1; 
 }
 
 forward OnPhoneCall(playerid, type);

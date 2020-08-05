@@ -1131,3 +1131,58 @@ CMD:grabgun(playerid, params[])
 	else return SendServerMessage(playerid, "ไม่มีอาวุธหรือสิ่งๆใดภายในบริเวณรนี้");
 	return 1;
 }
+
+CMD:levelup(playerid, params[])
+{
+	new
+		exp_count,
+		str[128]
+	;
+	
+	exp_count = ((PlayerInfo[playerid][pLevel]) * 4 + 2); 
+	
+	if(PlayerInfo[playerid][pExp] < exp_count)
+	{
+		SendServerMessage(playerid, "คุณยังมี ค่าประสบการณ์ไม่มากพอ จำเป็นต้องมีค่าประสบการณ์ %i จึงจะสามารถอัปเกรดได้", exp_count); 
+		return 1; 
+	}
+	
+	PlayerInfo[playerid][pLevel]++; 
+	PlayerInfo[playerid][pExp] = 0; 
+	
+	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0);
+	SetPlayerScore(playerid, PlayerInfo[playerid][pLevel]); 
+	
+	format(str, sizeof(str), "~g~Leveled Up~n~~w~You leveled up to level %i", PlayerInfo[playerid][pLevel]);
+	GameTextForPlayer(playerid, str, 5000, 1);
+
+	CharacterSave(playerid); 
+	return 1;
+}
+
+CMD:license(playerid, params[])
+{
+	new playerb;
+		
+	if(sscanf(params, "u", playerb))
+		return SendUsageMessage(playerid, "/license [ชื่อบางส่วน/ไอดี]"); 
+	
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์");
+		
+	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+		
+	if(!IsPlayerNearPlayer(playerid, playerb, 5.0))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ"); 
+		
+	if(playerb != playerid)
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s หยิบบัตรประจำตัวบัตรประชาชนและยื่นให้ %s", ReturnName(playerid, 0), ReturnName(playerb, 0));
+		
+	else SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s หยิบบัตรประจำตัวบัตรประชาชนขึ้นมาดู", ReturnName(playerid, 0));
+	
+	ReturnLicenses(playerid, playerb); 	
+	return 1;
+}
+
+

@@ -486,3 +486,54 @@ stock ReturnHour()
 	format(time, sizeof(time), "%02d:%02d", time[0], time[1]);
 	return time;
 }
+
+stock ReturnLicenses(playerid, playerb)
+{
+	new
+		driver_str[60],
+		wep_str[60],
+		truck_str[60]
+
+	;
+	
+	if(!PlayerInfo[playerid][pDriverLicense])
+		driver_str = "{FF6346}Driving License : No";
+		
+	else if(PlayerInfo[playerid][pDriverLicenseRevoke]) 
+		driver_str = "{FF6346}Driving License : Yes";
+	
+	else if(PlayerInfo[playerid][pDriverLicenseSus])
+		driver_str = "{F1C40F}Driving License : Yes";
+
+	else driver_str = "{E2FFFF}Driving License : Yes";
+	
+	if(!PlayerInfo[playerid][pWeaponLicense])
+		wep_str = "{FF6346}Weapons License : No";
+
+	else if(PlayerInfo[playerid][pWeaponLicenseRevoke])
+		wep_str = "{F1C40F}Weapons License : Yes";
+	
+	else wep_str = "{E2FFFF}Weapons License : Yes";
+
+	if(!PlayerInfo[playerid][pTuckingLicense])
+		truck_str = "{FF6346}Trucking License : No";
+		
+	else if(PlayerInfo[playerid][pTuckingLicenseRevoke]) 
+		truck_str = "{FF6346}Trucking License : Yes";
+	
+	else if(PlayerInfo[playerid][pTuckingLicenseSus])
+		truck_str = "{F1C40F}Trucking License : Yes";
+
+	else truck_str = "{E2FFFF}Trucking License : Yes";
+
+
+
+	
+	SendClientMessage(playerb, COLOR_DARKGREEN, "______Identification_______");
+	SendClientMessageEx(playerb, COLOR_GRAD2, "Name : %s", ReturnRealName(playerid, 0)); 
+	SendClientMessageEx(playerb, COLOR_GRAD2, "%s", driver_str);
+	SendClientMessageEx(playerb, COLOR_GRAD2, "%s", wep_str);
+	SendClientMessageEx(playerb, COLOR_GRAD2, "%s", truck_str);
+	SendClientMessage(playerb, COLOR_DARKGREEN, "___________________________"); 
+	return 1;
+}

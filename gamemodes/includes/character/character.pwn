@@ -383,6 +383,45 @@ CharacterSave(playerid, force = false)
 			mysql_tquery(dbCon, query);
 		}
 
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pDriverLicense = %d, pDriverLicenseWarn = %d,pDriverLicenseRevoke = %d,pDriverLicenseSus = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pDriverLicense],
+			PlayerInfo[playerid][pDriverLicenseWarn],
+			PlayerInfo[playerid][pDriverLicenseRevoke],
+			PlayerInfo[playerid][pDriverLicenseSus],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pWeaponLicense = %d, pWeaponLicenseType = %d,pWeaponLicenseRevoke = %d, pDriverLicenseSus = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pWeaponLicense],
+			PlayerInfo[playerid][pWeaponLicenseType],
+			PlayerInfo[playerid][pWeaponLicenseRevoke],
+			PlayerInfo[playerid][pDriverLicenseSus],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pPilotLicense = %d, pPilotLicenseBlacklist = %d,pPilotLicenseRevoke = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pPilotLicense],
+			PlayerInfo[playerid][pPilotLicenseBlacklist],
+			PlayerInfo[playerid][pPilotLicenseRevoke],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pMedicLicense = %d, pMedicLicenseRevoke = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pMedicLicense],
+			PlayerInfo[playerid][pMedicLicenseRevoke],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pTuckingLicense = %d, pTuckingLicenseWarn = %d,pTuckingLicenseSus = %d, pTuckingLicenseRevoke = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pTuckingLicense],
+			PlayerInfo[playerid][pTuckingLicenseWarn],
+			PlayerInfo[playerid][pTuckingLicenseSus],
+			PlayerInfo[playerid][pTuckingLicenseRevoke],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+
 		mysql_finish(query);
 	}
 	return 1;
@@ -443,6 +482,26 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pPhonePower", PlayerInfo[playerid][pPhonePower]);
 
 
+	cache_get_value_name_int(0, "pDriverLicense",PlayerInfo[playerid][pDriverLicense]);
+	cache_get_value_name_int(0, "pDriverLicenseWarn",PlayerInfo[playerid][pDriverLicenseWarn]);
+	cache_get_value_name_int(0, "pDriverLicenseRevoke",PlayerInfo[playerid][pDriverLicenseRevoke]);
+	cache_get_value_name_int(0, "pDriverLicenseSus",PlayerInfo[playerid][pDriverLicenseSus]);
+
+	cache_get_value_name_int(0, "pWeaponLicense",PlayerInfo[playerid][pWeaponLicense]);
+	cache_get_value_name_int(0, "pWeaponLicenseType",PlayerInfo[playerid][pWeaponLicenseType]);
+	cache_get_value_name_int(0, "pWeaponLicenseRevoke",PlayerInfo[playerid][pWeaponLicenseRevoke]);
+
+	cache_get_value_name_int(0, "pPilotLicense",PlayerInfo[playerid][pPilotLicense]);
+	cache_get_value_name_int(0, "pPilotLicenseBlacklist",PlayerInfo[playerid][pPilotLicenseBlacklist]);
+	cache_get_value_name_int(0, "pPilotLicenseRevoke",PlayerInfo[playerid][pPilotLicenseRevoke]);
+
+	cache_get_value_name_int(0, "pMedicLicense",PlayerInfo[playerid][pMedicLicense]);
+	cache_get_value_name_int(0, "pMedicLicenseRevoke",PlayerInfo[playerid][pMedicLicenseRevoke]);
+	
+	cache_get_value_name_int(0, "pTuckingLicense",PlayerInfo[playerid][pTuckingLicense]);
+	cache_get_value_name_int(0, "pTuckingLicenseRevoke",PlayerInfo[playerid][pTuckingLicenseRevoke]);
+	cache_get_value_name_int(0, "pTuckingLicenseWarn",PlayerInfo[playerid][pTuckingLicenseWarn]);
+	cache_get_value_name_int(0, "pTuckingLicenseSus",PlayerInfo[playerid][pTuckingLicenseSus]);
 	new str[MAX_STRING];
 	
 	for(new i = 0; i < 13; i++)

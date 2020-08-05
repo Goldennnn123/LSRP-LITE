@@ -98,6 +98,28 @@ enum E_PLAYER_DATA
 	bool:pPhonespeaker,
 
 	bool:pGUI,
+
+
+	bool:pDriverLicense,
+	pDriverLicenseWarn,
+	bool:pDriverLicenseRevoke,
+	bool:pDriverLicenseSus,
+
+	bool:pWeaponLicense,
+	pWeaponLicenseType,
+	bool:pWeaponLicenseRevoke,
+
+	bool:pPilotLicense,
+	bool:pPilotLicenseBlacklist,
+	bool:pPilotLicenseRevoke,
+
+	bool:pMedicLicense,
+	bool:pMedicLicenseRevoke,
+
+	bool:pTuckingLicense,
+	pTuckingLicenseWarn,
+	bool:pTuckingLicenseRevoke,
+	bool:pTuckingLicenseSus,
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS];

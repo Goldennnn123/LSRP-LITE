@@ -268,6 +268,28 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pGUI] = false;
     PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
     PlayerInfo[playerid][pCalling] = 0;
+    PlayerInfo[playerid][pPhonespeaker] = false;
+
+    PlayerInfo[playerid][pDriverLicense] = false;
+    PlayerInfo[playerid][pDriverLicenseWarn] = 0;
+    PlayerInfo[playerid][pDriverLicenseRevoke] = false;
+    PlayerInfo[playerid][pDriverLicenseSus] = false;
+
+    PlayerInfo[playerid][pWeaponLicense] = false;
+    PlayerInfo[playerid][pWeaponLicenseType] = 0;
+    PlayerInfo[playerid][pWeaponLicenseRevoke] = false;
+
+    PlayerInfo[playerid][pPilotLicense] = false;
+    PlayerInfo[playerid][pPilotLicenseBlacklist] = false;
+    PlayerInfo[playerid][pPilotLicenseRevoke] = false;
+
+    PlayerInfo[playerid][pMedicLicense] = false;
+    PlayerInfo[playerid][pMedicLicenseRevoke] = false;
+
+    PlayerInfo[playerid][pTuckingLicense] = false;
+    PlayerInfo[playerid][pTuckingLicenseRevoke] = false;
+    PlayerInfo[playerid][pTuckingLicenseWarn] = 0;
+    PlayerInfo[playerid][pTuckingLicenseSus] = false;
 
 	// vehicles.pwn
 	gLastCar[playerid] = 0;

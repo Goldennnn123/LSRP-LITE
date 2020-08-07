@@ -99,6 +99,7 @@ new globalWeather = 2;
 #include "includes/commands/roleplay.pwn"
 #include "includes/commands/housecmd.pwn"
 #include "includes/commands/businesscmd.pwn"
+#include "includes/commands/factioncmd.pwn"
 
 #include "includes/Interior/Bank.pwn"
 #include "includes/Interior/House1.pwn"
@@ -290,6 +291,9 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pTuckingLicenseRevoke] = false;
     PlayerInfo[playerid][pTuckingLicenseWarn] = 0;
     PlayerInfo[playerid][pTuckingLicenseSus] = false;
+    PlayerInfo[playerid][pFactionChat] = false;
+    PlayerInfo[playerid][pFactionInvite] = 0;
+	PlayerInfo[playerid][pFactionInvitedBy] = INVALID_PLAYER_ID;
 
 	// vehicles.pwn
 	gLastCar[playerid] = 0;

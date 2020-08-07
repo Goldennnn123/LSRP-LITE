@@ -85,6 +85,7 @@ new globalWeather = 2;
 #include "includes/systems/faction.pwn"
 #include "includes/systems/house.pwn"
 #include "includes/systems/business.pwn"
+#include "includes/systems/entrance.pwn"
 
 #include "includes/systems/textdraw/ui_vehiclebuy.pwn"
 #include "includes/systems/phone.pwn"
@@ -100,6 +101,7 @@ new globalWeather = 2;
 #include "includes/commands/housecmd.pwn"
 #include "includes/commands/businesscmd.pwn"
 #include "includes/commands/factioncmd.pwn"
+#include "includes/commands/police.pwn"
 
 #include "includes/Interior/Bank.pwn"
 #include "includes/Interior/House1.pwn"
@@ -131,6 +133,7 @@ public OnGameModeInit() {
     mysql_tquery(dbCon, "SELECT * FROM House ORDER BY HouseDBID", "Query_LoadHouse");
     mysql_tquery(dbCon, "SELECT * FROM Business ORDER BY BusinessDBID", "Query_LoadBusiness");
     mysql_tquery(dbCon, "SELECT * FROM phonebook ORDER BY PhoneDBID", "LoadPhoneBook");
+    mysql_tquery(dbCon, "SELECT * FROM entrance ORDER BY EntranceDBID", "LoadEntrance");
 	
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();

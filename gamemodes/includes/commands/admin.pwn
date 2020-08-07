@@ -1872,6 +1872,72 @@ CMD:viewhouse(playerid, params[])
 	Dialog_Show(playerid, DIALOG_VIEWHOUSE, DIALOG_STYLE_LIST, "HOUSE:", longstr, "เลือก", "ออก");
 	return 1;
 }
+
+CMD:makeentrance(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+	new idx = 0;
+	
+    for (new i = 1; i < MAX_ENTRANCE; i ++)
+    {
+        if(!EntranceInfo[i][EntranceDBID])
+        {
+            idx = i; 
+            break;
+        }
+	}
+    if(idx == 0)
+    {
+        return SendServerMessage(playerid, "สร้าง entrance เกินกว่านี้ไม่ได้แล้ว (30)");
+    }
+
+	new iconid;
+
+	if(sscanf(params, "d", iconid))
+		return SendUsageMessage(playerid, "/makeentrance [ไอคอน-ไอดี]");
+
+	new Float:x,Float:y,Float:z;
+	GetPlayerPos(playerid,x,y,z);
+	
+	new World = GetPlayerVirtualWorld(playerid);
+	new Interior = GetPlayerInterior(playerid);
+
+	new query[MAX_STRING];
+
+	mysql_format(dbCon, query, sizeof(query), "INSERT INTO entrance (`EntranceIconID`,`EntranceLocX`,`EntranceLocY`,`EntranceLocZ`,`EntranceLocWorld`,`EntranceLocInID`) VALUES(%d,%f,%f,%f,%d,%d)",iconid,x,y,z,World,Interior); 
+	mysql_tquery(dbCon, query, "Query_InsertEntrance", "dddfffdd", playerid, idx, iconid,x,y,z,World,Interior); 
+	return 1;
+}
+
+alias:editentrance("editenter")
+CMD:editentrance(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+	new id, str[MAX_STRING], longstr[MAX_STRING];
+
+	if(sscanf(params, "d", id))
+		return SendUsageMessage(playerid, "/edit(entr)ance [ไอคอน-ไอดี]");
+
+
+	if(!EntranceInfo[id][EntranceDBID])
+		return SendErrorMessage(playerid, "ไม่มี ไอดีที่ ต้องการ");
+
+	PlayerSeleteEnter[playerid] = id;
+
+	format(str, sizeof(str), "{43A047}[ {FF0000}! {43A047}] {FFFFFF}เปลี่ยน ไอคอน\n");
+	strcat(longstr, str);
+	format(str, sizeof(str), "{43A047}[ {FF0000}! {43A047}] {FFFFFF}เปลี่ยนจุดด้านหน้า\n");
+	strcat(longstr, str);
+	format(str, sizeof(str), "{43A047}[ {FF0000}! {43A047}] {FFFFFF}เปลี่ยนจุดภายใน\n");
+	strcat(longstr, str);
+
+	Dialog_Show(playerid, EDIT_ENTRANCE, DIALOG_STYLE_LIST, "Entrance Editer", longstr, "ยืนยัน", "ยกเลิก");
+	return 1;
+}
 // Admin Level: 5;
 
 

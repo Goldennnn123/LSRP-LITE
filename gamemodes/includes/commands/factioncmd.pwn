@@ -273,6 +273,36 @@ CMD:factionon(playerid, params[])
 	return 1;
 }
 
+/*CMD:duty(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
+	
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล"); 
+
+	
+	f(ReturnFactionJob(playerid) == POLICE)
+	{
+		if(!PlayerInfo[playerid][pPoliceDuty])
+		{
+			return 1;
+		}
+		else
+		{
+			if(!IsPlayerInRangeOfPoint(playerid, 5.0, FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][0], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][1], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][2]))
+				return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
+
+			if(GetPlayerVirtualWorld(playerid) != FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawnWorld])
+				return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
+
+			PlayerInfo[playerid][pPoliceDuty] = true;
+		}
+		return 1;
+	}
+    return 1;
+}*/
+
 hook OnPlayerDisconnect(playerid, reason)
 {
     foreach(new i : Player)

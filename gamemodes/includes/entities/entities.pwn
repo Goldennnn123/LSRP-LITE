@@ -3,6 +3,7 @@
 #define MAX_HOUSE					(30)
 #define MAX_BUSINESS				(30)
 #define MAX_PHONEBOOK				(700)
+#define MAX_ENTRANCE				(700)
 
 enum E_PLAYER_DATA
 {
@@ -350,3 +351,19 @@ enum E_PONEBOOK_DATA
 	PhoneNumber,
 }
 new PhoneInfo[MAX_PHONEBOOK][E_PONEBOOK_DATA];
+
+enum ENTRANCE_DATA
+{
+	EntranceDBID,
+	EntranceIconID,
+	EntrancePickup,
+
+	Float:EntranceLoc[3],
+	EntranceLocWorld,
+	EntranceLocInID,
+
+	Float:EntranceLocIn[3],
+	EntanceLocInWorld,
+	EntranceLocInInID,
+}
+new EntranceInfo[MAX_ENTRANCE][ENTRANCE_DATA];

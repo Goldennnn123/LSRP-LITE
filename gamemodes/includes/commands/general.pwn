@@ -35,27 +35,6 @@ CMD:jobhelp(playerid, params[])
 	return 1;
 }
 
-CMD:time(playerid, params[])
-{
-	//cmd_ame(playerid, "ดูนาฬิกา");
-	
-	new string[128], hour, minute, seconds;
-
-	gettime(hour, minute, seconds);
-
-	if(PlayerInfo[playerid][pAdminjailed] == true)
-		format(string, sizeof(string), "~g~|~w~%02d:%02d~g~|~n~~w~Jail Time left: %d SEC", hour, minute, PlayerInfo[playerid][pAdminjailTime]);
-		
-	/*if(PlayerInfo[playerid][pArrest] > 0)
-		format(string, sizeof(string), "~g~|~w~%02d:%02d~g~|~n~~w~Jail Time left: %d SEC", hour, minute, PlayerInfo[playerid][pArrestjailTime]);*/
-
-	else
-		format(string, sizeof(string), "~g~|~w~%02d:%02d~g~|", hour, minute);
-		
-	GameTextForPlayer(playerid, string, 2000, 1);
-	
-	return 1;
-}
 
 CMD:mask(playerid, params[])
 {
@@ -1185,4 +1164,96 @@ CMD:license(playerid, params[])
 	return 1;
 }
 
+CMD:time(playerid, params[])
+{
+	new str[20];
+	format(str, sizeof(str), "ดูนาฬิกา");
+	callcmd::ame(playerid, str);
+	
+	new string[128], hour, minute, seconds;
+	
+	gettime(hour, minute, seconds);
+	
+	if(PlayerInfo[playerid][pAdminjailed] == true)
+		format(string, sizeof(string), "~g~|~w~%02d:%02d~g~|~n~~w~Jail Time left: %d SEC", hour, minute, PlayerInfo[playerid][pAdminjailTime]);
 
+	else
+		format(string, sizeof(string), "~g~|~w~%02d:%02d~g~|", hour, minute);
+		
+	GameTextForPlayer(playerid, string, 2000, 1);
+	
+	return 1;
+}
+
+CMD:rcp(playerid, params[])
+{
+	DisablePlayerCheckpoint(playerid);
+	
+	//Disabling checkpoint referring variables:
+	PlayerCheckpoint[playerid] = 0;
+	return 1;
+}
+
+CMD:b(playerid, params[])
+{
+	if (isnull(params))
+		return SendUsageMessage(playerid, "/b [ข้อความ]"); 
+	
+	if(PlayerInfo[playerid][pAdminDuty] == true)
+	{
+		if(strlen(params) > 84)
+		{
+			SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {FF9900}%s{AFAFAF}: %.84s ))", playerid, ReturnName(playerid), params);
+			SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {FF9900}%s{AFAFAF}: ...%s ))", playerid, ReturnName(playerid), params[84]);
+		}
+		else SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {FF9900}%s{AFAFAF}: %s ))", playerid, ReturnName(playerid), params);
+	}
+	else
+	{
+		if(strlen(params) > 84)
+		{
+			SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] %s: %.84s ))", playerid, ReturnName(playerid), params);
+			SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] %s: ...%s ))", playerid, ReturnName(playerid), params[84]); 
+		}
+		else SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] %s: %s ))", playerid, ReturnName(playerid), params);
+	}	
+	return 1;
+}
+
+CMD:pm(playerid, params[])
+{
+	new
+		playerb,
+		text[144]
+	;
+		
+	if(sscanf(params, "us[144]", playerb, text))
+		return SendUsageMessage(playerid, "/pm [ชื่อบางส่วน/ไอดี] [text]");
+		
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+		
+	if(PlayerInfo[playerid][pAdminDuty])
+	{
+		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {FF9900}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
+		
+		if(!PlayerInfo[playerb][pAdminDuty])
+			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+			
+		else SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+	}
+	else
+	{
+		if(PlayerInfo[playerb][pAdminDuty])
+		{
+			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
+			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+		}
+		else
+		{
+			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
+			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+		}
+	}
+	return 1;
+}

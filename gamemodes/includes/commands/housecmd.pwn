@@ -2,10 +2,31 @@ CMD:housecmds(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________________HOUSE COMMAND__________________________");
 
-    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /buyhouse /sellhouse /lock /placepos");
+    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /house /buyhouse /sellhouse /lock /placepos");
 
     SendClientMessage(playerid, COLOR_GREEN,"________________________________________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"â»Ã´ÈÖ¡ÉÒ¤ÓÊÑè§ã¹à«ÔÃì¿àÇÍÃìà¾ÔèÁàµÔÁã¹¿ÍÃÑèÁËÃ×Í /helpme à¾×èÍ¢Í¤ÇÒÁªèÇÂàËÅ×Í");
+    return 1;
+}
+
+CMD:house(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideProperty];
+
+    if(id == 0)
+        return SendErrorMessage(playerid, "¤Ø³äÁèä´éÍÂÙèã¹ºéÒ¹¢Í§¤Ø³");
+
+    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "¤Ø³äÁèä´éÍÂÙèã¹ºéÒ¹¢Í§¤Ø³");
+
+    new str[MAX_STRING], longstr[MAX_STRING];
+
+    format(longstr, sizeof(longstr), "ºéÒ¹àÅ¢·Õè: %s\n",HouseInfo[id][HouseName]);
+    strcat(str, longstr);
+    format(longstr, sizeof(longstr), "ÃÒ¤ÒºéÒ¹: %s\n",MoneyFormat(HouseInfo[id][HousePrice]));
+    strcat(str, longstr);
+
+    Dialog_Show(playerid, DIALOG_MYHOUSE, DIALOG_STYLE_MSGBOX, "HOUSE:", str, ">>", "");
     return 1;
 }
 

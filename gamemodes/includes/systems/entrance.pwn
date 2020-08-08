@@ -78,11 +78,43 @@ Dialog:EDIT_ENTRANCE(playerid, response, listitem, inputtext[])
     if(!response)
         return 1;
 
-    //new id = PlayerSeleteEnter[playerid];
+    new id = PlayerSeleteEnter[playerid];
 
     switch(listitem)
     {
-        case 0: Dialog_Show(playerid, EDIT_ENTRANCE_ICONID, DIALOG_STYLE_INPUT, "Entrance Editer", "โปรดใส่ ไอดีไอคอนใหม่:", "ยืนยัน", "ยกเลิก");
+        case 0: return Dialog_Show(playerid, EDIT_ENTRANCE_ICONID, DIALOG_STYLE_INPUT, "Entrance Editer", "โปรดใส่ ไอดีไอคอนใหม่:", "ยืนยัน", "ยกเลิก");
+        case 1:
+        {
+            GetPlayerPos(playerid, EntranceInfo[id][EntranceLoc][0], EntranceInfo[id][EntranceLoc][1], EntranceInfo[id][EntranceLoc][2]);
+            EntranceInfo[id][EntranceLocWorld] = GetPlayerVirtualWorld(playerid);
+            EntranceInfo[id][EntranceLocInID] = GetPlayerInterior(playerid);
+
+            if(EntranceInfo[id][EntranceIconID])
+            {
+                if(IsValidDynamicPickup(EntranceInfo[id][EntrancePickup]))
+                        DestroyDynamicPickup(EntranceInfo[id][EntrancePickup]);
+                    
+                EntranceInfo[id][EntrancePickup] = CreateDynamicPickup(EntranceInfo[id][EntranceIconID], 23, EntranceInfo[id][EntranceLoc][0], EntranceInfo[id][EntranceLoc][1], EntranceInfo[id][EntranceLoc][2],-1,-1);
+            }
+            SaveEntrance(id);
+            return 1;
+        }
+        case 2:
+        {
+            GetPlayerPos(playerid, EntranceInfo[id][EntranceLocIn][0], EntranceInfo[id][EntranceLocIn][1], EntranceInfo[id][EntranceLocIn][2]);
+            
+            if(GetPlayerVirtualWorld(playerid) == 0)
+            {
+                EntranceInfo[id][EntanceLocInWorld] = random(99999);
+            }
+            else
+            {
+                EntranceInfo[id][EntanceLocInWorld] = GetPlayerVirtualWorld(playerid);
+            }
+            EntranceInfo[id][EntranceLocInInID] = GetPlayerInterior(playerid);
+            SaveEntrance(id);
+            return 1;
+        }
 
     }
     return 1;
@@ -98,6 +130,15 @@ Dialog:EDIT_ENTRANCE_ICONID(playerid, response, listitem, inputtext[])
 
     EntranceInfo[id][EntranceIconID] = iconid;
 
+    if(iconid == 0)
+    {
+        if(IsValidDynamicPickup(EntranceInfo[id][EntrancePickup]))
+            DestroyDynamicPickup(EntranceInfo[id][EntrancePickup]);
+        
+        SaveEntrance(id);
+        return 1;
+    }
+
     if(EntranceInfo[id][EntranceIconID])
     {
         if(IsValidDynamicPickup(EntranceInfo[id][EntrancePickup]))
@@ -105,7 +146,15 @@ Dialog:EDIT_ENTRANCE_ICONID(playerid, response, listitem, inputtext[])
             
         EntranceInfo[id][EntrancePickup] = CreateDynamicPickup(EntranceInfo[id][EntranceIconID], 23, EntranceInfo[id][EntranceLoc][0], EntranceInfo[id][EntranceLoc][1], EntranceInfo[id][EntranceLoc][2],-1,-1);
     }
-
+    SaveEntrance(id);
     
+    return 1;
+}
+
+forward OnPlayerEnter(playerid, id);
+public OnPlayerEnter(playerid, id)
+{
+	SetPlayerPos(playerid, EntranceInfo[id][EntranceLocIn][0], EntranceInfo[id][EntranceLocIn][1], EntranceInfo[id][EntranceLocIn][2]);
+    TogglePlayerControllable(playerid, 1);
     return 1;
 }

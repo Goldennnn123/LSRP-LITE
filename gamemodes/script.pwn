@@ -72,6 +72,7 @@ new globalWeather = 2;
 #include "includes/mysql/Savefaction.pwn"
 #include "includes/mysql/SaveHouse.pwn"
 #include "includes/mysql/SaveBusiness.pwn"
+#include "includes/mysql/SaveEntrance.pwn"
 
 #include "includes/registration/login.pwn"
 #include "includes/character/character.pwn"
@@ -107,6 +108,8 @@ new globalWeather = 2;
 #include "includes/Interior/House1.pwn"
 #include "includes/Interior/House2.pwn"
 #include "includes/Interior/pizza.pwn"
+
+#include "includes/Map/Police.pwn"
 
 main()
 {

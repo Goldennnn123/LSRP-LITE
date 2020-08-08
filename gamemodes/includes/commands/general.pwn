@@ -140,6 +140,31 @@ CMD:enter(playerid,params[])
 			SendBusinessType(playerid, b);
 		}
 	}
+	for(new e = 1; e < MAX_ENTRANCE; e++)
+	{
+		if(!EntranceInfo[e][EntranceDBID])
+			continue;
+
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, EntranceInfo[e][EntranceLoc][0], EntranceInfo[e][EntranceLoc][1], EntranceInfo[e][EntranceLoc][2]))
+		{
+			if(GetPlayerInterior(playerid) != EntranceInfo[e][EntranceLocInID])
+				continue;
+					
+			if(GetPlayerVirtualWorld(playerid) != EntranceInfo[e][EntranceLocWorld])
+				continue;
+
+			if(!EntranceInfo[e][EntranceLocIn][0] || !EntranceInfo[e][EntranceLocIn][1] || !EntranceInfo[e][EntranceLocIn][2])
+				return GameTextForPlayer(playerid, "~r~Close", 3000, 1);
+
+			TogglePlayerControllable(playerid, 0);
+			SetPlayerPos(playerid, EntranceInfo[e][EntranceLocIn][0], EntranceInfo[e][EntranceLocIn][1], EntranceInfo[e][EntranceLocIn][2] - 3);
+			SetPlayerVirtualWorld(playerid, EntranceInfo[e][EntanceLocInWorld]);
+			SetPlayerInterior(playerid, EntranceInfo[e][EntranceLocInInID]);
+			SetTimerEx("OnPlayerEnter", 2000, false, "ii", playerid, e);
+
+			return 1;
+		}
+	}
 
 	return 1;
 }
@@ -174,7 +199,25 @@ CMD:exit(playerid, params[])
 		PlayerInfo[playerid][pInsideBusiness] = 0;
 		return 1;
 	}
+	for(new e = 1; e < MAX_ENTRANCE; e++)
+	{
+		if(!EntranceInfo[e][EntranceDBID])
+			continue;
 
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, EntranceInfo[e][EntranceLocIn][0], EntranceInfo[e][EntranceLocIn][1], EntranceInfo[e][EntranceLocIn][2]))
+		{
+			if(GetPlayerInterior(playerid) != EntranceInfo[e][EntranceLocInInID])
+				continue;
+					
+			if(GetPlayerVirtualWorld(playerid) != EntranceInfo[e][EntanceLocInWorld])
+				continue;
+
+			SetPlayerPos(playerid, EntranceInfo[e][EntranceLoc][0], EntranceInfo[e][EntranceLoc][1], EntranceInfo[e][EntranceLoc][2]);
+			SetPlayerVirtualWorld(playerid, EntranceInfo[e][EntranceLocInID]);
+			SetPlayerInterior(playerid, EntranceInfo[e][EntranceLocWorld]);
+			return 1;
+		}
+	}
 	return 1;
 }
 

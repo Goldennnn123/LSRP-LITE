@@ -185,10 +185,21 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		{
 			if(weaponid == 23)
 			{
+				if(PlayerInfo[issuerid][pTaser] == false)
+				{
+					SendAdminMessageEx(COLOR_RED, 1, "%s ใช้ Tazer โดยที่ไม่ได้มีการ /tazer", ReturnRealName(issuerid, 0));
+					return 0;
+				}
+				
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
 					TogglePlayerControllable(playerid, 0);
 					ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 0, 1, 1, 1, 0, 1);
+					
+					new str_msg[128];
+					format(str_msg, sizeof(str_msg), "ได้ถูกปืนช็อตไฟฟ้ายิงเข้าไปที่ลำตัวของและนอนลงไปกับพื้น");
+					callcmd::me(playerid, str_msg);
+
 					SetTimerEx("PlayerTazer", 10000, false, "i", playerid);
 				}
 				

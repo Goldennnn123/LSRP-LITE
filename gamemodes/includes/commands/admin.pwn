@@ -2120,6 +2120,80 @@ CMD:deletehouse(playerid,params[])
 	}
 	return 1;
 }
+
+alias:createvehicle("createveh","makevehicle")
+CMD:createvehicle(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1336)
+	    return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
+
+	new factionid, modelid, color1, color2;
+
+	if(sscanf(params, "dddd", factionid,modelid,color1,color2))
+		return SendUsageMessage(playerid,"/(createveh)icle [เฟคชั่น-ไอดี] [โมเดลรถ] [สีที่1] [สีที่2]");
+
+	if(!FactionInfo[factionid][eFactionDBID])
+		return SendErrorMessage(playerid, "ไม่มีเฟคชั่นไอดีที่ต้องการ");
+
+	if(modelid < 400 || modelid > 611)
+		return SendErrorMessage(playerid, "ไม่มีไอดีรถที่คุณต้องการ");
+		
+	if(color1 > 255 || color2 > 255)
+		return SendErrorMessage(playerid, "โปรดใส่สีให้ถูกด้วย");
+
+	new idx = 0;
+	
+	for (new i = 1; i < MAX_VEHICLES; i ++)
+	{
+		if(!VehicleInfo[i][eVehicleFaction])
+		{
+			idx = i; 
+			break;
+		}
+	}
+	if(idx == 0)
+	{
+		return SendServerMessage(playerid, "รถในเซืฟเวอร์เต็มแล้ว"); 
+	}
+
+	new Float:x,Float:y,Float:z,Float:a;
+	GetPlayerPos(playerid, x,y,z);
+	GetPlayerFacingAngle(playerid, a);
+	new World = GetPlayerVirtualWorld(playerid);
+
+	new vehicleid = INVALID_VEHICLE_ID;
+
+	vehicleid = CreateVehicle(modelid, x, y, z, a, color1, color2, -1, 0);
+
+	if(vehicleid != INVALID_VEHICLE_ID)
+	{
+		//VehicleInfo[vehicleid][eVehicleDBID] = idx;
+		VehicleInfo[vehicleid][eVehicleModel] = modelid;
+		VehicleInfo[vehicleid][eVehicleFaction] = factionid;
+
+		VehicleInfo[vehicleid][eVehicleColor1] = color1;
+		VehicleInfo[vehicleid][eVehicleColor2] = color2;
+		VehicleInfo[vehicleid][eVehicleFuel] = 100;
+	}
+
+	SendClientMessageEx(playerid, -1, "คุณได้สร้างรถเฟคชั่นให้กับ {FF5722}%s {FFFFFF}(%d)",FactionInfo[factionid][eFactionName],idx);
+
+	new thread[MAX_STRING]; 
+	
+	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%f,%f,%f,%f,%d)",
+		modelid,
+		factionid,
+		color1,
+		color2,
+		x,
+		y,
+		z,
+		a,
+		World);
+	mysql_tquery(dbCon, thread);
+
+	return 1;
+}
 // Admin Level: 1336;
 
 // Admin Level: 1337:

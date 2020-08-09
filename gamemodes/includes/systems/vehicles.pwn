@@ -368,7 +368,7 @@ CMD:engine(playerid, params[])
 	if(HasNoEngine(vehicleid))
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะคันนี้ไม่มีเครื่องยนต์"); 
 
-	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid))
+	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid) && !VehicleInfo[vehicleid][eVehicleFaction])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้สามารถใช้ได้เฉพาะยานพาหนะส่วนตัว แต่คุณอยู่ในยานพาหนะสาธารณะ (Static)");
 		
 	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
@@ -1119,6 +1119,66 @@ stock NotifyVehicleOwner(vehicleid)
 }
 
 
+forward LoadFactionVehicle();
+public LoadFactionVehicle()
+{
+	if(!cache_num_rows())
+		return print("No Vehicle Faction In Database");
+
+	new rows; cache_get_row_count(rows);
+	new vehicleid = INVALID_VEHICLE_ID, amout_veh;
+
+	new VehicleModel,Float:VehicleParkPos[4],VehicleColor1,VehicleColor2;
+
+	for (new i = 0; i < rows && i < MAX_VEHICLES; i++)
+	{
+		cache_get_value_name_int(i, "VehicleModel", VehicleModel);
+		cache_get_value_name_float(i, "VehicleParkPosX", VehicleParkPos[0]);
+		cache_get_value_name_float(i, "VehicleParkPosY", VehicleParkPos[1]);
+		cache_get_value_name_float(i, "VehicleParkPosZ", VehicleParkPos[2]);
+		cache_get_value_name_float(i, "VehicleParkPosA", VehicleParkPos[3]);
+		cache_get_value_name_int(i, "VehicleColor1", VehicleColor1);
+		cache_get_value_name_int(i, "VehicleColor2", VehicleColor2);
+
+		vehicleid = CreateVehicle(VehicleModel, 
+			VehicleParkPos[0],
+			VehicleParkPos[1],
+			VehicleParkPos[2],
+			VehicleParkPos[3],
+			VehicleColor1,
+			VehicleColor2,
+			-1,
+			0);
+
+		if(vehicleid != INVALID_VEHICLE_ID)
+		{
+			VehicleInfo[vehicleid][eVehicleExists] = true; 
+			//cache_get_value_name_int(i, "VehicleDBID",VehicleInfo[vehicleid][eVehicleDBID]);
+
+			cache_get_value_name_int(i, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
+			
+			cache_get_value_name_int(i, "VehicleModel",VehicleInfo[vehicleid][eVehicleModel]);
+			
+			cache_get_value_name_int(i, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);
+			cache_get_value_name_int(i, "VehicleColor2",VehicleInfo[vehicleid][eVehicleColor2]);
+			
+			cache_get_value_name_float(i, "VehicleParkPosX", VehicleInfo[vehicleid][eVehicleParkPos][0]);
+			cache_get_value_name_float(i, "VehicleParkPosY", VehicleInfo[vehicleid][eVehicleParkPos][1]);
+			cache_get_value_name_float(i, "VehicleParkPosZ", VehicleInfo[vehicleid][eVehicleParkPos][2]);
+			cache_get_value_name_float(i, "VehicleParkPosA", VehicleInfo[vehicleid][eVehicleParkPos][3]);
+			
+			cache_get_value_name_int(i, "VehicleParkWorld",VehicleInfo[vehicleid][eVehicleParkWorld]);
+
+			VehicleInfo[vehicleid][eVehicleFuel] = 100;
+		}
+		amout_veh++;
+	}
+
+	printf("%d Vehicle Factino In Database...", amout_veh);
+	return 1;
+}
+
+
 forward Query_LoadPrivateVehicle(playerid);
 public Query_LoadPrivateVehicle(playerid)
 {
@@ -1515,3 +1575,24 @@ stock GetVehicleSpeed(vehicleid)
 //  vel = floatround( floatsqroot( x*x + y*y + z*z ) * 180 / MPH_KMH ); // Mph
     return vel;
 }
+
+/*forward Query_InsertVehicle_Faction(playerid, factionid, modelid,color1,color2,Float:x,Float:y,Float:z,Float:a,world,newid);
+public Query_InsertVehicle_Faction(playerid, factionid, modelid,color1,color2,Float:x,Float:y,Float:z,Float:a,world,newid)
+{
+	new vehicleid = INVALID_VEHICLE_ID;
+
+	vehicleid = CreateVehicle(modelid, x, y, z, a, color1, color2, -1, 0);
+
+	if(vehicleid != INVALID_VEHICLE_ID)
+	{
+		VehicleInfo[vehicleid][eVehicleDBID] = newid;
+		VehicleInfo[vehicleid][eVehicleModel] = modelid;
+		VehicleInfo[vehicleid][eVehicleFaction] = factionid;
+
+		VehicleInfo[vehicleid][eVehicleColor1] = color1;
+		VehicleInfo[vehicleid][eVehicleColor2] = color2;
+	}
+
+	SendClientMessageEx(playerid, -1, "คุณได้สร้างรถเฟคชั่นให้กับ {FF5722}%s {FFFFFF}(%d)",FactionInfo[factionid][eFactionName],newid);
+	return 1;
+}*/

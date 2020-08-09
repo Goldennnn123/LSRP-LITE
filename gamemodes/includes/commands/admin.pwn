@@ -1790,6 +1790,10 @@ CMD:makeleader(playerid, params[])
 	PlayerInfo[playerb][pFaction] = factionid;
 	PlayerInfo[playerb][pFactionRank] = 1;
 
+	if(FactionInfo[factionid][eFactionType] == GOVERMENT)
+	{
+		PlayerInfo[playerb][pBadge] = random(99999);
+	}
 	foreach (new i : Player)
 	{
 		if(PlayerInfo[i][pFaction] != factionid)

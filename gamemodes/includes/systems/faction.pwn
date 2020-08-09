@@ -610,6 +610,11 @@ Dialog:DIALOG_COM_FAC_INV(playerid, response, listitem, inputtext[])
 		PlayerInfo[playerid][pFaction] = factionid;
 		PlayerInfo[playerid][pFactionRank] = 1;
 
+		if(FactionInfo[factionid][eFactionType] == GOVERMENT)
+		{
+			PlayerInfo[playerid][pBadge] = random(99999);
+		}
+
 		foreach (new i : Player)
 		{
 			if(PlayerInfo[i][pFaction] != factionid)

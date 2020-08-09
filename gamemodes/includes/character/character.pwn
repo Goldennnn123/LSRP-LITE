@@ -421,6 +421,11 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pBadge = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pBadge],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 
 		mysql_finish(query);
 	}
@@ -458,6 +463,8 @@ public Query_LoadCharacter(playerid)
 
 		cache_get_value_name_int(0, "pLastInterior", PlayerInfo[playerid][pLastInterior]);
 		cache_get_value_name_int(0, "pLastWorld", PlayerInfo[playerid][pLastWorld]);
+
+		cache_get_value_name_int(0, "pBadge", PlayerInfo[playerid][pBadge]);
 
 	} else PlayerInfo[playerid][pTimeout] = 0;
 

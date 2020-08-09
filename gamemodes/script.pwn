@@ -108,6 +108,7 @@ new globalWeather = 2;
 #include "includes/Interior/House1.pwn"
 #include "includes/Interior/House2.pwn"
 #include "includes/Interior/pizza.pwn"
+#include "includes/Interior/PoliceHQ.pwn"
 
 #include "includes/Map/Police.pwn"
 
@@ -300,6 +301,8 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pFactionChat] = false;
     PlayerInfo[playerid][pFactionInvite] = 0;
 	PlayerInfo[playerid][pFactionInvitedBy] = INVALID_PLAYER_ID;
+
+    PlayerInfo[playerid][pHandcuffed] = false;
 
 	// vehicles.pwn
 	gLastCar[playerid] = 0;

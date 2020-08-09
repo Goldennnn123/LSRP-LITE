@@ -221,6 +221,15 @@ CMD:exit(playerid, params[])
 	return 1;
 }
 
+alias:stopanimation("sa", "stopanim")
+CMD:stopanimation(playerid, params[])
+{
+	TogglePlayerControllable(playerid, 1);
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 1.0, 0, 0, 0, 0, 0);
+	ClearAnimations(playerid);
+	return 1;
+}
+
 
 CMD:lock(playerid,params[])
 {

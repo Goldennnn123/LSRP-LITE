@@ -52,12 +52,13 @@ enum E_PLAYER_DATA
 	pScrambleFailed,
     pCMDPermission,
 
-    pPoliceDuty,
-    pSheriffDuty,
-    pMedicDuty,
-    pSADCRDuty,
-    pGovDuty,
-    pActiveIP,
+	pBadge,
+    bool:pPoliceDuty,
+    bool:pSheriffDuty,
+    bool:pMedicDuty,
+    bool:pSADCRDuty,
+    bool:pGovDuty,
+   	pActiveIP,
 
 
     pInsideProperty,
@@ -124,6 +125,10 @@ enum E_PLAYER_DATA
 	pTuckingLicenseWarn,
 	bool:pTuckingLicenseRevoke,
 	bool:pTuckingLicenseSus,
+
+	bool:pHandcuffed,
+
+	bool:pTaser,
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS];

@@ -183,6 +183,16 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		
 		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE)
 		{
+			if(weaponid == 23)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					TogglePlayerControllable(playerid, 0);
+					ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 0, 1, 1, 1, 0, 1);
+					SetTimerEx("PlayerTazer", 10000, false, "i", playerid);
+				}
+				
+			}
 			if(weaponid == 24)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
@@ -362,6 +372,14 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			return 0;
 		}
 	}
+	return 1;
+}
+
+forward PlayerTazer(playerid);
+public PlayerTazer(playerid)
+{
+	ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 0, 1, 1, 1, 0, 1);
+	TogglePlayerControllable(playerid, 1);
 	return 1;
 }
 

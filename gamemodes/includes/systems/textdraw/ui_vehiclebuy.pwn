@@ -1,17 +1,5 @@
 #include <YSI_Coding\y_hooks>
 
-new possibleVehiclePlates[][] = 
-	{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-
-new PlayerText:VehiclebuyTD[MAX_PLAYERS][14];
-new PlayerText:VehicleBuySelect[MAX_PLAYERS][9];
-
-
-new PlayerSeleteVehicle[MAX_PLAYERS];
-new PLayerVehiclePrice[MAX_PLAYERS];
-new PlayerVehicleColor1[MAX_PLAYERS];
-new PlayerVehicleColor2[MAX_PLAYERS];
-
 stock VehicleBuyTextdraw(playerid)
 {
     VehiclebuyTD[playerid][0] = CreatePlayerTextDraw(playerid, 311.000000, 46.000000, "_");
@@ -1767,18 +1755,22 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
         }
 
         new
-			idx,
-            id = IsPlayerNearBusiness(playerid),
-			plates[32],
-			randset[3],
-			insert[256],
+            thread[MAX_STRING],
 			Float:X = 1658.7107,
 			Float:Y = -1089.3168,
 			Float:Z = 23.6117,
 			Float:A = 88.6202
 			;
 
-        if(id == 0)
+
+        new modelid = PlayerSeleteVehicle[playerid];
+        new Price = PLayerVehiclePrice[playerid];
+
+
+        mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicles ORDER BY VehicleDBID");
+	    mysql_tquery(dbCon, thread, "CountVehicleBuy", "dddffffd", playerid,PlayerInfo[playerid][pDBID], modelid, X, Y, Z, A,Price);
+
+        /*if(id == 0)
         {
             for(new v = 0; v < 9; v++)
             {
@@ -1813,9 +1805,6 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 		}
 
-        new modelid = PlayerSeleteVehicle[playerid];
-        new Price = PLayerVehiclePrice[playerid];
-
         randset[0] = random(sizeof(possibleVehiclePlates)); 
 		randset[1] = random(sizeof(possibleVehiclePlates)); 
 		randset[2] = random(sizeof(possibleVehiclePlates));
@@ -1827,7 +1816,7 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
         mysql_format(dbCon, insert, sizeof(insert), "INSERT INTO vehicles (VehicleOwnerDBID, VehicleModel, VehicleParkPosX, VehicleParkPosY, VehicleParkPosZ, VehicleParkPosA,VehiclePrice) VALUES(%i, %i, %f, %f, %f, %f, %d)",
 			PlayerInfo[playerid][pDBID], modelid, X, Y, Z, A,Price);
-        mysql_tquery(dbCon, insert, "OnPlayerVehiclePurchase", "iisffff", playerid, idx, plates, X, Y, Z, A);
+        mysql_tquery(dbCon, insert, "OnPlayerVehiclePurchase", "iisffff", playerid, idx, plates, X, Y, Z, A);*/
 
         return 1;
     }
@@ -1984,14 +1973,92 @@ stock ShowVehicleSelect(playerid)
     return 1;
 }
 
+forward CountVehicleBuy(playerid,PlayerDBID, modelid, Float:X, Float:Y, Float:Z, Float:A,Price);
+public CountVehicleBuy(playerid,PlayerDBID, modelid, Float:X, Float:Y, Float:Z, Float:A,Price)
+{
+	new VEHDBID = 0,thread[MAX_STRING];
 
-forward OnPlayerVehiclePurchase(playerid, id, plates[], Float:x, Float:y, Float:z, Float:a);
-public OnPlayerVehiclePurchase(playerid, id, plates[], Float:x, Float:y, Float:z, Float:a)
+	new rows; cache_get_row_count(rows);
+
+	for (new i = 0; i < rows; i++)
+	{
+		VEHDBID++;
+	}
+
+	mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicle_faction ORDER BY VehicleDBID");
+	mysql_tquery(dbCon, thread, "CountVehicleBuy2", "dddffffdd", playerid,PlayerDBID, modelid, X, Y, Z, A,Price,VEHDBID);
+
+	return 1;
+}
+
+forward CountVehicleBuy2(playerid,PlayerDBID, modelid, Float:X, Float:Y, Float:Z, Float:A, Price, newid);
+public CountVehicleBuy2(playerid,PlayerDBID, modelid, Float:X, Float:Y, Float:Z, Float:A, Price, newid)
+{	
+	new id = IsPlayerNearBusiness(playerid),
+		plates[32],
+		randset[3]
+	;
+
+	new rows; cache_get_row_count(rows);
+
+	for (new i = 0; i < rows; i++)
+	{
+		newid++;
+	}
+
+	if(id == 0)
+    {
+        for(new v = 0; v < 9; v++)
+        {
+            PlayerTextDrawDestroy(playerid, VehicleBuySelect[playerid][v]);
+        }
+
+        PlayerSeleteVehicle[playerid] = 0;
+        PlayerVehicleColor1[playerid] = 0;
+        PlayerVehicleColor2[playerid] = 0;
+		return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
+    }
+
+	if(BusinessInfo[id][BusinessType] != 2)
+    {
+        for(new v = 0; v < 9; v++)
+        {
+            PlayerTextDrawDestroy(playerid, VehicleBuySelect[playerid][v]);
+        }
+
+        PlayerSeleteVehicle[playerid] = 0;
+        PlayerVehicleColor1[playerid] = 0;
+        PlayerVehicleColor2[playerid] = 0;
+        return SendErrorMessage(playerid,"คุณไม่ได้อยู่ร้านขายรถ");
+    }
+
+    randset[0] = random(sizeof(possibleVehiclePlates)); 
+	randset[1] = random(sizeof(possibleVehiclePlates)); 
+	randset[2] = random(sizeof(possibleVehiclePlates));
+
+    format(plates, 32, "%d%s%s%s%d%d%d", random(9), possibleVehiclePlates[randset[0]], possibleVehiclePlates[randset[1]], possibleVehiclePlates[randset[2]], random(9), random(9)); 
+	GiveMoney(playerid, -Price);
+    BusinessInfo[id][BusinessCash] += Price;
+    SendClientMessage(playerid, 0xB9E35EFF, "PROCESSING: ยานพาหนะของคุณกำลังติดตั้ง.");
+
+    new insert[MAX_STRING];
+
+    newid++;
+    mysql_format(dbCon, insert, sizeof(insert), "INSERT INTO `vehicles` (`VehicleDBID`, `VehicleOwnerDBID`, `VehicleModel`, `VehicleParkPosX`, `VehicleParkPosY`, `VehicleParkPosZ`, `VehicleParkPosA`,`VehiclePrice`) VALUES(%d, %d, %d, %f, %f, %f, %f, %d)",
+		newid,PlayerDBID, modelid, X, Y, Z, A,Price);
+    mysql_tquery(dbCon, insert, "OnPlayerVehiclePurchase", "ddsffff", playerid, newid, plates, X, Y, Z, A);
+	return 1;
+}
+
+
+forward OnPlayerVehiclePurchase(playerid, newid, plates[], Float:x, Float:y, Float:z, Float:a);
+public OnPlayerVehiclePurchase(playerid, newid, plates[], Float:x, Float:y, Float:z, Float:a)
 {
     new modelid = PlayerSeleteVehicle[playerid];
     new color1 = PlayerVehicleColor1[playerid];
     new color2 = PlayerVehicleColor2[playerid];
     new Price = PLayerVehiclePrice[playerid];
+    new id = PlayerOwnerDBID[playerid];
 
     new
 		vehicleid = INVALID_VEHICLE_ID
@@ -2004,11 +2071,11 @@ public OnPlayerVehiclePurchase(playerid, id, plates[], Float:x, Float:y, Float:z
 	SetVehicleToRespawn(vehicleid); 
 
     PutPlayerInVehicle(playerid, vehicleid, 0);
-    PlayerInfo[playerid][pOwnedVehicles][id] = cache_insert_id();
+    PlayerInfo[playerid][pOwnedVehicles][id] = newid;
 
     if(vehicleid != INVALID_VEHICLE_ID)
 	{
-		VehicleInfo[vehicleid][eVehicleDBID] = cache_insert_id();
+		VehicleInfo[vehicleid][eVehicleDBID] = newid;
 		VehicleInfo[vehicleid][eVehicleOwnerDBID] = PlayerInfo[playerid][pDBID]; 
 		
 		VehicleInfo[vehicleid][eVehicleModel] = modelid;
@@ -2065,6 +2132,7 @@ public OnPlayerVehiclePurchase(playerid, id, plates[], Float:x, Float:y, Float:z
     {
         PlayerTextDrawDestroy(playerid, VehicleBuySelect[playerid][v]);
     }
+    CancelSelectTextDraw(playerid);
     return 1;
 }
 

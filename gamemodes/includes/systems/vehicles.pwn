@@ -13,6 +13,19 @@ new PlayerVehicleScrap[MAX_PLAYERS];
 new bool:playerTowingVehicle[MAX_PLAYERS] = false;
 new	playerTowTimer[MAX_PLAYERS] = 0;
 
+new possibleVehiclePlates[][] = 
+	{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+
+new PlayerText:VehiclebuyTD[MAX_PLAYERS][14];
+new PlayerText:VehicleBuySelect[MAX_PLAYERS][9];
+
+
+new PlayerSeleteVehicle[MAX_PLAYERS];
+new PLayerVehiclePrice[MAX_PLAYERS];
+new PlayerVehicleColor1[MAX_PLAYERS];
+new PlayerVehicleColor2[MAX_PLAYERS];
+new PlayerOwnerDBID[MAX_PLAYERS];
+
 
 hook OnPlayerConnect(playerid)
 {
@@ -116,6 +129,7 @@ stock ResetVehicleVars(vehicleid)
 		return 0;
 		
 	VehicleInfo[vehicleid][eVehicleDBID] = 0; 
+	VehicleInfo[vehicleid][eVehicleFacDBID] = 0;
 	VehicleInfo[vehicleid][eVehicleExists] = false;
 	
 	VehicleInfo[vehicleid][eVehicleOwnerDBID] = 0;
@@ -646,6 +660,7 @@ CMD:vehicle(playerid, params[])
 	else if(!strcmp(oneString, "buy"))
 	{
 		new id = IsPlayerNearBusiness(playerid);
+		new idx = 0;
 		
 		if(id == 0)
 			return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
@@ -653,7 +668,20 @@ CMD:vehicle(playerid, params[])
 		if(BusinessInfo[id][BusinessType] != 2)
 			return SendErrorMessage(playerid,"คุณไม่ได้อยู่ร้านขายรถ");
 
+		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+		{
+			if(!PlayerInfo[playerid][pOwnedVehicles][i])
+			{
+				idx = i;
+				break;
+			}
+		}
+
+		if(idx == 0)
+			return SendErrorMessage(playerid,"คุณมีรถเต็มตัวแล้ว");
+
 		
+		PlayerOwnerDBID[playerid] = idx;
 		ShowVehicleBuy(playerid);
 	}
 	else if(!strcmp(oneString, "duplicatekey"))
@@ -1130,7 +1158,7 @@ public LoadFactionVehicle()
 
 	new VehicleModel,Float:VehicleParkPos[4],VehicleColor1,VehicleColor2;
 
-	for (new i = 0; i < rows && i < MAX_VEHICLES; i++)
+	for (new i = 0; i < rows && i < MAX_FACTION_VEHICLE; i++)
 	{
 		cache_get_value_name_int(i, "VehicleModel", VehicleModel);
 		cache_get_value_name_float(i, "VehicleParkPosX", VehicleParkPos[0]);
@@ -1153,7 +1181,7 @@ public LoadFactionVehicle()
 		if(vehicleid != INVALID_VEHICLE_ID)
 		{
 			VehicleInfo[vehicleid][eVehicleExists] = true; 
-			//cache_get_value_name_int(i, "VehicleDBID",VehicleInfo[vehicleid][eVehicleDBID]);
+			cache_get_value_name_int(i, "VehicleFacDBID ",VehicleInfo[vehicleid][eVehicleFacDBID]);
 
 			cache_get_value_name_int(i, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
 			
@@ -1596,3 +1624,64 @@ public Query_InsertVehicle_Faction(playerid, factionid, modelid,color1,color2,Fl
 	SendClientMessageEx(playerid, -1, "คุณได้สร้างรถเฟคชั่นให้กับ {FF5722}%s {FFFFFF}(%d)",FactionInfo[factionid][eFactionName],newid);
 	return 1;
 }*/
+
+forward CountVehicle(playerid,factionid, modelid,color1,color2,Float:x,Float:y,Float:z,Float:a,world);
+public CountVehicle(playerid,factionid, modelid,color1,color2,Float:x,Float:y,Float:z,Float:a,world)
+{
+	new VEHDBID = 0,thread[MAX_STRING];
+
+	new rows; cache_get_row_count(rows);
+
+	for (new i = 0; i < rows; i++)
+	{
+		VEHDBID++;
+	}
+
+	mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicle_faction ORDER BY VehicleDBID");
+	mysql_tquery(dbCon, thread, "CountVehicle2", "dddddffffdd", playerid,factionid,modelid,color1,color2,x,y,z,a,world,VEHDBID);
+	return 1;
+}
+
+forward CountVehicle2(playerid,factionid, modelid,color1,color2,Float:x,Float:y,Float:z,Float:a,world,newid);
+public CountVehicle2(playerid,factionid, modelid,color1,color2,Float:x,Float:y,Float:z,Float:a,world,newid)
+{
+	new thread[MAX_STRING],vehicleid = INVALID_VEHICLE_ID;
+
+	new rows; cache_get_row_count(rows);
+
+	for (new i = 0; i < rows; i++)
+	{
+		newid++;
+	}
+
+	newid++;
+
+	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleDBID`,`VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%d,%f,%f,%f,%f,%d)",
+		newid,
+		modelid,
+		factionid,
+		color1,
+		color2,
+		x,
+		y,
+		z,
+		a,
+		world);
+	mysql_tquery(dbCon, thread);
+
+	vehicleid = CreateVehicle(modelid, x, y, z, a, color1, color2, -1, 0);
+
+	if(vehicleid != INVALID_VEHICLE_ID)
+	{
+		VehicleInfo[vehicleid][eVehicleDBID] = newid;
+		VehicleInfo[vehicleid][eVehicleModel] = modelid;
+		VehicleInfo[vehicleid][eVehicleFaction] = factionid;
+
+		VehicleInfo[vehicleid][eVehicleColor1] = color1;
+		VehicleInfo[vehicleid][eVehicleColor2] = color2;
+	}
+
+	SendClientMessageEx(playerid, -1, "คุณได้สร้างรถเฟคชั่นให้กับ {FF5722}%s {FFFFFF}(%d)",FactionInfo[factionid][eFactionName],newid);
+
+	return 1;
+}

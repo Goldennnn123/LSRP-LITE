@@ -1,5 +1,3 @@
-#define CE_AUTO
-
 #include <a_samp>
 
 #undef MAX_PLAYERS
@@ -27,7 +25,8 @@
 #include <easyDialog>   // aktah/easyDialog
 #include <log-plugin>   // maddinat0r/samp-log
 #include <strlib>
-#include <CEFix>
+#define cec_auto
+#include <cec>
 #include <MenuStore>
 /*======================================================================================================
 										[Macros]
@@ -73,7 +72,7 @@ new globalWeather = 2;
 #include "includes/mysql/SaveHouse.pwn"
 #include "includes/mysql/SaveBusiness.pwn"
 #include "includes/mysql/SaveEntrance.pwn"
-#include "includes/mysql/SaveVehicle_Faction.pwn"
+#include "includes/mysql/SaveFacVehicle.pwn"
 
 #include "includes/registration/login.pwn"
 #include "includes/character/character.pwn"

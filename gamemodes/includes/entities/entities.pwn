@@ -4,6 +4,7 @@
 #define MAX_BUSINESS				(30)
 #define MAX_PHONEBOOK				(700)
 #define MAX_ENTRANCE				(700)
+#define MAX_FACTION_VEHICLE			(700)
 
 enum E_PLAYER_DATA
 {
@@ -145,6 +146,7 @@ new e_pAccountData[MAX_PLAYERS][P_MASTER_ACCOUNTS];
 enum E_VEHICLE_SYSTEM
 {
 	eVehicleDBID, 
+	eVehicleFacDBID,
 	bool:eVehicleExists,
 	
 	eVehicleOwnerDBID,

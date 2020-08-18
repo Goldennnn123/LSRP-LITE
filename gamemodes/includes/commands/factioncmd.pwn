@@ -712,6 +712,34 @@ CMD:remove_carsign(playerid, params[])
 	return 1;
 }
 
+CMD:park(playerid ,params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่มีเฟคชั่น");
+
+	new factionid = PlayerInfo[playerid][pFaction];
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
+	
+	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
+		return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
+
+	if(VehicleInfo[vehicleid][eVehicleFaction] != factionid)
+		return SendErrorMessage(playerid, "รถคันนี้ไม่ใช่รถเฟคชั่นของคุณ");
+
+	GetVehiclePos(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2]);
+	GetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][3]);
+	VehicleInfo[vehicleid][eVehicleParkWorld] = GetPlayerVirtualWorld(playerid); 
+
+	SendFactionMessage(playerid, "**(( %s ได้เปลี่ยนจุดยานพาหนะ ไอดี %d ))**",ReturnRealName(playerid, 0), VehicleInfo[vehicleid][eVehicleFacDBID]);
+
+	SaveFacVehicle(vehicleid);
+	SetVehicleToRespawn(vehicleid);
+	return 1;
+}
+
 hook OnPlayerDisconnect(playerid, reason)
 {
     foreach(new i : Player)

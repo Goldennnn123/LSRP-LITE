@@ -11,7 +11,7 @@
         "maddinat0r/samp-log",
         "oscar-broman/strlib",
         "maddinat0r/sscanf",
-        "aktah/SAMP-CEFix",
+        "aktah/cec",
         "pawn-lang/YSI-Includes@5.x",
         "Awsomedude/easyDialog",
         "urShadow/Pawn.CMD",
@@ -20,7 +20,7 @@
     ],
     "local": true,
     "runtime": {
-        "version": "0.3.DL-R1",
+        "version": "0.3.7",
         "mode": "server",
         "echo": "-",
         "rcon_password": "password",
@@ -56,16 +56,7 @@
         "db_log_queries": false,
         "conncookies": true,
         "cookielogging": false,
-        "output": true,
-        "plugins": [
-            "streamer",
-            "sscanf",
-            "mysql",
-            "pawncmd",
-            "log-plugin",
-            "CEFix",
-            "Whirlpool"
-        ]
+        "output": true
     },
     "builds": [{
         "name": "main",

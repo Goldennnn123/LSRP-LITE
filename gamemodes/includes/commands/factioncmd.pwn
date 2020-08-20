@@ -618,7 +618,7 @@ CMD:megaphone(playerid, params[])
     return 1;
 }
 
-alias:department("d")
+alias:department("d","dep")
 CMD:department(playerid, params[])
 {
 	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
@@ -633,9 +633,6 @@ CMD:department(playerid, params[])
 			factionid;
 			
 		factionid = PlayerInfo[i][pFaction];
-
-		if(i == playerid)
-			continue;
 			
 		if(FactionInfo[factionid][eFactionType] == GOVERMENT)
 		{
@@ -733,10 +730,13 @@ CMD:park(playerid ,params[])
 	GetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][3]);
 	VehicleInfo[vehicleid][eVehicleParkWorld] = GetPlayerVirtualWorld(playerid); 
 
-	SendFactionMessage(playerid, "**(( %s ได้เปลี่ยนจุดยานพาหนะ ไอดี %d ))**",ReturnRealName(playerid, 0), VehicleInfo[vehicleid][eVehicleFacDBID]);
+	SendFactionMessage(playerid, "**(( %s ได้เปลี่ยนจุดยานพาหนะ ไอดี %d ))**",ReturnRealName(playerid, 0), VehicleInfo[vehicleid][eVehicleDBID]);
 
 	SaveFacVehicle(vehicleid);
-	SetVehicleToRespawn(vehicleid);
+
+	DestroyVehicle(vehicleid);
+
+	vehicleid = CreateVehicle(VehicleInfo[vehicleid][eVehicleModel], VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], VehicleInfo[vehicleid][eVehicleParkPos][3], VehicleInfo[vehicleid][eVehicleColor1], VehicleInfo[vehicleid][eVehicleColor2], -1, 0);
 	return 1;
 }
 

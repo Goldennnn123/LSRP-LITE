@@ -146,7 +146,6 @@ new e_pAccountData[MAX_PLAYERS][P_MASTER_ACCOUNTS];
 enum E_VEHICLE_SYSTEM
 {
 	eVehicleDBID, 
-	eVehicleFacDBID,
 	bool:eVehicleExists,
 	
 	eVehicleOwnerDBID,

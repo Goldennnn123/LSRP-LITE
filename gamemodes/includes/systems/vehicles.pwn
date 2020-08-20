@@ -129,7 +129,6 @@ stock ResetVehicleVars(vehicleid)
 		return 0;
 		
 	VehicleInfo[vehicleid][eVehicleDBID] = 0; 
-	VehicleInfo[vehicleid][eVehicleFacDBID] = 0;
 	VehicleInfo[vehicleid][eVehicleExists] = false;
 	
 	VehicleInfo[vehicleid][eVehicleOwnerDBID] = 0;
@@ -1181,7 +1180,8 @@ public LoadFactionVehicle()
 		if(vehicleid != INVALID_VEHICLE_ID)
 		{
 			VehicleInfo[vehicleid][eVehicleExists] = true; 
-			cache_get_value_name_int(i, "VehicleFacDBID ",VehicleInfo[vehicleid][eVehicleFacDBID]);
+
+			cache_get_value_name_int(i, "VehicleDBID",VehicleInfo[vehicleid][eVehicleDBID]);
 
 			cache_get_value_name_int(i, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
 			

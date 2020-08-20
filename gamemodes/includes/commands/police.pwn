@@ -115,3 +115,91 @@ CMD:tazer(playerid, params[])
 	
 	return 1;
 }
+
+CMD:take(playerid, params[])
+{
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงาน ตำรวจ/นายอำเภอ/ผู้คุมเรือนจำ"); 
+		
+    if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
+
+    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+        return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
+
+	new playerb, type;
+
+	if(sscanf(params,"dd",playerb,type))
+	{
+		SendUsageMessage(playerid,"/take [ไอดี/ชื่อบางส่วน] [ประเภท]");
+		SendClientMessage(playerid, -1, "1.Driverlicense 2.WeaponLicense");
+		return 1;
+	}
+
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อเข้าเซืฟเวอร์");
+
+	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+	if(type == 1)
+	{
+		if(PlayerInfo[playerb][pDriverLicense] == false)
+			return SendErrorMessage(playerid, "ผู้เล่นไม่มี ใบขับขี่รถยนต์");
+
+		if(PlayerInfo[playerb][pDriverLicenseRevoke] == true)
+		{
+			PlayerInfo[playerb][pDriverLicenseRevoke] = false;
+
+			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"* %s ได้คืนใบขับขี่ของ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));
+			return 1;
+		}
+		else
+		{
+			PlayerInfo[playerb][pDriverLicenseRevoke] = true;
+			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"* %s ได้ยึดใบขับขี่ของ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));
+		}
+		return 1;
+	}
+	else if(type == 2)
+	{
+		if(PlayerInfo[playerb][pWeaponLicense] == false)
+			return SendErrorMessage(playerid, "ผู้เล่นไม่มี ใบพกอาวุธ");
+
+		if(PlayerInfo[playerb][pWeaponLicenseRevoke] == true)
+		{
+			PlayerInfo[playerb][pWeaponLicenseRevoke] = false;
+			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"* %s ได้คืนใบพกอาวุธ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));	
+			return 1;
+		}
+		else
+		{
+			PlayerInfo[playerb][pWeaponLicenseRevoke] = true;
+			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"* %s ได้ยึดใบพกอาวุธของ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));
+		}
+	}
+	return 1;
+}
+
+CMD:givelicense(playerid, params[])
+{
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงาน ตำรวจ/นายอำเภอ/ผู้คุมเรือนจำ"); 
+		
+    if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
+
+    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+        return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
+
+	new playerb;
+
+	if(sscanf(params,"d",playerb))
+		return SendUsageMessage(playerid,"/givelicense [ไอดี/ชื่อบางส่วน]");
+
+	if(PlayerInfo[playerb][pWeaponLicense] == false)
+		return SendErrorMessage(playerid,"ผู้เล่นไม่มีใบพกอาวุธ");
+
+	PlayerInfo[playerb][pWeaponLicense] = true;
+	return 1;
+}

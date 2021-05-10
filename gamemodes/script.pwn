@@ -25,7 +25,7 @@
 #include <easyDialog>   // aktah/easyDialog
 #include <log-plugin>   // maddinat0r/samp-log
 #include <strlib>
-#define cec_auto
+#include <Pawn.RakNet>
 #include <cec>
 #include <MenuStore>
 /*======================================================================================================

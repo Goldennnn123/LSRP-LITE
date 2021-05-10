@@ -44,19 +44,19 @@ CMD:f(playerid, params[])
 			
 		if(strlen(params) > 79)
 		{
-			SendFactionMessage(playerid, "**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params); 
-			SendFactionMessage(playerid, "**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params[79]); 
+			SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params); 
+			SendFactionMessage(playerid, "{2ECC71}**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params[79]); 
 		}
-		else SendFactionMessage(playerid, "**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params); 
+		else SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params); 
 		return 1;
 	}
 	
 	if(strlen(params) > 79)
 	{
-		SendFactionMessage(playerid, "**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params); 
-		SendFactionMessage(playerid, "**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params[79]); 
+		SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params); 
+		SendFactionMessage(playerid, "{2ECC71}**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params[79]); 
 	}
-	else SendFactionMessage(playerid, "**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params);
+	else SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params);
     return 1;
 }
 

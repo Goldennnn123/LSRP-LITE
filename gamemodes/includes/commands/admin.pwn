@@ -7,8 +7,8 @@ CMD:acmds(playerid, params[])
 	
     if(PlayerInfo[playerid][pAdmin] >= 1)
 	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /aduty, /forumname, /goto, /gethere, /a (achat), /showmain, /kick, /(o)ban, /(o)ajail,"); 
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /unjail, /setint, /setworld, /skin, /health, /reports, /ar (accept), /dr (disregard),"); 
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /aduty, /forumname, /goto, /gethere, /a (achat), /showmain, /kick"); 
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /unjail, /setint, /setworld, /setskin, /health, /reports, /ar (accept), /dr (disregard),"); 
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /slap, /mute, /freeze, /unfreeze, /spec, /specoff, /stats (id), /gotols, /respawncar,"); 
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /gotocar, /getcar, /listmasks, /dropinfo, /aooc, /revice, /towcars (aduty), /listweapons");
 	}
@@ -948,7 +948,7 @@ CMD:listweapons(playerid, params[])
 	
 	for(new i = 0; i < 13; i++)
 	{
-		GetPlayerWeaponData(playerid, i, weapon_id[0][i], weapon_id[1][i]); 
+		GetPlayerWeaponData(playerb, i, weapon_id[0][i], weapon_id[1][i]); 
 		
 		if(!weapon_id[0][i])
 			continue;
@@ -2252,8 +2252,8 @@ CMD:makeadmin(playerid, params[])
 	if(IsPlayerLogin(playerb))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-	if(!PlayerInfo[playerb][pAdmin])
-		return SendErrorMessage(playerid, "ผู้เล่นคนนี้ไม่ได้เป็นผู้ดูแลระบบอยู่แล้ว");
+	/*if(!PlayerInfo[playerb][pAdmin])
+		return SendErrorMessage(playerid, "ผู้เล่นคนนี้ไม่ได้เป็นผู้ดูแลระบบอยู่แล้ว");*/
 	
 	if(PlayerInfo[playerb][pAdmin] > PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "คุณไม่สามารถปรับต่ำแหน่งผู้ดูแลระบบที่สูงกว่าคุณได้");

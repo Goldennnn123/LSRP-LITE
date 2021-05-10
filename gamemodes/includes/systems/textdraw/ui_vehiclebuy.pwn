@@ -1816,10 +1816,10 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
         mysql_format(dbCon, insert, sizeof(insert), "INSERT INTO vehicles (VehicleOwnerDBID, VehicleModel, VehicleParkPosX, VehicleParkPosY, VehicleParkPosZ, VehicleParkPosA,VehiclePrice) VALUES(%i, %i, %f, %f, %f, %f, %d)",
 			PlayerInfo[playerid][pDBID], modelid, X, Y, Z, A,Price);
-        mysql_tquery(dbCon, insert, "OnPlayerVehiclePurchase", "iisffff", playerid, idx, plates, X, Y, Z, A);*/
+        mysql_tquery(dbCon, insert, "OnPlayerVehiclePurchase", "iisffff", playerid, idx, plates, X, Y, Z, A);
 
         return 1;
-    }
+    }*/
     return 1;
 }
 
@@ -1827,9 +1827,9 @@ stock ShowVehicleSelect(playerid)
 {
     new str[MAX_STRING];
 
-    /*format(str, sizeof(str), "VEHICLE NAME: %s", ReturnVehicleModelName(PlayerSeleteVehicle[playerid]));
+    format(str, sizeof(str), "VEHICLE NAME: %s", ReturnVehicleModelName(PlayerSeleteVehicle[playerid]));
 
-    format(str, sizeof(str), "PRICE: %s", MoneyFormat(PLayerVehiclePrice[playerid]));*/
+    format(str, sizeof(str), "PRICE: %s", MoneyFormat(PLayerVehiclePrice[playerid]));
 
     VehicleBuySelect[playerid][0] = CreatePlayerTextDraw(playerid, 307.000000, 100.000000, "_");
     PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][0], 1);

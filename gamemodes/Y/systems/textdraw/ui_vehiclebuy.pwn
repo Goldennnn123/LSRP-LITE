@@ -1,5 +1,155 @@
 #include <YSI_Coding\y_hooks>
 
+stock ShowVehicleSelect(playerid)
+{
+    new str[MAX_STRING];
+
+    format(str, sizeof(str), "VEHICLE NAME: %s", ReturnVehicleModelName(PlayerSeleteVehicle[playerid]));
+
+    format(str, sizeof(str), "PRICE: %s", MoneyFormat(PLayerVehiclePrice[playerid]));
+
+    VehicleBuySelect[playerid][0] = CreatePlayerTextDraw(playerid, 307.000000, 100.000000, "_");
+    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][0], 1);
+    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][0], 0.600000, 34.850002);
+    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][0], 298.500000, 510.500000);
+    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][0], 1);
+    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][0], 0);
+    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][0], 2);
+    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][0], -1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][0], 255);
+    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][0], -1094795521);
+    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][0], 1);
+    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][0], 1);
+    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][0], 0);
+
+    VehicleBuySelect[playerid][1] = CreatePlayerTextDraw(playerid, 307.000000, 100.000000, "_");
+    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][1], 1);
+    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][1], 0.600000, 1.800003);
+    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][1], 333.500000, 510.500000);
+    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][1], 1);
+    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][1], 0);
+    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][1], 2);
+    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][1], -1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][1], 255);
+    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][1], 1296911871);
+    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][1], 1);
+    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][1], 1);
+    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][1], 0);
+
+    VehicleBuySelect[playerid][2] = CreatePlayerTextDraw(playerid, 555.000000, 93.000000, "X");
+    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][2], 2);
+    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][2], 0.499998, 3.049999);
+    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][2], 16.500000, 10.500000);
+    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][2], 1);
+    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][2], 0);
+    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][2], 2);
+    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][2], -1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][2], 255);
+    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][2], 200);
+    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][2], 0);
+    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][2], 1);
+    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][2], 1);
+
+    VehicleBuySelect[playerid][3] = CreatePlayerTextDraw(playerid, 236.000000, 111.000000, "Preview_Model");
+    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][3], 5);
+    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][3], 0.600000, 2.000000);
+    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][3], 157.500000, 156.000000);
+    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][3], 0);
+    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][3], 0);
+    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][3], 1);
+    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][3], -1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][3], 0);
+    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][3], 255);
+    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][3], 0);
+    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][3], 1);
+    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][3], 0);
+    PlayerTextDrawSetPreviewModel(playerid, VehicleBuySelect[playerid][3], PlayerSeleteVehicle[playerid]);
+    PlayerTextDrawSetPreviewRot(playerid, VehicleBuySelect[playerid][3], -10.000000, 0.000000, -36.000000, 1.000000);
+    PlayerTextDrawSetPreviewVehCol(playerid, VehicleBuySelect[playerid][3], PlayerVehicleColor1[playerid], PlayerVehicleColor2[playerid]);
+
+    VehicleBuySelect[playerid][4] = CreatePlayerTextDraw(playerid, 252.000000, 239.000000, "COLOR 1");
+    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][4], 2);
+    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][4], 0.258332, 1.750000);
+    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][4], 16.500000, 45.500000);
+    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][4], 1);
+    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][4], 0);
+    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][4], 2);
+    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][4], -1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][4], 255);
+    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][4], 200);
+    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][4], 1);
+    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][4], 1);
+    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][4], 1);
+
+    
+    format(str, sizeof(str), "VEHICLE NAME: %s", ReturnVehicleModelName(PlayerSeleteVehicle[playerid]));
+    VehicleBuySelect[playerid][5] = CreatePlayerTextDraw(playerid, 77.000000, 270.000000, str);
+    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][5], 2);
+    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][5], 0.262499, 1.799999);
+    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][5], 400.000000, 17.000000);
+    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][5], 1);
+    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][5], 0);
+    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][5], 1);
+    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][5], -1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][5], 255);
+    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][5], 50);
+    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][5], 0);
+    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][5], 1);
+    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][5], 0);
+
+    format(str, sizeof(str), "PRICE: %s", MoneyFormat(PLayerVehiclePrice[playerid]));
+    VehicleBuySelect[playerid][6] = CreatePlayerTextDraw(playerid, 77.000000, 288.000000, str);
+    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][6], 2);
+    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][6], 0.262499, 1.799999);
+    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][6], 400.000000, 17.000000);
+    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][6], 1);
+    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][6], 0);
+    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][6], 1);
+    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][6], -1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][6], 255);
+    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][6], 50);
+    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][6], 0);
+    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][6], 1);
+    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][6], 0);
+
+    VehicleBuySelect[playerid][7] = CreatePlayerTextDraw(playerid, 517.000000, 398.000000, "BUY NOW!");
+    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][7], 2);
+    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][7], 0.258332, 1.750000);
+    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][7], 16.500000, 90.500000);
+    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][7], 1);
+    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][7], 0);
+    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][7], 2);
+    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][7], -1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][7], 255);
+    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][7], 9109759);
+    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][7], 1);
+    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][7], 1);
+    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][7], 1);
+
+    VehicleBuySelect[playerid][8] = CreatePlayerTextDraw(playerid, 336.000000, 239.000000, "COLOR 2");
+    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][8], 2);
+    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][8], 0.258332, 1.750000);
+    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][8], 26.000000, 49.000000);
+    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][8], 1);
+    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][8], 0);
+    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][8], 2);
+    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][8], -1);
+    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][8], 255);
+    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][8], 200);
+    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][8], 1);
+    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][8], 1);
+    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][8], 1);
+
+    for(new v = 0; v < 9; v++)
+    {
+        PlayerTextDrawShow(playerid, VehicleBuySelect[playerid][v]);
+    }
+
+    SelectTextDraw(playerid, 0xFFFFFF95);
+
+    return 1;
+}
+
 stock VehicleBuyTextdraw(playerid)
 {
     VehiclebuyTD[playerid][0] = CreatePlayerTextDraw(playerid, 311.000000, 46.000000, "_");
@@ -1823,155 +1973,6 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
     return 1;
 }
 
-stock ShowVehicleSelect(playerid)
-{
-    new str[MAX_STRING];
-
-    format(str, sizeof(str), "VEHICLE NAME: %s", ReturnVehicleModelName(PlayerSeleteVehicle[playerid]));
-
-    format(str, sizeof(str), "PRICE: %s", MoneyFormat(PLayerVehiclePrice[playerid]));
-
-    VehicleBuySelect[playerid][0] = CreatePlayerTextDraw(playerid, 307.000000, 100.000000, "_");
-    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][0], 1);
-    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][0], 0.600000, 34.850002);
-    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][0], 298.500000, 510.500000);
-    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][0], 1);
-    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][0], 0);
-    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][0], 2);
-    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][0], -1);
-    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][0], 255);
-    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][0], -1094795521);
-    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][0], 1);
-    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][0], 1);
-    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][0], 0);
-
-    VehicleBuySelect[playerid][1] = CreatePlayerTextDraw(playerid, 307.000000, 100.000000, "_");
-    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][1], 1);
-    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][1], 0.600000, 1.800003);
-    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][1], 333.500000, 510.500000);
-    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][1], 1);
-    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][1], 0);
-    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][1], 2);
-    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][1], -1);
-    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][1], 255);
-    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][1], 1296911871);
-    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][1], 1);
-    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][1], 1);
-    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][1], 0);
-
-    VehicleBuySelect[playerid][2] = CreatePlayerTextDraw(playerid, 555.000000, 93.000000, "X");
-    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][2], 2);
-    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][2], 0.499998, 3.049999);
-    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][2], 16.500000, 10.500000);
-    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][2], 1);
-    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][2], 0);
-    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][2], 2);
-    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][2], -1);
-    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][2], 255);
-    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][2], 200);
-    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][2], 0);
-    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][2], 1);
-    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][2], 1);
-
-    VehicleBuySelect[playerid][3] = CreatePlayerTextDraw(playerid, 236.000000, 111.000000, "Preview_Model");
-    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][3], 5);
-    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][3], 0.600000, 2.000000);
-    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][3], 157.500000, 156.000000);
-    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][3], 0);
-    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][3], 0);
-    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][3], 1);
-    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][3], -1);
-    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][3], 0);
-    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][3], 255);
-    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][3], 0);
-    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][3], 1);
-    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][3], 0);
-    PlayerTextDrawSetPreviewModel(playerid, VehicleBuySelect[playerid][3], PlayerSeleteVehicle[playerid]);
-    PlayerTextDrawSetPreviewRot(playerid, VehicleBuySelect[playerid][3], -10.000000, 0.000000, -36.000000, 1.000000);
-    PlayerTextDrawSetPreviewVehCol(playerid, VehicleBuySelect[playerid][3], PlayerVehicleColor1[playerid], PlayerVehicleColor2[playerid]);
-
-    VehicleBuySelect[playerid][4] = CreatePlayerTextDraw(playerid, 252.000000, 239.000000, "COLOR 1");
-    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][4], 2);
-    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][4], 0.258332, 1.750000);
-    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][4], 16.500000, 45.500000);
-    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][4], 1);
-    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][4], 0);
-    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][4], 2);
-    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][4], -1);
-    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][4], 255);
-    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][4], 200);
-    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][4], 1);
-    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][4], 1);
-    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][4], 1);
-
-    
-    format(str, sizeof(str), "VEHICLE NAME: %s", ReturnVehicleModelName(PlayerSeleteVehicle[playerid]));
-    VehicleBuySelect[playerid][5] = CreatePlayerTextDraw(playerid, 77.000000, 270.000000, str);
-    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][5], 2);
-    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][5], 0.262499, 1.799999);
-    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][5], 400.000000, 17.000000);
-    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][5], 1);
-    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][5], 0);
-    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][5], 1);
-    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][5], -1);
-    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][5], 255);
-    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][5], 50);
-    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][5], 0);
-    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][5], 1);
-    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][5], 0);
-
-    format(str, sizeof(str), "PRICE: %s", MoneyFormat(PLayerVehiclePrice[playerid]));
-    VehicleBuySelect[playerid][6] = CreatePlayerTextDraw(playerid, 77.000000, 288.000000, str);
-    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][6], 2);
-    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][6], 0.262499, 1.799999);
-    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][6], 400.000000, 17.000000);
-    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][6], 1);
-    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][6], 0);
-    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][6], 1);
-    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][6], -1);
-    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][6], 255);
-    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][6], 50);
-    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][6], 0);
-    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][6], 1);
-    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][6], 0);
-
-    VehicleBuySelect[playerid][7] = CreatePlayerTextDraw(playerid, 517.000000, 398.000000, "BUY NOW!");
-    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][7], 2);
-    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][7], 0.258332, 1.750000);
-    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][7], 16.500000, 90.500000);
-    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][7], 1);
-    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][7], 0);
-    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][7], 2);
-    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][7], -1);
-    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][7], 255);
-    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][7], 9109759);
-    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][7], 1);
-    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][7], 1);
-    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][7], 1);
-
-    VehicleBuySelect[playerid][8] = CreatePlayerTextDraw(playerid, 336.000000, 239.000000, "COLOR 2");
-    PlayerTextDrawFont(playerid, VehicleBuySelect[playerid][8], 2);
-    PlayerTextDrawLetterSize(playerid, VehicleBuySelect[playerid][8], 0.258332, 1.750000);
-    PlayerTextDrawTextSize(playerid, VehicleBuySelect[playerid][8], 26.000000, 49.000000);
-    PlayerTextDrawSetOutline(playerid, VehicleBuySelect[playerid][8], 1);
-    PlayerTextDrawSetShadow(playerid, VehicleBuySelect[playerid][8], 0);
-    PlayerTextDrawAlignment(playerid, VehicleBuySelect[playerid][8], 2);
-    PlayerTextDrawColor(playerid, VehicleBuySelect[playerid][8], -1);
-    PlayerTextDrawBackgroundColor(playerid, VehicleBuySelect[playerid][8], 255);
-    PlayerTextDrawBoxColor(playerid, VehicleBuySelect[playerid][8], 200);
-    PlayerTextDrawUseBox(playerid, VehicleBuySelect[playerid][8], 1);
-    PlayerTextDrawSetProportional(playerid, VehicleBuySelect[playerid][8], 1);
-    PlayerTextDrawSetSelectable(playerid, VehicleBuySelect[playerid][8], 1);
-
-    for(new v = 0; v < 9; v++)
-    {
-        PlayerTextDrawShow(playerid, VehicleBuySelect[playerid][v]);
-    }
-
-    SelectTextDraw(playerid, 0xFFFFFF95);
-
-    return 1;
-}
 
 forward CountVehicleBuy(playerid,PlayerDBID, modelid, Float:X, Float:Y, Float:Z, Float:A,Price);
 public CountVehicleBuy(playerid,PlayerDBID, modelid, Float:X, Float:Y, Float:Z, Float:A,Price)

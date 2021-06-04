@@ -13,19 +13,8 @@ new PlayerVehicleScrap[MAX_PLAYERS];
 new bool:playerTowingVehicle[MAX_PLAYERS] = false;
 new	playerTowTimer[MAX_PLAYERS] = 0;
 
-new possibleVehiclePlates[][] = 
-	{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-
-new PlayerText:VehiclebuyTD[MAX_PLAYERS][14];
-new PlayerText:VehicleBuySelect[MAX_PLAYERS][9];
-
-
-new PlayerSeleteVehicle[MAX_PLAYERS];
-new PLayerVehiclePrice[MAX_PLAYERS];
-new PlayerVehicleColor1[MAX_PLAYERS];
-new PlayerVehicleColor2[MAX_PLAYERS];
-new PlayerOwnerDBID[MAX_PLAYERS];
-
+//new possibleVehiclePlates[][] = 
+	//{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
 hook OnPlayerConnect(playerid)
 {
@@ -680,8 +669,8 @@ CMD:vehicle(playerid, params[])
 			return SendErrorMessage(playerid,"§ÿ≥¡’√∂‡µÁ¡µ—«·≈È«");
 
 		
-		PlayerOwnerDBID[playerid] = idx;
-		ShowVehicleBuy(playerid);
+		//PlayerOwnerDBID[playerid] = idx;
+		//ShowVehicleBuy(playerid);
 	}
 	else if(!strcmp(oneString, "duplicatekey"))
 	{
@@ -1202,7 +1191,7 @@ public LoadFactionVehicle()
 		amout_veh++;
 	}
 
-	printf("%d Vehicle Factino In Database...", amout_veh);
+	printf("%d Vehicle Faction In Database...", amout_veh);
 	return 1;
 }
 
@@ -1656,8 +1645,7 @@ public CountVehicle2(playerid,factionid, modelid,color1,color2,Float:x,Float:y,F
 
 	newid++;
 
-	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleDBID`,`VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%d,%f,%f,%f,%f,%d)",
-		newid,
+	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%f,%f,%f,%f,%d)",
 		modelid,
 		factionid,
 		color1,

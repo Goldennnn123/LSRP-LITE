@@ -8,7 +8,7 @@
 
 //#include <progress2>    // Southclaws/progress2
 
-// YSI Include : aktah/YSI-Includes
+// YSI Include : aktah/YSI-Y
 #define YSI_YES_HEAP_MALLOC
 #define YSI_NO_OPTIMISATION_MESSAGE
 #define YSI_NO_MODE_CACHE
@@ -28,6 +28,7 @@
 #include <Pawn.RakNet>
 #include <cec>
 #include <MenuStore>
+
 /*======================================================================================================
 										[Macros]
 =======================================================================================================*/
@@ -50,79 +51,82 @@ new globalWeather = 2;
 =======================================================================================================*/
 
 // ตั้งค่า
-#include "includes/configuration/general.pwn"
-#include "includes/configuration/database.pwn" // สร้างไฟล์ database.pwn ด้วยตัวเองในไดเรกทอรี่ gamemodes/includes/configuration/..
+
+#include "config.inc"
+#include "Y/configuration/general.pwn"
+#include "Y/configuration/database.pwn" // สร้างไฟล์ database.pwn ด้วยตัวเองในไดเรกทอรี่ gamemodes/Y/configuration/..
 
 // อรรถประโยชน์
-#include "includes/utility/colour.pwn"
-#include "includes/utility/utils.pwn"
+#include "Y/utility/colour.pwn"
+#include "Y/utility/utils.pwn"
 
 // เอกลักษณ์
-#include "includes/entities/entities.pwn"
+#include "Y/entities/entities.pwn"
 
 // ตัวหลัก
-#include "includes/define.pwn"
-#include "includes/enums.pwn"
-#include "includes/variables.pwn"
-#include "includes/function.pwn"
-#include "includes/mysql/database.pwn"
+#include "Y/define.pwn"
+#include "Y/enums.pwn"
+#include "Y/variables.pwn"
+#include "Y/function.pwn"
+#include "Y/mysql/database.pwn"
 
-#include "includes/mysql/SaveVehicle.pwn"
-#include "includes/mysql/Savefaction.pwn"
-#include "includes/mysql/SaveHouse.pwn"
-#include "includes/mysql/SaveBusiness.pwn"
-#include "includes/mysql/SaveEntrance.pwn"
-#include "includes/mysql/SaveFacVehicle.pwn"
+#include "Y/systems/vehicles.pwn"
+#include "Y/systems/cooldown.pwn"
+#include "Y/systems/job.pwn"
+#include "Y/systems/report.pwn"
+#include "Y/systems/weapon.pwn"
+#include "Y/systems/faction.pwn"
+#include "Y/systems/house.pwn"
+#include "Y/systems/business.pwn"
+#include "Y/systems/entrance.pwn"
 
-#include "includes/registration/login.pwn"
-#include "includes/character/character.pwn"
+#include "Y/systems/phone.pwn"
+#include "Y/systems/ui_buy.pwn"
 
-#include "includes/systems/cooldown.pwn"
-#include "includes/systems/vehicles.pwn"
-#include "includes/systems/car_rental.pwn"
-#include "includes/systems/job.pwn"
-#include "includes/systems/report.pwn"
-#include "includes/systems/weapon.pwn"
-#include "includes/systems/faction.pwn"
-#include "includes/systems/house.pwn"
-#include "includes/systems/business.pwn"
-#include "includes/systems/entrance.pwn"
+#include "Y/mysql/SaveVehicle.pwn"
+#include "Y/mysql/Savefaction.pwn"
+#include "Y/mysql/SaveHouse.pwn"
+#include "Y/mysql/SaveBusiness.pwn"
+#include "Y/mysql/SaveEntrance.pwn"
+#include "Y/mysql/SaveFacVehicle.pwn"
 
-#include "includes/systems/textdraw/ui_vehiclebuy.pwn"
-#include "includes/systems/phone.pwn"
-#include "includes/systems/ui_buy.pwn"
-#include "includes/systems/dmv.pwn"
+#include "Y/registration/login.pwn"
+#include "Y/character/character.pwn"
 
-#include "includes/jobs/farmer.pwn"
-#include "includes/jobs/fisher.pwn"
+#include "Y/jobs/farmer.pwn"
+#include "Y/jobs/fisher.pwn"
 
-#include "includes/commands/general.pwn"
-#include "includes/commands/admin.pwn"
-#include "includes/commands/roleplay.pwn"
-#include "includes/commands/housecmd.pwn"
-#include "includes/commands/businesscmd.pwn"
-#include "includes/commands/factioncmd.pwn"
-#include "includes/commands/police.pwn"
+#include "Y/commands/general.pwn"
+#include "Y/commands/admin.pwn"
+#include "Y/commands/roleplay.pwn"
+#include "Y/commands/housecmd.pwn"
+#include "Y/commands/businesscmd.pwn"
+#include "Y/commands/factioncmd.pwn"
+#include "Y/commands/police.pwn"
 
-#include "includes/Interior/Bank.pwn"
-#include "includes/Interior/House1.pwn"
-#include "includes/Interior/House2.pwn"
-#include "includes/Interior/pizza.pwn"
-#include "includes/Interior/PoliceHQ.pwn"
+#include "Y/Interior/Bank.pwn"
+#include "Y/Interior/House1.pwn"
+#include "Y/Interior/House2.pwn"
+#include "Y/Interior/pizza.pwn"
+#include "Y/Interior/PoliceHQ.pwn"
 
-#include "includes/Map/Police.pwn"
+#include "Y/Map/Police.pwn"
 
-main()
-{
-    print("\n----------------------------------");
-    print(" ผู้เขียน: https://github.com/aktah/");
-    print(" ลิขสิทธิ์: GNU GENERAL PUBLIC LICENSE v3");
-    print(" การใช้ซอฟต์แวร์นี้เป็นโหมดเกมของคุณแสดงว่าคุณยอมรับสิ่งต่อไปนี้: โลโก้บนหน้าจอขณะรันเซิร์ฟเวอร์หรือลายน้ำต้องไม่ลบออก");
-    print(" ข้อมูลนี้ต้องถูกเสนอและต้องไม่ถูกแก้ไข การสร้างรายได้ของโหมดเกมนี้ถูกห้ามอย่างเคร่งครัด");
-    print(" ไม่ว่าคุณจะสร้างรายได้ในรูปแบบใด ๆ ก็ตาม \r\n");
-    print(" หากคุณมีปัญหาใด ๆ กับเงื่อนไขเหล่านี้; ติดต่อ Leaks ทันที");
-    print("----------------------------------\n");
-}
+#include "Y/systems/car_rental.pwn"
+#include "Y/systems/dmv.pwn"
+
+#include "Y/anti-cheat/impl.pwn"
+#include "Y/anti-cheat/money/impl.pwn"
+#include "Y/anti-cheat/airbreak/impl.pwn"
+#include "Y/anti-cheat/carmod/impl"
+#include "Y/anti-cheat/carwarp/impl"
+#include "Y/anti-cheat/flying/impl"
+#include "Y/anti-cheat/remotejack/impl"
+#include "Y/anti-cheat/weapon/impl"
+
+main() { }
+
+forward OnPlayerViolate(playerid, severity, violationCode, const violationName[]);
 
 public OnGameModeInit() {
 

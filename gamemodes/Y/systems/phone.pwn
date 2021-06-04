@@ -1299,6 +1299,16 @@ stock Send911Message(playerid, type)
 	return 1;
 }
 
+stock ReturnLocation(playerid)
+{
+	new 
+		playerLocation[MAX_ZONE_NAME]
+	;
+	
+	GetPlayer2DZone(playerid, playerLocation, MAX_ZONE_NAME);
+	return playerLocation;
+}
+
 static const gSAZones[][E_SAZONE_MAIN] = {  // Majority of names and area coordinates adopted from Mabako's 'Zones Script' v0.2
         //      NAME                            AREA (Xmin,Ymin,Zmin,Xmax,Ymax,Zmax)
         {"The Big Ear",                 {-410.00,1403.30,-3.00,-137.90,1681.20,200.00}},
@@ -1669,17 +1679,6 @@ static const gSAZones[][E_SAZONE_MAIN] = {  // Majority of names and area coordi
         {"Whetstone",                   {-2997.40,-2892.90,-242.90,-1213.90,-1115.50,900.00}}
 };
 
-
-
-stock ReturnLocation(playerid)
-{
-	new 
-		playerLocation[MAX_ZONE_NAME]
-	;
-	
-	GetPlayer2DZone(playerid, playerLocation, MAX_ZONE_NAME);
-	return playerLocation;
-}
 
 stock GetPlayer2DZone(playerid, zone[], len) //Credits to Cueball, Betamaster, Mabako, and Simon (for finetuning).
 {

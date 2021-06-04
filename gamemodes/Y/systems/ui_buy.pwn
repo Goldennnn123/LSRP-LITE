@@ -8,7 +8,7 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     new id = PlayerInfo[playerid][pInsideBusiness];
 
     if(GetPlayerMoney(playerid) < price)
-        return SendClientMessage(playerid, -1, "You don't have enough money.");
+        return SendClientMessage(playerid, -1, "คุณมีเงินไม่เพียงพอ");
 
     if(itemid == 1)
     {

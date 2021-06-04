@@ -12,7 +12,11 @@ hook OnGameModeInit() {
 		SendRconCommand("exit");
 		return 1;
 	}
-	else print("[SQL] Connection passed!");
+	else 
+	{
+		mysql_set_charset(MYSQL_CHARSET, dbCon);
+		print("[SQL] Connection passed!");
+	}
 	return 1;
 }
 

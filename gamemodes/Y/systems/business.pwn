@@ -848,6 +848,8 @@ stock SendBusinessType(playerid, id)
 		}
 		case BUSINESS_TYPE_BANK:
 		{
+            if(!PlayerInfo[playerid][pSaving])
+                SendClientMessage(playerid, COLOR_DARKGREEN, "Bank: /saving สำหรับการฝากออมทรัพท์");
 			SendClientMessage(playerid, COLOR_DARKGREEN, "Bank: /bank, /withdraw, /balance."); 
 		}
 		case BUSINESS_TYPE_STORE:

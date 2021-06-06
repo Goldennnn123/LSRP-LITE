@@ -377,36 +377,6 @@ stock ReturnPhoneDate()
     return str;
 }
 
-public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
-{
-    if(playertextid == PlayerPhone[playerid][12])
-    {
-        for(new p = 16; p <= 18; p++)
-        {
-            PlayerTextDrawHide(playerid, PlayerPhone[playerid][p]);
-        }
-
-        for(new p = 19; p <= 22; p++)
-        {
-            PlayerTextDrawShow(playerid, PlayerPhone[playerid][p]);
-        }
-        PlayerTextDrawShow(playerid, PlayerPhone[playerid][16]);
-
-        return 1;
-    }
-    if(playertextid == PlayerPhone[playerid][19])
-    {
-        Dialog_Show(playerid,DIALOG_PHONEBOOK_LIST,DIALOG_STYLE_LIST,"PhoneBook","เพื่มรายชื่อติดต่อ\nดูรายชื่อติดต่อ","ยืนยัน","ยกเลิก");
-        return 1;
-    }
-    if(playertextid == PlayerPhone[playerid][20])
-    {
-        Dialog_Show(playerid,DIALOG_SMS_NUMBER,DIALOG_STYLE_INPUT,"ส่ง SMS","กรอกเบอร์ที่ต้องการส่ง SMS ไปหาเบอร์ที่ต้องการ","ยืนยัน","ยกเลิก");
-        return 1;
-    }
-    return 1;
-}
-
 stock ShowPhoneBook(playerid)
 {
     new str[MAX_STRING], str_long[MAX_STRING],str_p[MAX_STRING],Phoneid;
@@ -1692,4 +1662,48 @@ stock GetPlayer2DZone(playerid, zone[], len) //Credits to Cueball, Betamaster, M
         }
 	}
 	return 0;
+}
+
+
+hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
+{
+    if(playertextid == PlayerPhone[playerid][12])
+    {
+        for(new p = 16; p <= 18; p++)
+        {
+            PlayerTextDrawHide(playerid, PlayerPhone[playerid][p]);
+        }
+
+        for(new p = 19; p <= 22; p++)
+        {
+            PlayerTextDrawShow(playerid, PlayerPhone[playerid][p]);
+        }
+        PlayerTextDrawShow(playerid, PlayerPhone[playerid][16]);
+
+        return 1;
+    }
+    if(playertextid == PlayerPhone[playerid][19])
+    {
+        Dialog_Show(playerid,DIALOG_PHONEBOOK_LIST,DIALOG_STYLE_LIST,"PhoneBook","เพื่มรายชื่อติดต่อ\nดูรายชื่อติดต่อ","ยืนยัน","ยกเลิก");
+        return 1;
+    }
+    if(playertextid == PlayerPhone[playerid][20])
+    {
+        Dialog_Show(playerid,DIALOG_SMS_NUMBER,DIALOG_STYLE_INPUT,"ส่ง SMS","กรอกเบอร์ที่ต้องการส่ง SMS ไปหาเบอร์ที่ต้องการ","ยืนยัน","ยกเลิก");
+        return 1;
+    }
+    if(playertextid == PlayerPhone[playerid][13])
+    {
+        for(new p = 0; p < 23; p++)
+        {
+            PlayerTextDrawDestroy(playerid, PlayerPhone[playerid][p]);
+        }
+        CancelSelectTextDraw(playerid);
+        PlayerInfo[playerid][pGUI] = false;
+
+        new str[120];
+        format(str, sizeof(str), "เก็บโทรศัพท์");
+        callcmd::me(playerid,str);
+    }
+    return 1;
 }

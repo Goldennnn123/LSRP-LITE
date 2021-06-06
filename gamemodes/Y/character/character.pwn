@@ -261,13 +261,14 @@ CharacterSave(playerid, force = false)
 	{
 		new query[MAX_STRING];
 
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastSkin = %i, pAdmin = %i, pTutorial = %i, pFaction = %i, pCash = %i, pLevel = %i, pSpawnPoint = %i,pSpawnHouse = %i WHERE char_dbid = %i",	
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastSkin = %i, pAdmin = %i, pTutorial = %i, pFaction = %i, pCash = %i, pLevel = %i, pExp = %i, pSpawnPoint = %i,pSpawnHouse = %i WHERE char_dbid = %i",	
 			PlayerInfo[playerid][pLastSkin],
 			PlayerInfo[playerid][pAdmin],
 			PlayerInfo[playerid][pTutorial],
 			PlayerInfo[playerid][pFaction],
 			GetPlayerMoney(playerid),
 			PlayerInfo[playerid][pLevel],
+			PlayerInfo[playerid][pExp],
 			PlayerInfo[playerid][pSpawnPoint],
 			PlayerInfo[playerid][pSpawnHouse],
 			PlayerInfo[playerid][pDBID]);
@@ -343,9 +344,8 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastOnline = '%e', pLastOnlineTime = %d, pTimeplayed = %d WHERE char_dbid = %i",	
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastOnline = '%e', pTimeplayed = %d WHERE char_dbid = %i",	
 			PlayerInfo[playerid][pLastOnline],
-			PlayerInfo[playerid][pLastOnlineTime],
 			PlayerInfo[playerid][pTimeplayed],
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
@@ -396,7 +396,7 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pWeaponLicense],
 			PlayerInfo[playerid][pWeaponLicenseType],
 			PlayerInfo[playerid][pWeaponLicenseRevoke],
-			PlayerInfo[playerid][pDriverLicenseSus],
+			PlayerInfo[playerid][pWeaponLicenseSus],
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
@@ -421,8 +421,10 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pBadge = %d WHERE char_dbid = %i",	
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pBadge = %d, pHasRadio = %d, pSaving = %d WHERE char_dbid = %i",	
 			PlayerInfo[playerid][pBadge],
+			PlayerInfo[playerid][pHasRadio],
+			PlayerInfo[playerid][pSaving],
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
@@ -444,6 +446,7 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pBank", PlayerInfo[playerid][pBank]);
 	cache_get_value_name_int(0, "pAdmin", PlayerInfo[playerid][pAdmin]);
 	cache_get_value_name_int(0, "pLevel", PlayerInfo[playerid][pLevel]);
+	cache_get_value_name_int(0, "pExp", PlayerInfo[playerid][pExp]);
 
 	cache_get_value_name_int(0, "pTimeout", PlayerInfo[playerid][pTimeout]);
 
@@ -478,8 +481,7 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pFishes", PlayerInfo[playerid][pFishes]);
 	
 
-	cache_get_value_name(0, "pLastOnline",PlayerInfo[playerid][pAdminjailed], 90);
-	cache_get_value_name_int(0, "pLastOnlineTime", PlayerInfo[playerid][pLastOnlineTime]);
+	cache_get_value_name(0, "pLastOnline",PlayerInfo[playerid][pLastOnline], 90);
 	cache_get_value_name_int(0, "pTimeplayed", PlayerInfo[playerid][pTimeplayed]);
 
 	cache_get_value_name_int(0, "pAdminjailed",PlayerInfo[playerid][pAdminjailed]);
@@ -535,6 +537,7 @@ public Query_LoadCharacter(playerid)
 
 	cache_get_value_name_int(0, "pHasRadio",PlayerInfo[playerid][pHasRadio]);
 	cache_get_value_name_int(0, "pMainSlot", PlayerInfo[playerid][pMainSlot]);
+	cache_get_value_name_int(0, "pSaving", PlayerInfo[playerid][pSaving]);
 
 	return LoadCharacter(playerid);
 }
@@ -578,6 +581,8 @@ public LoadCharacter(playerid)
 
 	SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
 	SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
+
+	PlayerInfo[playerid][pLastOnline] = ReturnDate();
 	return 1;
 }
 

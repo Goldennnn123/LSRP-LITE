@@ -3,6 +3,13 @@
  * @param {amount} เลขจำนวนเต็ม
  * ใช้ฟังก์ชั่น UpdatePlayerEXPBar ที่อยู่ใน ui.pwn
  */
+#include <YSI_Coding\y_va>
+
+
+static
+    chat_msgOut[144];
+
+
 stock GivePlayerExp(playerid, amount = 1) {
 	PlayerInfo[playerid][pExp] += amount;
 
@@ -129,21 +136,21 @@ stock ReturnDate()
 	getdate(year, month, day);
 	switch(month)
 	{
-	    case 1:  MonthStr = "January";
-	    case 2:  MonthStr = "February";
-	    case 3:  MonthStr = "March";
-	    case 4:  MonthStr = "April";
-	    case 5:  MonthStr = "May";
-	    case 6:  MonthStr = "June";
-	    case 7:  MonthStr = "July";
-	    case 8:  MonthStr = "August";
-	    case 9:  MonthStr = "September";
-	    case 10: MonthStr = "October";
-	    case 11: MonthStr = "November";
-	    case 12: MonthStr = "December";
+	    case 1:  MonthStr = "มกราคม";
+	    case 2:  MonthStr = "กุมภาพันธ์";
+	    case 3:  MonthStr = "มีนาคม";
+	    case 4:  MonthStr = "เมษายน";
+	    case 5:  MonthStr = "พฤษภาคม";
+	    case 6:  MonthStr = "มิถุนายน";
+	    case 7:  MonthStr = "กรกฎาคม";
+	    case 8:  MonthStr = "สิงหาคม";
+	    case 9:  MonthStr = "กันยายน";
+	    case 10: MonthStr = "ตุลาคม";
+	    case 11: MonthStr = "พฤศจิกายน";
+	    case 12: MonthStr = "ธันวาคม";
 	}
 	
-	format(sendString, 90, "%s %d, %d %02d:%02d:%02d", MonthStr, day, year, hour, minute, second);
+	format(sendString, 90, "%d %s %d %02d:%02d:%02d", day,MonthStr, year + 543, hour, minute, second);
 	return sendString;
 }
 
@@ -342,7 +349,7 @@ stock ShowCharacterStats(playerid, playerb)
 	{
 		SendClientMessageEx(playerb, COLOR_GRAD1, "สำหรับแอดมิน: DBID:[%d] UCP:[%s (%d)] Interior:[%d] World:[%d]", PlayerInfo[playerid][pDBID], e_pAccountData[playerid][mAccName], e_pAccountData[playerid][mDBID], GetPlayerInterior(playerid), GetPlayerVirtualWorld(playerid));
 		
-		SendClientMessageEx(playerb, COLOR_GRAD2, "การเชื่อมต่อ: IP:[%s] ออนไลน์ล่าสุด:[%s] ชัวโมงออนไลน์:[%d นาที]", ReturnIP(playerid), ReturnLastOnline(playerid), PlayerInfo[playerid][pLastOnlineTime]);
+		SendClientMessageEx(playerb, COLOR_GRAD2, "การเชื่อมต่อ: IP:[%s] ออนไลน์ล่าสุด:[%s] ชัวโมงออนไลน์:[%d ชัวโมง]", ReturnIP(playerid), ReturnLastOnline(playerid), PlayerInfo[playerid][pTimeplayed]);
 		
 		SendClientMessageEx(playerb, COLOR_GRAD1, "MISC: InsideProperty:[%i] InsideBusiness:[%i]", IsPlayerInHouse(playerid), IsPlayerInBusiness(playerid)); 
 	}
@@ -428,11 +435,31 @@ public CallPaycheck()
 		new
 			Float: interest,
 			interest_convert,
-			total_tax
+			total_tax,
+			Float:interest_saving
 		; 
 		
 		PlayerInfo[i][pTimeplayed]++; 
-		PlayerInfo[i][pExp]++; 
+		PlayerInfo[i][pExp]++;
+
+		if(PlayerInfo[i][pExp] >= 6 && PlayerInfo[i][pLevel] == 1)
+		{
+			PlayerInfo[i][pExp] = 0;
+			PlayerInfo[i][pLevel]++;
+			format(str, sizeof(str), "~g~Leveled Up~n~~w~You leveled up to level %i", PlayerInfo[i][pLevel]);
+			GameTextForPlayer(i, str, 5000, 1);
+			PlayerPlaySound(i, 1052, 0.0, 0.0, 0.0);
+			SetPlayerScore(i, PlayerInfo[i][pLevel]); 
+		}
+		else if(PlayerInfo[i][pExp] >= 10 && PlayerInfo[i][pLevel] == 2)
+		{
+			PlayerInfo[i][pExp] = 0;
+			PlayerInfo[i][pLevel]++;
+			format(str, sizeof(str), "~g~Leveled Up~n~~w~You leveled up to level %i", PlayerInfo[i][pLevel]);
+			GameTextForPlayer(i, str, 5000, 1);
+			PlayerPlaySound(i, 1052, 0.0, 0.0, 0.0);
+			SetPlayerScore(i, PlayerInfo[i][pLevel]); 
+		}
 		
 		if(PlayerInfo[i][pLevel] == 1)
 			total_paycheck+= 2000; 
@@ -441,24 +468,33 @@ public CallPaycheck()
 			total_paycheck+= 1500; 
 			
 		//Add an auto-level up on paycheck for level 1 and 2 to prevent paycheck farming.
-			
-		interest = (PlayerInfo[i][pBank] / 100) * 0.1; 
+		if(!PlayerInfo[i][pSaving])
+		{
+			interest_saving = 0.2;
+			interest = (PlayerInfo[i][pBank] / 100) * interest_saving;
+		}
+		else
+		{
+			interest_saving = 0.9;
+			interest = (PlayerInfo[i][pBank] / 100) * interest_saving; 
+		}
+
 		interest_convert = floatround(interest, floatround_round); 
-		
-		total_tax = PlayerInfo[i][pBank] / 50;
+	
+		total_tax = floatround((PlayerInfo[i][pBank] * 0.002), floatround_round);
 		
 		SendClientMessageEx(i, COLOR_WHITE, "SERVER TIME:[ %s ]", ReturnHour()); 
 		
 		SendClientMessage(i, COLOR_WHITE, "|___ BANK STATEMENT ___|"); 
 		SendClientMessageEx(i, COLOR_GREY, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank])); 
-		SendClientMessage(i, COLOR_GREY, "   อัตราดอกเบี้ย: 0.1");
+		SendClientMessageEx(i, COLOR_GREY, "   อัตราดอกเบี้ย: %.1f",interest_saving);
 		SendClientMessageEx(i, COLOR_GREY, "   ได้รับดอกเบี้ย: $%s", MoneyFormat(interest_convert));
 		SendClientMessageEx(i, COLOR_GREY, "   ภาษี: $%s", MoneyFormat(total_tax)); 
 		SendClientMessage(i, COLOR_WHITE, "|________________________|");
 		
 		PlayerInfo[i][pPaycheck]+= total_paycheck; 
 		PlayerInfo[i][pBank]+= interest_convert;
-		PlayerInfo[i][pBank]+= total_paycheck;
+		//PlayerInfo[i][pBank]+= total_paycheck;
 		PlayerInfo[i][pBank]-= total_tax;
 		
 		SendClientMessageEx(i, COLOR_WHITE, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank]));
@@ -537,3 +573,51 @@ stock ReturnLicenses(playerid, playerb)
 	SendClientMessage(playerb, COLOR_DARKGREEN, "___________________________"); 
 	return 1;
 }
+
+
+stock Player_IsNearPlayer(playerid, targetid, Float:radius)
+{
+	new
+        Float:x,
+        Float:y,
+        Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+
+    new
+        matchingVW = GetPlayerVirtualWorld(playerid) == GetPlayerVirtualWorld(targetid),
+        matchingInt = GetPlayerInterior(playerid) == GetPlayerInterior(targetid),
+        inRange = IsPlayerInRangeOfPoint(targetid, radius, x, y, z);
+
+	return matchingVW && matchingInt && inRange;
+}
+
+
+stock SendMsgLocal(playerid, Float:radius = 10.0, colour, const string[]) {
+    SendClientMessage(playerid, colour, string);
+    foreach(new i: StreamedPlayer[playerid])
+    {
+        if (Player_IsNearPlayer(playerid, i, radius))
+        {
+            SendClientMessage(i, colour, string);
+        }
+    }
+	return 1;
+}
+
+stock SendMsgLocalEx(playerid, Float:radius = 15.0, colour, const fmat[], {Float,_}:...) {
+    va_format(chat_msgOut, sizeof (chat_msgOut), fmat, va_start<4>);
+    SendClientMessage(playerid, colour, chat_msgOut);
+    foreach(new i: StreamedPlayer[playerid])
+    {
+        if (Player_IsNearPlayer(playerid, i, radius))
+        {
+			if(i == playerid)
+				continue;
+
+			SendClientMessage(i, colour, chat_msgOut);	
+        }
+    }
+	return 1;
+}
+

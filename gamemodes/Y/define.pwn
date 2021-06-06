@@ -13,7 +13,7 @@
 #define	SPAWN_AT_HOUSE				1
 #define	SPAWN_AT_FACTION			2
 
-#define MAX_PLAYER_VEHICLES			(7)
+#define MAX_PLAYER_VEHICLES			(6)
 
 #define PLAYER_STATE_ALIVE (1)
 #define PLAYER_STATE_WOUNDED (2)

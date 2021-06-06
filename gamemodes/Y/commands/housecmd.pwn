@@ -2,7 +2,7 @@ CMD:housecmds(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________________HOUSE COMMAND__________________________");
 
-    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /house /buyhouse /sellhouse /lock /placepos");
+    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /house /buyhouse /sellhouse /lock /placepos /swicth");
 
     SendClientMessage(playerid, COLOR_GREEN,"________________________________________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
@@ -181,5 +181,69 @@ CMD:ddo(playerid, params[])
             SendClientMessageEx(i, COLOR_PURPLE, "* %s (( %s ))",params,ReturnRealName(playerid, 0));
         }
     }
+    return 1;
+}
+
+
+CMD:swicth(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideProperty], str[32];
+
+    if(id == 0)
+        return SendErrorMessage(playerid, "กรุณาอยู่ภายในบ้านก่อน");
+
+    new trun[10];
+
+    if(sscanf(params, "s[10]",trun))
+    {
+        SendClientMessage(playerid, -1, "on = เปิดไฟภายในบ้าน");
+        SendClientMessage(playerid, -1, "off = ปิดไฟภายในบ้าน");
+        SendUsageMessage(playerid, "/swicth <on หรือ off>");
+        return 1;
+    }
+
+    if(!strcmp(trun, "on"))
+    {
+        if(HouseInfo[id][HouseSwicth])
+            return 1;
+
+        HouseInfo[id][HouseSwicth] = true;
+        SetHouseOffSwitch(playerid, id);
+
+        format(str, sizeof(str), "เปิดสวิทซ์ไฟภายในบ้าน");
+        callcmd::me(playerid,str);
+        return 1;
+    }
+    else if(!strcmp(trun, "off"))
+    {
+        if(!HouseInfo[id][HouseSwicth])
+            return 1;
+
+        HouseInfo[id][HouseSwicth] = false;
+        SetHouseOffSwitch(playerid, id);
+
+        format(str, sizeof(str), "ปิดสวิทซ์ไฟภายในบ้าน");
+        callcmd::me(playerid,str);
+        return 1;
+    }
+    return 1;
+}
+
+CMD:checkele(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideProperty], bill;
+
+    if(!PlayerInfo[playerid][pInsideProperty])
+        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} คุณไม่ได้อยู่ในบ้าน");
+
+    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} บ้านหลังนี้ไม่ใช่บ้านของคุณ");
+
+    bill = HouseInfo[id][HouseEle];
+
+    if(bill == 0)
+        return SendClientMessage(playerid, -1, "ไฟฟ้าของคุณยังไม่ถึงหน่วยที่กำหนด");
+    
+    SendClientMessageEx(playerid, -1, "[HOUSE BILL] ค่าไฟที่ใช้ไป %s หน่วย รวมเป็น $%s สามารถไปจ่ายค่าไฟได้ที่ City Hall",MoneyFormat(HouseInfo[id][HouseEle]), MoneyFormat(bill * 7));
     return 1;
 }

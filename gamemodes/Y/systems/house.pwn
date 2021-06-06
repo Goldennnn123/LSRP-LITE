@@ -5,6 +5,11 @@ new PlayerCreHouse[MAX_PLAYERS][90],
 
 new PlayerSelectHouse[MAX_PLAYERS];
 new OnPlayerNereHouse[MAX_PLAYERS][MAX_HOUSE];
+
+
+new PlayerText:PlayerSwicthOff[MAX_PLAYERS][1];
+
+
 hook OnPlayerConnect(playerid)
 {
     PlayerCreHouse[playerid] = "";
@@ -12,6 +17,7 @@ hook OnPlayerConnect(playerid)
     PlayerCreHouseLevel[playerid] = 0;
     return 1;
 }
+
 
 forward Query_LoadHouse();
 public Query_LoadHouse()
@@ -49,6 +55,7 @@ public Query_LoadHouse()
         cache_get_value_name_float(i,"HousePlacePosZ",HouseInfo[i+1][HousePlacePos][2]);
 
 
+        cache_get_value_name_int(i,"HouseEle",HouseInfo[i+1][HouseEle]);
         for(new w = 1; w < 22; w++)
         {
             format(str, sizeof(str), "HouseWeapons%i",w);
@@ -72,6 +79,9 @@ public Query_LoadHouse()
             HouseInfo[i+1][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[i+1][HouseEntrance][0], HouseInfo[i+1][HouseEntrance][1], HouseInfo[i+1][HouseEntrance][2],-1,-1);
         }
         countHouse++;
+
+        HouseInfo[i+1][HouseSwicth] = false;
+        
     }
 
 	printf("[SERVER]: %i House were loaded from \"%s\" database...", countHouse, MYSQL_DB);
@@ -353,7 +363,64 @@ forward OnPlayerEnterProperty(playerid,id);
 public OnPlayerEnterProperty(playerid,id)
 {
 	SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]);
-	return TogglePlayerControllable(playerid, 1);
+    
+    SetHouseOffSwitch(playerid, id);
+    return TogglePlayerControllable(playerid, 1);
+}
+
+stock SetHouseOffSwitch(playerid, id)
+{
+    if(HouseInfo[id][HouseSwicth])
+    {
+        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 5000, true, "i",id);
+        return PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
+    }
+
+    PlayerSwicthOff[playerid][0] = CreatePlayerTextDraw(playerid, 316.000000, 2.000000, "_");
+	PlayerTextDrawFont(playerid, PlayerSwicthOff[playerid][0], 1);
+	PlayerTextDrawLetterSize(playerid, PlayerSwicthOff[playerid][0], 0.600000, 48.999988);
+	PlayerTextDrawTextSize(playerid, PlayerSwicthOff[playerid][0], 298.500000, 640.500000);
+	PlayerTextDrawSetOutline(playerid, PlayerSwicthOff[playerid][0], 1);
+	PlayerTextDrawSetShadow(playerid, PlayerSwicthOff[playerid][0], 0);
+	PlayerTextDrawAlignment(playerid, PlayerSwicthOff[playerid][0], 2);
+	PlayerTextDrawColor(playerid, PlayerSwicthOff[playerid][0], -1);
+	PlayerTextDrawBackgroundColor(playerid, PlayerSwicthOff[playerid][0], 255);
+	PlayerTextDrawBoxColor(playerid, PlayerSwicthOff[playerid][0], 225);
+	PlayerTextDrawUseBox(playerid, PlayerSwicthOff[playerid][0], 1);
+	PlayerTextDrawSetProportional(playerid, PlayerSwicthOff[playerid][0], 1);
+	PlayerTextDrawSetSelectable(playerid, PlayerSwicthOff[playerid][0], 0);
+
+    if(HouseInfo[id][HouseSwicth])
+    {
+        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 5000, true, "i",id);
+        return PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
+    }
+    else 
+    {
+        KillTimer(HouseInfo[id][HouseTimerEle]);
+        SendClientMessage(playerid, COLOR_YELLOWEX, "ไฟที่บ้านของคุณดับอยู่พิมพ์ /swicth on เพื่อเปิด");
+        return PlayerTextDrawShow(playerid, PlayerSwicthOff[playerid][0]);
+    }
+}
+
+
+forward HouseElectricitybill(id);
+public HouseElectricitybill(id)
+{
+    new ele;
+
+    if(!HouseInfo[id][HouseSwicth])
+        return 1;
+
+    if(!HouseInfo[id][HouseOwnerDBID])
+        return 1;
+        
+    ele = Random(1, 5);
+    HouseInfo[id][HouseEle] += ele;
+    //SendClientMessageEx(playerid, COLOR_SAMP, "คุณเปิดไฟที่บ้านทิ้งเอาไว้ ค่าไฟในบ้าน %s เพิ่มขึ้น %d หน่วย เป็น %d", HouseInfo[id][HouseName], ele, HouseInfo[id][HouseEle]);
+    Savehouse(id);
+    return 1;
+
 }
 
 
@@ -439,6 +506,7 @@ Dialog:DIALOG_SELL_HOUSE(playerid, response, listitem, inputtext[])
         
         new Money = HouseInfo[id][HousePrice] / 2;
 
+        new bill = HouseInfo[id][HouseEle];
         HouseInfo[id][HouseOwnerDBID] = 0;
         HouseInfo[id][HouseLock] = true;
 
@@ -454,9 +522,13 @@ Dialog:DIALOG_SELL_HOUSE(playerid, response, listitem, inputtext[])
         }
 
         GivePlayerMoney(playerid, Money);
+        GivePlayerMoney(playerid, -bill*7);
         SetPlayerPos(playerid,HouseInfo[id][HouseEntrance][0],HouseInfo[id][HouseEntrance][1],HouseInfo[id][HouseEntrance][2]);
         SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseEntranceWorld]);
         SetPlayerInterior(playerid, HouseInfo[id][HouseEntranceInterior]);
+        HouseInfo[id][HouseSwicth] = false;
+        SetHouseOffSwitch(playerid, id);
+        PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
 
 
         if(IsValidDynamicPickup(HouseInfo[id][HousePickup]))
@@ -465,6 +537,7 @@ Dialog:DIALOG_SELL_HOUSE(playerid, response, listitem, inputtext[])
         HouseInfo[id][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2],-1,-1);
 
         SendClientMessageEx(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{009933} คุณได้ขายบ้านของคุณแล้วได้เงินมาจำนวน %s",MoneyFormat(Money));
+        SendClientMessageEx(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{009933} คุณมีบิลค่าไฟที่ค้างไว้อยู่เราได้ทำการหักหนี้บิลไฟฟ้าของคุณจำนวน $%s",MoneyFormat(bill));
         Savehouse(id);
         return 1;
     }

@@ -9,18 +9,249 @@ new playerInsertID[MAX_PLAYERS];
 
 
 new PlayerVehicleScrap[MAX_PLAYERS];
+new PlayerOwnerDBID[MAX_PLAYERS];
 
 new bool:playerTowingVehicle[MAX_PLAYERS] = false;
 new	playerTowTimer[MAX_PLAYERS] = 0;
 
-//new possibleVehiclePlates[][] = 
-	//{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+new PlayerSellVehicle[MAX_PLAYERS];
+new PlayerSellVehicleBy[MAX_PLAYERS];
+new PlayerSellVehicleID[MAX_PLAYERS];
+new PlayerSellVehiclePrice[MAX_PLAYERS];
+new bool:PlayerSellVehicleAccept[MAX_PLAYERS];
+
+
+enum c_data {
+	Float:c_maxhp,
+};
+
+new const VehicleData[][c_data] =
+{
+	{1120.0}, //Vehicle ID 401
+	{900.0}, //Vehicle ID 402
+	{900.0}, //Vehicle ID 403
+	{2500.0}, //Vehicle ID 404
+	{1120.0}, //Vehicle ID 405
+	{950.0}, //Vehicle ID 406
+	{3000.0}, //Vehicle ID 407
+	{2500.0}, //Vehicle ID 408
+	{1100.0}, //Vehicle ID 409
+	{950.0}, //Vehicle ID 410
+	{890.0}, //Vehicle ID 411
+	{1000.0}, //Vehicle ID 412
+	{1050.0}, //Vehicle ID 413
+	{1500.0}, //Vehicle ID 414
+	{890.9}, //Vehicle ID 415
+	{1500.0}, //Vehicle ID 416
+	{2600.0}, //Vehicle ID 417
+	{1200.0}, //Vehicle ID 418
+	{1030.0}, //Vehicle ID 419
+	{1050.0}, //Vehicle ID 420
+	{1100.0}, //Vehicle ID 421
+	{1200.0}, //Vehicle ID 422
+	{1300.0}, //Vehicle ID 423
+	{900.0}, //Vehicle ID 424
+	{3000.0}, //Vehicle ID 425
+	{1100.0}, //Vehicle ID 426
+	{10000.0}, //Vehicle ID 427
+	{8900.0}, //Vehicle ID 428
+	{889.0}, //Vehicle ID 429
+	{1100.0}, //Vehicle ID 430
+	{1500.0}, //Vehicle ID 431
+	{250000.0}, //Vehicle ID 432
+	{5000.0}, //Vehicle ID 433
+	{800.0}, //Vehicle ID 434
+	{0.0}, //Vehicle ID 435
+	{1100.0}, //Vehicle ID 436
+	{1500.0}, //Vehicle ID 437
+	{1350.0}, //Vehicle ID 438
+	{950.0}, //Vehicle ID 439
+	{1350.0}, //Vehicle ID 440
+	{700.0}, //Vehicle ID 441
+	{1100.0}, //Vehicle ID 442
+	{2500.0}, //Vehicle ID 443
+	{2400.0}, //Vehicle ID 444
+	{1150.0}, //Vehicle ID 445
+	{1000.0}, //Vehicle ID 446
+	{1250.0}, //Vehicle ID 447
+	{690.0}, //Vehicle ID 448
+	{0.0}, //Vehicle ID 449
+	{0.0}, //Vehicle ID 450
+	{890.0}, //Vehicle ID 451
+	{1000.0}, //Vehicle ID 452
+	{1500.0}, //Vehicle ID 453
+	{1550.0}, //Vehicle ID 454
+	{2500.0}, //Vehicle ID 455
+	{1900.0}, //Vehicle ID 456
+	{800.0}, //Vehicle ID 457
+	{1150.0}, //Vehicle ID 458
+	{1200.0}, //Vehicle ID 459
+	{1000.0}, //Vehicle ID 460
+	{700.0}, //Vehicle ID 461
+	{700.0}, //Vehicle ID 462
+	{700.0}, //Vehicle ID 463
+	{0.0}, //Vehicle ID 464
+	{0.0}, //Vehicle ID 465
+	{1000.0}, //Vehicle ID 466
+	{1000.0}, //Vehicle ID 467
+	{700.0}, //Vehicle ID 468
+	{1100.0}, //Vehicle ID 469
+	{1550.0}, //Vehicle ID 470
+	{700.0}, //Vehicle ID 471
+	{1000.0}, //Vehicle ID 472
+	{1000.0}, //Vehicle ID 473
+	{1000.0}, //Vehicle ID 474
+	{1000.0}, //Vehicle ID 475
+	{1100.0}, //Vehicle ID 476
+	{890.0}, //Vehicle ID 477
+	{950.0}, //Vehicle ID 478
+	{1220.0}, //Vehicle ID 479
+	{890.0}, //Vehicle ID 480
+	{700.0}, //Vehicle ID 481
+	{1100.0}, //Vehicle ID 482
+	{1200.0}, //Vehicle ID 483
+	{1000.0}, //Vehicle ID 484
+	{891.0}, //Vehicle ID 485
+	{3500.0}, //Vehicle ID 486
+	{1250.0}, //Vehicle ID 487
+	{1250.0}, //Vehicle ID 488
+	{1350.0}, //Vehicle ID 489
+	{1350.0}, //Vehicle ID 490
+	{1200.0}, //Vehicle ID 491
+	{1200.0}, //Vehicle ID 492
+	{1000.0}, //Vehicle ID 493
+	{1350.0}, //Vehicle ID 494
+	{1350.0}, //Vehicle ID 495
+	{1100.0}, //Vehicle ID 496
+	{1350.0}, //Vehicle ID 497
+	{1300.0}, //Vehicle ID 498
+	{1300.0}, //Vehicle ID 499
+	{900.0}, //Vehicle ID 500
+	{0.0}, //Vehicle ID 501
+	{1350.0}, //Vehicle ID 502
+	{1350.0}, //Vehicle ID 503
+	{0.0}, //Vehicle ID 504
+	{1250.0}, //Vehicle ID 505
+	{790.0}, //Vehicle ID 506
+	{1100.0}, //Vehicle ID 507
+	{1900.0}, //Vehicle ID 508
+	{700.0}, //Vehicle ID 509
+	{700.0}, //Vehicle ID 510
+	{1100.0}, //Vehicle ID 511
+	{1350.0}, //Vehicle ID 512
+	{1350.0}, //Vehicle ID 513
+	{2450.0}, //Vehicle ID 514
+	{1200.0}, //Vehicle ID 515
+	{1200.0}, //Vehicle ID 516
+	{1200.0}, //Vehicle ID 516
+	{1200.0}, //Vehicle ID 517
+	{1200.0}, //Vehicle ID 518
+	{4500.0}, //Vehicle ID 519
+	{3500.0}, //Vehicle ID 520
+	{700.0}, //Vehicle ID 521
+	{690.0}, //Vehicle ID 522
+	{1100.0}, //Vehicle ID 523
+	{4500.0}, //Vehicle ID 524
+	{1400.0}, //Vehicle ID 525
+	{1000.0}, //Vehicle ID 526
+	{1000.0}, //Vehicle ID 527
+	{15000.0}, //Vehicle ID 528
+	{1100.0}, //Vehicle ID 529
+	{980.0}, //Vehicle ID 530
+	{1000.0}, //Vehicle ID 531
+	{6000.0}, //Vehicle ID 532
+	{1100.0}, //Vehicle ID 533
+	{1100.0}, //Vehicle ID 534
+	{1350.0}, //Vehicle ID 535
+	{1100.0}, //Vehicle ID 536
+	{0.0}, //Vehicle ID 537
+	{0.0}, //Vehicle ID 538
+	{0.0}, //Vehicle ID 539
+	{1000.0}, //Vehicle ID 540
+	{790.0}, //Vehicle ID 541
+	{1100.0}, //Vehicle ID 542
+	{1350.0}, //Vehicle ID 543
+	{2600.0}, //Vehicle ID 544
+	{780.0}, //Vehicle ID 545
+	{1100.0}, //Vehicle ID 546
+	{1100.0}, //Vehicle ID 547
+	{8000.0}, //Vehicle ID 548
+	{1100.0}, //Vehicle ID 549
+	{1100.0}, //Vehicle ID 550
+	{1090.0}, //Vehicle ID 551
+	{1350.0}, //Vehicle ID 552
+	{10000.0}, //Vehicle ID 553
+	{1030.0}, //Vehicle ID 554
+	{900.0}, //Vehicle ID 555
+	{1200.0}, //Vehicle ID 556
+	{1200.0}, //Vehicle ID 557
+	{998.0}, //Vehicle ID 558
+	{990.0}, //Vehicle ID 559
+	{1200.0}, //Vehicle ID 560
+	{1300.0}, //Vehicle ID 561
+	{1100.0}, //Vehicle ID 562
+	{2400.0}, //Vehicle ID 563
+	{0.0}, //Vehicle ID 564
+	{1250.0}, //Vehicle ID 565
+	{1100.0}, //Vehicle ID 566
+	{1100.0}, //Vehicle ID 567
+	{810.0}, //Vehicle ID 568
+	{0.0}, //Vehicle ID 569
+	{0.0}, //Vehicle ID 570
+	{0.0}, //Vehicle ID 571
+	{700.0}, //Vehicle ID 572
+	{1900.0}, //Vehicle ID 573
+	{780.0}, //Vehicle ID 574
+	{1100.0}, //Vehicle ID 575
+	{1100.0}, //Vehicle ID 576
+	{8000.0}, //Vehicle ID 577
+	{8000.0}, //Vehicle ID 578
+	{1200.0}, //Vehicle ID 579
+	{1200.0}, //Vehicle ID 580
+	{700.0}, //Vehicle ID 581
+	{1250.0}, //Vehicle ID 582
+	{890.0}, //Vehicle ID 583
+	{0.0}, //Vehicle ID 584
+	{1200.0}, //Vehicle ID 585
+	{900.0}, //Vehicle ID 586
+	{890.0}, //Vehicle ID 587
+	{1250.0}, //Vehicle ID 588
+	{1500.0}, //Vehicle ID 589
+	{0.0}, //Vehicle ID 590
+	{0.0}, //Vehicle ID 591
+	{9000.0}, //Vehicle ID 592
+	{2500.0}, //Vehicle ID 593
+	{0.0}, //Vehicle ID 594
+	{1350.0}, //Vehicle ID 595
+	{1500.0}, //Vehicle ID 596
+	{1500.0}, //Vehicle ID 597
+	{1500.0}, //Vehicle ID 598
+	{2000.0}, //Vehicle ID 599
+	{1100.0}, //Vehicle ID 600
+	{25000.0}, //Vehicle ID 601
+	{890.0}, //Vehicle ID 602
+	{890.0}, //Vehicle ID 603
+	{0.0}, //Vehicle ID 604
+	{0.0}, //Vehicle ID 605
+	{0.0}, //Vehicle ID 606
+	{0.0}, //Vehicle ID 607
+	{0.0}, //Vehicle ID 608
+	{1200.0}, //Vehicle ID 609
+	{0.0}, //Vehicle ID 610
+	{0.0} //Vehicle ID 611
+};
 
 hook OnPlayerConnect(playerid)
 {
 	PlayerVehicleScrap[playerid] = 0;
 	playerTowingVehicle[playerid] = false;
 	playerTowTimer[playerid] = 0;
+
+	PlayerSellVehicle[playerid] = 0;
+	PlayerSellVehicleBy[playerid] = INVALID_PLAYER_ID;
+	PlayerSellVehicleID[playerid] = INVALID_VEHICLE_ID;
+	PlayerSellVehiclePrice[playerid] = 0;
+	PlayerSellVehicleAccept[playerid] = false;
 	return 1;
 }
 
@@ -546,9 +777,13 @@ CMD:vehicle(playerid, params[])
 
 	if(sscanf(params, "s[30]S()[90]", oneString, secString))
 	{
-		SendUsageMessage(playerid, "/vehicle [action]");
-		SendServerMessage(playerid, "get, park, buypark, duplicatekey, buy");
-		SendServerMessage(playerid, "scrap, tow, find, stats, list");
+ 	    SendClientMessage(playerid, COLOR_YELLOWEX, "___________________________________________________________");
+	 	SendClientMessage(playerid, COLOR_YELLOWEX, "USAGE: /(v)ehicle [action]");
+	    SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] get, park, sell,buy, upgrade, list");
+        SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] stats, tow, duplicatekey, find, buypark($5,000)");
+        SendClientMessage(playerid, COLOR_YELLOWEX, "[Delete] scrap (ตำเตือน: หากใช้คำสั่งนี้จะทำการขายรถทิ้งในทันที.)");
+        SendClientMessage(playerid, COLOR_YELLOWEX, "[Hint] หากพบบัคหรือสิ่งผิดปกติให้ทำการแจ้งผู้ดูแลในทันที");
+		SendClientMessage(playerid, COLOR_YELLOWEX, "___________________________________________________________");
 		return 1;
 	}
 	if(!strcmp(oneString, "get"))
@@ -606,6 +841,16 @@ CMD:vehicle(playerid, params[])
 		
 		PlayerInfo[playerid][pVehicleSpawned] = false; 
 		PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+
+		if(PlayerSellVehicleAccept[playerid])
+		{
+			new tagetid = PlayerSellVehicleBy[playerid];
+			PlayerSellVehicle[tagetid] = 0;
+			PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
+			PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
+			PlayerSellVehiclePrice[tagetid] = 0;
+			PlayerSellVehicleAccept[tagetid] = false;
+		}
 		
 		SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้จัดเก็บรถ %s เรียบร้อย", ReturnVehicleName(vehicleid));
 		
@@ -669,8 +914,193 @@ CMD:vehicle(playerid, params[])
 			return SendErrorMessage(playerid,"คุณมีรถเต็มตัวแล้ว");
 
 		
-		//PlayerOwnerDBID[playerid] = idx;
-		//ShowVehicleBuy(playerid);
+		PlayerOwnerDBID[playerid] = idx;
+
+		ShowVehicleBuy(playerid);
+	}
+	else if(!strcmp(oneString, "sell"))
+	{
+		if(PlayerSellVehicleAccept[playerid])
+			return SendErrorMessage(playerid, "ตอนนี้คุณอยู่ในการตกลงกันระหว่างการซื้อขายยานพาหนะอยู่ กับ %s", ReturnName(PlayerSellVehicleBy[playerid], 0));
+
+		if(!IsPlayerInAnyVehicle(playerid))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภภายในรถ");
+			
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับรถ");
+			
+		if(PlayerInfo[playerid][pVehicleSpawned] == false) return SendErrorMessage(playerid, "รถของคุณยังไม่ได้ถูกนำออกมา");
+
+		new 
+			vehicleid = GetPlayerVehicleID(playerid)
+		;
+
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+			return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของรถ");
+
+		new
+			tagetid,
+			price
+		;
+
+		if(sscanf(secString, "ud", tagetid, price))
+			return SendUsageMessage(playerid, "/vehicle sell <ชื่อบางส่วน/ไอดี> <ราคา>");
+
+		if(playerid == tagetid)
+			return SendErrorMessage(playerid, "ไม่สามารถขายยานพาหนะให้ตนเองได้"); 
+		
+		if (!IsPlayerConnected(tagetid))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์"); 
+		
+		if(!BitFlag_Get(gPlayerBitFlag[tagetid], IS_LOGGED))
+			return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+		if(PlayerInfo[tagetid][pVehicleSpawned] == true && PlayerInfo[tagetid][pVehicleSpawnedID] != INVALID_VEHICLE_ID)
+			return SendErrorMessage(playerid, "ผู้เล่นฝ่ายตรงข้ามมียานพาหนะอยู่");
+
+
+		if(PlayerSellVehicleAccept[tagetid] == true)
+			return SendErrorMessage(playerid, "ผู้เล่นกำลังทำการซื้อขายกับคนอื่นอยู่");
+
+		if(price > 5000000 || price < 1)
+			return SendErrorMessage(playerid, "กรุณาใส่ราคาที่กำหนด <1-5,000,000>");
+
+
+		PlayerSellVehicle[playerid] = playerid;
+		PlayerSellVehicleBy[playerid] = tagetid;
+		PlayerSellVehicleID[playerid] = vehicleid;
+		PlayerSellVehiclePrice[playerid] = price;
+		PlayerSellVehicleAccept[playerid] = true;
+
+		PlayerSellVehicle[tagetid] = tagetid;
+		PlayerSellVehicleBy[tagetid] = playerid;
+		PlayerSellVehicleID[tagetid] = vehicleid;
+		PlayerSellVehiclePrice[tagetid] = price;
+		PlayerSellVehicleAccept[tagetid] = true;
+
+		SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ส่งข้อเสนอราคาให้กับ %s ในการขายยานพนะ %s ในราคา $%s",ReturnName(tagetid, 0), ReturnVehicleName(vehicleid), MoneyFormat(price));
+		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "คุณได้รับข้อเสนอราคาจาก %s ในการขายยานพนะ %s ในราคา $%s พิมพ์ /v accept เพื่อยืนยันข้อเสนอ",ReturnName(playerid, 0), ReturnVehicleName(vehicleid), MoneyFormat(price));
+		
+		return 1;
+	}
+	else if(!strcmp(oneString, "accept"))
+	{
+		new 
+			tagetid = PlayerSellVehicleBy[playerid],
+			vehicleid = PlayerSellVehicleID[playerid],
+			price = PlayerSellVehiclePrice[playerid]
+		;
+
+		if(!PlayerSellVehicleAccept[playerid] && playerid != tagetid)
+			return SendErrorMessage(playerid, "ไม่มีใครมาทำการซื้อขายยานพาหนะกับคุณตอนนี้");
+		
+		if(PlayerInfo[playerid][pVehicleSpawned] == true || PlayerInfo[playerid][pVehicleSpawnedID])
+		{
+			return SendErrorMessage(playerid, "ยานพาหนะของคุณไปเก็บยังจุด park ก่อนที่จะทำการซื้อขายยานพาหนะ");
+		}
+
+		if(PlayerInfo[tagetid][pVehicleSpawned] == false || PlayerInfo[tagetid][pVehicleSpawnedID] == INVALID_VEHICLE_ID)
+			return SendErrorMessage(playerid, "ผู้เล่นได้ทำการเก็บยานพาหนะไปแล้ว");
+
+		if(PlayerInfo[playerid][pCash] < price)
+			return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ (ขาดอีก %s)", MoneyFormat(price));
+		
+		new idx = 0;
+		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+		{
+			if(!PlayerInfo[playerid][pOwnedVehicles][i])
+			{
+				idx = i;
+				break;
+			}
+		}
+
+		if(idx == 0)
+		{
+			PlayerSellVehicle[playerid] = 0;
+			PlayerSellVehicleBy[playerid] = INVALID_PLAYER_ID;
+			PlayerSellVehicleID[playerid] = INVALID_VEHICLE_ID;
+			PlayerSellVehiclePrice[playerid] = 0;
+			PlayerSellVehicleAccept[playerid] = false;
+
+			PlayerSellVehicle[tagetid] = 0;
+			PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
+			PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
+			PlayerSellVehiclePrice[tagetid] = 0;
+			PlayerSellVehicleAccept[tagetid] = false;
+
+			return SendErrorMessage(playerid,"คุณมีรถเต็มตัวแล้ว");
+		}
+
+		
+		PlayerOwnerDBID[playerid] = idx;
+
+		//new sql_chang[500];
+
+		new dbid = VehicleInfo[vehicleid][eVehicleDBID];
+
+		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+		{
+			if(PlayerInfo[tagetid][pOwnedVehicles][i] == dbid)
+			{
+				PlayerInfo[tagetid][pOwnedVehicles][i] = 0;
+			}
+		}
+
+		PlayerInfo[playerid][pOwnedVehicles][idx] = dbid;
+		VehicleInfo[vehicleid][eVehicleOwnerDBID] = PlayerInfo[playerid][pDBID];
+		PlayerInfo[playerid][pVehicleSpawned] = true; 
+		PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
+
+		GiveMoney(playerid, -price);
+		GiveMoney(tagetid, price);
+		SendClientMessageEx(playerid, COLOR_GREEN, "ทำการซื้อขายยานพาหนะสำเร็จ คุณจ่ายเงินไปจำนวน %s", MoneyFormat(price));
+		SendClientMessageEx(tagetid, COLOR_GREEN, "ทำการซื้อขายยานพาหนะสำเร็จ คุณได้รับเงินจำนวน %s", MoneyFormat(price));
+		SaveVehicle(vehicleid);
+		CharacterSave(playerid);
+
+		PlayerSellVehicle[tagetid] = 0;
+		PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
+		PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
+		PlayerSellVehiclePrice[tagetid] = 0;
+		PlayerSellVehicleAccept[tagetid] = false;
+		PlayerInfo[tagetid][pVehicleSpawned] = false; 
+		PlayerInfo[tagetid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+
+		PlayerSellVehicle[playerid] = 0;
+		PlayerSellVehicleBy[playerid] = INVALID_PLAYER_ID;
+		PlayerSellVehicleID[playerid] = INVALID_VEHICLE_ID;
+		PlayerSellVehiclePrice[playerid] = 0;
+		PlayerSellVehicleAccept[playerid] = false;
+
+		CharacterSave(tagetid);
+		return 1;
+	}
+	else if(!strcmp(oneString, "Denied"))
+	{	
+		if(!PlayerSellVehicleAccept[playerid])
+			return SendErrorMessage(playerid, "ไม่มีใครมาทำการซื้อขายยานพาหนะกับคุณตอนนี้");
+
+
+		new 
+			tagetid = PlayerSellVehicleBy[playerid]
+		;
+
+		SendClientMessageEx(tagetid, COLOR_LIGHTRED, "%s :ได้ปฎิเสทข้อเสนอของคุณ",ReturnName(playerid, 0));
+		SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปฎิเสทข้อเสนอของ %s",ReturnName(tagetid, 0));
+
+		PlayerSellVehicle[tagetid] = 0;
+		PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
+		PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
+		PlayerSellVehiclePrice[tagetid] = 0;
+		PlayerSellVehicleAccept[tagetid] = false;
+
+		PlayerSellVehicle[playerid] = 0;
+		PlayerSellVehicleBy[playerid] = INVALID_PLAYER_ID;
+		PlayerSellVehicleID[playerid] = INVALID_VEHICLE_ID;
+		PlayerSellVehiclePrice[playerid] = 0;
+		PlayerSellVehicleAccept[playerid] = false;
+
+		return 1;
 	}
 	else if(!strcmp(oneString, "duplicatekey"))
 	{
@@ -1060,11 +1490,19 @@ public Query_ShowVehicleList(playerid, idx)
 	return 1;
 }
 
-hook OnVehicleSpawn(vehicleid)
+public OnVehicleSpawn(vehicleid)
 {
 	if(HasNoEngine(vehicleid))
 		ToggleVehicleEngine(vehicleid, true);
 	
+
+	return 1;
+}
+
+stock SetVehicleHp(vehicleid)
+{
+	new modelid = GetVehicleModel(vehicleid);
+	SetVehicleHealth(vehicleid, VehicleData[modelid - 400][c_maxhp]);
 	return 1;
 }
 
@@ -1327,9 +1765,11 @@ public Query_LoadPrivateVehicle(playerid)
 			
 			
 			//LoadVeh(vehicleid);
+			SetVehicleHp(vehicleid);
 			
 			if(HasNoEngine(playerid))
 				ToggleVehicleEngine(vehicleid, true); 
+
 		}
 	}
 	
@@ -1567,8 +2007,7 @@ stock ShowspeedVehicle(playerid, vehicleid)
 	return 1;
 }
 
-forward OnVehicleUpdate(playerid);
-public OnVehicleUpdate(playerid)
+hook OnPlayerUpdate(playerid)
 {
 	new str[120];
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)

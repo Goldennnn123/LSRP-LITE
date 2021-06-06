@@ -16,9 +16,15 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     }
     if(itemid == 2)
     {
-        GivePlayerWeapon(playerid, 43, 500);
+        PlayerInfo[playerid][pHasRadio] = true;
+        PlayerInfo[playerid][pMainSlot] = 0;
+        PlayerInfo[playerid][pRadio] = 0;
     }
     if(itemid == 3)
+    {
+        GivePlayerWeapon(playerid, 43, 500);
+    }
+    if(itemid == 4)
     {
         GivePlayerWeapon(playerid, 14, 1);
     }
@@ -29,5 +35,6 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     
     GivePlayerMoney(playerid, -price);
     BusinessInfo[id][BusinessCash] += price;
+    CharacterSave(playerid);
     return true;
 }

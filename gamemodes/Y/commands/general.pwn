@@ -3,10 +3,23 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_DARKGREEN, "______________________________________________");
 	
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout (/l)ocal /me /ame /do /low");
-	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp");
+	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp /stats /report");
 	SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
-    SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
+    SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /report เพื่อขอความช่วยเหลือ");
 	return 1; 
+}
+
+alias:radiohelp("rhelp")
+CMD:radiohelp(playerid, params[])
+{
+	SendClientMessage(playerid, COLOR_GREEN,"|_____________________Radio_help______________________|");
+	SendClientMessage(playerid, COLOR_YELLOW,"HINT: คุณสามารถซื้อวิทยุได้ที่ร้าน 24/7");
+	SendClientMessage(playerid, COLOR_WHITE,"/setchannel - ตั้งค่าแชแนล");
+	SendClientMessage(playerid, COLOR_WHITE,"/setslot - ตั้งค่าห้องของแชแนล");
+	SendClientMessage(playerid, COLOR_WHITE,"/r - พูดวิทยุ");
+	SendClientMessage(playerid, COLOR_WHITE,"/rlow - พูดวิทยุแบบเบา");
+	SendClientMessage(playerid, COLOR_GREEN,"|_____________________________________________________|");
+	return 1;
 }
 
 CMD:jobhelp(playerid, params[])
@@ -177,7 +190,7 @@ CMD:exit(playerid, params[])
 	;
 
 	if(id != 0)
-    {
+	{
         if(!IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ประตูทางออก");
 		
@@ -186,6 +199,7 @@ CMD:exit(playerid, params[])
 		SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseEntranceWorld]);
 		SetPlayerInterior(playerid, HouseInfo[id][HouseEntranceInterior]);
 		PlayerInfo[playerid][pInsideProperty] = 0;
+		PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
 		return 1;
     }
 	if(b_id != 0)
@@ -212,6 +226,11 @@ CMD:exit(playerid, params[])
 			if(GetPlayerVirtualWorld(playerid) != EntranceInfo[e][EntanceLocInWorld])
 				continue;
 
+			if(EntranceInfo[e][EntranceLocWorld] != 0)
+			{
+				SetTimerEx("OnPlayerEnter", 2000, false, "ii", playerid, e);
+			}
+			
 			SetPlayerPos(playerid, EntranceInfo[e][EntranceLoc][0], EntranceInfo[e][EntranceLoc][1], EntranceInfo[e][EntranceLoc][2]);
 			SetPlayerVirtualWorld(playerid, EntranceInfo[e][EntranceLocInID]);
 			SetPlayerInterior(playerid, EntranceInfo[e][EntranceLocWorld]);
@@ -762,27 +781,18 @@ CMD:setchannel(playerid, params[])
 		slot, 
 		channel
 	;
+
+	if(!PlayerInfo[playerid][pHasRadio])
+		return SendErrorMessage(playerid, "คุณไม่มี วิทยุ"); 
 	
 	if(sscanf(params, "ii", channel, slot))
 		return SendUsageMessage(playerid, "/setchannel [แชลเเนว] [ส็อต]"); 
-		
-	if(!PlayerInfo[playerid][pHasRadio])
-		return SendErrorMessage(playerid, "คุณไม่มี วิทยุ"); 
 		
 	if(slot > 10 || slot < 1)
 		return SendErrorMessage(playerid, "ส็อตจะสามารถปรับได้เพียงแค่ (1-10)");
 		
 	if(channel < 1 || channel > 1000000)
 		return SendErrorMessage(playerid, "คุณไม่สามารถปรับแชลแนวเกิน (1-1000000)"); 
-		
-	for(new i = 1; i < 3; i++)
-	{
-		if(PlayerInfo[i][pRadio][i] == channel)
-		{
-			SendErrorMessage(playerid, "ตอนนี้คุณปรับแชลแนวเป็น %i %i.", i, channel);
-			return 1;
-		}
-	}
 	
 	if(channel == 911)
 	{
@@ -792,7 +802,7 @@ CMD:setchannel(playerid, params[])
 	
 	PlayerInfo[playerid][pRadio][slot] = channel;
 	PlayerInfo[playerid][pMainSlot] = slot;
-	SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ปรับวิทยุไปที่คลื่น %i ภายใต้ สล็อต %i.", channel, slot);
+	SendClientMessageEx(playerid, COLOR_RADIOEX, "คุณได้ปรับวิทยุไปที่คลื่น %i ภายใต้ สล็อต %i.", channel, slot);
 	CharacterSave(playerid); 
 	return 1;
 }
@@ -802,7 +812,7 @@ alias:radio("r")
 CMD:radio(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pHasRadio])
-		return SendUsageMessage(playerid, "คุณไม่มีวิทยุ");
+		return SendErrorMessage(playerid, "คุณไม่มีวิทยุ");
 
 	new
 		local,
@@ -816,7 +826,7 @@ CMD:radio(playerid, params[])
 		return SendErrorMessage(playerid, "คุณยังไม่ได้เซ็ต สล็อต"); 
 		
 	if(isnull(params))
-		return SendUsageMessage(playerid, "/r [ข้อความ], /rlow [ข้อความ], /r[ch] [ข้อความ], /r[ch]low [ข้อความ]");
+		return SendUsageMessage(playerid, "/r(adio) [ข้อความ]");
 		
 	foreach(new i : Player)
 	{
@@ -832,6 +842,10 @@ CMD:radio(playerid, params[])
 		}
 	}
 	
+	new str[120];
+	format(str, sizeof(str),"(วิทยุ) %s พูดว่า: %s", ReturnName(playerid, 0), params);
+	SetPlayerChatBubble(playerid, str, COLOR_GRAD1, 10.0, 6000);
+
 	new Float:posx, Float:posy, Float:posz;
 	GetPlayerPos(playerid, posx,posy,posz);
 
@@ -840,9 +854,9 @@ CMD:radio(playerid, params[])
 	   	if(i == playerid)
 	       continue;
 
-		else if(IsPlayerInRangeOfPoint(i, 20.0, posx,posy,posz))
+		else if(IsPlayerInRangeOfPoint(i, 10.0, posx,posy,posz))
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "(วิทยุ) %s พูดว่า: %s", ReturnName(playerid, 0), params);
+			SendClientMessageEx(i, COLOR_GRAD1, "(วิทยุ) %s พูดว่า: %s", ReturnName(playerid, 0), params);
 		}
 	}
 	return 1;
@@ -851,7 +865,7 @@ CMD:radio(playerid, params[])
 CMD:rlow(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pHasRadio])
-		return SendUsageMessage(playerid, "คุณไม่มีวิทยุ");
+		return SendErrorMessage(playerid, "คุณไม่มีวิทยุ");
 
 	new
 		local,
@@ -880,6 +894,10 @@ CMD:rlow(playerid, params[])
 			}
 		}
 	}
+
+	new str[120];
+	format(str, sizeof(str),"(วิทยุ) %s พูดว่า: %s", ReturnName(playerid, 0), params);
+	SetPlayerChatBubble(playerid, str, COLOR_GRAD1, 5.0, 6000);
 	
 	new Float:posx, Float:posy, Float:posz;
 	GetPlayerPos(playerid, posx,posy,posz);
@@ -891,106 +909,11 @@ CMD:rlow(playerid, params[])
 
 		else if(IsPlayerInRangeOfPoint(i, 5.0, posx,posy,posz))
 		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "(วิทยุ) %s พูดว่า[เบา]: %s", ReturnName(playerid, 0), params);
+			SendClientMessageEx(i, COLOR_GRAD1, "(วิทยุ) %s พูดว่า[เบา]: %s", ReturnName(playerid, 0), params);
 		}
 	}
 	return 1;
 }
-
-CMD:r2(playerid, params[])
-{
-	if(!PlayerInfo[playerid][pHasRadio])
-		return SendUsageMessage(playerid, "คุณไม่มีวิทยุ");
-
-	new
-		channel
-	;
-		
-	channel = PlayerInfo[playerid][pRadio][2]; 
-	
-	if(!PlayerInfo[playerid][pRadio][2])
-		return SendErrorMessage(playerid, "คุณยังไม่ได้เซ็ตสล็อต");
-		
-	if(isnull(params))
-		return SendUsageMessage(playerid, "/r2 [ข้อความ]");
-		
-	foreach(new i : Player)
-	{
-		for(new r = 1; r < 3; r ++)
-		{
-			if(PlayerInfo[i][pRadio][r] == channel)
-			{
-				if(r != PlayerInfo[i][pMainSlot])
-					SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
-					
-				else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
-			}
-		}
-	}
-	
-	new Float:posx, Float:posy, Float:posz;
-	GetPlayerPos(playerid, posx,posy,posz);
-
-	foreach(new i : Player)
-	{
-	   	if(i == playerid)
-	       continue;
-
-		else if(IsPlayerInRangeOfPoint(i, 20.0, posx,posy,posz))
-		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "(วิทยุ) %s พูดว่า: %s", ReturnName(playerid, 0), params);
-		}
-	}
-	return 1;
-}
-
-CMD:r2low(playerid, params[])
-{
-	if(!PlayerInfo[playerid][pHasRadio])
-		return SendUsageMessage(playerid, "คุณไม่มีวิทยุ");
-
-	new
-		channel
-	;
-		
-	channel = PlayerInfo[playerid][pRadio][2]; 
-	
-	if(!PlayerInfo[playerid][pRadio][2])
-		return SendErrorMessage(playerid, "คุณยังไม่ได้เซ็ตสล็อต");
-		
-	if(isnull(params))
-		return SendUsageMessage(playerid, "/r2low [ข้อความ]");
-		
-	foreach(new i : Player)
-	{
-		for(new r = 1; r < 3; r ++)
-		{
-			if(PlayerInfo[i][pRadio][r] == channel)
-			{
-				if(r != PlayerInfo[i][pMainSlot])
-					SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
-					
-				else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
-			}
-		}
-	}
-	
-	new Float:posx, Float:posy, Float:posz;
-	GetPlayerPos(playerid, posx,posy,posz);
-
-	foreach(new i : Player)
-	{
-	   	if(i == playerid)
-	       continue;
-
-		else if(IsPlayerInRangeOfPoint(i, 6.0, posx,posy,posz))
-		{
-			SendClientMessageEx(playerid, COLOR_GRAD1, "(วิทยุ) %s พูดว่า[เบา]: %s", ReturnName(playerid, 0), params);
-		}
-	}
-	return 1;
-}
-
 
 CMD:setspawn(playerid, params[])
 {

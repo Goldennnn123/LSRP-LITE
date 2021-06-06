@@ -32,6 +32,7 @@
 /*======================================================================================================
 										[Macros]
 =======================================================================================================*/
+DEFINE_HOOK_REPLACEMENT(Select, Sel);
 DEFINE_HOOK_REPLACEMENT(OnPlayer, OP_);
 
 /*======================================================================================================
@@ -82,6 +83,7 @@ new globalWeather = 2;
 
 #include "Y/systems/phone.pwn"
 #include "Y/systems/ui_buy.pwn"
+#include "Y/systems/business/vehiclebuy.pwn"
 
 #include "Y/mysql/SaveVehicle.pwn"
 #include "Y/mysql/Savefaction.pwn"
@@ -108,7 +110,7 @@ new globalWeather = 2;
 #include "Y/Interior/House1.pwn"
 #include "Y/Interior/House2.pwn"
 #include "Y/Interior/pizza.pwn"
-#include "Y/Interior/PoliceHQ.pwn"
+#include "Y/Map/lsrp_map.pwn"
 
 #include "Y/Map/Police.pwn"
 
@@ -291,6 +293,7 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pWeaponLicense] = false;
     PlayerInfo[playerid][pWeaponLicenseType] = 0;
     PlayerInfo[playerid][pWeaponLicenseRevoke] = false;
+    PlayerInfo[playerid][pWeaponLicenseSus] = false;
 
     PlayerInfo[playerid][pPilotLicense] = false;
     PlayerInfo[playerid][pPilotLicenseBlacklist] = false;

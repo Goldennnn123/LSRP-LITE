@@ -98,8 +98,9 @@ CMD:buy(playerid, params[])
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านสดวกซื้อ");
 
     MenuStore_AddItem(playerid, 1, 18919, "Mask", 5000, "Mask use /mask", 200);
-    MenuStore_AddItem(playerid, 2, 367, "Camera", 15000, "Cemara To Take Photo", 200);
-    MenuStore_AddItem(playerid, 3, 325, "Flower", 300, "Flower", 200);
+    MenuStore_AddItem(playerid, 2, 19942, "Radio", 10000, "Radio", 200);
+    MenuStore_AddItem(playerid, 3, 367, "Camera", 15000, "Cemara To Take Photo", 200);
+    MenuStore_AddItem(playerid, 4, 325, "Flower", 300, "Flower", 200);
     MenuStore_Show(playerid, Shop, "SHOP");
     return 1;
 }
@@ -130,10 +131,73 @@ CMD:bank(playerid, params[])
 	CharacterSave(playerid);
 	return 1; 
 }
+new PlayerSavingAdd[MAX_PLAYERS];
+
+CMD:saving(playerid, params[])
+{
+    if(PlayerInfo[playerid][pSaving])
+        return SendErrorMessage(playerid, "คุณได้ทำการเริ่มฝากออมทรัพย์อยู่แล้ว");
+    
+    new
+		id = IsPlayerInBusiness(playerid),
+        money
+	;
+		
+	if(!id)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในธนาคาร");
+		
+	if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_BANK)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในธนาคาร");
+
+    if(PlayerInfo[playerid][pBank])
+        return SendErrorMessage(playerid, "ถอนเงินทั้งหมดของคุณออกทั้งหมดก่อนที่จะฝากเข้าไปใหม่");
+
+    if(PlayerInfo[playerid][pCash] < 2000)
+        return SendErrorMessage(playerid, "เงินที่จะต้องเริ่มต้นในการฝากเงินเข้า ไม่ต่ำกว่า $2,000 และห้ามเกิน $1,000,00");
+
+    if(sscanf(params, "d", money))
+        return SendUsageMessage(playerid, "/saving  <จำนวนเงิน>");
+    
+    if(money < 2000 || money >= 1000000)
+        return SendErrorMessage(playerid, "คุณจะต้องฝากเงินขั้นต่ำ $2,000 และไม่เกิน $1,000,000");
+
+    PlayerSavingAdd[playerid] = money;
+
+    
+
+    new str[1000];
+    format(str, sizeof(str), "ข้อตกลงในการทำบัญชีออมทรัพย์ของคุณนั้น เป็นข้อตกลงระหว่างคุณกับธนาคาร โดย\n\
+    \tเรียน %s\n\
+    \t\tข้อตกลงในการทำบัญชีออมทรัพย์ของคุณนั้น เป็นข้อตกลงระหว่างคุณกับธนาคาร โดยมีข้อกำหนดต่างๆ ที่คุณจำเป็น\nจะต้องปฎิบัติตามและยอมรับมันดังข้อกำหนด\n\
+    ข้อที่ 1: คุณจะได้รับดอกเบี้ยมากขึ้นจากเดิมที่คุณเคยได้นั่นก็คือ 0.9\n\
+    ข้อที่ 2: คุณจะไม่สามารถถอนเงินได้จนกว่าเงินของคุณจะครบกำหนด $2,000,000\n\
+    ข้อที่ 3: หากคุณทำการถอนก่อนกำหนดจะถูกทางธนาคารปรับเงินคุณ หาร 2 ของเงินทั้งหมดที่คุณมี\n\
+    หากคุณอ่านข้อกำหนดของเราและได้ยอมรับโปรดใส่จำนวนเงินที่จะต้องเริ่มต้นในการฝากเงินเข้า ไม่ต่ำกว่า $2,000 และห้ามเกิน $1,000,000",ReturnName(playerid, 0));
+    Dialog_Show(playerid, DIALOG_CONFIRM_SAVEING, DIALOG_STYLE_MSGBOX, "ข้อตกลงในการฝากเงินออมทรัพย์", str, "ยืนยันทำรายการ", "ยกเลิกการทำรายการ");
+    return 1;
+}
+
+Dialog:DIALOG_CONFIRM_SAVEING(playerid, response, listitem, inputtext[])
+{  
+    if(!response)
+        return SendClientMessage(playerid, -1, "คุณได้ปฎิเสธสัญญาข้อตกลงกับธนาคาร");
+
+    new money = PlayerSavingAdd[playerid];
+
+    GivePlayerMoney(playerid, -money);
+    PlayerInfo[playerid][pSaving] = true;
+    PlayerInfo[playerid][pBank] += money;
+    CharacterSave(playerid);
+
+    SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้เริ่มฝากเงินแบบบัญชีออมทรัพย์แล้วจำนวนเงินเริ่มต้น $%s",MoneyFormat(money));
+    PlayerSavingAdd[playerid] = 0;
+    return 1;
+}
 
 CMD:withdraw(playerid, params[])
 {
     new id = PlayerInfo[playerid][pInsideBusiness], amount;
+
 
     if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE && BusinessInfo[id][BusinessType] != BUSINESS_TYPE_BANK)
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในธนาคารหรือร้านสดวกซื้อ");
@@ -144,13 +208,33 @@ CMD:withdraw(playerid, params[])
     if(amount < 1 || amount > PlayerInfo[playerid][pBank])
 		return SendErrorMessage(playerid, "คุณมีเงินในบัญชีธนาคารไม่เพียงพอ"); 
 
+    if(PlayerInfo[playerid][pSaving])
+    {
+
+        PlayerInfo[playerid][pBank] = PlayerInfo[playerid][pBank] / 2;
+        PlayerInfo[playerid][pSaving] = false;
+        SendClientMessage(playerid, -1, "[BANK] คุณได้ทำยื่นเรื่องถอนเงินออกจากธนาคารในระหว่างที่ฝากออมทรัพย์อยู่ทำให้สัญญาของคุณกับธนาคารขาด");
+        SendClientMessage(playerid, -1, "....และตามข้อตกลงนั้นคุณได้ทำสัญญาไว้กับทางธนาคาร ธนาคารจึงจำเป็นต้องปรับเงินครึ่งนึงในบัญชีของคุณตามข้อกำหนด");
+
+        if(PlayerInfo[playerid][pBank] < amount)
+            return SendErrorMessage(playerid, "คุณมีเงินในบัญชีธนาคารไม่เพียงพอ เงินคุณเหลือ $%s", MoneyFormat(PlayerInfo[playerid][pBank]));
+ 
+        PlayerInfo[playerid][pSaving] = false;
+        PlayerInfo[playerid][pBank]-= amount;
+        GiveMoney(playerid, amount);
+        SendClientMessageEx(playerid, COLOR_ACTION, "คุณได้ถอนเงินจำนวน $%s จากบัญชีธนาคารของคุณ คงเหลือ:$%s", MoneyFormat(amount), MoneyFormat(PlayerInfo[playerid][pBank]));
+        CharacterSave(playerid);
+        return 1;
+    }
+
     PlayerInfo[playerid][pBank]-= amount;
 	GiveMoney(playerid, amount);
-    SendClientMessageEx(playerid, COLOR_ACTION, "คุณได้ถอนเงินจำนวน $%s จากบัญชีธนาคารของคุณ ยอดเดิม:$%s", MoneyFormat(amount), MoneyFormat(PlayerInfo[playerid][pBank]));
+    SendClientMessageEx(playerid, COLOR_ACTION, "คุณได้ถอนเงินจำนวน $%s จากบัญชีธนาคารของคุณ คงเหลือ:$%s", MoneyFormat(amount), MoneyFormat(PlayerInfo[playerid][pBank]));
 	CharacterSave(playerid);
     return 1;
 }
 
+alias:balance("bal")
 CMD:balance(playerid, params[])
 {
 	new
@@ -166,6 +250,26 @@ CMD:balance(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_ACTION, "คุณมีเงินอยู่ในบัญชีธนาคาร $%s และมีค่าจ้างรายชั่วโมง $%s  (%s)", MoneyFormat(PlayerInfo[playerid][pBank]), MoneyFormat(PlayerInfo[playerid][pPaycheck]), ReturnDate());	
 	return 1;
 }
+
+hook OP_PickUpDynamicPickup(playerid, STREAMER_TAG_PICKUP:pickupid)
+{
+    new
+		id = IsPlayerInBusiness(playerid)
+	;
+
+    if(pickupid == BusinessInfo[id][BusinessBankPickup])
+    {
+        if(PlayerInfo[playerid][pPaycheck] == 0)
+            return 1;
+        
+        GiveMoney(playerid, PlayerInfo[playerid][pPaycheck]);
+        SendClientMessageEx(playerid, COLOR_GREY, "คุณได้รับเงินรายชัวโมงของคุณแล้ว จำนวน $%s", MoneyFormat(PlayerInfo[playerid][pPaycheck]));
+        PlayerInfo[playerid][pPaycheck] = 0;
+        return 1;
+    }
+    return 1;
+}
+
 
 
 

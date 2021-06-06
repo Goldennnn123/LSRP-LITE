@@ -1311,7 +1311,9 @@ CMD:spawncar(playerid, params[])
 		VehicleInfo[vehicleid][eVehicleColor2] = color2;
 		VehicleInfo[vehicleid][eVehicleFuel] = 50;
 	}
+	
 	PutPlayerInVehicle(playerid, vehicleid, 0);
+	SetVehicleHp(vehicleid);
 	format(str, sizeof(str), "%s ได้เสกรถ แอดมิน %s ออกมา", ReturnName(playerid), ReturnVehicleName(vehicleid));
 	SendAdminMessage(3, str);
 	return 1;
@@ -2165,8 +2167,8 @@ CMD:restart(playerid, params[])
 	    
 	foreach (new i : Player)
 	{
-		SetPlayerName(i, e_pAccountData[i][mAccName]);
 		CharacterSave(i);
+		SetPlayerName(i, e_pAccountData[i][mAccName]);
 	}
 
 	//Saving systems:

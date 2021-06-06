@@ -80,7 +80,7 @@ enum E_PLAYER_DATA
 	pWeapons[13], 
 	pWeaponsAmmo[13],
 
-    pOwnedVehicles[7],
+    pOwnedVehicles[6],
 	bool:pVehicleSpawned,
 	pVehicleSpawnedID,
 
@@ -114,6 +114,7 @@ enum E_PLAYER_DATA
 	bool:pWeaponLicense,
 	pWeaponLicenseType,
 	bool:pWeaponLicenseRevoke,
+	bool:pWeaponLicenseSus,
 
 	bool:pPilotLicense,
 	bool:pPilotLicenseBlacklist,
@@ -130,6 +131,7 @@ enum E_PLAYER_DATA
 	bool:pHandcuffed,
 
 	bool:pTaser,
+	bool:pSaving
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS];
@@ -298,6 +300,9 @@ enum E_HOUSE_INFO
 
 	HousePickup,
 	bool:HouseLock,
+	bool:HouseSwicth,
+	HouseEle,
+	HouseTimerEle,
 	
 }
 new HouseInfo[MAX_HOUSE][E_HOUSE_INFO];

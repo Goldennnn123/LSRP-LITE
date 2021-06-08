@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 06, 2021 at 05:03 PM
+-- Generation Time: Jun 08, 2021 at 07:35 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.6
 
@@ -109,7 +109,8 @@ CREATE TABLE `business` (
 INSERT INTO `business` (`BusinessDBID`, `BusinessName`, `BusinessOwnerDBID`, `BusinessType`, `BusinessPrice`, `BusinessLevel`, `BusinessEntrancePrice`, `BusinessLock`, `BusinessEntranceX`, `BusinessEntranceY`, `BusinessEntranceZ`, `BusinessEntranceWorld`, `BusinessEntranceInterior`, `BusinessInteriorX`, `BusinessInteriorY`, `BusinessInteriorZ`, `BusinessInteriorWorld`, `BusinessInteriorID`, `BusinessBankPickupLocX`, `BusinessBankPickupLocY`, `BusinessBankPickupLocZ`, `BusinessBankWorld`, `BusinessCash`) VALUES
 (1, '24/7 Per', 0, 1, 10000000, 5, 20, 0, 1352.46, -1759.25, 13.5078, 0, 0, -30.7205, -91.9438, 1003.55, 54233, 18, 0, 0, 0, 0, 0),
 (2, 'Los Santos Bank', 0, 5, 10000000, 50, 0, 0, 595.561, -1249.38, 18.2557, 0, 0, 1667.14, -995.998, 683.691, 29891, 0, 1667.26, -972.919, 683.687, 29891, 0),
-(3, 'BusinessName', 0, 2, 5000, 1, 0, 0, 545.625, -1290.89, 17.2422, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+(3, 'BusinessName', 0, 2, 5000, 1, 0, 0, 545.625, -1290.89, 17.2422, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(4, 'Pizza Stack', 0, 4, 5000, 1, 0, 0, 2105.48, -1806.69, 13.5547, 0, 0, 372.118, -133.521, 1001.49, 10707, 5, 0, 0, 0, 0, 300);
 
 -- --------------------------------------------------------
 
@@ -210,6 +211,13 @@ CREATE TABLE `characters` (
   `pVehicleSpawnedID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `characters`
+--
+
+INSERT INTO `characters` (`char_dbid`, `master_id`, `char_name`, `pLastOnline`, `pTimeplayed`, `pTutorial`, `pAdmin`, `pLevel`, `pExp`, `pLastSkin`, `pFaction`, `pFactionRank`, `pBadge`, `pCash`, `pBank`, `pSaving`, `pSpawnPoint`, `pSpawnHouse`, `pTimeout`, `pHealth`, `pArmour`, `pLastPosX`, `pLastPosY`, `pLastPosZ`, `pLastInterior`, `pLastWorld`, `pJob`, `pSideJob`, `pCareer`, `pPaycheck`, `pFishes`, `pAdminjailed`, `pAdminjailTime`, `pPhone`, `pPhonePower`, `pHasRadio`, `pRadio1`, `pRadio2`, `pMainSlot`, `pDriverLicense`, `pDriverLicenseWarn`, `pDriverLicenseRevoke`, `pDriverLicenseSus`, `pWeaponLicense`, `pWeaponLicenseType`, `pWeaponLicenseRevoke`, `pWeaponLicenseSus`, `pPilotLicense`, `pPilotLicenseBlacklist`, `pPilotLicenseRevoke`, `pMedicLicense`, `pMedicLicenseRevoke`, `pTuckingLicense`, `pTuckingLicenseWarn`, `pTuckingLicenseSus`, `pTuckingLicenseRevoke`, `pWeapon0`, `pWeapon1`, `pWeapon2`, `pWeapon3`, `pWeapon4`, `pWeapon5`, `pWeapon6`, `pWeapon7`, `pWeapon8`, `pWeapon9`, `pWeapon10`, `pWeapon11`, `pWeapon12`, `pWeaponsAmmo0`, `pWeaponsAmmo1`, `pWeaponsAmmo2`, `pWeaponsAmmo3`, `pWeaponsAmmo4`, `pWeaponsAmmo5`, `pWeaponsAmmo6`, `pWeaponsAmmo7`, `pWeaponsAmmo8`, `pWeaponsAmmo9`, `pWeaponsAmmo10`, `pWeaponsAmmo11`, `pWeaponsAmmo12`, `pOwnedVehicles1`, `pOwnedVehicles2`, `pOwnedVehicles3`, `pOwnedVehicles4`, `pOwnedVehicles5`, `pOwnedVehicles6`, `pVehicleSpawned`, `pVehicleSpawnedID`) VALUES
+(1, 1, 'Eward_Cullen', '8 ???????? 2564 00:04:15', 10, 1, 1339, 2, 4, 299, 0, 0, 0, 1399, 0, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, 2, 0, 0, 15500, 0, 0, 0, 35941, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+
 -- --------------------------------------------------------
 
 --
@@ -237,7 +245,8 @@ CREATE TABLE `entrance` (
 
 INSERT INTO `entrance` (`EntranceDBID`, `EntranceIconID`, `EntranceLocX`, `EntranceLocY`, `EntranceLocZ`, `EntranceLocWorld`, `EntranceLocInID`, `EntranceLocInX`, `EntranceLocInY`, `EntranceLocInZ`, `EntanceLocInWorld`, `EntranceLocInInID`) VALUES
 (1, 1314, 1554.34, -1675.54, 16.1953, 0, 0, 1345, 12.1394, 1019.21, 10001, 10),
-(2, 0, 1345.02, 50.7254, 1019.21, 10001, 10, 246.393, 107.61, 1003.22, 10001, 10);
+(2, 0, 1345.02, 50.7254, 1019.21, 10001, 10, 246.393, 107.61, 1003.22, 10001, 10),
+(3, 0, 1568.6, -1690.59, 5.89062, 0, 0, 276.131, 122.392, 1004.62, 10001, 10);
 
 -- --------------------------------------------------------
 
@@ -370,7 +379,7 @@ CREATE TABLE `house` (
 --
 
 INSERT INTO `house` (`HouseDBID`, `HouseName`, `HouseOwnerDBID`, `HouseEntranceX`, `HouseEntranceY`, `HouseEntranceZ`, `HouseEntranceWorld`, `HouseEntranceInterior`, `HouseInteriorX`, `HouseInteriorY`, `HouseInteriorZ`, `HouseInteriorWorld`, `HouseInteriorID`, `HousePrice`, `HouseLevel`, `HouseLock`, `HouseEle`, `HousePlacePosX`, `HousePlacePosY`, `HousePlacePosZ`, `HouseWeapons1`, `HouseWeapons2`, `HouseWeapons3`, `HouseWeapons4`, `HouseWeapons5`, `HouseWeapons6`, `HouseWeapons7`, `HouseWeapons8`, `HouseWeapons9`, `HouseWeapons10`, `HouseWeapons11`, `HouseWeapons12`, `HouseWeapons13`, `HouseWeapons14`, `HouseWeapons15`, `HouseWeapons16`, `HouseWeapons17`, `HouseWeapons18`, `HouseWeapons19`, `HouseWeapons20`, `HouseWeapons21`, `HouseWeaponsAmmo1`, `HouseWeaponsAmmo2`, `HouseWeaponsAmmo3`, `HouseWeaponsAmmo4`, `HouseWeaponsAmmo5`, `HouseWeaponsAmmo6`, `HouseWeaponsAmmo7`, `HouseWeaponsAmmo8`, `HouseWeaponsAmmo9`, `HouseWeaponsAmmo10`, `HouseWeaponsAmmo11`, `HouseWeaponsAmmo12`, `HouseWeaponsAmmo13`, `HouseWeaponsAmmo14`, `HouseWeaponsAmmo15`, `HouseWeaponsAmmo16`, `HouseWeaponsAmmo17`, `HouseWeaponsAmmo18`, `HouseWeaponsAmmo19`, `HouseWeaponsAmmo20`, `HouseWeaponsAmmo21`) VALUES
-(1, '1/1', 1, 2065.4, -1703.42, 14.1484, 0, 0, 243.452, -1851.61, 3333.93, 1457, 0, 400000, 2, 0, 285, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+(1, '1/1', 1, 2065.4, -1703.42, 14.1484, 0, 0, 243.452, -1851.61, 3333.93, 1457, 0, 400000, 2, 0, 295, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 
 -- --------------------------------------------------------
 
@@ -402,6 +411,13 @@ CREATE TABLE `masters` (
   `admin` int(11) NOT NULL,
   `active_ip` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `masters`
+--
+
+INSERT INTO `masters` (`acc_dbid`, `acc_name`, `forum_name`, `acc_pass`, `acc_email`, `admin`, `active_ip`) VALUES
+(1, 'Backer', '', '6615168F0E6ADA4A74A30F5E7A628501BAF823C541CED0B98C0DA81D587727785A11331C828CF31A1D9CB5602A0727579B706F4651D22CC2D5498CDFF04D5C46', '', 0, ''),
 
 -- --------------------------------------------------------
 
@@ -607,19 +623,19 @@ ALTER TABLE `ban_logs`
 -- AUTO_INCREMENT for table `business`
 --
 ALTER TABLE `business`
-  MODIFY `BusinessDBID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `BusinessDBID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `characters`
 --
 ALTER TABLE `characters`
-  MODIFY `char_dbid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `char_dbid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `entrance`
 --
 ALTER TABLE `entrance`
-  MODIFY `EntranceDBID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `EntranceDBID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `factions`
@@ -637,7 +653,7 @@ ALTER TABLE `faction_ranks`
 -- AUTO_INCREMENT for table `house`
 --
 ALTER TABLE `house`
-  MODIFY `HouseDBID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `HouseDBID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `kick_logs`
@@ -649,7 +665,7 @@ ALTER TABLE `kick_logs`
 -- AUTO_INCREMENT for table `masters`
 --
 ALTER TABLE `masters`
-  MODIFY `acc_dbid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `acc_dbid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `phonebook`

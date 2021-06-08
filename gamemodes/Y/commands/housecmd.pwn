@@ -56,7 +56,7 @@ CMD:buyhouse(playerid, params[])
                 return SendClientMessage(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FFFFFF} คุณมีเงินหรือ เลเวล ไม่เพียงพอต่อการซื้อบ้าน");
 
             HouseInfo[p][HouseOwnerDBID] = PlayerInfo[playerid][pDBID];
-            GivePlayerMoney(playerid, -HouseInfo[p][HousePrice]);
+            GiveMoney(playerid, -HouseInfo[p][HousePrice]);
             SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{66FF99}คุณได้ซื้อบ้านสำเร็จแล้ว");
             HouseInfo[p][HouseLock] = false;
 
@@ -208,7 +208,14 @@ CMD:swicth(playerid, params[])
             return 1;
 
         HouseInfo[id][HouseSwicth] = true;
-        SetHouseOffSwitch(playerid, id);
+
+        foreach(new i : Player)
+        {
+            if(!IsPlayerInHouse(i))
+                continue;
+                
+            SetHouseOffSwitch(i, id);
+        }
 
         format(str, sizeof(str), "เปิดสวิทซ์ไฟภายในบ้าน");
         callcmd::me(playerid,str);
@@ -220,7 +227,14 @@ CMD:swicth(playerid, params[])
             return 1;
 
         HouseInfo[id][HouseSwicth] = false;
-        SetHouseOffSwitch(playerid, id);
+
+        foreach(new i : Player)
+        {
+            if(!IsPlayerInHouse(i))
+                continue;
+                
+            SetHouseOffSwitch(i, id);
+        }
 
         format(str, sizeof(str), "ปิดสวิทซ์ไฟภายในบ้าน");
         callcmd::me(playerid,str);

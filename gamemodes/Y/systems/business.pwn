@@ -601,7 +601,7 @@ Dialog:DIALOG_SELL_BU(playerid, response, listitem, inputtext[])
     new BusinessPrices = BusinessInfo[id][BusinessPrice] / 2;
     new BusinessCashs = BusinessInfo[id][BusinessCash];
 
-    GivePlayerMoney(playerid, BusinessPrices + BusinessCashs);
+    GiveMoney(playerid, BusinessPrices + BusinessCashs);
 
     SendClientMessageEx(playerid, -1, "{0D47A1}BUSINESS {F57C00}SYSTEM:{FFFF33} คุณได้ขายกิจการแล้ว คุณได้รับจากิจการทั้งหมด $%s ซึ่งเป็นเงินจาก ราคากิจการ หารครึ่ง และเงินเก็บใน",MoneyFormat(BusinessPrices + BusinessCashs));
     SendClientMessage(playerid, -1,"{FFFF33}กิจการของคุณ");
@@ -726,7 +726,7 @@ Dialog:DIALOG_BU_CASH_WIHDRAW(playerid, response, listitem, inputtext[])
         return Dialog_Show(playerid, DIALOG_BU_CASH_WIHDRAW, DIALOG_STYLE_INPUT, "Business Managment: ถอนเงินกิจการ", "เงินในกิจการของคุณไม่เพียง กรุณาใส่จำนวนให้ถูกต้อง:", "ยืนยัน", "ยกเลิก");
 
     BusinessInfo[id][BusinessCash] -= witdraw;
-    GivePlayerMoney(playerid, witdraw);
+    GiveMoney(playerid, witdraw);
     SendClientMessageEx(playerid, -1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF5722} คุณได้ถอนเงินจากกิจการของคุณจำนวน {4CAF50}$%s {FF5722}เงินในกิจการของคุณเหลือ {42A5F5}$%s",MoneyFormat(witdraw),MoneyFormat(BusinessInfo[id][BusinessCash]));
     SaveBusiness(id); CharacterSave(playerid);
     return ShowPlayerBusiness(playerid);
@@ -765,7 +765,7 @@ Dialog:DIALOG_BU_CASH_DEPOSIT(playerid, response, listitem, inputtext[])
         return Dialog_Show(playerid, DIALOG_BU_CASH_DEPOSIT, DIALOG_STYLE_INPUT, "Business Managment: ฝากเงินเข้ากิจการ", "เงินในตัวของคุณไม่เพียง กรุณาใส่จำนวนให้ถูกต้อง:", "ยืนยัน", "ยกเลิก");
 
     BusinessInfo[id][BusinessCash] += deposit;
-    GivePlayerMoney(playerid, -deposit);
+    GiveMoney(playerid, -deposit);
     SendClientMessageEx(playerid, -1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF5722} คุณได้ฝากเงินเข้ากิจการของคุณจำนวน {4CAF50}$%s {FF5722}เงินในตัวของคุณเหลือ {42A5F5}$%s",MoneyFormat(deposit),MoneyFormat(deposit - Mymoney));
     SaveBusiness(id); CharacterSave(playerid);
     return ShowPlayerBusiness(playerid);
@@ -1119,7 +1119,7 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
         }
 
         SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $150");
-        GivePlayerMoney(playerid, -150);
+        GiveMoney(playerid, -150);
         BusinessInfo[id][BusinessCash] += 150;
         CharacterSave(playerid);
         SaveBusiness(id);
@@ -1147,7 +1147,7 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
         }
 
         SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $300");
-        GivePlayerMoney(playerid, -300);
+        GiveMoney(playerid, -300);
         BusinessInfo[id][BusinessCash] += 300;
         CharacterSave(playerid);
         SaveBusiness(id);
@@ -1175,7 +1175,7 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
         }
 
         SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $500");
-        GivePlayerMoney(playerid, -500);
+        GiveMoney(playerid, -500);
         BusinessInfo[id][BusinessCash] += 500;
         CharacterSave(playerid);
         SaveBusiness(id);

@@ -158,3 +158,13 @@ public OnPlayerEnter(playerid, id)
     TogglePlayerControllable(playerid, 1);
     return 1;
 }
+
+forward OnPlayerExit(playerid, id);
+public OnPlayerExit(playerid, id)
+{
+	SetPlayerPos(playerid, EntranceInfo[id][EntranceLoc][0], EntranceInfo[id][EntranceLoc][1], EntranceInfo[id][EntranceLoc][2]);
+    //SetPlayerVirtualWorld(playerid, EntranceInfo[id][EntranceLocInID]);
+	//SetPlayerInterior(playerid, EntranceInfo[id][EntranceLocWorld]);
+    TogglePlayerControllable(playerid, 1);
+    return 1;
+}

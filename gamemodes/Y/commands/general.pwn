@@ -44,6 +44,12 @@ CMD:jobhelp(playerid, params[])
 		SendClientMessage(playerid,COLOR_WHITE,"/stopharvest");
 	}
 
+	if(PlayerInfo[playerid][pJob] == JOB_TRUCKER) {
+	    SendClientMessage(playerid,COLOR_LIGHTRED,"คำสั่งของพนักงานส่งของ:");
+		SendClientMessage(playerid,COLOR_WHITE,"/getcargo (ยกกล่องส่งของ)");
+		SendClientMessage(playerid,COLOR_WHITE,"/placecargo (วางกล่องส่งของ)");
+	}
+
 
 	return 1;
 }
@@ -145,7 +151,7 @@ CMD:enter(playerid,params[])
 			SetPlayerVirtualWorld(playerid, BusinessInfo[b][BusinessInteriorWorld]);
 			SetPlayerInterior(playerid, BusinessInfo[b][BusinessInteriorID]);
 
-			GivePlayerMoney(playerid, -BusinessInfo[b][BusinessEntrancePrice]);
+			GiveMoney(playerid, -BusinessInfo[b][BusinessEntrancePrice]);
 			BusinessInfo[b][BusinessCash] += BusinessInfo[b][BusinessEntrancePrice];
 
 			TogglePlayerControllable(playerid, 0);
@@ -208,9 +214,9 @@ CMD:exit(playerid, params[])
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ประตูทางออก");
 		
 		SetPlayerPos(playerid, BusinessInfo[b_id][BusinessEntrance][0], BusinessInfo[b_id][BusinessEntrance][1], BusinessInfo[b_id][BusinessEntrance][2]);
-		SetPlayerVirtualWorld(playerid, BusinessInfo[id][BusinessEntranceWorld]);
-		SetPlayerInterior(playerid, BusinessInfo[id][BusinessEntranceInterior]);
-		PlayerInfo[playerid][pInsideBusiness] = 0;
+		SetPlayerVirtualWorld(playerid, BusinessInfo[b_id][BusinessEntranceWorld]);
+		SetPlayerInterior(playerid, BusinessInfo[b_id][BusinessEntranceInterior]);
+		PlayerInfo[playerid][pInsideBusiness] = b_id;
 		return 1;
 	}
 	for(new e = 1; e < MAX_ENTRANCE; e++)
@@ -228,12 +234,17 @@ CMD:exit(playerid, params[])
 
 			if(EntranceInfo[e][EntranceLocWorld] != 0)
 			{
-				SetTimerEx("OnPlayerEnter", 2000, false, "ii", playerid, e);
+				TogglePlayerControllable(playerid, 0);
+				SetPlayerPos(playerid, EntranceInfo[e][EntranceLoc][0], EntranceInfo[e][EntranceLoc][1], EntranceInfo[e][EntranceLoc][2]-3);
+				SetTimerEx("OnPlayerExit", 2000, false, "ii", playerid, e);
+				return 1;
 			}
-			
+			//else SetPlayerPos(playerid, EntranceInfo[e][EntranceLoc][0], EntranceInfo[e][EntranceLoc][1], EntranceInfo[e][EntranceLoc][2]);
+
 			SetPlayerPos(playerid, EntranceInfo[e][EntranceLoc][0], EntranceInfo[e][EntranceLoc][1], EntranceInfo[e][EntranceLoc][2]);
 			SetPlayerVirtualWorld(playerid, EntranceInfo[e][EntranceLocInID]);
 			SetPlayerInterior(playerid, EntranceInfo[e][EntranceLocWorld]);
+
 			return 1;
 		}
 	}

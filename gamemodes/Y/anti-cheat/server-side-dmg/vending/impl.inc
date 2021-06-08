@@ -151,7 +151,7 @@ hook OnPlayerKeyStateChange( playerid, newkeys, oldkeys )
 
 					if ( GetPlayerPos( playerid, Z, Z, Z ) )
 					{
-						GivePlayerMoney( playerid, -AC_VENDING_MACHINE_COST );
+						GiveMoney( playerid, -AC_VENDING_MACHINE_COST );
 
 						p_VendingUseTimer[ playerid ] = SetTimerEx( "VendingMachineUsed", 2500, false, "if", playerid, health_given );
 

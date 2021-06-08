@@ -222,12 +222,12 @@ hook OnPlayerSecondUpdate(playerid) {
         ResetPlayerMoney(playerid);
 
         // we're nice enough to return player's old money instead of resetting it back to 0.
-        GivePlayerMoney(playerid, PlayerOldCash[playerid]);
+        GiveMoney(playerid, PlayerOldCash[playerid]);
     }
     return 1;
 }
 
-hook native GivePlayerMoney(playerid, money)
+hook native GiveMoney(playerid, money)
 {
     PlayerCash[playerid] += money;
     if(GetPlayerMoney(playerid) != PlayerCash[playerid]) {
@@ -246,7 +246,7 @@ hook OnVehicleMod(playerid, vehicleid, componentid)
 {
     for(new i = 0; i < sizeof(ComponentData); i ++) {
         if(componentid == ComponentData[i][E_COMPONENT_ID]) {
-            GivePlayerMoney(playerid, -ComponentData[i][E_COMPONENT_PRICE]);
+            GiveMoney(playerid, -ComponentData[i][E_COMPONENT_PRICE]);
             break;
         }
     }
@@ -255,7 +255,7 @@ hook OnVehicleMod(playerid, vehicleid, componentid)
 
 hook OnVehicleRespray(playerid, vehicleid, color1, color2)
 {
-    GivePlayerMoney(playerid, -100); // costs 100 to respray
+    GiveMoney(playerid, -100); // costs 100 to respray
     return 1;
 }
 

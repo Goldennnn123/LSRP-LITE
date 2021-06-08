@@ -20,14 +20,14 @@ enum
 {
 	CHEAT_TYPE_WEAPON,
 	CHEAT_TYPE_CARWARP,
-	//CHEAT_TYPE_MONEY,
-	//CHEAT_TYPE_PLAYERBUGGER,
-	//CHEAT_TYPE_SPECTATE,
+	CHEAT_TYPE_MONEY,
+	CHEAT_TYPE_PLAYERBUGGER,
+	CHEAT_TYPE_SPECTATE,
 	CHEAT_TYPE_FAKEKILL,
 	CHEAT_TYPE_REMOTE_JACK,
-	//CHEAT_TYPE_PING_LIMIT,
+	CHEAT_TYPE_PING_LIMIT,
 	CHEAT_TYPE_SPEED_HACK,
-	//CHEAT_TYPE_JETPACK,
+	CHEAT_TYPE_JETPACK,
 	CHEAT_TYPE_HEALTH,
 	CHEAT_TYPE_ARMOUR,
 	CHEAT_TYPE_AIRBRAKE,
@@ -65,7 +65,7 @@ hook OnPlayerUpdate( playerid )
 		{
         	AC_CheckForAirbrake			( playerid, p_acUpdateTime[ playerid ], iState );
 			// AC_CheckForHealthHacks		( playerid, p_acUpdateTime[ playerid ] );
-        	//AC_CheckPlayerRemoteJacking ( playerid );
+        	AC_CheckPlayerRemoteJacking ( playerid );
 		}
 	}
 	return 1;

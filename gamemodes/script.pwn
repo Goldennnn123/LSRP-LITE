@@ -97,6 +97,7 @@ new globalWeather = 2;
 
 #include "Y/jobs/farmer.pwn"
 #include "Y/jobs/fisher.pwn"
+#include "Y/jobs/trucker.pwn"
 
 #include "Y/commands/general.pwn"
 #include "Y/commands/admin.pwn"
@@ -126,6 +127,8 @@ new globalWeather = 2;
 #include "Y/anti-cheat/remotejack/impl"
 #include "Y/anti-cheat/weapon/impl"
 
+#include "Y/test/functionPlayer.pwn"
+
 main() { }
 
 forward OnPlayerViolate(playerid, severity, violationCode, const violationName[]);
@@ -152,7 +155,7 @@ public OnGameModeInit() {
 	EnableStuntBonusForAll(0);
 
 
-
+    ShowPlayerMarkers(0);
     //Timer:
     SetTimer("FunctionPlayers", 1000, true);
     SetTimer("OnPlayerNereHouseTime", 1000, true);

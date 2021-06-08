@@ -45,7 +45,7 @@ CMD:buybiz(playerid,params[])
                                                                                                         ซึ่งคุณจะได้รับประสบการณ์ต่างๆมากมายจากการเปิดกิจการนี้ แต่อย่างอื่นอย่างใด คุณควรอัพเดทบทบาทของคุณที่มีต่อ กิจการของคุณ ลงในฟอรั่ม\n\
                                                                                                         เพื่อที่จะได้ แสดงให้ผู้คนที่สนใจเข้าไปอ่านนั้น รู้จักและสนใจในกิจการของคุณ ซึ่งขอให้กิจการของคุณเติบโตไปได้ด้วยดี\n\
                                                                                                         หากมีคำข้อสงในกิจการของคุณ ลองพิมพ์ {FF0000}/bizcmd {F4511E}เพื่อดูคำสั่งต่างๆในกิจการของคุณ", "รับทราบ","");                              
-        GivePlayerMoney(playerid, -BusinessInfo[b_id][BusinessPrice]);
+        GiveMoney(playerid, -BusinessInfo[b_id][BusinessPrice]);
         CharacterSave(playerid);
         SaveBusiness(b_id);
     }
@@ -184,7 +184,7 @@ Dialog:DIALOG_CONFIRM_SAVEING(playerid, response, listitem, inputtext[])
 
     new money = PlayerSavingAdd[playerid];
 
-    GivePlayerMoney(playerid, -money);
+    GiveMoney(playerid, -money);
     PlayerInfo[playerid][pSaving] = true;
     PlayerInfo[playerid][pBank] += money;
     CharacterSave(playerid);
@@ -247,7 +247,7 @@ CMD:balance(playerid, params[])
 	if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE && BusinessInfo[id][BusinessType] != BUSINESS_TYPE_BANK)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในธนาคารหรือร้านสดวกซื้อ"); 
 	
-	SendClientMessageEx(playerid, COLOR_ACTION, "คุณมีเงินอยู่ในบัญชีธนาคาร $%s และมีค่าจ้างรายชั่วโมง $%s  (%s)", MoneyFormat(PlayerInfo[playerid][pBank]), MoneyFormat(PlayerInfo[playerid][pPaycheck]), ReturnDate());	
+	SendClientMessageEx(playerid, COLOR_ACTION, "คุณมีเงินอยู่ในบัญชีธนาคาร $%s และมีค่าจ้างรายชั่วโมง $%s  อัพเดทเมื่อวันที่: %s", MoneyFormat(PlayerInfo[playerid][pBank]), MoneyFormat(PlayerInfo[playerid][pPaycheck]), ReturnDate());	
 	return 1;
 }
 

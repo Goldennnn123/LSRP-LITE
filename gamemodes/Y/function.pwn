@@ -5,9 +5,54 @@
  */
 #include <YSI_Coding\y_va>
 
-
 static
     chat_msgOut[144];
+
+
+stock PlayerSpec(playerid, playerb)
+{
+	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER)
+	{
+		new vehicleid = GetPlayerVehicleID(playerb);
+
+		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+		{
+			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			
+			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
+			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
+		}
+		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
+		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
+		
+		TogglePlayerSpectating(playerid, true); 
+		PlayerSpectateVehicle(playerid, vehicleid);
+			
+		PlayerInfo[playerid][pSpectating] = playerb; 
+		return 1;
+	}
+	else
+	{	
+		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+		{
+			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			
+			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
+			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
+		}
+		
+		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
+		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
+		
+		TogglePlayerSpectating(playerid, true); 
+		PlayerSpectatePlayer(playerid, playerb);
+			
+		PlayerInfo[playerid][pSpectating] = playerb; 
+		return 1;
+	}
+}
 
 
 stock GivePlayerExp(playerid, amount = 1) {

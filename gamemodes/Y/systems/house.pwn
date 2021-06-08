@@ -379,7 +379,7 @@ stock SetHouseOffSwitch(playerid, id)
     PlayerSwicthOff[playerid][0] = CreatePlayerTextDraw(playerid, 316.000000, 2.000000, "_");
 	PlayerTextDrawFont(playerid, PlayerSwicthOff[playerid][0], 1);
 	PlayerTextDrawLetterSize(playerid, PlayerSwicthOff[playerid][0], 0.600000, 48.999988);
-	PlayerTextDrawTextSize(playerid, PlayerSwicthOff[playerid][0], 298.500000, 640.500000);
+	PlayerTextDrawTextSize(playerid, PlayerSwicthOff[playerid][0], 1920.500000, 1080.500000);
 	PlayerTextDrawSetOutline(playerid, PlayerSwicthOff[playerid][0], 1);
 	PlayerTextDrawSetShadow(playerid, PlayerSwicthOff[playerid][0], 0);
 	PlayerTextDrawAlignment(playerid, PlayerSwicthOff[playerid][0], 2);
@@ -521,8 +521,8 @@ Dialog:DIALOG_SELL_HOUSE(playerid, response, listitem, inputtext[])
             HouseInfo[id][HousePlacePos][pos] = 0;
         }
 
-        GivePlayerMoney(playerid, Money);
-        GivePlayerMoney(playerid, -bill*7);
+        GiveMoney(playerid, Money);
+        GiveMoney(playerid, -bill*7);
         SetPlayerPos(playerid,HouseInfo[id][HouseEntrance][0],HouseInfo[id][HouseEntrance][1],HouseInfo[id][HouseEntrance][2]);
         SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseEntranceWorld]);
         SetPlayerInterior(playerid, HouseInfo[id][HouseEntranceInterior]);

@@ -2017,6 +2017,7 @@ hook OnPlayerUpdate(playerid)
 		format(str, sizeof(str), "%d KPH/MPH",GetVehicleSpeed(vehicleid));
 		PlayerTextDrawSetString(playerid, Statsvehicle[playerid][0], str);
 	}
+	return 1;
 }
 
 stock GetVehicleSpeed(vehicleid)

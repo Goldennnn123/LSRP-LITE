@@ -33,7 +33,7 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     format(string, 128, "คุณได้ซื้อ %dx %s", amount, itemname);
     SendClientMessage(playerid, -1, string);
     
-    GivePlayerMoney(playerid, -price);
+    GiveMoney(playerid, -price);
     BusinessInfo[id][BusinessCash] += price;
     CharacterSave(playerid);
     return true;

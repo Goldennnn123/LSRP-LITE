@@ -24,7 +24,7 @@
 		"version": "0.3.DL",
 		"mode": "server",
 		"echo": "-",
-		"rcon_password": "password",
+		"rcon_password": "2546",
 		"port": 7777,
 		"hostname": "SA-MP Open Roleplay",
 		"maxplayers": 50,

@@ -19,7 +19,7 @@ CMD:acmds(playerid, params[])
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 3:{FFFFFF} /spawncar, /despawncar, /pcar, /setstats, /givemoney, /setcar.");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 3:{FFFFFF} /spawncar, /despawncar, /pcar, /setstats, /GiveMoney, /setcar.");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 4)
 	{
@@ -659,49 +659,8 @@ CMD:spec(playerid, params[])
 		
 	//if(playerb == playerid) return SendErrorMessage(playerid, "You can't spectate yourself.");
 
-	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER)
-	{
-		new vehicleid = GetPlayerVehicleID(playerb);
-
-		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
-		{
-			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-			
-			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
-			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
-			SendServerMessage(playerid,"X:%f Y:%f Z:%f", PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
-		}
-		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
-		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
-		
-		TogglePlayerSpectating(playerid, true); 
-		PlayerSpectateVehicle(playerid, vehicleid);
-			
-		PlayerInfo[playerid][pSpectating] = playerb; 
-		return 1;
-	}
-	else
-	{	
-		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
-		{
-			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-			
-			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
-			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
-			SendServerMessage(playerid,"X:%f Y:%f Z:%f", PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
-		}
-		
-		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
-		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
-		
-		TogglePlayerSpectating(playerid, true); 
-		PlayerSpectatePlayer(playerid, playerb);
-			
-		PlayerInfo[playerid][pSpectating] = playerb; 
-		return 1;
-	}
+	PlayerSpec(playerid, playerb);
+	return 1;
 }
 
 
@@ -733,9 +692,113 @@ CMD:gotols(playerid, params[])
 		PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
 	}
 	
-	SendTeleportMessage(playerid);
+	SendClientMessage(playerid, COLOR_GRAD1, "You have moved to Los Santos!");
 	return 1;
 }
+
+CMD:gotosf(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+		
+	SetPlayerPos(playerid, -1973.3322,138.0420,27.6875);
+	SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+	{
+		PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+	}
+	
+	SendClientMessage(playerid, COLOR_GRAD1, "You have moved to San Fierro!");
+	return 1;
+}
+
+CMD:gotodl(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+		
+	SetPlayerPos(playerid, 648.6277,-562.6075,16.2414);
+	SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+	{
+		PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+	}
+	
+	SendClientMessage(playerid, COLOR_GRAD1, "You have moved to San Delemore!");
+	return 1;
+}
+
+CMD:gotolv(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+		
+	SetPlayerPos(playerid, 2035.1591,1338.1174,10.8203);
+	SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+	{
+		PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+	}
+	
+	SendClientMessage(playerid, COLOR_GRAD1, "You have moved to LV!");
+	return 1;
+}
+
+CMD:gotobu(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+		
+	SetPlayerPos(playerid, 228.1954,-125.4321,1.4297);
+	SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+	{
+		PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+	}
+	
+	SendClientMessage(playerid, COLOR_GRAD1, "You have moved to LV!");
+	return 1;
+}
+
+CMD:gotomo(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+		
+	SetPlayerPos(playerid, 1284.4788,176.8740,20.2887);
+	SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+	{
+		PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+	}
+	
+	SendClientMessage(playerid, COLOR_GRAD1, "You have moved to LV!");
+	return 1;
+}
+
+CMD:gotopo(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+		
+	SetPlayerPos(playerid, 2387.0598,37.9286,26.4844);
+	SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+	{
+		PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+	}
+	
+	SendClientMessage(playerid, COLOR_GRAD1, "You have moved to PO!");
+	return 1;
+}
+
+
 
 CMD:respawncar(playerid, params[])
 {
@@ -1058,7 +1121,7 @@ CMD:givegun(playerid, params[])
 	return 1;
 }
 
-CMD:clearpguns(playerid, params[])
+CMD:clearallgun(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2)
 		return SendUnauthMessage(playerid);
@@ -1149,7 +1212,7 @@ CMD:gotofaction(playerid, params[])
 	return 1;
 }
 
-CMD:gotopoint(playerid, params[])
+CMD:gotopos(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2)
 		return SendUnauthMessage(playerid);
@@ -1564,6 +1627,33 @@ CMD:givemoney(playerid, params[])
 	SendServerMessage(playerb, "คุณได้รับเงินจำนวน $%s จาก ผู้ดูแลระบบ %s", MoneyFormat(value), ReturnName(playerid));
 
 	format(str, sizeof(str), "%s เสกเงินจำนวน $%s ให้กับ %s", ReturnName(playerid), MoneyFormat(value), ReturnName(playerb));
+	SendAdminMessage(3, str);
+	return 1;
+}
+
+CMD:setmoney(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 3)
+		return SendUnauthMessage(playerid);
+
+	new playerb, value, str[128];
+	
+	if(sscanf(params, "ui", playerb, value))
+		return SendUsageMessage(playerid, "/setmoney < ชื่อบางส่วน/ไอดี > < จำนวน >");
+		
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+		
+	if(IsPlayerLogin(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+		
+	ResetPlayerMoney(playerid);
+	PlayerInfo[playerb][pCash] = 0;
+
+	GiveMoney(playerb, value);
+	SendServerMessage(playerb, "คุณได้รับเงินจำนวน $%s จาก ผู้ดูแลระบบ %s", MoneyFormat(value), ReturnName(playerid));
+
+	format(str, sizeof(str), "%s เซ็ตเงินจำนวน $%s ให้กับ %s", ReturnName(playerid), MoneyFormat(value), ReturnName(playerb));
 	SendAdminMessage(3, str);
 	return 1;
 }
@@ -2053,10 +2143,10 @@ CMD:deletebusiness(playerid,params[])
 			}
 			else
 			{	
-				GivePlayerMoney(i, BusinessInfo[id][BusinessPrice]);
+				GiveMoney(i, BusinessInfo[id][BusinessPrice]);
 
 				if(BusinessInfo[id][BusinessCash])
-					GivePlayerMoney(i, BusinessInfo[id][BusinessCash]);
+					GiveMoney(i, BusinessInfo[id][BusinessCash]);
 				
 				SendClientMessage(playerid, -1, "{33FF66}BUSINESS {F57C00}SYSTEM:{FF0000} ขออภัยในความไม่สดวกเนื่องจากมีการลบกิจการของท่านออกจากเซืฟเวอร์ไปแล้ว โดยผู้ดูแลระบบจึงจำเป็น");
 				SendClientMessageEx(playerid, -1, "{FF0000}...จะต้องขอประทานทภัยด้วยถ้าหากผู้ดูแลระบบไม่ได้แจ้งเตือนท่านล่วงหน้าหากมีข้อสงสัยสามารถสอบถามได้ที่ฟอรั่มหรือ /report [สอบถามกิจการ]");
@@ -2109,7 +2199,7 @@ CMD:deletehouse(playerid,params[])
 			}
 			else
 			{	
-				GivePlayerMoney(i, HouseInfo[id][HousePrice]);
+				GiveMoney(i, HouseInfo[id][HousePrice]);
 				
 				SendClientMessage(i, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} ขออภัยในความไม่สดวกเนื่องจากมีการลบบ้านของท่านออกจากเซืฟเวอร์ไปแล้ว โดยผู้ดูแลระบบจึงจำเป็น");
 				SendClientMessageEx(i, -1, "{FF0000}...จะต้องขอประทานทภัยด้วยถ้าหากผู้ดูแลระบบไม่ได้แจ้งเตือนท่านล่วงหน้าหากมีข้อสงสัยสามารถสอบถามได้ที่ฟอรั่มหรือ /report [สอบถามบ้าน]");
@@ -2280,16 +2370,37 @@ CMD:makeadmin(playerid, params[])
     return 1;
 }
 
-CMD:randomphone(playerid, params[])
+hook OnRconLoginAttempt(ip[], password[], success)
 {
-	foreach(new i : Player)
-	{
-		if(PlayerInfo[i][pPhone])
-			continue;
+	new ip2 = IPToInt(ip);
 
-		PlayerInfo[i][pPhone] = random(99999);
-		CharacterSave(i);
+	if (success) {
+		defer RetrieveRconPlayer(ip2);
 	}
+
+	return 1;
+}
+
+hook OnPlayerRconLogin(playerid)
+{
+	PlayerInfo[playerid][pAdmin] = 1339;
+	SendClientMessage(playerid, COLOR_LIGHTRED, "คุณได้ทำการเข้าสู่ระบบ เป็นผู้ดูแลระบบผ่าน rcon login แล้วตอนนี้คุณเป็นผู้ดูแลระดับ 1339 หรือ Management Server");
+	return 1;
+}
+
+timer RetrieveRconPlayer[1000](ip)
+{
+    new
+        playerIP[16 + 1];
+
+	foreach(new i : Player) {
+        GetPlayerIp(i, playerIP, sizeof(playerIP));
+		if (IPToInt(playerIP) == ip && IsPlayerAdmin(i)) {
+			CallRemoteFunction("OnPlayerRconLogin", "i", i);
+			return 1;
+		}
+	}
+
 	return 1;
 }
 // Admin Level: 1339;
@@ -2382,48 +2493,7 @@ hook OnPlayerClickPlayer(playerid, clickedplayerid, source)
 
 	new playerb = clickedplayerid;
 
-	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER)
-	{
-		new vehicleid = GetPlayerVehicleID(playerb);
-
-		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
-		{
-			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
-			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
-			SendServerMessage(playerid,"X:%f Y:%f Z:%f", PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
-		}
-
-		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
-		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
-		
-		TogglePlayerSpectating(playerid, true); 
-		PlayerSpectateVehicle(playerid, vehicleid);
-			
-		PlayerInfo[playerid][pSpectating] = playerb;
-
-		return 1;
-	}
-	else
-	{
-		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
-		{
-			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
-			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
-			SendServerMessage(playerid,"X:%f Y:%f Z:%f", PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
-		}
-
-		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
-		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
-		
-		TogglePlayerSpectating(playerid, true); 
-		PlayerSpectatePlayer(playerid, playerb);
-			
-		PlayerInfo[playerid][pSpectating] = playerb;
-	}
+	PlayerSpec(playerid, playerb);
 	return 1;
 }
 

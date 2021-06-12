@@ -1051,6 +1051,18 @@ CMD:setplayerspawn(playerid, params[])
 	SpawnPlayer(playerb);
 	return 1;
 }
+
+CMD:clearchat(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1)
+	    return SendUnauthMessage(playerid);
+
+	for(new i = 0; i < 100; ++i)
+	{
+		SendClientMessageToAll(COLOR_WHITE, " ");
+	}
+	return 1;
+}
 /// Admin Level: 1;
 
 
@@ -1226,7 +1238,7 @@ CMD:gotopos(playerid, params[])
 	; 
 	
 	if(sscanf(params, "fffii", x, y, z, interior, World))
-		return SendUsageMessage(playerid, "/gotopoint [x] [y] [z] [interior id] [World-id]");
+		return SendUsageMessage(playerid, "/gotopos [x] [y] [z] [interior id] [World-id]");
 
 	
 	SetPlayerPos(playerid, x, y, z);

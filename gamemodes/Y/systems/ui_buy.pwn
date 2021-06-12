@@ -12,7 +12,11 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
 
     if(itemid == 1)
     {
+        if(BusinessInfo[id][BusinessS_Mask] < 1)
+            return SendErrorMessage(playerid, "สินค้าหมด");
+        
         PlayerInfo[playerid][pHasMask] = true;
+        BusinessInfo[id][BusinessS_Mask]--;
     }
     if(itemid == 2)
     {
@@ -22,11 +26,19 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     }
     if(itemid == 3)
     {
+        if(BusinessInfo[id][BusinessS_Cemara] < 1)
+            return SendErrorMessage(playerid, "สินค้าหมด");
+
         GivePlayerWeapon(playerid, 43, 500);
+        BusinessInfo[id][BusinessS_Cemara]--;
     }
     if(itemid == 4)
     {
+        if(BusinessInfo[id][BusinessS_Flower] < 1)
+            return SendErrorMessage(playerid, "สินค้าหมด");
+
         GivePlayerWeapon(playerid, 14, 1);
+        BusinessInfo[id][BusinessS_Flower]--;
     }
     
     new string[128];
@@ -34,7 +46,9 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     SendClientMessage(playerid, -1, string);
     
     GiveMoney(playerid, -price);
-    BusinessInfo[id][BusinessCash] += price;
+    new Float:result_price = price * 0.03;
+
+    BusinessInfo[id][BusinessCash] += price - result_price;
     CharacterSave(playerid);
     return true;
 }

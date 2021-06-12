@@ -333,6 +333,9 @@ enum E_BUSINESS_INFO
 	BusinessBankWorld,
 
 	BusinessCash,
+	BusinessS_Cemara,
+	BusinessS_Mask,
+	BusinessS_Flower,
 }
 new BusinessInfo[MAX_BUSINESS][E_BUSINESS_INFO];
 

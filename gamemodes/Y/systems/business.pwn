@@ -57,6 +57,10 @@ public Query_LoadBusiness()
 
         cache_get_value_name_int(i,"BusinessCash",BusinessInfo[i+1][BusinessCash]);
 
+        cache_get_value_name_int(i,"BusinessS_Cemara",BusinessInfo[i+1][BusinessS_Cemara]);
+        cache_get_value_name_int(i,"BusinessS_Mask",BusinessInfo[i+1][BusinessS_Mask]);
+        cache_get_value_name_int(i,"BusinessS_Flower",BusinessInfo[i+1][BusinessS_Flower]);
+
 
         if(IsValidDynamicPickup(BusinessInfo[i+1][BusinessEntrancePickUp]))
             DestroyDynamicPickup(BusinessInfo[i+1][BusinessEntrancePickUp]);
@@ -111,6 +115,10 @@ public Query_InsertBusiness(playerid,newid,type,name)
     BusinessInfo[newid][BusinessPrice] = 5000;
     BusinessInfo[newid][Businesslevel] = 1;
 
+    BusinessInfo[newid][BusinessS_Cemara] = 50;
+    BusinessInfo[newid][BusinessS_Mask] = 5;
+    BusinessInfo[newid][BusinessS_Flower] = 15;
+
     if(IsValidDynamicPickup(BusinessInfo[newid][BusinessEntrancePickUp]))
         DestroyDynamicPickup(BusinessInfo[newid][BusinessEntrancePickUp]);
 
@@ -138,7 +146,7 @@ stock ShowViewBusiness(playerid)
 {
     new str[182], longstr[556], str_b[MAX_STRING];
 	new businessid; 
-	for (new i = 1; i < MAX_HOUSE; i ++)
+	for (new i = 1; i < MAX_BUSINESS; i ++)
 	{
 		if(!BusinessInfo[i][BusinessDBID])
 			continue;
@@ -612,22 +620,24 @@ Dialog:DIALOG_SELL_BU(playerid, response, listitem, inputtext[])
     return 1;
 }
 
-stock ShowPlayerBusiness(playerid)
+stock ShowPlayerBusiness(playerid, id)
 {
     new str[MAX_STRING];
-
-    for(new b_id = 1; b_id < MAX_BUSINESS; b_id++)
-    {
-        if(BusinessInfo[b_id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
-            continue;
         
-        format(str, sizeof(str), "ชื่อกิจการ: %s\n\
-                                  ค่าทางเข้ากิจการ: %s\n\
-                                  เงินในกิจการ: %s",BusinessInfo[b_id][BusinessName],MoneyFormat(BusinessInfo[b_id][BusinessEntrancePrice]),MoneyFormat(BusinessInfo[b_id][BusinessCash]));
-        
-        PlayerSelectBusiness[playerid] = b_id;
-    }
-
+    format(str, sizeof(str), "ชื่อกิจการ: %s\n\
+                              ค่าทางเข้ากิจการ: %s\n\
+                              เงินในกิจการ: %s\n\
+                              กล้อง: %d\n\
+                              OOC Mask: %d\n\
+                              Flower: %d\n\
+                              ",BusinessInfo[id][BusinessName],
+                              MoneyFormat(BusinessInfo[id][BusinessEntrancePrice]),
+                              MoneyFormat(BusinessInfo[id][BusinessCash]),
+                              BusinessInfo[id][BusinessS_Cemara],
+                              BusinessInfo[id][BusinessS_Mask],
+                              BusinessInfo[id][BusinessS_Flower]);
+    
+    PlayerSelectBusiness[playerid] = id;
     Dialog_Show(playerid, DIALOG_BU_EDIT, DIALOG_STYLE_LIST, "Business Managment", str, "ยืนยัน", "ยกเลิก");
     return 1;
 }
@@ -637,11 +647,11 @@ Dialog:DIALOG_BU_EDIT(playerid, response, listitem, inputtext[])
     if(!response)
         return 1;
     
-    //new id = PlayerSelectBusiness[playerid];
+    new id = PlayerSelectBusiness[playerid];
 
     switch(listitem)
     {
-        case 0: return ShowPlayerBusiness(playerid);
+        case 0: return ShowPlayerBusiness(playerid, id);
         case 1:
         {
             Dialog_Show(playerid, DIALOG_BU_CH_ENTERPRICE, DIALOG_STYLE_INPUT, "Business Managment: เปลี่ยนค่าทางเข้า", "ใส่ราคาทางเข้าใหม่ของกิจการ:", "ยืนยัน", "ยกเลิก");
@@ -663,25 +673,25 @@ Dialog:DIALOG_BU_EDIT(playerid, response, listitem, inputtext[])
 
 Dialog:DIALOG_BU_CH_ENTERPRICE(playerid, response, listitem, inputtext[])
 {
+    new id = PlayerSelectBusiness[playerid];
+
     if(!response)
-        return ShowPlayerBusiness(playerid);
+        return ShowPlayerBusiness(playerid, id);
     
     new price = strval(inputtext);
-
-
-    new id = PlayerSelectBusiness[playerid];
 
     if(price > 1500)
         return Dialog_Show(playerid, DIALOG_BU_CH_ENTERPRICE, DIALOG_STYLE_INPUT, "Business Managment: เปลี่ยนค่าทางเข้า", "คุณใส่ราคาเกิน $1,500 โปรดใส่ราคาให้ถูกต้อง:", "ยืนยัน", "ยกเลิก");
 
     BusinessInfo[id][BusinessEntrancePrice] = price;
     SaveBusiness(id);
-    return ShowPlayerBusiness(playerid);
+    return ShowPlayerBusiness(playerid, id);
 }
 Dialog:DIALOG_BU_CASH(playerid, response, listitem, inputtext[])
 {
+    new id = PlayerSelectBusiness[playerid];
     if(!response)
-        return ShowPlayerBusiness(playerid);
+        return ShowPlayerBusiness(playerid, id);
     
     //new id = PlayerSelectBusiness[playerid];
 
@@ -729,7 +739,7 @@ Dialog:DIALOG_BU_CASH_WIHDRAW(playerid, response, listitem, inputtext[])
     GiveMoney(playerid, witdraw);
     SendClientMessageEx(playerid, -1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF5722} คุณได้ถอนเงินจากกิจการของคุณจำนวน {4CAF50}$%s {FF5722}เงินในกิจการของคุณเหลือ {42A5F5}$%s",MoneyFormat(witdraw),MoneyFormat(BusinessInfo[id][BusinessCash]));
     SaveBusiness(id); CharacterSave(playerid);
-    return ShowPlayerBusiness(playerid);
+    return ShowPlayerBusiness(playerid, id);
 }
 
 Dialog:DIALOG_BU_CASH_DEPOSIT(playerid, response, listitem, inputtext[])
@@ -768,7 +778,7 @@ Dialog:DIALOG_BU_CASH_DEPOSIT(playerid, response, listitem, inputtext[])
     GiveMoney(playerid, -deposit);
     SendClientMessageEx(playerid, -1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF5722} คุณได้ฝากเงินเข้ากิจการของคุณจำนวน {4CAF50}$%s {FF5722}เงินในตัวของคุณเหลือ {42A5F5}$%s",MoneyFormat(deposit),MoneyFormat(deposit - Mymoney));
     SaveBusiness(id); CharacterSave(playerid);
-    return ShowPlayerBusiness(playerid);
+    return ShowPlayerBusiness(playerid, id);
 }
 
 stock RemoveBusiness(playerid,id)
@@ -806,6 +816,9 @@ stock RemoveBusiness(playerid,id)
     BusinessInfo[id][BusinessEntrancePrice] = 0;
 
     BusinessInfo[id][BusinessLock] = true;
+    BusinessInfo[id][BusinessS_Cemara] = 0;
+    BusinessInfo[id][BusinessS_Mask] = 0;
+    BusinessInfo[id][BusinessS_Flower] = 0;
 
     if(IsValidDynamicPickup(BusinessInfo[id][BusinessEntrancePickUp]))
         DestroyDynamicPickup(BusinessInfo[id][BusinessEntrancePickUp]);

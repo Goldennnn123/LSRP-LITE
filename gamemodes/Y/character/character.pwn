@@ -583,6 +583,10 @@ public LoadCharacter(playerid)
 	SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
 
 	PlayerInfo[playerid][pLastOnline] = ReturnDate();
+	for(new i = 0; i < 10; i++)
+	{
+		RemovePlayerAttachedObject(playerid, i);
+	}
 	return 1;
 }
 

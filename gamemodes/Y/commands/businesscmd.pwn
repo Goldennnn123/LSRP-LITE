@@ -74,7 +74,15 @@ CMD:sellbiz(playerid, params[])
 
 CMD:biz(playerid,params[])
 {   
-    ShowPlayerBusiness(playerid);
+    new id = IsPlayerInBusiness(playerid);
+
+    if(!IsPlayerInBusiness(playerid))
+        return SendErrorMessage(playerid, "คุณไมได้อยู่ในกิจการ");
+
+    if(BusinessInfo[id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdmin])
+        return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของกิจการ");
+
+    ShowPlayerBusiness(playerid, id);
     return 1;
 }
 

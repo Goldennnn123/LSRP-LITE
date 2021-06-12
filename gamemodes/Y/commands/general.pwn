@@ -46,8 +46,7 @@ CMD:jobhelp(playerid, params[])
 
 	if(PlayerInfo[playerid][pJob] == JOB_TRUCKER) {
 	    SendClientMessage(playerid,COLOR_LIGHTRED,"คำสั่งของพนักงานส่งของ:");
-		SendClientMessage(playerid,COLOR_WHITE,"/getcargo (ยกกล่องส่งของ)");
-		SendClientMessage(playerid,COLOR_WHITE,"/placecargo (วางกล่องส่งของ)");
+		SendClientMessage(playerid,COLOR_WHITE,"/cargo (เพื่อดูคำสั่งเกี่ยวกับคลังสินค้า)");
 	}
 
 
@@ -393,7 +392,7 @@ CMD:lock(playerid,params[])
 			}
 			GameTextForPlayer(playerid, statusString, 3000, 3);
 		}
-		else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ/รถ");
+		else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ/ยานพาหนะ");
 	}
 	return 1;
 }

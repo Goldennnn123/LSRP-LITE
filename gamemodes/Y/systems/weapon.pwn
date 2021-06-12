@@ -507,6 +507,28 @@ stock ClearDamages(playerid)
 	return 1;
 }
 
+forward OnPlayerLeaveWeapon(index);
+public OnPlayerLeaveWeapon(index)
+{
+	WeaponDropInfo[index][eWeaponDropped] = false;
+	WeaponDropInfo[index][eWeaponDroppedBy] = 0;
+	
+	WeaponDropInfo[index][eWeaponWepAmmo] = 0;
+	WeaponDropInfo[index][eWeaponWepID] = 0;
+	
+	for(new i = 0; i < 3; i++)
+	{
+		WeaponDropInfo[index][eWeaponPos][i] = 0.0;
+	}
+	
+	if(IsValidDynamicObject(WeaponDropInfo[index][eWeaponObject]))
+	{
+		DestroyDynamicObject(WeaponDropInfo[index][eWeaponObject]);
+	}
+	
+	return 1;
+}
+
 forward OnPlayerWounded(playerid, killerid, reason);
 public OnPlayerWounded(playerid, killerid, reason)
 {

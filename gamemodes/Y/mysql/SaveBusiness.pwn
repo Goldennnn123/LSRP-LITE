@@ -44,8 +44,15 @@ stock SaveBusiness(id)
         BusinessInfo[id][BusinessDBID]);
     mysql_tquery(dbCon, query);
 
-    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessLock = %d WHERE BusinessDBID = %i",
+    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessLock = %d, WHERE BusinessDBID = %i",
         BusinessInfo[id][BusinessLock],
+        BusinessInfo[id][BusinessDBID]);
+    mysql_tquery(dbCon, query);
+
+    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessS_Cemara = %d, BusinessS_Mask = %d, BusinessS_Flower = %d WHERE BusinessDBID = %i",
+        BusinessInfo[id][BusinessS_Cemara],
+        BusinessInfo[id][BusinessS_Mask],
+        BusinessInfo[id][BusinessS_Flower],
         BusinessInfo[id][BusinessDBID]);
     mysql_tquery(dbCon, query);
 

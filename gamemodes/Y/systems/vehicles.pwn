@@ -606,6 +606,9 @@ CMD:engine(playerid, params[])
 		
 	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะนี้ไม่มีเชื้อเพลิง!"); 
+
+	if(VehicleInfo[vehicleid][eVehicleEngine] < 1)
+		return SendErrorMessage(playerid, "รถของคุณแบตตารี่หมด กรุณาไปเติมก่อน");
 	
 	if(VehicleInfo[vehicleid][eVehicleFaction] > 0)
 	{
@@ -1713,6 +1716,9 @@ public Query_LoadPrivateVehicle(playerid)
 			cache_get_value_name_int(i, "VehiclePaintjob",VehicleInfo[vehicleid][eVehiclePaintjob]);
 
 			cache_get_value_name_int(i, "VehiclePrice",VehicleInfo[vehicleid][eVehiclePrice]);
+
+
+			cache_get_value_name_int(i, "VehicleComp",VehicleInfo[vehicleid][eVehicleComp]);
 
 			/*for(new j = 1; j < 15; j++)
 			{

@@ -70,7 +70,11 @@ stock SaveVehicle(vehicleid)
 			VehicleInfo[vehicleid][eVehicleLastPassengers][j],
 			VehicleInfo[vehicleid][eVehicleDBID]);
 		mysql_tquery(dbCon, query);
-			
 	}
+
+	mysql_format(dbCon, query, sizeof(query), "UPDATE vehicles SET VehicleComp = %i WHERE VehicleDBID = %i",
+		VehicleInfo[vehicleid][eVehicleComp],
+		VehicleInfo[vehicleid][eVehicleDBID]);
+	mysql_tquery(dbCon, query);
 	return 1;
 }

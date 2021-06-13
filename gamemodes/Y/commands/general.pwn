@@ -49,6 +49,13 @@ CMD:jobhelp(playerid, params[])
 		SendClientMessage(playerid,COLOR_WHITE,"/cargo (เพื่อดูคำสั่งเกี่ยวกับคลังสินค้า)");
 	}
 
+	if(PlayerInfo[playerid][pJob] == JOB_MECHANIC)
+	{
+ 		SendClientMessage(playerid,COLOR_LIGHTRED,"คำสั่งของพนักงานช่างยนต์:");
+		SendClientMessage(playerid,COLOR_WHITE,"/service (คำสั่งซ่อมยานพาหนะ)");
+		SendClientMessage(playerid,COLOR_WHITE,"/checkcomponents (เช็ค อะไหล่)");
+		SendClientMessage(playerid,COLOR_WHITE,"/buycomponents (ซื้อ อะไหล่)");
+	}
 
 	return 1;
 }

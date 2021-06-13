@@ -38,6 +38,8 @@ enum E_PLAYER_DATA
     pJob,
     pSideJob,
     pCareer,
+	pJobRank,
+	pJobExp,
     
     pPaycheck, // เงินเดือน - ต้องไปรับที่ธนาคาร
     pFishes,
@@ -131,7 +133,10 @@ enum E_PLAYER_DATA
 	bool:pHandcuffed,
 
 	bool:pTaser,
-	bool:pSaving
+	bool:pSaving,
+
+	bool:pShowFooter,
+	pFooterTimer
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS];
@@ -213,7 +218,9 @@ enum E_VEHICLE_SYSTEM
     
     eVehicleMod[14],
 
-	eVehiclePrice
+	eVehiclePrice,
+
+	eVehicleComp
 }
 
 new VehicleInfo[MAX_VEHICLES][E_VEHICLE_SYSTEM];

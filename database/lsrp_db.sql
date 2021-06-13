@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2021 at 06:11 PM
+-- Generation Time: Jun 13, 2021 at 08:51 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.6
 
@@ -151,6 +151,8 @@ CREATE TABLE `characters` (
   `pJob` int(11) NOT NULL DEFAULT 0,
   `pSideJob` int(11) NOT NULL DEFAULT 0,
   `pCareer` int(11) NOT NULL DEFAULT 0,
+  `pJobRank` int(11) NOT NULL,
+  `pJobExp` int(11) NOT NULL DEFAULT 0,
   `pPaycheck` int(11) NOT NULL DEFAULT 0,
   `pFishes` int(11) NOT NULL DEFAULT 0,
   `pAdminjailed` int(11) NOT NULL,
@@ -403,6 +405,21 @@ CREATE TABLE `masters` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `mc_garage`
+--
+
+CREATE TABLE `mc_garage` (
+  `Mc_GarageDBID` int(11) NOT NULL,
+  `Mc_GaragePosX` float NOT NULL,
+  `Mc_GaragePosY` float NOT NULL,
+  `Mc_GaragePosZ` float NOT NULL,
+  `Mc_GarageWorld` int(11) NOT NULL,
+  `Mc_GarageInterior` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `phonebook`
 --
 
@@ -435,6 +452,7 @@ CREATE TABLE `vehicles` (
   `VehicleParkWorld` int(11) NOT NULL DEFAULT 0,
   `VehiclePlates` varchar(32) NOT NULL,
   `VehicleLocked` int(11) NOT NULL,
+  `VehicleComp` int(11) NOT NULL DEFAULT 0,
   `VehicleImpounded` tinyint(1) NOT NULL DEFAULT 0,
   `VehicleImpoundPosX` float NOT NULL,
   `VehicleImpoundPosY` float NOT NULL,
@@ -561,6 +579,12 @@ ALTER TABLE `masters`
   ADD PRIMARY KEY (`acc_dbid`);
 
 --
+-- Indexes for table `mc_garage`
+--
+ALTER TABLE `mc_garage`
+  ADD PRIMARY KEY (`Mc_GarageDBID`);
+
+--
 -- Indexes for table `phonebook`
 --
 ALTER TABLE `phonebook`
@@ -647,6 +671,12 @@ ALTER TABLE `kick_logs`
 --
 ALTER TABLE `masters`
   MODIFY `acc_dbid` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mc_garage`
+--
+ALTER TABLE `mc_garage`
+  MODIFY `Mc_GarageDBID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `phonebook`

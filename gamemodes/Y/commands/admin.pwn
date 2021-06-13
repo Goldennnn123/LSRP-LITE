@@ -1385,6 +1385,7 @@ CMD:spawncar(playerid, params[])
 		VehicleInfo[vehicleid][eVehicleColor1] = color1;
 		VehicleInfo[vehicleid][eVehicleColor2] = color2;
 		VehicleInfo[vehicleid][eVehicleFuel] = 50;
+		VehicleInfo[vehicleid][eVehicleEngine] = 50.0;
 	}
 	
 	PutPlayerInVehicle(playerid, vehicleid, 0);
@@ -1978,6 +1979,90 @@ CMD:viewhouse(playerid, params[])
 	}
 	
 	Dialog_Show(playerid, DIALOG_VIEWHOUSE, DIALOG_STYLE_LIST, "HOUSE:", longstr, "เลือก", "ออก");
+	return 1;
+}
+
+CMD:makemcgarage(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+	new idx = 0;
+	
+    for (new i = 1; i < MAX_MCGARAGE; i ++)
+    {
+        if(!McGarageInfo[i][Mc_GarageDBID])
+        {
+            idx = i; 
+            break;
+        }
+	}
+    if(idx == 0)
+    {
+        return SendServerMessage(playerid, "สร้าง อู่ซ่อมรถ เกินกว่านี้ไม่ได้แล้ว (100)");
+    }
+
+	new Float:x,Float:y,Float:z;
+	GetPlayerPos(playerid,x,y,z);
+	
+	new World = GetPlayerVirtualWorld(playerid);
+	new Interior = GetPlayerInterior(playerid);
+
+	new query[MAX_STRING];
+
+	mysql_format(dbCon, query, sizeof(query), "INSERT INTO mc_garage (`Mc_GaragePosX`,`Mc_GaragePosY`,`Mc_GaragePosZ`,`Mc_GarageWorld`,`Mc_GarageInterior`) VALUES(%f,%f,%f,%d,%d)",x,y,z,World,Interior); 
+	mysql_tquery(dbCon, query, "Query_InsertMcGarage", "ddfffdd", playerid, idx,x,y,z,World,Interior);
+	return 1;
+}
+
+CMD:editmcgarage(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+	new id, option[60], Float:x, Float:y, Float:z;
+
+	if(sscanf(params, "ds[60]", id, option))
+	{
+		SendUsageMessage(playerid, "/editmcgarage <ไอดี> <ฟังชั่น>");
+		SendUsageMessage(playerid, "pos(แก้ไขจุด) delete(ลบ)");
+		return 1;
+	}
+
+	if(!McGarageInfo[id][Mc_GarageDBID])
+		return SendErrorMessage(playerid, "ไม่มี ID นี้");
+
+	if(!strcmp(option, "pos",true))
+	{
+		GetPlayerPos(playerid, x, y, z);
+		McGarageInfo[id][Mc_GaragePos][0] = x;
+		McGarageInfo[id][Mc_GaragePos][1] = y;
+		McGarageInfo[id][Mc_GaragePos][2] = z;
+		McGarageInfo[id][Mc_GarageWorld] = GetPlayerVirtualWorld(playerid);
+		McGarageInfo[id][Mc_GarageInterior] = GetPlayerInterior(playerid);
+
+		if(IsValidDynamicPickup(McGarageInfo[id][Mc_GarageIcon]))
+			DestroyDynamicPickup(McGarageInfo[id][Mc_GarageIcon]);
+		
+		SaveMc_Garage(id);
+
+		McGarageInfo[id][Mc_GarageIcon] = CreateDynamicPickup(1239, 2, 
+		McGarageInfo[id][Mc_GaragePos][0],
+		McGarageInfo[id][Mc_GaragePos][1],
+		McGarageInfo[id][Mc_GaragePos][2],
+		McGarageInfo[id][Mc_GarageWorld],
+		McGarageInfo[id][Mc_GarageInterior],
+		-1);
+
+		SendClientMessageEx(playerid, -1, "คุณได้แก้ไข อู่แต่งรถ %d", id);
+		return 1;
+	}
+	else if(!strcmp(option, "delete",true))
+	{
+		SendClientMessageEx(playerid, -1, "คุณได้ลบ อู่แต่งรถ ID "EMBED_RED"%d", id);
+		DeleteMcGarage(id);
+		return 1;
+	}
 	return 1;
 }
 

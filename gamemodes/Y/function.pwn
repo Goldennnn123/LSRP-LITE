@@ -486,6 +486,22 @@ public CallPaycheck()
 		
 		PlayerInfo[i][pTimeplayed]++; 
 		PlayerInfo[i][pExp]++;
+		
+		if(PlayerInfo[i][pJob] == 4 && PlayerInfo[i][pJobRank] < 3)
+			PlayerInfo[i][pJobExp]++;
+
+		if(PlayerInfo[i][pJobExp] >= 25 && PlayerInfo[i][pJobRank] == 1)
+		{
+			PlayerInfo[i][pJobExp] = 0;
+			PlayerInfo[i][pJobRank]++;
+			SendClientMessage(i, COLOR_YELLOWEX, "ยินดีด้วยคุณได้เลื่อนต่ำแหน่งงานในอาชีพ ช่างยนต์ของคุณเป็น ช่างประจำอู่");
+		}
+		else if(PlayerInfo[i][pJobExp] >= 50 && PlayerInfo[i][pJobRank] == 2)
+		{
+			PlayerInfo[i][pJobExp] = 0;
+			PlayerInfo[i][pJobRank]++;
+			SendClientMessage(i, COLOR_YELLOWEX, "ยินดีด้วยคุณได้เลื่อนต่ำแหน่งงานในอาชีพ ช่างยนต์ของคุณเป็น หัวหน้างานช่าง");
+		}
 
 		if(PlayerInfo[i][pExp] >= 6 && PlayerInfo[i][pLevel] == 1)
 		{

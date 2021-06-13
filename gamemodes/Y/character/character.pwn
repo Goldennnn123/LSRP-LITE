@@ -323,10 +323,11 @@ CharacterSave(playerid, force = false)
 		mysql_tquery(dbCon, query);
 
 
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pJob = %i, pSideJob = %i, pCareer = %i, pPaycheck = %i, pFishes = %i WHERE char_dbid = %i",	
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pJob = %i, pSideJob = %i, pCareer = %i, pJobRank = %i, pPaycheck = %i, pFishes = %i WHERE char_dbid = %i",	
 			PlayerInfo[playerid][pJob],
 			PlayerInfo[playerid][pSideJob],
 			PlayerInfo[playerid][pCareer],
+			PlayerInfo[playerid][pJobRank],
 			PlayerInfo[playerid][pPaycheck],
 			PlayerInfo[playerid][pFishes],
 			PlayerInfo[playerid][pDBID]);
@@ -429,6 +430,11 @@ CharacterSave(playerid, force = false)
 		mysql_tquery(dbCon, query);
 
 
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pJobExp = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pJobExp],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 		mysql_finish(query);
 	}
 	return 1;
@@ -477,6 +483,9 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pJob", PlayerInfo[playerid][pJob]);
 	cache_get_value_name_int(0, "pSideJob", PlayerInfo[playerid][pSideJob]);
 	cache_get_value_name_int(0, "pCareer", PlayerInfo[playerid][pCareer]);
+	cache_get_value_name_int(0, "pJobRank", PlayerInfo[playerid][pJobRank]);
+	cache_get_value_name_int(0, "pJobExp", PlayerInfo[playerid][pJobExp]);
+
 	cache_get_value_name_int(0, "pPaycheck", PlayerInfo[playerid][pPaycheck]);
 	cache_get_value_name_int(0, "pFishes", PlayerInfo[playerid][pFishes]);
 	

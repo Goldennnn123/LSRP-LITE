@@ -13,6 +13,7 @@
 #define YSI_NO_OPTIMISATION_MESSAGE
 #define YSI_NO_MODE_CACHE
 #define YSI_NO_VERSION_CHECK
+#define CGEN_MEMORY 99999
 #include <YSI_Coding\y_timers>
 #include <YSI_Coding\y_hooks>
 #include <YSI_Coding\y_va>
@@ -85,19 +86,21 @@ new globalWeather = 2;
 #include "Y/systems/ui_buy.pwn"
 #include "Y/systems/business/vehiclebuy.pwn"
 
+#include "Y/jobs/farmer.pwn"
+#include "Y/jobs/fisher.pwn"
+#include "Y/jobs/trucker.pwn"
+#include "Y/jobs/mechanic.pwn"
+
 #include "Y/mysql/SaveVehicle.pwn"
 #include "Y/mysql/Savefaction.pwn"
 #include "Y/mysql/SaveHouse.pwn"
 #include "Y/mysql/SaveBusiness.pwn"
 #include "Y/mysql/SaveEntrance.pwn"
 #include "Y/mysql/SaveFacVehicle.pwn"
+#include "Y/mysql/SaveMc_Garage.pwn"
 
 #include "Y/registration/login.pwn"
 #include "Y/character/character.pwn"
-
-#include "Y/jobs/farmer.pwn"
-#include "Y/jobs/fisher.pwn"
-#include "Y/jobs/trucker.pwn"
 
 #include "Y/commands/general.pwn"
 #include "Y/commands/admin.pwn"
@@ -129,6 +132,8 @@ new globalWeather = 2;
 
 #include "Y/test/functionPlayer.pwn"
 
+#include "Y/systems/textdraw/textdraw_function.pwn"
+
 main() { }
 
 forward OnPlayerViolate(playerid, severity, violationCode, const violationName[]);
@@ -148,6 +153,7 @@ public OnGameModeInit() {
     mysql_tquery(dbCon, "SELECT * FROM phonebook ORDER BY PhoneDBID", "LoadPhoneBook");
     mysql_tquery(dbCon, "SELECT * FROM entrance ORDER BY EntranceDBID", "LoadEntrance");
     mysql_tquery(dbCon, "SELECT * FROM vehicle_faction ORDER BY VehicleDBID", "LoadFactionVehicle");
+    mysql_tquery(dbCon, "SELECT * FROM mc_garage ORDER BY Mc_GarageDBID", "LoadMcGarage");
 	
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();
@@ -214,6 +220,9 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pJob] = 0;
     PlayerInfo[playerid][pSideJob] = 0;
     PlayerInfo[playerid][pCareer] = 0;
+    PlayerInfo[playerid][pJobRank] = 0;
+    PlayerInfo[playerid][pJobExp] = 0;
+
     PlayerInfo[playerid][pPaycheck] = 0;
     PlayerInfo[playerid][pFishes] = 0;
     PlayerInfo[playerid][pCash] = 0;
@@ -320,6 +329,8 @@ public OnPlayerConnect(playerid) {
 	gPassengerCar[playerid] = 0;
 
     SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
+
+    tToAccept[playerid] = INVALID_PLAYER_ID;
 
 	new query[90];
 
@@ -511,5 +522,24 @@ public OnPlayerUpdate(playerid)
 	{
 		SetPlayerChatBubble(playerid, "(( ผู้เล่นคนนี้เสียชีวิตแล้ว ))", COLOR_RED, 30.0, 2500); 
 	}
+    return 1;
+}
+
+public OnPlayerPickUpDynamicPickup(playerid, STREAMER_TAG_PICKUP:pickupid)
+{
+    for(new i = 1; i < MAX_MCGARAGE; i++)
+    {
+        if(pickupid == McGarageInfo[i][Mc_GarageIcon])
+        {
+            SendClientMessage(playerid, COLOR_GREY, "/trun เพื่อทำระบบแต่งรถ");
+            return 1;
+        }
+    }
+
+    if(pickupid == mechanic_pickup)
+    {
+        GameTextForPlayer(playerid, "~g~Mechamic Job ~n~~w~/takejob~n~~g~For Register", 3500, 3);
+        return 1;
+    }
     return 1;
 }

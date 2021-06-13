@@ -151,7 +151,16 @@ stock ReturnFactionRank(playerid)
 	
 	if(!PlayerInfo[playerid][pFaction])
 	{
-		rankStr = "No Rank";
+		if(PlayerInfo[playerid][pJob] == JOB_MECHANIC)
+		{
+			switch(PlayerInfo[playerid][pJobRank])
+			{
+				case 1: rankStr = "ช่างฝึกหัด";
+				case 2: rankStr = "ช่างประจำอู่";
+				case 3: rankStr = "หัวหน้างานช่าง";
+			}
+		}
+		rankStr = "ไม่มีต่ำแหน่ง";
 	}
 	else
 	{

@@ -1,6 +1,6 @@
 {
 	"user": "Backerss",
-	"repo": "Samp-Project-RolePlay",
+	"repo": "LSRP-LITE",
 	"entry": "gamemodes/script.pwn",
 	"output": "gamemodes/script.amx",
 	"dependencies": [

@@ -85,6 +85,7 @@ new globalWeather = 2;
 #include "Y/systems/phone.pwn"
 #include "Y/systems/ui_buy.pwn"
 #include "Y/systems/business/vehiclebuy.pwn"
+#include "Y/systems/anim.pwn"
 
 #include "Y/jobs/farmer.pwn"
 #include "Y/jobs/fisher.pwn"

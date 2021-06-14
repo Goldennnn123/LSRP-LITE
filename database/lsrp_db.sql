@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2021 at 08:51 PM
+-- Generation Time: Jun 14, 2021 at 07:37 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.6
 
@@ -104,16 +104,6 @@ CREATE TABLE `business` (
   `BusinessBankWorld` int(11) NOT NULL,
   `BusinessCash` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_croatian_ci;
-
---
--- Dumping data for table `business`
---
-
-INSERT INTO `business` (`BusinessDBID`, `BusinessName`, `BusinessOwnerDBID`, `BusinessType`, `BusinessPrice`, `BusinessLevel`, `BusinessEntrancePrice`, `BusinessLock`, `BusinessS_Cemara`, `BusinessS_Mask`, `BusinessS_Flower`, `BusinessEntranceX`, `BusinessEntranceY`, `BusinessEntranceZ`, `BusinessEntranceWorld`, `BusinessEntranceInterior`, `BusinessInteriorX`, `BusinessInteriorY`, `BusinessInteriorZ`, `BusinessInteriorWorld`, `BusinessInteriorID`, `BusinessBankPickupLocX`, `BusinessBankPickupLocY`, `BusinessBankPickupLocZ`, `BusinessBankWorld`, `BusinessCash`) VALUES
-(1, '24/7 Per', 0, 1, 10000000, 5, 50, 0, 5, 0, 0, 1352.46, -1759.25, 13.5078, 0, 0, -30.7205, -91.9438, 1003.55, 54233, 18, 0, 0, 0, 0, 60),
-(2, 'Los Santos Bank', 0, 5, 10000000, 50, 0, 0, 0, 0, 0, 595.561, -1249.38, 18.2557, 0, 0, 1667.14, -995.998, 683.691, 29891, 0, 1667.26, -972.919, 683.687, 29891, 0),
-(3, 'BusinessName', 0, 2, 5000, 1, 0, 0, 0, 0, 0, 545.625, -1290.89, 17.2422, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(4, 'Pizza Stack', 0, 4, 5000, 1, 0, 0, 0, 0, 0, 2105.48, -1806.69, 13.5547, 0, 0, 372.118, -133.521, 1001.49, 10707, 5, 0, 0, 0, 0, 300);
 
 -- --------------------------------------------------------
 
@@ -362,14 +352,6 @@ CREATE TABLE `house` (
   `HouseWeaponsAmmo20` int(11) NOT NULL,
   `HouseWeaponsAmmo21` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_croatian_ci;
-
---
--- Dumping data for table `house`
---
-
-INSERT INTO `house` (`HouseDBID`, `HouseName`, `HouseOwnerDBID`, `HouseEntranceX`, `HouseEntranceY`, `HouseEntranceZ`, `HouseEntranceWorld`, `HouseEntranceInterior`, `HouseInteriorX`, `HouseInteriorY`, `HouseInteriorZ`, `HouseInteriorWorld`, `HouseInteriorID`, `HousePrice`, `HouseLevel`, `HouseLock`, `HouseEle`, `HousePlacePosX`, `HousePlacePosY`, `HousePlacePosZ`, `HouseWeapons1`, `HouseWeapons2`, `HouseWeapons3`, `HouseWeapons4`, `HouseWeapons5`, `HouseWeapons6`, `HouseWeapons7`, `HouseWeapons8`, `HouseWeapons9`, `HouseWeapons10`, `HouseWeapons11`, `HouseWeapons12`, `HouseWeapons13`, `HouseWeapons14`, `HouseWeapons15`, `HouseWeapons16`, `HouseWeapons17`, `HouseWeapons18`, `HouseWeapons19`, `HouseWeapons20`, `HouseWeapons21`, `HouseWeaponsAmmo1`, `HouseWeaponsAmmo2`, `HouseWeaponsAmmo3`, `HouseWeaponsAmmo4`, `HouseWeaponsAmmo5`, `HouseWeaponsAmmo6`, `HouseWeaponsAmmo7`, `HouseWeaponsAmmo8`, `HouseWeaponsAmmo9`, `HouseWeaponsAmmo10`, `HouseWeaponsAmmo11`, `HouseWeaponsAmmo12`, `HouseWeaponsAmmo13`, `HouseWeaponsAmmo14`, `HouseWeaponsAmmo15`, `HouseWeaponsAmmo16`, `HouseWeaponsAmmo17`, `HouseWeaponsAmmo18`, `HouseWeaponsAmmo19`, `HouseWeaponsAmmo20`, `HouseWeaponsAmmo21`) VALUES
-(1, '1/1', 1, 2065.4, -1703.42, 14.1484, 0, 0, 243.452, -1851.61, 3333.93, 1457, 0, 400000, 2, 0, 295, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(2, '1/1 415', 4, 1980.38, -1718.97, 17.0304, 0, 0, 2496.15, -1692.08, 1014.74, 5568, 3, 50000, 5, 0, 784, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -628,7 +610,7 @@ ALTER TABLE `ban_logs`
 -- AUTO_INCREMENT for table `business`
 --
 ALTER TABLE `business`
-  MODIFY `BusinessDBID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `BusinessDBID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `characters`
@@ -658,7 +640,7 @@ ALTER TABLE `faction_ranks`
 -- AUTO_INCREMENT for table `house`
 --
 ALTER TABLE `house`
-  MODIFY `HouseDBID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `HouseDBID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `kick_logs`

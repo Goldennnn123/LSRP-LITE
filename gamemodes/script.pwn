@@ -117,9 +117,19 @@ new globalWeather = 2;
 #include "Y/Interior/House1.pwn"
 #include "Y/Interior/House2.pwn"
 #include "Y/Interior/pizza.pwn"
+<<<<<<< HEAD
+
+#include "Y/Map/lsrp_map.pwn"
+//#include "Y/Map/Police.pwn"
+//#include "Y/Map/LSPDHQINT.pwn"
+//#include "Y/Map/LSPDHQEXT.pwn"
+//#include "Y/Map/LSPDHQINT2.pwn"
+
+=======
 //#include "Y/Map/lsrp_map.pwn"
 
 //#include "Y/Map/Police.pwn"
+>>>>>>> 8224126a14936fab6757968f16e6599955b8ee8c
 
 #include "Y/systems/car_rental.pwn"
 #include "Y/systems/dmv.pwn"
@@ -345,7 +355,7 @@ public OnPlayerConnect(playerid) {
 	/*mysql_format(dbCon, query, sizeof(query), "SELECT COUNT(acc_name) FROM `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
 	mysql_tquery(dbCon, query, "OnPlayerJoin", "d", playerid);*/
 
-    SendClientMessage(playerid, -1, "ยินดีต้อนรับเข้าสู่ "EMBED_YELLOW"Samp Role Play");
+    SendClientMessage(playerid, -1, "ยินดีต้อนรับเข้าสู่ "EMBED_YELLOW"Los Santos Roleplay LITE");
     return 1;
 }
 

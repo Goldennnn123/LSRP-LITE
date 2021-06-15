@@ -64,6 +64,7 @@ new globalWeather = 2;
 
 // เอกลักษณ์
 #include "Y/entities/entities.pwn"
+#include "Y/entities/computer.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -86,6 +87,7 @@ new globalWeather = 2;
 #include "Y/systems/ui_buy.pwn"
 #include "Y/systems/business/vehiclebuy.pwn"
 #include "Y/systems/anim.pwn"
+#include "Y/systems/furniture/computer.pwn"
 
 #include "Y/jobs/farmer.pwn"
 #include "Y/jobs/fisher.pwn"
@@ -115,9 +117,9 @@ new globalWeather = 2;
 #include "Y/Interior/House1.pwn"
 #include "Y/Interior/House2.pwn"
 #include "Y/Interior/pizza.pwn"
-#include "Y/Map/lsrp_map.pwn"
+//#include "Y/Map/lsrp_map.pwn"
 
-#include "Y/Map/Police.pwn"
+//#include "Y/Map/Police.pwn"
 
 #include "Y/systems/car_rental.pwn"
 #include "Y/systems/dmv.pwn"
@@ -154,7 +156,6 @@ public OnGameModeInit() {
     mysql_tquery(dbCon, "SELECT * FROM phonebook ORDER BY PhoneDBID", "LoadPhoneBook");
     mysql_tquery(dbCon, "SELECT * FROM entrance ORDER BY EntranceDBID", "LoadEntrance");
     mysql_tquery(dbCon, "SELECT * FROM vehicle_faction ORDER BY VehicleDBID", "LoadFactionVehicle");
-    mysql_tquery(dbCon, "SELECT * FROM mc_garage ORDER BY Mc_GarageDBID", "LoadMcGarage");
 	
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();

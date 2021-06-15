@@ -50,7 +50,7 @@ samp.ban
 
 *.sublime-workspace
 
-# ไฟล์ที่ให้สร้างขึ้นมาเอง
+#database
 gamemodes/Y/configuration/database.pwn
 
 scriptfiles/ntd

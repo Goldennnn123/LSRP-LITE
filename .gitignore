@@ -50,7 +50,11 @@ samp.ban
 
 *.sublime-workspace
 
+<<<<<<< HEAD
 # �����������ҧ������ͧ
+=======
+#database
+>>>>>>> 8224126a14936fab6757968f16e6599955b8ee8c
 gamemodes/Y/configuration/database.pwn
 
 scriptfiles/ntd

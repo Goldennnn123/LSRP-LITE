@@ -392,7 +392,7 @@ stock SetHouseOffSwitch(playerid, id)
 
     if(HouseInfo[id][HouseSwicth])
     {
-        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 5000, true, "i",id);
+        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 1800000, true, "i",id);
         return PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
     }
     else 

@@ -4,6 +4,7 @@ CMD:help(playerid, params[])
 	
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout (/l)ocal /me /ame /do /low");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp /stats /report");
+	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist");
 	SendClientMessage(playerid, COLOR_GREEN,"_______________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /report เพื่อขอความช่วยเหลือ");
 	return 1; 

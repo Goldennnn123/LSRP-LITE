@@ -137,6 +137,11 @@ new globalWeather = 2;
 
 #include "Y/systems/textdraw/textdraw_function.pwn"
 
+#if SETUP_TABLE
+    #include "install"
+#endif
+
+
 main() { }
 
 forward OnPlayerViolate(playerid, severity, violationCode, const violationName[]);
@@ -147,9 +152,7 @@ public OnGameModeInit() {
     SetGameModeText(GM_VERSION);
 
     SetNameTagDrawDistance(20.0);
-
-
-
+    
     mysql_tquery(dbCon, "SELECT * FROM factions ORDER BY dbid ASC", "Query_LoadFactions");
     mysql_tquery(dbCon, "SELECT * FROM House ORDER BY HouseDBID", "Query_LoadHouse");
     mysql_tquery(dbCon, "SELECT * FROM Business ORDER BY BusinessDBID", "Query_LoadBusiness");

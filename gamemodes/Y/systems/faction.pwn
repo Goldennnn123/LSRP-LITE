@@ -121,7 +121,7 @@ stock ReturnFactionName(playerid)
 	new factionName[90];
 	
 	if(!PlayerInfo[playerid][pFaction])
-		factionName = "Civilian";
+		factionName = "ไม่มีกลุ่มแก็ง";
 		
 	else
 		format(factionName, sizeof(factionName), "%s", FactionInfo[PlayerInfo[playerid][pFaction]][eFactionName]);

@@ -261,3 +261,138 @@ CMD:checkele(playerid, params[])
     SendClientMessageEx(playerid, -1, "[HOUSE BILL] ค่าไฟที่ใช้ไป %s หน่วย รวมเป็น $%s สามารถไปจ่ายค่าไฟได้ที่ City Hall",MoneyFormat(HouseInfo[id][HouseEle]), MoneyFormat(bill * 7));
     return 1;
 }
+
+CMD:placecom(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideProperty];
+
+    if(!PlayerInfo[playerid][pInsideProperty])
+        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} คุณไม่ได้อยู่ในบ้าน");
+
+    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} บ้านหลังนี้ไม่ใช่บ้านของคุณ");
+
+    if(PlayerEditObject[playerid])
+        return SendErrorMessage(playerid, "คุณกำลังแก้ไข Object อยู่");
+
+    if(sscanf(params, "d", id))
+        return SendUsageMessage(playerid, "/placecom < ไอดีคอมพิวเตอร์ของคุณ >");
+
+    if(!ComputerInfo[id][ComputerDBID])
+        return SendErrorMessage(playerid,"ไม่มีคอมที่คุณเลือก");
+    
+    if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
+
+    if(ComputerInfo[id][ComputerSpawn])
+        return SendErrorMessage(playerid, "คอมพิวเตอร์ได้ถูกวางอยู่แล้ว");
+    
+    EditObjectComputer(playerid, id);
+    return 1;
+}
+
+CMD:editcom(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideProperty];
+
+    if(!PlayerInfo[playerid][pInsideProperty])
+        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} คุณไม่ได้อยู่ในบ้าน");
+
+    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} บ้านหลังนี้ไม่ใช่บ้านของคุณ");
+
+    if(PlayerEditObject[playerid])
+        return SendErrorMessage(playerid, "คุณกำลังแก้ไข Object อยู่");
+
+    if(sscanf(params, "d", id))
+        return SendUsageMessage(playerid, "/placecom < ไอดีคอมพิวเตอร์ของคุณ >");
+
+    if(!ComputerInfo[id][ComputerDBID])
+        return SendErrorMessage(playerid,"ไม่มีคอมที่คุณเลือก");
+    
+    if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
+
+    if(!ComputerInfo[id][ComputerSpawn])
+        return SendErrorMessage(playerid, "คอมพิวเตอร์ไม่ได้ถูกวาง");
+
+
+    DestroyDynamicObject(ComputerInfo[id][ComputerObject]);
+
+    EditObjectComputer(playerid, id);   
+    return 1;
+}
+
+stock EditObjectComputer(playerid, id)
+{
+    new Float:x, Float:y, Float:z, worldid, interiorid;
+    GetPlayerPos(playerid, x, y, z);
+    worldid = GetPlayerVirtualWorld(playerid);
+    interiorid = GetPlayerInterior(playerid);
+
+    ComputerInfo[id][ComputerObject] =  CreateDynamicObject(19893, x, y, z, 0.0, 0.0, 0.0, worldid, interiorid, -1);
+    EditDynamicObject(playerid, ComputerInfo[id][ComputerObject]);
+    ComputerEdit[playerid] = id;
+    PlayerEditObject[playerid] = true;
+    return 1;
+}
+
+hook OP_EditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+{
+    //if()
+    switch (response)
+    {
+        case EDIT_RESPONSE_FINAL:
+        {
+            if(ComputerEdit[playerid])
+            {
+                new id = ComputerEdit[playerid];
+
+                ComputerInfo[id][ComputerPos][0] = x;
+                ComputerInfo[id][ComputerPos][1] = y;
+                ComputerInfo[id][ComputerPos][2] = z;
+                ComputerInfo[id][ComputerPos][3] = rx;
+                ComputerInfo[id][ComputerPos][4] = ry;
+                ComputerInfo[id][ComputerPos][5] = rz;
+                ComputerInfo[id][ComputerPosWorld] = GetPlayerVirtualWorld(playerid);
+                ComputerInfo[id][ComputerPosInterior] = GetPlayerInterior(playerid);
+                ComputerInfo[id][ComputerSpawn] = true;
+                ComputerEdit[playerid]  = 0;
+                PlayerEditObject[playerid] = false;
+                SaveComputer(id);
+                DestroyDynamicObject(objectid);
+                
+                objectid = CreateDynamicObject(19893, x, y, z, rx, ry, rz, ComputerInfo[id][ComputerPosWorld], ComputerInfo[id][ComputerPosInterior], -1);
+                return 1;
+            }
+            
+            
+            return 1;
+        }
+        case EDIT_RESPONSE_CANCEL:
+        {
+
+            if(ComputerEdit[playerid])
+            {
+                new id = ComputerEdit[playerid];
+
+                if(ComputerInfo[id][ComputerSpawn])
+                {
+                    DestroyDynamicObject(objectid);
+                    objectid = CreateDynamicObject(19893, ComputerInfo[id][ComputerPos][0], ComputerInfo[id][ComputerPos][1], ComputerInfo[id][ComputerPos][2], ComputerInfo[id][ComputerPos][3], ComputerInfo[id][ComputerPos][4], ComputerInfo[id][ComputerPos][5], ComputerInfo[id][ComputerPosWorld], ComputerInfo[id][ComputerPosInterior], -1);
+                    ComputerEdit[playerid]  = 0;
+                    PlayerEditObject[playerid] = false;
+                    return 1;
+                }
+
+                DestroyDynamicObject(objectid);
+                ComputerEdit[playerid]  = 0;
+                PlayerEditObject[playerid] = false;
+                return 1;
+            }
+
+            return 1;
+        }
+    }
+    return 1;
+}

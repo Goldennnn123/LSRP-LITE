@@ -101,6 +101,7 @@ new globalWeather = 2;
 #include "Y/mysql/SaveEntrance.pwn"
 #include "Y/mysql/SaveFacVehicle.pwn"
 #include "Y/mysql/SaveMc_Garage.pwn"
+#include "Y/mysql/SaveComputer.pwn"
 
 #include "Y/registration/login.pwn"
 #include "Y/character/character.pwn"
@@ -149,7 +150,12 @@ new globalWeather = 2;
 
 #include "Y/test/functionPlayer.pwn"
 
-#include "Y/systems/textdraw/textdraw_function.pwn"
+#include "Y/systems/textdraw/computer.pwn"
+
+#if SETUP_TABLE
+    #include "install"
+#endif
+
 
 main() { }
 
@@ -161,9 +167,7 @@ public OnGameModeInit() {
     SetGameModeText(GM_VERSION);
 
     SetNameTagDrawDistance(20.0);
-
-
-
+    
     mysql_tquery(dbCon, "SELECT * FROM factions ORDER BY dbid ASC", "Query_LoadFactions");
     mysql_tquery(dbCon, "SELECT * FROM House ORDER BY HouseDBID", "Query_LoadHouse");
     mysql_tquery(dbCon, "SELECT * FROM Business ORDER BY BusinessDBID", "Query_LoadBusiness");
@@ -189,7 +193,6 @@ public OnGameModeInit() {
 
     adminactionlog = CreateLog("server/admin_action");
     allcmdlog = CreateLog("server/allcmdlog");
-
     return 1;
 }
 
@@ -339,6 +342,11 @@ public OnPlayerConnect(playerid) {
 	PlayerInfo[playerid][pFactionInvitedBy] = INVALID_PLAYER_ID;
 
     PlayerInfo[playerid][pHandcuffed] = false;
+
+    PlayerInfo[playerid][pCPU] = 0;
+    PlayerInfo[playerid][pGPU] = 0;
+    PlayerInfo[playerid][pRAM] = 0;
+    PlayerInfo[playerid][pStored] = 0;
 
 	// vehicles.pwn
 	gLastCar[playerid] = 0;

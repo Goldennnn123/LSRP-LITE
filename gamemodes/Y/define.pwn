@@ -9,6 +9,8 @@
 
 #define	MAX_STRING					4000
 
+#define SETUP_TABLE (false)
+
 #define	SPAWN_AT_DEFAULT			0
 #define	SPAWN_AT_HOUSE				1
 #define	SPAWN_AT_FACTION			2
@@ -20,13 +22,13 @@
 #define PLAYER_STATE_DEAD (3)
 
 #define SendUsageMessage(%0,%1) \
-	SendClientMessageEx(%0, COLOR_WHITE, "USAGE: "%1) 
+	SendClientMessageEx(%0, COLOR_WHITE, "USAGE: {FFFFFF}"%1) 
 	
 #define SendErrorMessage(%0,%1) \
-	SendClientMessageEx(%0, COLOR_RED, "ERROR: "%1)
+	SendClientMessageEx(%0, COLOR_RED, "ERROR: {FFFFFF}"%1)
 
 #define SendServerMessage(%0,%1) \
-	SendClientMessageEx(%0, COLOR_ACTION, "SERVER: "%1) 
+	SendClientMessageEx(%0, COLOR_ACTION, "SERVER: {FFFFFF}"%1) 
 
 	
 #define RELEASED(%0) \

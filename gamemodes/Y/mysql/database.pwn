@@ -1,6 +1,11 @@
 
 #include <YSI_Coding\y_hooks> 
 
+stock MySQL:MySQL_GetHandle()
+{
+	return dbCon;
+}
+
 hook OnGameModeInit() {
 
     //‡ª‘¥‚À¡¥ DEBUG 

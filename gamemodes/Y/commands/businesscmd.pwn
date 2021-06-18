@@ -278,6 +278,17 @@ hook OP_PickUpDynamicPickup(playerid, STREAMER_TAG_PICKUP:pickupid)
     return 1;
 }
 
+CMD:buygun(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideBusiness];
+    
 
+    if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_AMMUNITION)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านปืน");
+    if(PlayerInfo[playerid][pWeaponLicense])
+        return SendErrorMessage(playerid, "คุณไม่มีใบอนุญาตสําหรับการซื้อปืน");
+    
+    Dialog_Show(playerid, ชื่อ, DIALOG_STYLE_LIST, "ชื่อหัวข้อ", "รายละเอียดตรงกลาง", "ยืนยัน", "ยกเลิก");
 
-
+    return 1;
+}

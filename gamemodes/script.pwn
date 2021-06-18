@@ -117,19 +117,23 @@ new globalWeather = 2;
 #include "Y/Interior/House1.pwn"
 #include "Y/Interior/House2.pwn"
 #include "Y/Interior/pizza.pwn"
-<<<<<<< HEAD
 
-#include "Y/Map/lsrp_map.pwn"
-//#include "Y/Map/Police.pwn"
+#include "Y/Map/slrp.pwn"
+#include "Y/Map/apartment.pwn"
+#include "Y/Map/LSPDHABOR.pwn"
+#include "Y/Map/Police.pwn"
+#include "Y/Map/swrp.pwn"
+#include "Y/Map/cityhall.pwn"
+#include "Y/Map/IDLEWOOD.pwn"
+#include "Y/Map/LSMALL.pwn"
+#include "Y/Map/LSPDWEST.pwn"
+#include "Y/Map/LSPDHQ.pwn"
+#include "Y/Map/LSPDVINEWOOD.pwn"
+#include "Y/Map/Police.pwn"
 //#include "Y/Map/LSPDHQINT.pwn"
 //#include "Y/Map/LSPDHQEXT.pwn"
 //#include "Y/Map/LSPDHQINT2.pwn"
 
-=======
-//#include "Y/Map/lsrp_map.pwn"
-
-//#include "Y/Map/Police.pwn"
->>>>>>> 8224126a14936fab6757968f16e6599955b8ee8c
 
 #include "Y/systems/car_rental.pwn"
 #include "Y/systems/dmv.pwn"

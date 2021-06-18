@@ -50,9 +50,14 @@ public Query_LoadHouse()
         cache_get_value_name_int(i,"HouseLevel",HouseInfo[i+1][HouseLevel]);
         cache_get_value_name_int(i,"HouseLock",HouseInfo[i+1][HouseLock]);
 
-        cache_get_value_name_float(i,"HousePlacePosX",HouseInfo[i+1][HousePlacePos][0]);
-        cache_get_value_name_float(i,"HousePlacePosY",HouseInfo[i+1][HousePlacePos][1]);
-        cache_get_value_name_float(i,"HousePlacePosZ",HouseInfo[i+1][HousePlacePos][2]);
+        cache_get_value_name_int(i,"HouseStockCPU",HouseInfo[i+1][HouseStockCPU]);
+        cache_get_value_name_int(i,"HouseStockGPU",HouseInfo[i+1][HouseStockGPU]);
+        cache_get_value_name_int(i,"HouseStockRAM",HouseInfo[i+1][HouseStockRAM]);
+        cache_get_value_name_int(i,"HouseStockStored",HouseInfo[i+1][HouseStockStored]);
+
+        cache_get_value_name_int(i,"HousePrice",HouseInfo[i+1][HousePrice]);
+        cache_get_value_name_int(i,"HouseLevel",HouseInfo[i+1][HouseLevel]);
+        cache_get_value_name_int(i,"HouseLock",HouseInfo[i+1][HouseLock]);
 
 
         cache_get_value_name_int(i,"HouseEle",HouseInfo[i+1][HouseEle]);

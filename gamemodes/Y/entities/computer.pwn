@@ -11,8 +11,12 @@ enum COMPUTER_DATA
     ComputerGPU[5],
     ComputerStored,
 
-    ComputerPos[6],
+    Float:ComputerPos[6],
     ComputerPosWorld,
     ComputerPosInterior,
+    ComputerSpawn,
+    ComputerStartBTC,
+    Float:ComputerBTC,
+    ComputerObject,
 }
-new ComputerInfo[MAX_COMPUTER][COMPUTER_DATA];
+new ComputerInfo[MAX_COMPUTER][COMPUTER_DATA], ComputerEdit[MAX_PLAYERS];

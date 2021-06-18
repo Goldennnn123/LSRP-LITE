@@ -435,6 +435,14 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pCPU = %d, pGPU = %d, pRAM = %d, pStored = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pCPU],
+			PlayerInfo[playerid][pGPU],
+			PlayerInfo[playerid][pRAM],
+			PlayerInfo[playerid][pStored],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 		mysql_finish(query);
 	}
 	return 1;
@@ -520,6 +528,12 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pTuckingLicenseRevoke",PlayerInfo[playerid][pTuckingLicenseRevoke]);
 	cache_get_value_name_int(0, "pTuckingLicenseWarn",PlayerInfo[playerid][pTuckingLicenseWarn]);
 	cache_get_value_name_int(0, "pTuckingLicenseSus",PlayerInfo[playerid][pTuckingLicenseSus]);
+
+	cache_get_value_name_int(0, "pCPU",PlayerInfo[playerid][pCPU]);
+	cache_get_value_name_int(0, "pGPU",PlayerInfo[playerid][pGPU]);
+	cache_get_value_name_int(0, "pRAM",PlayerInfo[playerid][pRAM]);
+	cache_get_value_name_int(0, "pStored",PlayerInfo[playerid][pStored]);
+
 	new str[MAX_STRING];
 	
 	for(new i = 0; i < 13; i++)

@@ -22,13 +22,13 @@
 #define PLAYER_STATE_DEAD (3)
 
 #define SendUsageMessage(%0,%1) \
-	SendClientMessageEx(%0, COLOR_WHITE, "USAGE: "%1) 
+	SendClientMessageEx(%0, COLOR_WHITE, "USAGE: {FFFFFF}"%1) 
 	
 #define SendErrorMessage(%0,%1) \
-	SendClientMessageEx(%0, COLOR_RED, "ERROR: "%1)
+	SendClientMessageEx(%0, COLOR_RED, "ERROR: {FFFFFF}"%1)
 
 #define SendServerMessage(%0,%1) \
-	SendClientMessageEx(%0, COLOR_ACTION, "SERVER: "%1) 
+	SendClientMessageEx(%0, COLOR_ACTION, "SERVER: {FFFFFF}"%1) 
 
 	
 #define RELEASED(%0) \

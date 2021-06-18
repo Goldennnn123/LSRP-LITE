@@ -101,6 +101,7 @@ new globalWeather = 2;
 #include "Y/mysql/SaveEntrance.pwn"
 #include "Y/mysql/SaveFacVehicle.pwn"
 #include "Y/mysql/SaveMc_Garage.pwn"
+#include "Y/mysql/SaveComputer.pwn"
 
 #include "Y/registration/login.pwn"
 #include "Y/character/character.pwn"
@@ -117,7 +118,6 @@ new globalWeather = 2;
 #include "Y/Interior/House1.pwn"
 #include "Y/Interior/House2.pwn"
 #include "Y/Interior/pizza.pwn"
-<<<<<<< HEAD
 
 #include "Y/Map/lsrp_map.pwn"
 //#include "Y/Map/Police.pwn"
@@ -125,11 +125,6 @@ new globalWeather = 2;
 //#include "Y/Map/LSPDHQEXT.pwn"
 //#include "Y/Map/LSPDHQINT2.pwn"
 
-=======
-//#include "Y/Map/lsrp_map.pwn"
-
-//#include "Y/Map/Police.pwn"
->>>>>>> 8224126a14936fab6757968f16e6599955b8ee8c
 
 #include "Y/systems/car_rental.pwn"
 #include "Y/systems/dmv.pwn"
@@ -145,7 +140,7 @@ new globalWeather = 2;
 
 #include "Y/test/functionPlayer.pwn"
 
-#include "Y/systems/textdraw/textdraw_function.pwn"
+#include "Y/systems/textdraw/computer.pwn"
 
 #if SETUP_TABLE
     #include "install"
@@ -188,7 +183,6 @@ public OnGameModeInit() {
 
     adminactionlog = CreateLog("server/admin_action");
     allcmdlog = CreateLog("server/allcmdlog");
-
     return 1;
 }
 
@@ -338,6 +332,11 @@ public OnPlayerConnect(playerid) {
 	PlayerInfo[playerid][pFactionInvitedBy] = INVALID_PLAYER_ID;
 
     PlayerInfo[playerid][pHandcuffed] = false;
+
+    PlayerInfo[playerid][pCPU] = 0;
+    PlayerInfo[playerid][pGPU] = 0;
+    PlayerInfo[playerid][pRAM] = 0;
+    PlayerInfo[playerid][pStored] = 0;
 
 	// vehicles.pwn
 	gLastCar[playerid] = 0;

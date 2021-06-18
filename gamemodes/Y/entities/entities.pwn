@@ -130,6 +130,11 @@ enum E_PLAYER_DATA
 	bool:pTuckingLicenseRevoke,
 	bool:pTuckingLicenseSus,
 
+	pCPU,
+	pGPU,
+	pRAM,
+	pStored,
+
 	bool:pHandcuffed,
 
 	bool:pTaser,
@@ -139,7 +144,7 @@ enum E_PLAYER_DATA
 	pFooterTimer
 };
 
-new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS];
+new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];
 
 enum P_MASTER_ACCOUNTS
 {
@@ -310,6 +315,12 @@ enum E_HOUSE_INFO
 	bool:HouseSwicth,
 	HouseEle,
 	HouseTimerEle,
+
+
+	HouseStockCPU,
+	HouseStockGPU,
+	HouseStockRAM,
+	HouseStockStored,
 	
 }
 new HouseInfo[MAX_HOUSE][E_HOUSE_INFO];

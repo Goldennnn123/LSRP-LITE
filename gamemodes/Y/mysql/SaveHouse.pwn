@@ -56,6 +56,14 @@ stock Savehouse(id)
         HouseInfo[id][HouseDBID]);
     mysql_tquery(dbCon, query);
 
+    mysql_format(dbCon, query, sizeof(query),"UPDATE house SET HouseStockCPU = %d, HouseStockGPU = %d, HouseStockRAM = %d, HouseStockStored = %d WHERE HouseDBID = %i",
+        HouseInfo[id][HouseStockCPU],
+        HouseInfo[id][HouseStockGPU],
+        HouseInfo[id][HouseStockRAM],
+        HouseInfo[id][HouseStockStored],
+        HouseInfo[id][HouseDBID]);
+    mysql_tquery(dbCon, query);
+
 
     return 1;
 }

@@ -16,7 +16,7 @@ enum P_SELECT_COMPUTER
     p_SelePrice,
 }
 new PlayerSelectCom[MAX_PLAYERS][P_SELECT_COMPUTER];
-new PlayerSelectSlot[MAX_PLAYERS];
+new PlayerSelectSlot[MAX_PLAYERS], PlayerOldComp[MAX_PLAYERS];
 
 
 hook OP_Connect(playerid)
@@ -77,6 +77,8 @@ public LoadComputer()
 
             ComputerInfo[i+1][ComputerObject] = CreateDynamicObject(19893, ComputerInfo[i+1][ComputerPos][0], ComputerInfo[i+1][ComputerPos][1], ComputerInfo[i+1][ComputerPos][2], ComputerInfo[i+1][ComputerPos][3], ComputerInfo[i+1][ComputerPos][4], ComputerInfo[i+1][ComputerPos][5], ComputerInfo[i+1][ComputerPosWorld], ComputerInfo[i+1][ComputerPosInterior]);
         }
+
+        ComputerInfo[i+1][ComputerOn] = false;
 
         countcomputer++;
     }
@@ -171,21 +173,21 @@ stock ShowPlayerComputerSpec(playerid, option)
     {
         new str[255], longstr[255];
     
-        format(str, sizeof(str), "CPU: %s\n", ReturnCPUName(playerid));
+        format(str, sizeof(str), "CPU: %s\n", ReturnCPUNames(PlayerSelectCom[playerid][p_SelectCPU]));
         strcat(longstr, str);
-        format(str, sizeof(str), "GPU 1: %s\n", ReturnGPUName(playerid, 0));
+        format(str, sizeof(str), "GPU 1: %s\n", ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][0]));
         strcat(longstr, str);
-        format(str, sizeof(str), "GPU 2: %s\n", ReturnGPUName(playerid, 1));
+        format(str, sizeof(str), "GPU 2: %s\n", ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][1]));
         strcat(longstr, str);
-        format(str, sizeof(str), "GPU 3: %s\n", ReturnGPUName(playerid, 2));
+        format(str, sizeof(str), "GPU 3: %s\n", ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][2]));
         strcat(longstr, str);
-        format(str, sizeof(str), "GPU 4: %s\n", ReturnGPUName(playerid, 3));
+        format(str, sizeof(str), "GPU 4: %s\n", ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][3]));
         strcat(longstr, str);
-        format(str, sizeof(str), "GPU 5: %s\n", ReturnGPUName(playerid, 4));
+        format(str, sizeof(str), "GPU 5: %s\n", ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][4]));
         strcat(longstr, str);
-        format(str, sizeof(str), "RAM: %s \n", ReturnRam(playerid));
+        format(str, sizeof(str), "RAM: %s \n", ReturnRams(PlayerSelectCom[playerid][p_SelectRAM]));
         strcat(longstr, str);
-        format(str, sizeof(str), "Stored: %s\n", ReturnStored(playerid));
+        format(str, sizeof(str), "Stored: %s\n", ReturnStoreds(PlayerSelectCom[playerid][p_SelectStored]));
         strcat(longstr, str);
 
         if(PlayerSelectCom[playerid][p_SelePrice])
@@ -200,30 +202,15 @@ stock ShowPlayerComputerSpec(playerid, option)
     {
         new str[255], longstr[255];
     
-        format(str, sizeof(str), "CPU: %s\n", ReturnCPUName(playerid));
+        format(str, sizeof(str), "CPU: %s\n", ReturnCPUNames(PlayerInfo[playerid][pCPU] || PlayerSelectCom[playerid][p_SelectCPU]));
         strcat(longstr, str);
 
-        if(PlayerSelectCom[playerid][p_SelectOption] == 2)
-        {
-            format(str, sizeof(str), "GPU: %s\n", ReturnGPUName(playerid, 0));
-            strcat(longstr, str);
-
-        }
-        else
-        {
-            format(str, sizeof(str), "GPU 2: %s\n", ReturnGPUName(playerid, 1));
-            strcat(longstr, str);
-            format(str, sizeof(str), "GPU 3: %s\n", ReturnGPUName(playerid, 2));
-            strcat(longstr, str);
-            format(str, sizeof(str), "GPU 4: %s\n", ReturnGPUName(playerid, 3));
-            strcat(longstr, str);
-            format(str, sizeof(str), "GPU 5: %s\n", ReturnGPUName(playerid, 4));
-            strcat(longstr, str);
-        }
-
-        format(str, sizeof(str), "RAM: %s \n", ReturnRam(playerid));
+        format(str, sizeof(str), "GPU: %s\n", ReturnGPUNames(PlayerInfo[playerid][pGPU] || PlayerSelectCom[playerid][p_SelectGPU][0]));
         strcat(longstr, str);
-        format(str, sizeof(str), "Stored: %s\n", ReturnStored(playerid));
+
+        format(str, sizeof(str), "RAM: %s \n", ReturnRams(PlayerInfo[playerid][pRAM] || PlayerSelectCom[playerid][p_SelectRAM]));
+        strcat(longstr, str);
+        format(str, sizeof(str), "Stored: %s\n", ReturnStoreds(PlayerInfo[playerid][pStored] || PlayerSelectCom[playerid][p_SelectStored]));
         strcat(longstr, str);
 
         if(PlayerSelectCom[playerid][p_SelePrice])
@@ -252,13 +239,37 @@ CMD:opencom(playerid, params[])
 
     new id = IsPlayerNearComputer(playerid);
 
-    if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
-        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
+    /*if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");*/
 
-    ComputerInfo[id][ComputerOn] = true;
+
+    if(!ComputerInfo[id][ComputerCPU])
+        return SendErrorMessage(playerid, "คุณไม่ได้มี "EMBED_LIGHTRED"CPU"EMBED_WHITE" อยู่ในเครื่องคอมพิวเตอร์ของคุณไม่สามารถเปิดคอมพิวเตอร์ได้");
+
+    if(!ComputerInfo[id][ComputerRAM])
+        return SendErrorMessage(playerid, "คุณไม่ได้มี "EMBED_LIGHTRED"RAM"EMBED_WHITE" อยู่ในเครื่องคอมพิวเตอร์ของคุณไม่สามารถเปิดคอมพิวเตอร์ได้");
+
     SendClientMessage(playerid, -1, "เปิดคอม......");
+    if(ComputerInfo[id][ComputerOn])
+    {
+        LoadTD_Computer(playerid);
+        ShowTD_Computer(playerid);
+    }
+    else
+    {
+        SetTimerEx("OpenComputer", 2000, false, "dd",playerid, id);
+    }
+    return 1;
+}
+
+
+forward OpenComputer(playerid, id);
+public OpenComputer(playerid, id)
+{
+    ComputerInfo[id][ComputerOn] = true;
     LoadTD_Computer(playerid);
     ShowTD_Computer(playerid);
+    SendClientMessage(playerid, COLOR_DARKGREEN, "ระบบ Windows เริ่มต้น");
     return 1;
 }
 
@@ -905,8 +916,6 @@ stock IsPlayerNearComputer(playerid)
         
         if(IsPlayerInRangeOfPoint(playerid, 2.0, ComputerInfo[i][ComputerPos][0], ComputerInfo[i][ComputerPos][1], ComputerInfo[i][ComputerPos][2]))
             return i;
-
-        else  return 0;
     }
 
     return 0;
@@ -934,4 +943,87 @@ public OnplayerBuyComputerSucess(playerid, newid, CPU, GPU1, GPU2, GPU3, GPU4, G
     return 1;
 }
 
+
+
+
+stock ReturnCPUNames(type)
+{
+    new str_sec[255];
+
+    if(type != 0)
+    {
+        switch(type)
+        {
+            case 1: format(str_sec, sizeof(str_sec), "I3");
+            case 2: format(str_sec, sizeof(str_sec), "I5");
+            case 3: format(str_sec, sizeof(str_sec), "I7");
+            case 4: format(str_sec, sizeof(str_sec), "I9");
+        }
+    }
+    else format(str_sec, sizeof(str_sec), "ไม่มี");
+
+    return str_sec;
+}
+
+
+stock ReturnGPUNames(type)
+{
+    new str_sec[255];
+
+    if(type)
+    {
+        switch(type)
+        {
+            case 1: format(str_sec, sizeof(str_sec), "GTX 1650");
+            case 2: format(str_sec, sizeof(str_sec), "RTX 2060");
+            case 3: format(str_sec, sizeof(str_sec), "RTX 2070");
+            case 4: format(str_sec, sizeof(str_sec), "RTX 2080");
+            case 5: format(str_sec, sizeof(str_sec), "RTX 2090");
+        }
+    }
+    else format(str_sec, sizeof(str_sec), "ไม่มี");
+
+    return str_sec;
+}
+
+stock ReturnRams(type)
+{
+    new str_sec[255];
+
+    if(type)
+    {
+        switch(type)
+        {
+            case 8: format(str_sec, sizeof(str_sec), "8 GB");
+            case 16: format(str_sec, sizeof(str_sec), "16 GB");
+            case 32: format(str_sec, sizeof(str_sec), "32 GB");
+            case 64: format(str_sec, sizeof(str_sec), "64 GB");
+            case 128: format(str_sec, sizeof(str_sec), "128 GB");
+        }
+    }
+    else format(str_sec, sizeof(str_sec), "ไม่มี");
+
+    return str_sec;
+}
+
+
+stock ReturnStoreds(type)
+{
+    new str_sec[255];
+
+    if(type)
+    {
+        switch(type)
+        {
+            case 120: format(str_sec, sizeof(str_sec), "SSD 120 GB");
+            case 256: format(str_sec, sizeof(str_sec), "SSD 256 GB");
+            case 480: format(str_sec, sizeof(str_sec), "SSD 480 GB");
+            case 500: format(str_sec, sizeof(str_sec), "SSD 500 GB");
+            case 1000: format(str_sec, sizeof(str_sec), "SSD 1 TB");
+        }
+    }
+    else format(str_sec, sizeof(str_sec), "0 GB");
+
+    return str_sec;
+}
 

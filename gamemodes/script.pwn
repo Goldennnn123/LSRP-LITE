@@ -447,7 +447,9 @@ public OnPlayerSpawn(playerid) {
 
             SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseInteriorWorld]);
             SetPlayerInterior(playerid, HouseInfo[id][HouseInteriorID]);
-            SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]);
+            SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1]-2, HouseInfo[id][HouseInterior][2]);
+            TogglePlayerControllable(playerid, 0);
+            SetTimerEx("OnPlayerEnterProperty", 2000, false, "ii", playerid, id); 
 
             PlayerInfo[playerid][pInsideProperty] = id;
         }

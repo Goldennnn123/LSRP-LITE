@@ -293,33 +293,81 @@ CMD:placecom(playerid, params[])
 
 CMD:editcom(playerid, params[])
 {
-    new id = PlayerInfo[playerid][pInsideProperty];
+    new id, option[32];
 
     if(!PlayerInfo[playerid][pInsideProperty])
         return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} คุณไม่ได้อยู่ในบ้าน");
 
-    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+    if(HouseInfo[PlayerInfo[playerid][pInsideProperty]][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
         return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} บ้านหลังนี้ไม่ใช่บ้านของคุณ");
 
     if(PlayerEditObject[playerid])
         return SendErrorMessage(playerid, "คุณกำลังแก้ไข Object อยู่");
 
-    if(sscanf(params, "d", id))
-        return SendUsageMessage(playerid, "/placecom < ไอดีคอมพิวเตอร์ของคุณ >");
+    id = IsPlayerNearComputer(playerid);
 
-    if(!ComputerInfo[id][ComputerDBID])
+    if(id == 0)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้คอม หรือ แล็ปท็อป");
+
+    if(sscanf(params, "s[32]", option))
+        return SendUsageMessage(playerid, "/editcom < option >");
+
+
+    if(!strcmp(option, "pos"))
+    {
+        if(!ComputerInfo[id][ComputerDBID])
         return SendErrorMessage(playerid,"ไม่มีคอมที่คุณเลือก");
     
-    if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
-        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
+        if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+            return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
 
-    if(!ComputerInfo[id][ComputerSpawn])
-        return SendErrorMessage(playerid, "คอมพิวเตอร์ไม่ได้ถูกวาง");
+        if(!ComputerInfo[id][ComputerSpawn])
+            return SendErrorMessage(playerid, "คอมพิวเตอร์ไม่ได้ถูกวาง");
+
+        if(IsPlayerNearComputer(playerid) != id)
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้คอมพิวเตอร์ หรือ แล็ปท็อป");
 
 
-    DestroyDynamicObject(ComputerInfo[id][ComputerObject]);
+        DestroyDynamicObject(ComputerInfo[id][ComputerObject]);
 
-    EditObjectComputer(playerid, id);   
+        EditObjectComputer(playerid, id);
+        return 1;
+    }
+    else if(!strcmp(option, "upgrade"))
+    {
+        if(!ComputerInfo[id][ComputerDBID])
+            return SendErrorMessage(playerid,"ไม่มีคอมที่คุณเลือก");
+    
+        if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+            return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
+
+        if(!ComputerInfo[id][ComputerSpawn])
+            return SendErrorMessage(playerid, "คอมพิวเตอร์ไม่ได้ถูกวาง");
+
+        if(IsPlayerNearComputer(playerid) != id)
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้คอมพิวเตอร์ หรือ แล็ปท็อป");
+
+        new str[255], longstr[255];
+        format(str, sizeof(str), "CPU: %s\n", ReturnCPUNames(ComputerInfo[id][ComputerCPU]));
+        strcat(longstr, str);
+        format(str, sizeof(str), "GPU 1: %s\n", ReturnGPUNames(ComputerInfo[id][ComputerGPU][0]));
+        strcat(longstr, str);
+        format(str, sizeof(str), "GPU 2: %s\n", ReturnGPUNames(ComputerInfo[id][ComputerGPU][1]));
+        strcat(longstr, str);
+        format(str, sizeof(str), "GPU 3: %s\n", ReturnGPUNames(ComputerInfo[id][ComputerGPU][2]));
+        strcat(longstr, str);
+        format(str, sizeof(str), "GPU 4: %s\n", ReturnGPUNames(ComputerInfo[id][ComputerGPU][3]));
+        strcat(longstr, str);
+        format(str, sizeof(str), "GPU 5: %s\n", ReturnGPUNames(ComputerInfo[id][ComputerGPU][4]));
+        strcat(longstr, str);
+        format(str, sizeof(str), "RAM: %s \n", ReturnRams(ComputerInfo[id][ComputerRAM]));
+        strcat(longstr, str);
+        format(str, sizeof(str), "Stored: %s\n", ReturnStoreds(ComputerInfo[id][ComputerStored]));
+        strcat(longstr, str);
+
+        Dialog_Show(playerid, D_COMPUTER_UPGRAD_LIST, DIALOG_STYLE_LIST, "Upgrade computer:", longstr, "ยืนยัน", "ยกเลิก");
+        return 1;
+    }
     return 1;
 }
 
@@ -391,6 +439,387 @@ hook OP_EditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:
                 return 1;
             }
 
+            return 1;
+        }
+    }
+    return 1;
+}
+
+Dialog:D_COMPUTER_UPGRAD_LIST(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    if(!IsPlayerNearComputer(playerid))
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    new id = IsPlayerNearComputer(playerid), str[400], longstr[400];
+
+    switch(listitem)
+    {
+        case 0: // CPU
+        {
+            format(str, sizeof(str), "CPU ที่คุณมี: %s\n",ReturnCPUNames(PlayerInfo[playerid][pCPU]));
+            strcat(longstr, str);
+
+            if(ComputerInfo[id][ComputerCPU])
+            {
+                format(str, sizeof(str), "[ ! ] ถอด CPU %s ออก\n",ReturnCPUNames(ComputerInfo[id][ComputerCPU]));
+                strcat(longstr, str);
+            }
+
+            Dialog_Show(playerid, D_COM_UPGRAD_CPU, DIALOG_STYLE_LIST, "Upgrad CPU:", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+        case 1: // GPU SLOTID 1
+        {
+            format(str, sizeof(str), "GPU ที่คุณมี: %s\n",ReturnGPUNames(PlayerInfo[playerid][pGPU]));
+            strcat(longstr, str);
+
+            if(ComputerInfo[id][ComputerGPU][0])
+            {
+                format(str, sizeof(str), "[ ! ] ถอด GPU %s ออก\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][0]));
+                strcat(longstr, str);
+            }
+            
+            PlayerSelectSlot[playerid] = 0;
+            Dialog_Show(playerid, D_COM_UPGRAD_GPU, DIALOG_STYLE_LIST, "Upgrad GPU:", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+        case 2: // GPU SLOTID 2
+        {
+
+            format(str, sizeof(str), "GPU ที่คุณมี: %s\n",ReturnGPUNames(PlayerInfo[playerid][pGPU]));
+            strcat(longstr, str);
+
+            if(ComputerInfo[id][ComputerGPU][1])
+            {
+                format(str, sizeof(str), "[ ! ] ถอด GPU %s ออก\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][1]));
+                strcat(longstr, str);
+            }
+            
+            PlayerSelectSlot[playerid] = 1;
+            Dialog_Show(playerid, D_COM_UPGRAD_GPU, DIALOG_STYLE_LIST, "Upgrad GPU:", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+        case 3: // GPU SLOTID 3
+        {
+            format(str, sizeof(str), "GPU ที่คุณมี: %s\n",ReturnGPUNames(PlayerInfo[playerid][pGPU]));
+            strcat(longstr, str);
+
+            if(ComputerInfo[id][ComputerGPU][2])
+            {
+                format(str, sizeof(str), "[ ! ] ถอด GPU %s ออก\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][2]));
+                strcat(longstr, str);
+            }
+            
+            PlayerSelectSlot[playerid] = 2;
+            Dialog_Show(playerid, D_COM_UPGRAD_GPU, DIALOG_STYLE_LIST, "Upgrad GPU:", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+        case 4: // GPU SLOTID 4
+        {
+            format(str, sizeof(str), "GPU ที่คุณมี: %s\n",ReturnGPUNames(PlayerInfo[playerid][pGPU]));
+            strcat(longstr, str);
+
+            if(ComputerInfo[id][ComputerGPU][3])
+            {
+                format(str, sizeof(str), "[ ! ] ถอด GPU %s ออก\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][3]));
+                strcat(longstr, str);
+            }
+            
+            PlayerSelectSlot[playerid] = 3;
+            Dialog_Show(playerid, D_COM_UPGRAD_GPU, DIALOG_STYLE_LIST, "Upgrad GPU:", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+        case 5: // GPU SLOTID 5
+        {
+            format(str, sizeof(str), "GPU ที่คุณมี: %s\n",ReturnGPUNames(PlayerInfo[playerid][pGPU]));
+            strcat(longstr, str);
+
+            if(ComputerInfo[id][ComputerGPU][4])
+            {
+                format(str, sizeof(str), "[ ! ] ถอด GPU %s ออก\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][4]));
+                strcat(longstr, str);
+            }
+            
+            PlayerSelectSlot[playerid] = 4;
+            Dialog_Show(playerid, D_COM_UPGRAD_GPU, DIALOG_STYLE_LIST, "Upgrad GPU:", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+        case 6: // RAM
+        {
+            format(str, sizeof(str), "RAM ที่คุณมี: %s\n",ReturnRams(PlayerInfo[playerid][pRAM]));
+            strcat(longstr, str);
+
+            if(ComputerInfo[id][ComputerRAM])
+            {
+                format(str, sizeof(str), "[ ! ] ถอด RAM %s ออก\n",ReturnRams(ComputerInfo[id][ComputerRAM]));
+                strcat(longstr, str);
+            }
+        
+            Dialog_Show(playerid, D_COM_UPGRAD_RAM, DIALOG_STYLE_LIST, "Upgrad RAM:", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+        case 7: // STORED
+        {
+            format(str, sizeof(str), "SSD ที่คุณมี: %s\n",ReturnStoreds(PlayerInfo[playerid][pStored]));
+            strcat(longstr, str);
+
+            if(ComputerInfo[id][ComputerStored])
+            {
+                format(str, sizeof(str), "[ ! ] ถอด SSD %s ออก\n",ReturnStoreds(ComputerInfo[id][ComputerStored]));
+                strcat(longstr, str);
+            }
+        
+            Dialog_Show(playerid, D_COM_UPGRAD_STORED, DIALOG_STYLE_LIST, "Upgrad STORED:", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
+    }
+    return 1;
+}
+
+Dialog:D_COM_UPGRAD_CPU(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    if(!IsPlayerNearComputer(playerid))
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    new id = IsPlayerNearComputer(playerid);
+
+    switch(listitem)
+    {
+        case 0:
+        {
+            if(!PlayerInfo[playerid][pCPU])
+                return SendErrorMessage(playerid, "คุณไม่มี CPU อยู่ในตัว");
+
+            
+            if(ComputerInfo[id][ComputerCPU] == PlayerInfo[playerid][pCPU])
+            {
+                SendErrorMessage(playerid, "คุณไม่สามารถเปลี่ยน CPU ที่รุ่นเดิมได้");
+                PlayerSelectSlot[playerid] = 0;
+                CharacterSave(playerid);
+                SaveComputer(id);
+                return 1;
+            }
+
+            PlayerOldComp[playerid] = ComputerInfo[id][ComputerCPU];
+            ComputerInfo[id][ComputerCPU] = PlayerInfo[playerid][pCPU];
+            PlayerInfo[playerid][pCPU] = PlayerOldComp[playerid];
+            SendClientMessageEx(playerid, -1, "คุณได้อัพเกรด CPU เป็น %s", ReturnCPUNames(ComputerInfo[id][ComputerCPU]));
+            ClearSelectBuyComputer(playerid);
+            CharacterSave(playerid);
+            SaveComputer(id);
+            return 1;
+        }
+        case 1:
+        {
+            if(!ComputerInfo[id][ComputerCPU])
+                return SendErrorMessage(playerid, "คอมพิวเตอร์ หรือ แล็ปท็อปเครื่องนี้ ไม่มี CPU");
+
+            if(PlayerInfo[playerid][pCPU])
+                return SendErrorMessage(playerid, "คุณมี CPU อยู่ในตัว");
+            
+            SendClientMessageEx(playerid, -1, "คุณได้ถอด CPU  %s ออก", ReturnCPUNames(ComputerInfo[id][ComputerCPU]));
+            PlayerInfo[playerid][pCPU] = ComputerInfo[id][ComputerCPU];
+            ComputerInfo[id][ComputerCPU] = 0;
+            CharacterSave(playerid);
+            SaveComputer(id);
+            return 1;
+        }
+    }
+
+
+    return 1;
+}
+
+
+Dialog:D_COM_UPGRAD_GPU(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    if(!IsPlayerNearComputer(playerid))
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    new id = IsPlayerNearComputer(playerid), slotid = PlayerSelectSlot[playerid];
+
+    switch(listitem)
+    {
+        case 0:
+        {
+            if(ComputerInfo[id][ComputerGPU][slotid] == PlayerInfo[playerid][pGPU])
+            {
+                SendErrorMessage(playerid, "คุณไม่สามารถเปลี่ยน GPU ที่รุ่นเดิมได้");
+                PlayerSelectSlot[playerid] = 0;
+                CharacterSave(playerid);
+                SaveComputer(id);
+                return 1;
+            }
+
+            PlayerOldComp[playerid] = ComputerInfo[id][ComputerGPU][slotid];
+            ComputerInfo[id][ComputerGPU][slotid] = PlayerInfo[playerid][pGPU];
+            PlayerInfo[playerid][pGPU] = PlayerOldComp[playerid];
+            SendClientMessageEx(playerid, -1, "คุณได้อัพเกรด GPU Slot %d เป็น %s",  slotid,ReturnGPUNames(ComputerInfo[id][ComputerGPU][slotid]));
+            PlayerSelectSlot[playerid] = 0;
+            CharacterSave(playerid);
+            SaveComputer(id);
+            return 1;
+        }
+        case 1:
+        {
+            if(PlayerInfo[playerid][pCPU])
+                return SendErrorMessage(playerid, "คุณมี GPU อยู่ในตัว");
+
+            SendClientMessageEx(playerid, -1, "คุณได้ถอด GPU  %s ออก", ReturnGPUNames(ComputerInfo[id][ComputerGPU][slotid]));
+            PlayerInfo[playerid][pGPU] = ComputerInfo[id][ComputerGPU][slotid];
+            ComputerInfo[id][ComputerGPU][slotid] = 0;
+            CharacterSave(playerid);
+            SaveComputer(id);
+            return 1;
+        
+        }
+    }
+    return 1;
+}
+
+Dialog:D_COM_UPGRAD_RAM(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    if(!IsPlayerNearComputer(playerid))
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    new id = IsPlayerNearComputer(playerid);
+
+    switch(listitem)
+    {
+        case 0:
+        {
+            if(!PlayerInfo[playerid][pRAM])
+                return SendErrorMessage(playerid, "คุณไม่มี RAM อยู่ในตัว");
+
+            
+            if(ComputerInfo[id][ComputerRAM] == PlayerInfo[playerid][pRAM])
+            {
+                SendErrorMessage(playerid, "คุณไม่สามารถเปลี่ยน RAM ที่รุ่นเดิมได้");
+                CharacterSave(playerid);
+                SaveComputer(id);
+                return 1;
+            }
+
+            PlayerOldComp[playerid] = ComputerInfo[id][ComputerRAM];
+            ComputerInfo[id][ComputerRAM] = PlayerInfo[playerid][pRAM];
+            PlayerInfo[playerid][pRAM] = PlayerOldComp[playerid];
+            SendClientMessageEx(playerid, -1, "คุณได้อัพเกรด RAM เป็น %s", ReturnRams(ComputerInfo[id][ComputerRAM]));
+            ClearSelectBuyComputer(playerid);
+            CharacterSave(playerid);
+            SaveComputer(id);
+            return 1;
+        }
+        case 1:
+        {
+            if(!ComputerInfo[id][ComputerRAM])
+                return SendErrorMessage(playerid, "คอมพิวเตอร์ หรือ แล็ปท็อปเครื่องนี้ ไม่มี RAM");
+
+            if(PlayerInfo[playerid][pRAM])
+                return SendErrorMessage(playerid, "คุณมี RAM อยู่ในตัว");
+            
+            SendClientMessageEx(playerid, -1, "คุณได้ถอด RAM  %s ออก", ReturnRams(ComputerInfo[id][ComputerRAM]));
+            PlayerInfo[playerid][pRAM] = ComputerInfo[id][ComputerRAM];
+            ComputerInfo[id][ComputerRAM] = 0;
+            CharacterSave(playerid);
+            SaveComputer(id);
+            return 1;
+        }
+    }
+
+
+    return 1;
+}
+
+Dialog:D_COM_UPGRAD_STORED(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    if(!IsPlayerNearComputer(playerid))
+    {
+        ClearSelectBuyComputer(playerid);
+        return 1;
+    }
+
+    new id = IsPlayerNearComputer(playerid);
+
+    switch(listitem)
+    {
+        case 0:
+        {
+            if(!PlayerInfo[playerid][pStored])
+                return SendErrorMessage(playerid, "คุณไม่มี SSD อยู่ในตัว");
+
+            
+            if(ComputerInfo[id][ComputerStored] == PlayerInfo[playerid][pStored])
+            {
+                SendErrorMessage(playerid, "คุณไม่สามารถเปลี่ยน SSD ที่รุ่นเดิมได้");
+                CharacterSave(playerid);
+                SaveComputer(id);
+                return 1;
+            }
+
+            PlayerOldComp[playerid] = ComputerInfo[id][ComputerStored];
+            ComputerInfo[id][ComputerStored] = PlayerInfo[playerid][pStored];
+            PlayerInfo[playerid][pStored] = PlayerOldComp[playerid];
+            SendClientMessageEx(playerid, -1, "คุณได้อัพเกรด SSD เป็น %s", ReturnStoreds(ComputerInfo[id][ComputerStored]));
+            ClearSelectBuyComputer(playerid);
+            CharacterSave(playerid);
+            SaveComputer(id);
+            return 1;
+        }
+        case 1:
+        {
+            if(!ComputerInfo[id][ComputerStored])
+                return SendErrorMessage(playerid, "คอมพิวเตอร์ หรือ แล็ปท็อปเครื่องนี้ ไม่มี SSD");
+
+            if(PlayerInfo[playerid][pStored])
+                return SendErrorMessage(playerid, "คุณมี SSD อยู่ในตัว");
+            
+            SendClientMessageEx(playerid, -1, "คุณได้ถอด SSD %s ออก", ReturnStoreds(ComputerInfo[id][ComputerStored]));
+            PlayerInfo[playerid][pStored] = ComputerInfo[id][ComputerStored];
+            ComputerInfo[id][ComputerStored] = 0;
+            CharacterSave(playerid);
+            SaveComputer(id);
             return 1;
         }
     }

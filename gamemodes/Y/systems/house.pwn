@@ -15,6 +15,20 @@ hook OnPlayerConnect(playerid)
     PlayerCreHouse[playerid] = "";
     PlayerCreHousePrice[playerid] = 0;
     PlayerCreHouseLevel[playerid] = 0;
+
+    PlayerSwicthOff[playerid][0] = CreatePlayerTextDraw(playerid, 316.000000, 2.000000, "_");
+	PlayerTextDrawFont(playerid, PlayerSwicthOff[playerid][0], 1);
+	PlayerTextDrawLetterSize(playerid, PlayerSwicthOff[playerid][0], 0.600000, 48.999988);
+	PlayerTextDrawTextSize(playerid, PlayerSwicthOff[playerid][0], 1920.500000, 1080.500000);
+	PlayerTextDrawSetOutline(playerid, PlayerSwicthOff[playerid][0], 1);
+	PlayerTextDrawSetShadow(playerid, PlayerSwicthOff[playerid][0], 0);
+	PlayerTextDrawAlignment(playerid, PlayerSwicthOff[playerid][0], 2);
+	PlayerTextDrawColor(playerid, PlayerSwicthOff[playerid][0], -1);
+	PlayerTextDrawBackgroundColor(playerid, PlayerSwicthOff[playerid][0], 255);
+	PlayerTextDrawBoxColor(playerid, PlayerSwicthOff[playerid][0], 225);
+	PlayerTextDrawUseBox(playerid, PlayerSwicthOff[playerid][0], 1);
+	PlayerTextDrawSetProportional(playerid, PlayerSwicthOff[playerid][0], 1);
+	PlayerTextDrawSetSelectable(playerid, PlayerSwicthOff[playerid][0], 0);
     return 1;
 }
 

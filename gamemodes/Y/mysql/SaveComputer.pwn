@@ -2,10 +2,11 @@ stock SaveComputer(id)
 {
     new query[1000];
 
-    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerOwnerDBID = %d, ComputerOn = %d, ComputerSpawn = %d WHERE ComputerDBID = %d",
+    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerOwnerDBID = %d, ComputerOn = %d, ComputerSpawn = %d, ComputerHouseDBID = %d WHERE ComputerDBID = %d",
         ComputerInfo[id][ComputerOwnerDBID],
         ComputerInfo[id][ComputerOn],
         ComputerInfo[id][ComputerSpawn],
+        ComputerInfo[id][ComputerHouseDBID],
         ComputerInfo[id][ComputerDBID]);
     mysql_tquery(dbCon, query);
 
@@ -32,7 +33,7 @@ stock SaveComputer(id)
         ComputerInfo[id][ComputerDBID]);
     mysql_tquery(dbCon, query);
 
-    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerPosWorld = %d, ComputerPosInterior = %d, ComputerStartBTC = %d, ComputerBTC = %.3f WHERE ComputerDBID = %d",
+    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerPosWorld = %d, ComputerPosInterior = %d, ComputerStartBTC = %d, ComputerBTC = %.5f WHERE ComputerDBID = %d",
         ComputerInfo[id][ComputerPosWorld],
         ComputerInfo[id][ComputerPosInterior],
         ComputerInfo[id][ComputerStartBTC],

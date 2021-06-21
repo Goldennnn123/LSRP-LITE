@@ -608,7 +608,10 @@ CMD:engine(playerid, params[])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะนี้ไม่มีเชื้อเพลิง!"); 
 
 	if(VehicleInfo[vehicleid][eVehicleEngine] < 1)
-		return SendErrorMessage(playerid, "รถของคุณแบตตารี่หมด กรุณาไปเติมก่อน");
+		return SendErrorMessage(playerid, "ยานพาหนะของคุณแบตตารี่หมด กรุณาไปเติมก่อน");
+
+	if(VehicleInfo[vehicleid][eVehicleImpounded])
+		return SendErrorMessage(playerid, "ยานพาหนะถูกยึด พิมพ์ /unimpound เพื่อนำรถคืน จะต้องเสียง $1,500");
 	
 	if(VehicleInfo[vehicleid][eVehicleFaction] > 0)
 	{
@@ -1784,11 +1787,17 @@ public Query_LoadPrivateVehicle(playerid)
 	
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้นำรถ %s ออกมาแล้ว", ReturnVehicleName(vehicleid));
 	SendClientMessageEx(playerid, COLOR_WHITE, "Lifespan: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%d]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
-	if(VehicleInfo[vehicleid][eVehicleImpounded]) SendClientMessage(playerid, COLOR_RED, "รถของคุณถูกยึด");
-	
-	SendClientMessage(playerid, 0xFF00FFFF, "Hint: ไปตามจุดที่เราได้มาร์กไว้เพื่อไปที่รถ");
-	SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], 3.0);
-	
+	if(VehicleInfo[vehicleid][eVehicleImpounded]) 
+	{
+		SendClientMessage(playerid, COLOR_RED, "รถของคุณถูกยึด");
+		SendClientMessage(playerid, 0xFF00FFFF, "Hint: ไปตามจุดที่เราได้มาร์กไว้เพื่อไปที่รถ");
+		SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleImpoundPos][0], VehicleInfo[vehicleid][eVehicleImpoundPos][1], VehicleInfo[vehicleid][eVehicleImpoundPos][2], 3.0);
+	}
+	else
+	{
+		SendClientMessage(playerid, 0xFF00FFFF, "Hint: ไปตามจุดที่เราได้มาร์กไว้เพื่อไปที่รถ");
+		SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], 3.0);
+	}
 	PlayerCheckpoint[playerid] = 1; 
 	return 1;
 }
@@ -2091,7 +2100,8 @@ public CountVehicle2(playerid,factionid, modelid,color1,color2,Float:x,Float:y,F
 
 	newid++;
 
-	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%f,%f,%f,%f,%d)",
+	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleDBID`, `VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%d,%f,%f,%f,%f,%d)",
+		newid,
 		modelid,
 		factionid,
 		color1,
@@ -2118,4 +2128,46 @@ public CountVehicle2(playerid,factionid, modelid,color1,color2,Float:x,Float:y,F
 	SendClientMessageEx(playerid, -1, "คุณได้สร้างรถเฟคชั่นให้กับ {FF5722}%s {FFFFFF}(%d)",FactionInfo[factionid][eFactionName],newid);
 
 	return 1;
+}
+
+GetClosestVehicle(playerid, exception = INVALID_VEHICLE_ID) {
+
+	new
+	    Float:fDistance = FLOAT_INFINITY,
+	    iIndex = -1
+	;
+	for(new i=0;i!=MAX_VEHICLES;i++) {
+		if(i != exception) {
+			new
+	        	Float:temp = GetDistancePlayerVeh(playerid, i);
+
+			if (temp < fDistance && temp < 6.0)
+			{
+			    fDistance = temp;
+			    iIndex = i;
+			}
+		}
+	}
+	return iIndex;
+}
+
+GetDistancePlayerVeh(playerid, veh) {
+
+	new
+	    Float:Floats[7];
+
+	GetPlayerPos(playerid, Floats[0], Floats[1], Floats[2]);
+	GetVehiclePos(veh, Floats[3], Floats[4], Floats[5]);
+	Floats[6] = floatsqroot((Floats[3]-Floats[0])*(Floats[3]-Floats[0])+(Floats[4]-Floats[1])*(Floats[4]-Floats[1])+(Floats[5]-Floats[2])*(Floats[5]-Floats[2]));
+
+	return floatround(Floats[6]);
+}
+
+IsPlayerInRangeOfVehicle(playerid, vehicleid, Float: radius) {
+
+	new
+		Float:Floats[3];
+
+	GetVehiclePos(vehicleid, Floats[0], Floats[1], Floats[2]);
+	return IsPlayerInRangeOfPoint(playerid, radius, Floats[0], Floats[1], Floats[2]);
 }

@@ -48,6 +48,7 @@ public LoadComputer()
         cache_get_value_name_int(i,"ComputerDBID",ComputerInfo[i+1][ComputerDBID]);
         cache_get_value_name_int(i,"ComputerOwnerDBID",ComputerInfo[i+1][ComputerOwnerDBID]);
         cache_get_value_name_int(i,"ComputerOn",ComputerInfo[i+1][ComputerOn]);
+        cache_get_value_name_int(i,"ComputerHouseDBID",ComputerInfo[i+1][ComputerHouseDBID]);
         cache_get_value_name_int(i,"ComputerCPU",ComputerInfo[i+1][ComputerCPU]);
         cache_get_value_name_int(i,"ComputerRAM",ComputerInfo[i+1][ComputerRAM]);
         cache_get_value_name_int(i,"ComputerGPU1",ComputerInfo[i+1][ComputerGPU][0]);
@@ -79,6 +80,7 @@ public LoadComputer()
         }
 
         ComputerInfo[i+1][ComputerOn] = false;
+        ComputerInfo[i+1][ComputerStartBTC] = false;
 
         countcomputer++;
     }
@@ -86,85 +88,6 @@ public LoadComputer()
     return 1;
 }
 
-stock ReturnCPUName(playerid)
-{
-    new str_sec[255];
-
-    if(PlayerSelectCom[playerid][p_SelectCPU])
-    {
-        switch(PlayerSelectCom[playerid][p_SelectCPU])
-        {
-            case 1: format(str_sec, sizeof(str_sec), "I3");
-            case 2: format(str_sec, sizeof(str_sec), "I5");
-            case 3: format(str_sec, sizeof(str_sec), "I7");
-            case 4: format(str_sec, sizeof(str_sec), "I9");
-        }
-    }
-    else format(str_sec, sizeof(str_sec), "ไม่มี");
-
-    return str_sec;
-}
-
-stock ReturnGPUName(playerid, slotid)
-{
-    new str_sec[255];
-
-    if(PlayerSelectCom[playerid][p_SelectGPU][slotid])
-    {
-        switch(PlayerSelectCom[playerid][p_SelectGPU][slotid])
-        {
-            case 1: format(str_sec, sizeof(str_sec), "GTX 1650");
-            case 2: format(str_sec, sizeof(str_sec), "RTX 2060");
-            case 3: format(str_sec, sizeof(str_sec), "RTX 2070");
-            case 4: format(str_sec, sizeof(str_sec), "RTX 2080");
-            case 5: format(str_sec, sizeof(str_sec), "RTX 2090");
-        }
-    }
-    else format(str_sec, sizeof(str_sec), "ไม่มี");
-
-    return str_sec;
-}
-
-
-stock ReturnRam(playerid)
-{
-    new str_sec[255];
-
-    if(PlayerSelectCom[playerid][p_SelectRAM])
-    {
-        switch(PlayerSelectCom[playerid][p_SelectRAM])
-        {
-            case 8: format(str_sec, sizeof(str_sec), "8 GB");
-            case 16: format(str_sec, sizeof(str_sec), "16 GB");
-            case 32: format(str_sec, sizeof(str_sec), "32 GB");
-            case 64: format(str_sec, sizeof(str_sec), "64 GB");
-            case 128: format(str_sec, sizeof(str_sec), "128 GB");
-        }
-    }
-    else format(str_sec, sizeof(str_sec), "ไม่มี");
-
-    return str_sec;
-}
-
-stock ReturnStored(playerid)
-{
-    new str_sec[255];
-
-    if(PlayerSelectCom[playerid][p_SelectStored])
-    {
-        switch(PlayerSelectCom[playerid][p_SelectStored])
-        {
-            case 120: format(str_sec, sizeof(str_sec), "SSD 120 GB");
-            case 256: format(str_sec, sizeof(str_sec), "SSD 256 GB");
-            case 480: format(str_sec, sizeof(str_sec), "SSD 480 GB");
-            case 500: format(str_sec, sizeof(str_sec), "SSD 500 GB");
-            case 1000: format(str_sec, sizeof(str_sec), "SSD 1 TB");
-        }
-    }
-    else format(str_sec, sizeof(str_sec), "0 GB");
-
-    return str_sec;
-}
 
 
 stock ShowPlayerComputerSpec(playerid, option)
@@ -237,10 +160,19 @@ CMD:opencom(playerid, params[])
     if(!IsPlayerNearComputer(playerid))
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ คอมพิวเตอร์ / แล็ปท็อป");
 
-    new id = IsPlayerNearComputer(playerid);
+    new id = IsPlayerNearComputer(playerid), id_h = IsPlayerInHouse(playerid);
 
     /*if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
         return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");*/
+
+    if(id_h == 0)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในบ้าน");
+
+    if(!HouseInfo[id_h][HouseSwicth])
+        return SendErrorMessage(playerid, "คุณยังไม่ได้เปิด สวิทซ์ไฟภายในบ้าน");
+
+    if(PlayerInfo[playerid][pGUI])
+        return SendErrorMessage(playerid, "มีการใช้ UI อยู่");
 
 
     if(!ComputerInfo[id][ComputerCPU])
@@ -250,6 +182,7 @@ CMD:opencom(playerid, params[])
         return SendErrorMessage(playerid, "คุณไม่ได้มี "EMBED_LIGHTRED"RAM"EMBED_WHITE" อยู่ในเครื่องคอมพิวเตอร์ของคุณไม่สามารถเปิดคอมพิวเตอร์ได้");
 
     SendClientMessage(playerid, -1, "เปิดคอม......");
+    
     if(ComputerInfo[id][ComputerOn])
     {
         LoadTD_Computer(playerid);
@@ -270,6 +203,7 @@ public OpenComputer(playerid, id)
     LoadTD_Computer(playerid);
     ShowTD_Computer(playerid);
     SendClientMessage(playerid, COLOR_DARKGREEN, "ระบบ Windows เริ่มต้น");
+    PlayerInfo[playerid][pGUI] = true;
     return 1;
 }
 
@@ -761,35 +695,35 @@ Dialog:D_BUYCOMPUTER_GPU_SLOT(playerid, response, listitem, inputtext[])
         case 0:
         {
             PlayerSelectCom[playerid][p_SelectGPU][slotid] = 1;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUName(playerid, slotid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][slotid]));
             PlayerSelectCom[playerid][p_SelePrice]+= 9900;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 1:
         {
             PlayerSelectCom[playerid][p_SelectGPU][slotid] = 2;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUName(playerid, slotid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][slotid]));
             PlayerSelectCom[playerid][p_SelePrice]+= 16900;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 2:
         {
             PlayerSelectCom[playerid][p_SelectGPU][slotid] = 3;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUName(playerid, slotid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][slotid]));
             PlayerSelectCom[playerid][p_SelePrice]+= 23900;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 3:
         {
             PlayerSelectCom[playerid][p_SelectGPU][slotid] = 5;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUName(playerid, slotid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][slotid]));
             PlayerSelectCom[playerid][p_SelePrice]+= 45390;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 4:
         {
             PlayerSelectCom[playerid][p_SelectGPU][slotid] = 5;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUName(playerid, slotid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก กร์าดจอ สล็อตที่ %d เป็น %s", slotid+1, ReturnGPUNames(PlayerSelectCom[playerid][p_SelectGPU][slotid]));
             PlayerSelectCom[playerid][p_SelePrice]+= 55900;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
@@ -807,35 +741,35 @@ Dialog:D_BUYCOMPUTER_RAM(playerid, response, listitem, inputtext[])
         case 0:
         {
             PlayerSelectCom[playerid][p_SelectRAM] = 8;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectRAM]));
             PlayerSelectCom[playerid][p_SelePrice]+= 1770;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 1:
         {
             PlayerSelectCom[playerid][p_SelectRAM] = 16;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectRAM]));
             PlayerSelectCom[playerid][p_SelePrice]+= 2700;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 2:
         {
             PlayerSelectCom[playerid][p_SelectRAM] = 32;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectRAM]));
             PlayerSelectCom[playerid][p_SelePrice]+= 6250;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 3:
         {
             PlayerSelectCom[playerid][p_SelectRAM] = 64;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectRAM]));
             PlayerSelectCom[playerid][p_SelePrice]+= 17800;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 4:
         {
             PlayerSelectCom[playerid][p_SelectRAM] = 128;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก แรม เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectRAM]));
             PlayerSelectCom[playerid][p_SelePrice]+= 30500;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
@@ -853,35 +787,35 @@ Dialog:D_BUYCOMPUTER_STORED(playerid, response, listitem, inputtext[])
         case 0:
         {
             PlayerSelectCom[playerid][p_SelectStored] = 120;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectStored]));
             PlayerSelectCom[playerid][p_SelePrice]+= 850;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 1:
         {
             PlayerSelectCom[playerid][p_SelectStored] = 256;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectStored]));
             PlayerSelectCom[playerid][p_SelePrice]+= 1470;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 2:
         {
             PlayerSelectCom[playerid][p_SelectStored] = 480;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectStored]));
             PlayerSelectCom[playerid][p_SelePrice]+= 1950;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 3:
         {
             PlayerSelectCom[playerid][p_SelectStored] = 500;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectStored]));
             PlayerSelectCom[playerid][p_SelePrice]+= 2150;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
         case 4:
         {
             PlayerSelectCom[playerid][p_SelectStored] = 1000;
-            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRam(playerid));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เลือก SSD เป็น %s", ReturnRams(PlayerSelectCom[playerid][p_SelectStored]));
             PlayerSelectCom[playerid][p_SelePrice]+= 3350;
             return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
         }
@@ -981,7 +915,7 @@ stock ReturnGPUNames(type)
             case 5: format(str_sec, sizeof(str_sec), "RTX 2090");
         }
     }
-    else format(str_sec, sizeof(str_sec), "ไม่มี");
+    else format(str_sec, sizeof(str_sec), "NONE");
 
     return str_sec;
 }

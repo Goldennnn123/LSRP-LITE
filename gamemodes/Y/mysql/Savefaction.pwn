@@ -37,6 +37,11 @@ stock SaveFaction(id)
 		FactionInfo[id][eFactionSpawnWorld],
 		FactionInfo[id][eFactionDBID]);
 	mysql_tquery(dbCon, threadSave);
+
+	mysql_format(dbCon, threadSave, sizeof(threadSave), "UPDATE factions SET FactionJob = %d WHERE DBID = %i",
+		FactionInfo[id][eFactionJob],
+		FactionInfo[id][eFactionDBID]);
+	mysql_tquery(dbCon, threadSave);
 	return 1;
 }
 

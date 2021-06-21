@@ -1899,6 +1899,7 @@ CMD:makeleader(playerid, params[])
 	{
 		PlayerInfo[playerb][pBadge] = random(99999);
 	}
+	
 	foreach (new i : Player)
 	{
 		if(PlayerInfo[i][pFaction] != factionid)

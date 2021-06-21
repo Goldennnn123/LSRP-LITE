@@ -4,6 +4,7 @@ enum COMPUTER_DATA
 {
     ComputerDBID,
     ComputerOwnerDBID,
+    ComputerHouseDBID,
     bool:ComputerOn,
 
     ComputerCPU,
@@ -15,6 +16,7 @@ enum COMPUTER_DATA
     ComputerPosWorld,
     ComputerPosInterior,
     ComputerSpawn,
+    ComputerTimer,
     ComputerStartBTC,
     Float:ComputerBTC,
     ComputerObject,

@@ -67,6 +67,17 @@ public Query_LoadFactions()
 	return 1;
 }
 
+forward OnPlayerEnterFaction(playerid, id);
+public OnPlayerEnterFaction(playerid, id)
+{
+	SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0], FactionInfo[id][eFactionSpawn][1], FactionInfo[id][eFactionSpawn][2]);
+            
+    SetPlayerVirtualWorld(playerid, FactionInfo[id][eFactionSpawnWorld]);
+    SetPlayerInterior(playerid, FactionInfo[id][eFactionSpawnInt]);
+	TogglePlayerControllable(playerid, 1);
+	return 1;
+}
+
 forward Query_LoadFactionRanks(factionid);
 public Query_LoadFactionRanks(factionid)
 {

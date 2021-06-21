@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `pCPU` int(11) NOT NULL,
   `pGPU` int(11) NOT NULL,
   `pRAM` int(11) NOT NULL,
+  `pBTC` float(11) NOT NULL DEFAULT 0.00000,
   `pStored` int(11) NOT NULL,
   `pWeapon0` int(11) NOT NULL,
   `pWeapon1` int(11) NOT NULL,

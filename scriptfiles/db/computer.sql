@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `computer` (
     `ComputerGPU4` int(11) NOT NULL DEFAULT 0,
     `ComputerGPU5` int(11) NOT NULL DEFAULT 0,
     `ComputerStored` int(11) NOT NULL DEFAULT 0,
-    `ComputerHouseDIBID` int(11) NOT NULL DEFAULT 0,
+    `ComputerHouseDBID` int(11) NOT NULL DEFAULT 0,
     `ComputerStartBTC` int(11) NOT NULL DEFAULT 0,
     `ComputerBTC` float(11) NOT NULL DEFAULT 0.000,
     `ComputerPosX` float(11) NOT NULL DEFAULT 0.0,

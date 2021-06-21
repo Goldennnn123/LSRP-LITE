@@ -435,11 +435,12 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pCPU = %d, pGPU = %d, pRAM = %d, pStored = %d WHERE char_dbid = %i",	
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pCPU = %d, pGPU = %d, pRAM = %d, pStored = %d, pBTC = %.5f WHERE char_dbid = %i",	
 			PlayerInfo[playerid][pCPU],
 			PlayerInfo[playerid][pGPU],
 			PlayerInfo[playerid][pRAM],
 			PlayerInfo[playerid][pStored],
+			PlayerInfo[playerid][pBTC],
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
@@ -533,6 +534,7 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pGPU",PlayerInfo[playerid][pGPU]);
 	cache_get_value_name_int(0, "pRAM",PlayerInfo[playerid][pRAM]);
 	cache_get_value_name_int(0, "pStored",PlayerInfo[playerid][pStored]);
+	cache_get_value_name_float(0, "pBTC",PlayerInfo[playerid][pBTC]);
 
 	new str[MAX_STRING];
 	

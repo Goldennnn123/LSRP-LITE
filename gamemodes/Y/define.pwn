@@ -34,6 +34,9 @@
 #define RELEASED(%0) \
 	(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))	
 
+#define Pressed(%0)	\
+	(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
+
 
 
 

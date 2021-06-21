@@ -38,25 +38,25 @@ CMD:f(playerid, params[])
     if(isnull(params)) return SendUsageMessage(playerid, "/f [ข้อความ]");
 
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionChatStatus] == true)
-	{
+	{			
 		if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank])
 			return SendErrorMessage(playerid, "ระบบแชทกลุ่มถูกปิดการใช้งานอยู้ในขณะนี้");  
 			
 		if(strlen(params) > 79)
 		{
-			SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params); 
-			SendFactionMessage(playerid, "{2ECC71}**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params[79]); 
+			SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
+			SendFactionMessage(playerid, "{2ECC71}**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params[79]); 
 		}
-		else SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params); 
+		else SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
 		return 1;
 	}
 	
 	if(strlen(params) > 79)
 	{
-		SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params); 
-		SendFactionMessage(playerid, "{2ECC71}**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params[79]); 
+		SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
+		SendFactionMessage(playerid, "{2ECC71}**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params[79]); 
 	}
-	else SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid), params);
+	else SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params);
     return 1;
 }
 
@@ -564,6 +564,7 @@ CMD:duty(playerid, params[])
 			return 1;
 		}
 	}
+	else return SendErrorMessage(playerid, "มีข้อผิดพลาดเกิดขึ้น");
     return 1;
 }
 
@@ -614,7 +615,7 @@ CMD:megaphone(playerid, params[])
 	if(isnull(params))
 		return SendUsageMessage(playerid, "/(m)egaphone [ข้อความ]"); 
 		
-	SendNearbyMessage(playerid, 40.0, COLOR_YELLOWEX, "[%s:o< %s ]", ReturnRealName(playerid, 0), params);
+	SendNearbyMessage(playerid, 70.0, COLOR_YELLOWEX, "[%s:o< %s ]", ReturnRealName(playerid, 0), params);
     return 1;
 }
 
@@ -636,7 +637,7 @@ CMD:department(playerid, params[])
 			
 		if(FactionInfo[factionid][eFactionType] == GOVERMENT)
 		{
-			SendClientMessageEx(playerid, COLOR_DEPT, "** [%s] %s %s: %s", FactionInfo[factionid][eFactionAbbrev], ReturnFactionRank(i), ReturnName(playerid, 0), params); 
+			SendClientMessageEx(i, COLOR_DEPT, "** [%s] %s %s: %s", FactionInfo[factionid][eFactionAbbrev], ReturnFactionRank(i), ReturnName(playerid, 0), params); 
 		}
 	}
 
@@ -737,6 +738,37 @@ CMD:park(playerid ,params[])
 	DestroyVehicle(vehicleid);
 
 	vehicleid = CreateVehicle(VehicleInfo[vehicleid][eVehicleModel], VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], VehicleInfo[vehicleid][eVehicleParkPos][3], VehicleInfo[vehicleid][eVehicleColor1], VehicleInfo[vehicleid][eVehicleColor2], -1, 0);
+	return 1;
+}
+
+CMD:towcars(playerid, params[])
+{
+	new id = PlayerInfo[playerid][pFaction];
+
+	if(FactionInfo[id][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
+
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[id][eFactionAlterRank])
+		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
+
+	for(new i = 1; i < MAX_VEHICLES; i++)
+	{
+		if(!VehicleInfo[i][eVehicleFaction])
+			continue;
+
+		if(VehicleInfo[i][eVehicleFaction] != id)
+			continue;
+
+		if(VehicleInfo[i][eVehicleEngineStatus])
+			continue;
+
+		SetVehicleToRespawn(i);
+		LinkVehicleToInterior(i, VehicleInfo[i][eVehicleParkInterior]);
+		SetVehicleVirtualWorld(i, VehicleInfo[i][eVehicleParkWorld]);
+		SetVehicleNumberPlate(i, FactionInfo[id][eFactionAbbrev]);
+		SetVehicleHp(i);
+	}
+	SendFactionMessageEx(playerid, -1, "{2ECC71}**(( %s ได้ส่งยานพาหนะที่ดับเครื่องยนต์ทั้งหมดนั่งของกลุ่มกลับจุดเกิดทั้งหมด ))**", ReturnName(playerid, 0));
 	return 1;
 }
 

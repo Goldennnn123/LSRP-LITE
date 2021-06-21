@@ -383,18 +383,21 @@ public OnPlayerEnterProperty(playerid,id)
 {
 	SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]);
     
-    SetHouseOffSwitch(playerid, id);
+    SetHouseOffSwitch(playerid);
+    if(!HouseInfo[id][HouseSwicth])
+    {
+        PlayerTextDrawShow(playerid, PlayerSwicthOff[playerid][0]);
+    }
+    else
+    {
+        PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
+    }
+    
     return TogglePlayerControllable(playerid, 1);
 }
 
-stock SetHouseOffSwitch(playerid, id)
+stock SetHouseOffSwitch(playerid)
 {
-    if(HouseInfo[id][HouseSwicth])
-    {
-        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 5000, true, "i",id);
-        return PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
-    }
-
     PlayerSwicthOff[playerid][0] = CreatePlayerTextDraw(playerid, 316.000000, 2.000000, "_");
 	PlayerTextDrawFont(playerid, PlayerSwicthOff[playerid][0], 1);
 	PlayerTextDrawLetterSize(playerid, PlayerSwicthOff[playerid][0], 0.600000, 48.999988);
@@ -408,35 +411,52 @@ stock SetHouseOffSwitch(playerid, id)
 	PlayerTextDrawUseBox(playerid, PlayerSwicthOff[playerid][0], 1);
 	PlayerTextDrawSetProportional(playerid, PlayerSwicthOff[playerid][0], 1);
 	PlayerTextDrawSetSelectable(playerid, PlayerSwicthOff[playerid][0], 0);
-
-    if(HouseInfo[id][HouseSwicth])
-    {
-        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 1800000, true, "i",id);
-        return PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
-    }
-    else 
-    {
-        KillTimer(HouseInfo[id][HouseTimerEle]);
-        SendClientMessage(playerid, COLOR_YELLOWEX, "ไฟที่บ้านของคุณดับอยู่พิมพ์ /swicth on เพื่อเปิด");
-        return PlayerTextDrawShow(playerid, PlayerSwicthOff[playerid][0]);
-    }
+    return 1;
 }
 
 
 forward HouseElectricitybill(id);
 public HouseElectricitybill(id)
 {
-    new ele;
+    new ele, idx, result;
 
     if(!HouseInfo[id][HouseSwicth])
         return 1;
 
     if(!HouseInfo[id][HouseOwnerDBID])
         return 1;
+
+    for(new c = 1; c < sizeof(ComputerInfo); c++)
+    {
+        if(!ComputerInfo[c][ComputerDBID])
+            continue;
+
+        if(ComputerInfo[c][ComputerHouseDBID] != HouseInfo[id][HouseDBID])
+            continue;
+
+        if(ComputerInfo[c][ComputerOn] == true)
+        {
+            idx = c;
+            printf("idx = %d", c);
+            break;
+        }
+    }
+
+    result = ComputerInfo[idx][ComputerCPU] + ComputerInfo[idx][ComputerGPU][0] + ComputerInfo[idx][ComputerGPU][1] + ComputerInfo[idx][ComputerGPU][2] + ComputerInfo[idx][ComputerGPU][3] + ComputerInfo[idx][ComputerGPU][4];
+
+    if(ComputerInfo[idx][ComputerStartBTC])
+    {
+        HouseInfo[id][HouseEle] += result *2;
+        printf("result computer: %d", result * 2);
+    }
+    else
+    {
+        HouseInfo[id][HouseEle] += result;
+    }
         
     ele = Random(1, 5);
     HouseInfo[id][HouseEle] += ele;
-    //SendClientMessageEx(playerid, COLOR_SAMP, "คุณเปิดไฟที่บ้านทิ้งเอาไว้ ค่าไฟในบ้าน %s เพิ่มขึ้น %d หน่วย เป็น %d", HouseInfo[id][HouseName], ele, HouseInfo[id][HouseEle]);
+    //printf("คุณเปิดไฟที่บ้านทิ้งเอาไว้ ค่าไฟในบ้าน %s เพิ่มขึ้น %d หน่วย เป็น %d", HouseInfo[id][HouseName], ele + result, HouseInfo[id][HouseEle]);
     Savehouse(id);
     return 1;
 
@@ -546,7 +566,7 @@ Dialog:DIALOG_SELL_HOUSE(playerid, response, listitem, inputtext[])
         SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseEntranceWorld]);
         SetPlayerInterior(playerid, HouseInfo[id][HouseEntranceInterior]);
         HouseInfo[id][HouseSwicth] = false;
-        SetHouseOffSwitch(playerid, id);
+        SetHouseOffSwitch(playerid);
         PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
 
 

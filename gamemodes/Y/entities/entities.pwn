@@ -134,6 +134,7 @@ enum E_PLAYER_DATA
 	pGPU,
 	pRAM,
 	pStored,
+	Float:pBTC,
 
 	bool:pHandcuffed,
 

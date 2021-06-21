@@ -214,9 +214,10 @@ CMD:swicth(playerid, params[])
             if(!IsPlayerInHouse(i))
                 continue;
                 
-            SetHouseOffSwitch(i, id);
+            PlayerTextDrawHide(i, PlayerSwicthOff[playerid][0]);
         }
-
+        
+        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 1800000, true, "i",id);
         format(str, sizeof(str), "เปิดสวิทซ์ไฟภายในบ้าน");
         callcmd::me(playerid,str);
         return 1;
@@ -232,11 +233,13 @@ CMD:swicth(playerid, params[])
         {
             if(!IsPlayerInHouse(i))
                 continue;
-                
-            SetHouseOffSwitch(i, id);
+
+            PlayerTextDrawShow(i, PlayerSwicthOff[playerid][0]);
         }
+        KillTimer(HouseInfo[id][HouseTimerEle]);
 
         format(str, sizeof(str), "ปิดสวิทซ์ไฟภายในบ้าน");
+        SendClientMessage(playerid, COLOR_YELLOWEX, "ไฟที่บ้านของคุณดับอยู่พิมพ์ /swicth on เพื่อเปิด");
         callcmd::me(playerid,str);
         return 1;
     }
@@ -395,6 +398,7 @@ hook OP_EditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:
             if(ComputerEdit[playerid])
             {
                 new id = ComputerEdit[playerid];
+                new id_h = PlayerInfo[playerid][pInsideProperty];
 
                 ComputerInfo[id][ComputerPos][0] = x;
                 ComputerInfo[id][ComputerPos][1] = y;
@@ -405,6 +409,7 @@ hook OP_EditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:
                 ComputerInfo[id][ComputerPosWorld] = GetPlayerVirtualWorld(playerid);
                 ComputerInfo[id][ComputerPosInterior] = GetPlayerInterior(playerid);
                 ComputerInfo[id][ComputerSpawn] = true;
+                ComputerInfo[id_h][ComputerHouseDBID] = id_h;
                 ComputerEdit[playerid]  = 0;
                 PlayerEditObject[playerid] = false;
                 SaveComputer(id);

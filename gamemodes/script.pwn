@@ -358,6 +358,8 @@ public OnPlayerConnect(playerid) {
 
 	new query[90];
 
+    PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/16hBMrz3ySPF"); //เล่นเพลงเข้าเซิฟ
+
     mysql_format(dbCon, query, sizeof(query), "SELECT * FROM bannedlist WHERE IpAddress = '%e'", ReturnIP(playerid));
 	mysql_tquery(dbCon, query, "CheckBanList", "i", playerid);
 
@@ -396,6 +398,7 @@ public OnPlayerSpawn(playerid) {
 
 	if (!BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
 		Kick(playerid);
+
     
     if(PlayerInfo[playerid][pWeaponsSpawned] == false)
     {
@@ -447,9 +450,10 @@ public OnPlayerSpawn(playerid) {
         case SPAWN_AT_FACTION: {
             new id = PlayerInfo[playerid][pFaction];
 
+            SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0], FactionInfo[id][eFactionSpawn][1], FactionInfo[id][eFactionSpawn][2]);
+            
             SetPlayerVirtualWorld(playerid, FactionInfo[id][eFactionSpawnWorld]);
             SetPlayerInterior(playerid, FactionInfo[id][eFactionSpawnInt]);
-            SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0], FactionInfo[id][eFactionSpawn][1], FactionInfo[id][eFactionSpawn][2]);
         }
         case SPAWN_AT_HOUSE: {
             
@@ -464,6 +468,8 @@ public OnPlayerSpawn(playerid) {
             PlayerInfo[playerid][pInsideProperty] = id;
         }
     }
+
+    StopAudioStreamForPlayer(playerid); //หยุดเพลงเข้าเซิฟ
 
     return 1;
 }

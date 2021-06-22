@@ -150,7 +150,9 @@ stock ShowPlayerComputerSpec(playerid, option)
 
 CMD:buycomputer(playerid, params[])
 {
-    //ShowPlayerComputerSpec(playerid);
+    if(!IsPlayerInRangeOfPoint(playerid, 2.5, 1091.1954,-1528.2493,22.7391))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในจุดที่จะซื้อคอมพิวเตอร์ หรือ แล็ปท็อป");
+
     Dialog_Show(playerid, D_BUYCOMPUTER_LIST, DIALOG_STYLE_LIST, "เลือกประเภทการซื้อขาย", "[ ! ] ซื้ออะไหล่\n[ ! ] ซื้อคอมเซ็ต", "ยืนยัน", "ยกเลิก");
     return 1;
 }

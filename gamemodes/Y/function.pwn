@@ -299,58 +299,53 @@ stock isFlagged(flags, flagValue) {
 }
 
 
-
-forward FunctionPlayers();
-public FunctionPlayers()
+ptask FunctionPlayers[1000](playerid) 
 {
-	foreach (new i : Player)
+	if (PlayerInfo[playerid][pAdminjailed] == true)
 	{
-		if (PlayerInfo[i][pAdminjailed] == true)
-		{
-			PlayerInfo[i][pAdminjailTime]--; 
+		PlayerInfo[playerid][pAdminjailTime]--; 
 			
-			if(PlayerInfo[i][pAdminjailTime] < 1)
-			{
-				PlayerInfo[i][pAdminjailed] = false; 
-				PlayerInfo[i][pAdminjailTime] = 0; 
+		if(PlayerInfo[playerid][pAdminjailTime] < 1)
+		{
+			PlayerInfo[playerid][pAdminjailed] = false; 
+			PlayerInfo[playerid][pAdminjailTime] = 0; 
 				
-				SendServerMessage(i, "คุณถูกปล่อยตัวออกจากคุกแอดมินแล้ว");
+			SendServerMessage(playerid, "คุณถูกปล่อยตัวออกจากคุกแอดมินแล้ว");
 				
-				new str[128];
-				format(str, sizeof(str), "%s ได้ถูกปล่อยตัวออกจากคุกแอดมินแล้ว.", ReturnName(i));
-				SendAdminMessage(1, str);
+			new str[128];
+			format(str, sizeof(str), "%s ได้ถูกปล่อยตัวออกจากคุกแอดมินแล้ว.", ReturnName(playerid));
+			SendAdminMessage(1, str);
 				
-				SpawnPlayer(i);
-			}
+			SpawnPlayer(playerid);
 		}
-		if(gettime() - PlayerInfo[i][pRespawnTime] == 60)
-		{
-			PlayerInfo[i][pRespawnTime] = 0;
-			SetPlayerChatBubble(i, "Respawned", COLOR_WHITE, 20.0, 1500);
-			SetPlayerTeam(i, PLAYER_STATE_ALIVE); 
+	}
+	if(gettime() - PlayerInfo[playerid][pRespawnTime] == 60)
+	{
+		PlayerInfo[playerid][pRespawnTime] = 0;
+		SetPlayerChatBubble(playerid, "Respawned", COLOR_WHITE, 20.0, 1500);
+		SetPlayerTeam(playerid, PLAYER_STATE_ALIVE); 
 			
-			TogglePlayerControllable(i, 1);
-			SetPlayerHealth(i, 100);
-			ClearDamages(i);
-			SpawnPlayer(i);
-		}
-		if (PlayerInfo[i][pArrest] == true)
-		{
-			PlayerInfo[i][pArrestTime]--; 
+		TogglePlayerControllable(playerid, 1);
+		SetPlayerHealth(playerid, 100);
+		ClearDamages(playerid);
+		SpawnPlayer(playerid);
+	}
+	if (PlayerInfo[playerid][pArrest] == true)
+	{
+		PlayerInfo[playerid][pArrestTime]--; 
 			
-			if(PlayerInfo[i][pArrestTime] < 1)
-			{
-				PlayerInfo[i][pArrest] = false; 
-				PlayerInfo[i][pArrestTime] = 0; 
-				PlayerInfo[i][pArrestRoom] = 0;
-				PlayerInfo[i][pArrestBy] = 0;
+		if(PlayerInfo[playerid][pArrestTime] < 1)
+		{
+			PlayerInfo[playerid][pArrest] = false; 
+			PlayerInfo[playerid][pArrestTime] = 0; 
+			PlayerInfo[playerid][pArrestRoom] = 0;
+			PlayerInfo[playerid][pArrestBy] = 0;
 				
-				SendServerMessage(i, "คุณได้ถูกปล่อยตัวออกจากคุกแล้ว");
+			SendServerMessage(playerid, "คุณได้ถูกปล่อยตัวออกจากคุกแล้ว");
 
-				SendPoliceMessage(0x8D8DFFFF, "HQ-ARREST: %s ได้ถูกปล่อยตัวออกจากห้องกุมขังแล้ว.", ReturnName(i));
-				CharacterSave(i);
-				SpawnPlayer(i);
-			}
+			SendPoliceMessage(0x8D8DFFFF, "HQ-ARREST: %s ได้ถูกปล่อยตัวออกจากห้องกุมขังแล้ว.", ReturnName(playerid));
+			CharacterSave(playerid);
+			SpawnPlayer(playerid);
 		}
 	}
 	return 1;

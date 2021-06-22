@@ -1221,7 +1221,23 @@ CMD:gotobusiness(playerid, params[])
 
 CMD:gotofaction(playerid, params[])
 {
+	new id;
+	if(PlayerInfo[playerid][pAdmin] < 2)
+		return SendUnauthMessage(playerid);
 
+	if(sscanf(params, "d", id))
+		return SendUsageMessage(playerid, "/gotofaction <แฟคชั่นไอดี>");
+
+	if(!FactionInfo[id][eFactionDBID])
+		return SendErrorMessage(playerid, "ไม่มีแฟคชั่นที่คุณต้องการ");
+
+	if(!FactionInfo[id][eFactionSpawn][0] || !FactionInfo[id][eFactionSpawn][1] || !FactionInfo[id][eFactionSpawn][2])
+		return SendErrorMessage(playerid, "แฟคชั่นยังไม่มีจุดเกิด");
+
+	SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0],FactionInfo[id][eFactionSpawn][1],FactionInfo[id][eFactionSpawn][2]);
+	SetPlayerVirtualWorld(playerid, FactionInfo[id][eFactionSpawnWorld]);
+	SetPlayerInterior(playerid, FactionInfo[id][eFactionSpawnInt]);
+	SendClientMessageEx(playerid, -1, "คุณได้เคลื่อนย้าย ไปยังแฟคชั่น %s",FactionInfo[id][eFactionName]);
 	return 1;
 }
 

@@ -185,7 +185,6 @@ public OnGameModeInit() {
 
     ShowPlayerMarkers(0);
     //Timer:
-    SetTimer("FunctionPlayers", 1000, true);
     SetTimer("OnPlayerNereHouseTime", 1000, true);
     SetTimer("OnPlayerNereBusinessTime", 3000, true);
     SetTimer("OnWeaponsUpdate", 1000, true);
@@ -430,6 +429,7 @@ public OnPlayerSpawn(playerid) {
         SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 1338);
 
         CharacterSave(playerid);
+        StopAudioStreamForPlayer(playerid);
         return 1;
     }
 
@@ -438,6 +438,7 @@ public OnPlayerSpawn(playerid) {
         ArrestConecterJail(playerid, PlayerInfo[playerid][pArrestTime], PlayerInfo[playerid][pArrestRoom]);
         ClearAnimations(playerid);
         CharacterSave(playerid);
+        StopAudioStreamForPlayer(playerid);
         return 1;
     }
 

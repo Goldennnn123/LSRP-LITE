@@ -814,6 +814,7 @@ CMD:respawncar(playerid, params[])
 		return SendErrorMessage(playerid, "ไม่มีไอดีรถที่ต้องการ");
 		
 	SetVehicleToRespawn(vehicleid);
+	SetVehicleHp(vehicleid);
 	
 	foreach(new i : Player)
 	{

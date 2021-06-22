@@ -65,6 +65,7 @@ new globalWeather = 2;
 // เอกลักษณ์
 #include "Y/entities/entities.pwn"
 #include "Y/entities/computer.pwn"
+#include "Y/entities/fine.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -88,6 +89,7 @@ new globalWeather = 2;
 #include "Y/systems/business/vehiclebuy.pwn"
 #include "Y/systems/anim.pwn"
 #include "Y/systems/furniture/computer.pwn"
+#include "Y/systems/fine.pwn"
 
 #include "Y/jobs/farmer.pwn"
 #include "Y/jobs/fisher.pwn"
@@ -348,6 +350,11 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pRAM] = 0;
     PlayerInfo[playerid][pStored] = 0;
 
+    PlayerInfo[playerid][pArrest] = false;
+    PlayerInfo[playerid][pArrestRoom] = 0;
+    PlayerInfo[playerid][pArrestBy] = 0;
+    PlayerInfo[playerid][pArrestTime] = 0;
+
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;
@@ -413,7 +420,27 @@ public OnPlayerSpawn(playerid) {
         SetPlayerArmedWeapon(playerid, 0);
         PlayerInfo[playerid][pWeaponsSpawned] = true;
     }
-    
+
+    if(PlayerInfo[playerid][pAdminjailed] == true)
+    {
+        SendClientMessageEx(playerid, COLOR_REDEX, "[ADMIN JAIL:] เวลาที่อยู่ในคุกแอดมินของคุณยังไม่หมดจำเป็นต้องอยู่ในคุกอีก %d วินาที",PlayerInfo[playerid][pAdminjailTime]);
+        ClearAnimations(playerid); 
+	
+        SetPlayerPos(playerid, 2687.3630, 2705.2537, 22.9472);
+        SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 1338);
+
+        CharacterSave(playerid);
+        return 1;
+    }
+
+    if(PlayerInfo[playerid][pArrest] == true)
+    {
+        ArrestConecterJail(playerid, PlayerInfo[playerid][pArrestTime], PlayerInfo[playerid][pArrestRoom]);
+        ClearAnimations(playerid);
+        CharacterSave(playerid);
+        return 1;
+    }
+
     if (PlayerInfo[playerid][pTimeout]) {
 
         // ตั้งค่าผู้เล่นให้กลับที่เดิมและสถานะบางอย่างเหมือนเดิม

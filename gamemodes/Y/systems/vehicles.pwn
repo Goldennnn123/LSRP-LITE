@@ -607,7 +607,7 @@ CMD:engine(playerid, params[])
 	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะนี้ไม่มีเชื้อเพลิง!"); 
 
-	if(VehicleInfo[vehicleid][eVehicleEngine] < 1)
+	if(VehicleInfo[vehicleid][eVehicleEngine] < 1 && !VehicleInfo[vehicleid][eVehicleFaction])
 		return SendErrorMessage(playerid, "ยานพาหนะของคุณแบตตารี่หมด กรุณาไปเติมก่อน");
 
 	if(VehicleInfo[vehicleid][eVehicleImpounded])
@@ -624,16 +624,7 @@ CMD:engine(playerid, params[])
 	if(IsRentalVehicle(vehicleid) && !IsPlayerRentVehicle(playerid, vehicleid)) {
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คุณไม่มีกุญแจสำหรับยานพาหนะคันนี้");
 	}
-	
-	/*
-	ยานพาหนะที่ต่อสายตรงได้ต้อง (Hotwire)
-	- ไม่ใช่ของแฟคชั่น
-	- ไม่ใช่รถที่เป็นเจ้าของ
-	- ไม่ใช่รถที่มีกุญแจสำรอง
-	- ไม่ใช่ที่แอดมินเสกขึ้น
-	- ไม่ใช่รถเช่า
 
-	*/
 	if(
 	!VehicleInfo[vehicleid][eVehicleFaction] && 
 	PlayerInfo[playerid][pDuplicateKey] != vehicleid && 
@@ -837,6 +828,29 @@ CMD:vehicle(playerid, params[])
 			
 		if(!IsPlayerInRangeOfPoint(playerid, 5.0, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2]))
 		{
+			if(VehicleInfo[vehicleid][eVehicleImpounded])
+			{
+				PlayerInfo[playerid][pVehicleSpawned] = false; 
+				PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+
+				if(PlayerSellVehicleAccept[playerid])
+				{
+					new tagetid = PlayerSellVehicleBy[playerid];
+					PlayerSellVehicle[tagetid] = 0;
+					PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
+					PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
+					PlayerSellVehiclePrice[tagetid] = 0;
+					PlayerSellVehicleAccept[tagetid] = false;
+				}
+				
+				SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้จัดเก็บรถ %s เรียบร้อย", ReturnVehicleName(vehicleid));
+				
+				SaveVehicle(vehicleid);
+				
+				ResetVehicleVars(vehicleid);
+				DestroyVehicle(vehicleid); 
+				return 1;	
+			}
 			SendErrorMessage(playerid, "คุณไม่ได้อยู่ในพื้นที่จอดรถของคุณ");
 			SendClientMessage(playerid, 0xFF00FFFF, "ขับไปยังจุดที่เราได้ทำการ มาร์ากไว้ดังกล่าว");
 		
@@ -1632,6 +1646,10 @@ public LoadFactionVehicle()
 
 			VehicleInfo[vehicleid][eVehicleFuel] = 100;
 		}
+
+		SetVehicleNumberPlate(vehicleid, FactionInfo[VehicleInfo[vehicleid][eVehicleFaction]][eFactionAbbrev]);
+		SetVehicleToRespawn(vehicleid);
+		SetVehicleHp(vehicleid);
 		amout_veh++;
 	}
 

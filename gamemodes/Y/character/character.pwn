@@ -444,6 +444,15 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pArrest = %d, pArrestBy = %d, pArrestTime = %d, pArrestRoom = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pArrest],
+			PlayerInfo[playerid][pArrestBy],
+			PlayerInfo[playerid][pArrestTime],
+			PlayerInfo[playerid][pArrestRoom],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 		mysql_finish(query);
 	}
 	return 1;
@@ -535,6 +544,11 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pRAM",PlayerInfo[playerid][pRAM]);
 	cache_get_value_name_int(0, "pStored",PlayerInfo[playerid][pStored]);
 	cache_get_value_name_float(0, "pBTC",PlayerInfo[playerid][pBTC]);
+
+	cache_get_value_name_int(0, "pArrest",PlayerInfo[playerid][pArrest]);
+	cache_get_value_name_int(0, "pArrestBy",PlayerInfo[playerid][pArrestBy]);
+	cache_get_value_name_int(0, "pArrestTime",PlayerInfo[playerid][pArrestTime]);
+	cache_get_value_name_int(0, "pArrestRoom",PlayerInfo[playerid][pArrestRoom]);
 
 	new str[MAX_STRING];
 	

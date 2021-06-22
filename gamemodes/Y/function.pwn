@@ -334,6 +334,24 @@ public FunctionPlayers()
 			ClearDamages(i);
 			SpawnPlayer(i);
 		}
+		if (PlayerInfo[i][pArrest] == true)
+		{
+			PlayerInfo[i][pArrestTime]--; 
+			
+			if(PlayerInfo[i][pArrestTime] < 1)
+			{
+				PlayerInfo[i][pArrest] = false; 
+				PlayerInfo[i][pArrestTime] = 0; 
+				PlayerInfo[i][pArrestRoom] = 0;
+				PlayerInfo[i][pArrestBy] = 0;
+				
+				SendServerMessage(i, "คุณได้ถูกปล่อยตัวออกจากคุกแล้ว");
+
+				SendPoliceMessage(0x8D8DFFFF, "HQ-ARREST: %s ได้ถูกปล่อยตัวออกจากห้องกุมขังแล้ว.", ReturnName(i));
+				CharacterSave(i);
+				SpawnPlayer(i);
+			}
+		}
 	}
 	return 1;
 }

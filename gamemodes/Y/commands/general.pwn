@@ -1170,8 +1170,13 @@ CMD:time(playerid, params[])
 	if(PlayerInfo[playerid][pAdminjailed] == true)
 		format(string, sizeof(string), "~g~|~w~%02d:%02d~g~|~n~~w~Jail Time left: %d SEC", hour, minute, PlayerInfo[playerid][pAdminjailTime]);
 
+	else if(PlayerInfo[playerid][pArrest] == true)
+		format(string, sizeof(string), "~g~|~w~%02d:%02d~g~|~n~~w~Arrest Time left: %d SEC", hour, minute, PlayerInfo[playerid][pArrestTime]);
 	else
 		format(string, sizeof(string), "~g~|~w~%02d:%02d~g~|", hour, minute);
+
+
+		
 		
 	GameTextForPlayer(playerid, string, 2000, 1);
 	
@@ -1248,5 +1253,38 @@ CMD:pm(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		}
 	}
+	return 1;
+}
+
+CMD:fines(playerid, params[])
+{
+	new str[255], fineid, longstr[255];
+
+	format(str, sizeof(str), "สาเหตุ:\tค่าปรับ:\t วันที่:\n");
+	strcat(longstr, str);
+
+	for(new i = 1; i < MAX_FINES; i++)
+	{
+		if(!FineInfo[i][FineDBID])
+			continue;
+
+		if(FineInfo[i][FineOwner] != PlayerInfo[playerid][pDBID])
+			continue;
+
+		format(str, sizeof(str), "%s\t$%s\t%s\n", FineInfo[i][FineReson], MoneyFormat(FineInfo[i][FinePrice]), FineInfo[i][FineDate]);
+		strcat(longstr, str);
+
+		format(str, sizeof(str), "%d",fineid);
+		SetPVarInt(playerid, str, i);
+		fineid++;
+	}
+
+	if(!fineid)
+	{
+		Dialog_Show(playerid, DIALOG_FINES_LIST_NONE, DIALOG_STYLE_LIST, "ใบสั่ง", "คุณไม่มีใบสั่ง...", "ยืนยัน", "ยกเลิก");
+		return 1;
+	}
+
+	Dialog_Show(playerid, DIALOG_FINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "ใบสั่ง", longstr, "ยืนยัน", "ยกเลิก");
 	return 1;
 }

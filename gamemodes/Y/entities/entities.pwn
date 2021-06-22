@@ -141,8 +141,10 @@ enum E_PLAYER_DATA
 	bool:pTaser,
 	bool:pSaving,
 
-	bool:pShowFooter,
-	pFooterTimer
+	bool:pArrest,
+	pArrestBy,
+	pArrestTime,
+	pArrestRoom,
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];

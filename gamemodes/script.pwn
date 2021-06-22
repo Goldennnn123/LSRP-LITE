@@ -363,8 +363,18 @@ public OnPlayerConnect(playerid) {
     tToAccept[playerid] = INVALID_PLAYER_ID;
 
 	new query[90];
-
-    PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/16hBMrz3ySPF"); //เล่นเพลงเข้าเซิฟ
+    new musicrandom = random(2);
+    switch(musicrandom)
+    {
+        case 0:
+        {
+            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/1eEMxGxXUiXJ"); // Alt J Breezeblocks
+        }
+        case 1:
+        {
+            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/16hBMrz3ySPF"); // Blinding Lights [Acoustic Version] - The Weeknd
+        }
+    }
 
     mysql_format(dbCon, query, sizeof(query), "SELECT * FROM bannedlist WHERE IpAddress = '%e'", ReturnIP(playerid));
 	mysql_tquery(dbCon, query, "CheckBanList", "i", playerid);

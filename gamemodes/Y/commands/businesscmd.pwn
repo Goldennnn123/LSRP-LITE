@@ -320,7 +320,7 @@ CMD:buyammo(playerid, params[])
 
 CMD:skin(playerid, params[])
 {
-    new id = PlayerInfo[playerid][pInsideBusiness];
+   // new id = PlayerInfo[playerid][pInsideBusiness];
     
 
     if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_SKIN)

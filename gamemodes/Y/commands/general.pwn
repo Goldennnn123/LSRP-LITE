@@ -212,7 +212,7 @@ CMD:exit(playerid, params[])
 		SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseEntranceWorld]);
 		SetPlayerInterior(playerid, HouseInfo[id][HouseEntranceInterior]);
 		PlayerInfo[playerid][pInsideProperty] = 0;
-		PlayerTextDrawDestroy(playerid, PlayerSwicthOff[playerid][0]);
+		PlayerTextDrawHide(playerid, PlayerSwicthOff[playerid][0]);
 		return 1;
     }
 	if(b_id != 0)

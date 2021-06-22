@@ -55,5 +55,9 @@ hook OnGameModeInit()
     print("[SQL] Install Arrest.sql");
 
 
+    mysql_tquery_file(MySQL_GetHandle(), "db/fine.sql");
+    print("[SQL] Install Arrest.sql");
+
+
     return 1;
 }

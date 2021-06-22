@@ -478,7 +478,7 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		{
 			ComputerInfo[id][ComputerStartBTC] = true;
 			SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้เริ่มขุด เหรียญ BTC..... ด้วยแรงขุด %s", CalculaterBTC(id));
-			ComputerInfo[id][ComputerTimer] = SetTimerEx("StartComputerBTC", 3600000, true, "dd", playerid, id);
+			ComputerInfo[id][ComputerTimer] = SetTimerEx("StartComputerBTC", 1800000, true, "dd", playerid, id);
 			PlayerTextDrawSetString(playerid,PL_Computer[playerid][21], "~r~STOP");
 			return 1;
 		}

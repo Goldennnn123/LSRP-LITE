@@ -2,9 +2,8 @@ stock SaveComputer(id)
 {
     new query[1000];
 
-    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerOwnerDBID = %d, ComputerOn = %d, ComputerSpawn = %d, ComputerHouseDBID = %d WHERE ComputerDBID = %d",
+    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerOwnerDBID = %d, ComputerSpawn = %d, ComputerHouseDBID = %d WHERE ComputerDBID = %d",
         ComputerInfo[id][ComputerOwnerDBID],
-        ComputerInfo[id][ComputerOn],
         ComputerInfo[id][ComputerSpawn],
         ComputerInfo[id][ComputerHouseDBID],
         ComputerInfo[id][ComputerDBID]);

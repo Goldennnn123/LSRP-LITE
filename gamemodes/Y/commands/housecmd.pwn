@@ -409,7 +409,7 @@ hook OP_EditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:
                 ComputerInfo[id][ComputerPosWorld] = GetPlayerVirtualWorld(playerid);
                 ComputerInfo[id][ComputerPosInterior] = GetPlayerInterior(playerid);
                 ComputerInfo[id][ComputerSpawn] = true;
-                ComputerInfo[id_h][ComputerHouseDBID] = id_h;
+                ComputerInfo[id][ComputerHouseDBID] = id_h;
                 ComputerEdit[playerid]  = 0;
                 PlayerEditObject[playerid] = false;
                 SaveComputer(id);

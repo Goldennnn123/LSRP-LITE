@@ -869,7 +869,7 @@ stock SendBusinessType(playerid, id)
 		case BUSINESS_TYPE_AMMUNITION:
 		{
 			SendClientMessageEx(playerid, COLOR_DARKGREEN, "ยินดีตอยรับเข้าสู่ร้าน  %s", BusinessInfo[id][BusinessName]);
-			SendClientMessage(playerid, COLOR_WHITE, "Available commands: /buygun, /buyammo."); 
+			SendClientMessage(playerid, COLOR_WHITE, "Available commands: /buygun."); 
 		}
 		case BUSINESS_TYPE_BANK:
 		{

@@ -285,11 +285,36 @@ CMD:buygun(playerid, params[])
 
     if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_AMMUNITION)
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านปืน");
-    if(PlayerInfo[playerid][pWeaponLicense])
-        return SendErrorMessage(playerid, "คุณไม่มีใบอนุญาตสําหรับการซื้อปืน");
-    
-    Dialog_Show(playerid, ชื่อ, DIALOG_STYLE_LIST, "ชื่อหัวข้อ", "รายละเอียดตรงกลาง", "ยืนยัน", "ยกเลิก");
 
+    if(!PlayerInfo[playerid][pWeaponLicense])
+        return SendErrorMessage(playerid, "คุณไม่มีใบอนุญาตสําหรับการซื้อปืน");
+
+    if(PlayerInfo[playerid][pWeaponLicenseSus])
+        return SendErrorMessage(playerid, "ใบพกอาวุธของคุณถูกยึดอยู่");
+
+    if(PlayerInfo[playerid][pWeaponLicenseRevoke])
+        return SendErrorMessage(playerid, "ใบพกอาวุธของคุณถูกยึดอยู่");
+    
+
+    new str[255],longstr[255];
+
+    format(str, sizeof(str), "ชื่อ:\tราคา:\n");
+    strcat(longstr, str);
+
+    format(str, sizeof(str), "Desert eagle\t$35,000\n");
+    strcat(longstr, str);
+    format(str, sizeof(str), "Shotgun\t$55,000\n");
+    strcat(longstr, str);
+    format(str, sizeof(str), "Country rifle\t$45,000\n");
+    strcat(longstr, str);
+
+    Dialog_Show(playerid, DIALOG_WEAPON_BUY, DIALOG_STYLE_TABLIST_HEADERS, "WEAPON SHOP:", longstr, "ยืนยัน", "ยกเลิก");
+    return 1;
+}
+
+CMD:buyammo(playerid, params[])
+{
+    
     return 1;
 }
 
@@ -298,10 +323,86 @@ CMD:skin(playerid, params[])
     new id = PlayerInfo[playerid][pInsideBusiness];
     
 
-    /*if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_SKIN)
-        return SendErrorMessage(playerid, "คุณไม่อยุ่ในร้านขายเสื้อผ้า");*/
+    if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_SKIN)
+        return SendErrorMessage(playerid, "คุณไม่อยุ่ในร้านขายเสื้อผ้า");
 
 
     Dialog_Show(playerid, DIALOG_BUYSKIN_INPUT, DIALOG_STYLE_INPUT, "ซื้อ Skin", "ในการเปลี่ยน Skin จำเป็นต้องคำนึงถึงบทบาทของตัวละครเป็นหลักหากชื่อเป็นผู้ชายแต่\nเปลี่ยนเป็น Skin ผู้หญิงแล้วทางผู้ดูแลพบเจอจะทำการแตะออกจากเซิร์ฟเวอร์\nหากถูกแต่ออกในกรณีเดียวกันครบ 3 ครั้งจะทำการลบตัวละครตัวนั้นทันที","ยืนยัน", "ยกเลิก");
+    return 1;
+}
+
+Dialog:DIALOG_BUYSKIN_INPUT(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+    if(PlayerInfo[playerid][pCash] < 1000)
+        return SendErrorMessage(playerid, "คุณมีเงินน้อยกว่า $1,000");
+    
+    new skinid = strval(inputtext);
+    new id = PlayerInfo[playerid][pInsideBusiness];
+
+    BusinessInfo[id][BusinessCash] += 1000/2;
+
+    PlayerInfo[playerid][pLastSkin] = skinid; SetPlayerSkin(playerid, skinid);
+    SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ทำการเปลี่ยน Skin ของคุณเป็น ID: %d คุณจ่ายค่า Skin ไป $1,000",skinid);
+    GiveMoney(playerid, -1000);
+    SaveBusiness(id);
+    return 1;
+}
+
+Dialog:DIALOG_WEAPON_BUY(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+    switch(listitem)
+    {
+        case 0:
+        {
+            if(PlayerInfo[playerid][pCash] < 35000)
+                return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ");
+
+        
+            new idx = ReturnWeaponIDSlot(24); 
+            
+            GivePlayerWeapon(playerid, 24, 200); 
+            
+            PlayerInfo[playerid][pWeapons][idx] = 24;
+            PlayerInfo[playerid][pWeaponsAmmo][idx] = 200; 
+            GiveMoney(playerid, -35000);
+            return 1;
+        }
+        case 1:
+        {
+            if(PlayerInfo[playerid][pCash] < 55000)
+                return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ");
+
+        
+            new idx = ReturnWeaponIDSlot(25); 
+            
+            GivePlayerWeapon(playerid, 25, 200); 
+            
+            PlayerInfo[playerid][pWeapons][idx] = 25;
+            PlayerInfo[playerid][pWeaponsAmmo][idx] = 200; 
+            GiveMoney(playerid, -55000);
+            return 1;
+        }
+        case 2:
+        {
+            if(PlayerInfo[playerid][pCash] < 45000)
+                return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ");
+
+        
+            new idx = ReturnWeaponIDSlot(33); 
+            
+            GivePlayerWeapon(playerid, 33, 200); 
+            
+            PlayerInfo[playerid][pWeapons][idx] = 33;
+            PlayerInfo[playerid][pWeaponsAmmo][idx] = 200; 
+            GiveMoney(playerid, -45000);
+            return 1;
+        }
+    }
     return 1;
 }

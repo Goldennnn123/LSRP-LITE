@@ -2192,12 +2192,12 @@ CMD:makebusiness(playerid,params[])
 		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร");
 		return 1;
 	}
-	if(type < 1 || type > 6)
+	if(type < 1 || type > 7)
 	{	
 		SendClientMessageEx(playerid,-1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF0000} โปรดเลื่อกประเภทกิจการให้ถูก");
 		SendUsageMessage(playerid, "/makebusiness [ประเภท]");
 		SendUsageMessage(playerid, "Type: 1.ร้านค้า(24/7) 2.ร้านตัวแทนจำหน่ายรถ 3.ร้านปืน");
-		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร");
+		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร 6.คลับ 7.ร้านขายเสื้อผ้า");
 		return 1;
 	}
 

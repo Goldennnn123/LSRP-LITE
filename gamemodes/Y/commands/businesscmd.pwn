@@ -292,3 +292,16 @@ CMD:buygun(playerid, params[])
 
     return 1;
 }
+
+CMD:skin(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideBusiness];
+    
+
+    /*if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_SKIN)
+        return SendErrorMessage(playerid, "คุณไม่อยุ่ในร้านขายเสื้อผ้า");*/
+
+
+    Dialog_Show(playerid, DIALOG_BUYSKIN_INPUT, DIALOG_STYLE_INPUT, "ซื้อ Skin", "ในการเปลี่ยน Skin จำเป็นต้องคำนึงถึงบทบาทของตัวละครเป็นหลักหากชื่อเป็นผู้ชายแต่\nเปลี่ยนเป็น Skin ผู้หญิงแล้วทางผู้ดูแลพบเจอจะทำการแตะออกจากเซิร์ฟเวอร์\nหากถูกแต่ออกในกรณีเดียวกันครบ 3 ครั้งจะทำการลบตัวละครตัวนั้นทันที","ยืนยัน", "ยกเลิก");
+    return 1;
+}

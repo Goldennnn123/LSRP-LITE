@@ -7,6 +7,7 @@
 #define BUSINESS_TYPE_RESTAURANT    (4)
 #define BUSINESS_TYPE_BANK          (5)
 #define BUSINESS_TYPE_CLUB          (6)
+#define BUSINESS_TYPE_SKIN          (7)
 
 
 new PlayerSelectBusiness[MAX_PLAYERS];
@@ -212,6 +213,11 @@ stock ShowSelectBusiness(playerid)
             format(infoString, sizeof(infoString), "ประเภท: คลับ\n");
             strcat(showString, infoString);
         }
+        else if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_SKIN)
+        {
+            format(infoString, sizeof(infoString), "ประเภท: ร้านขายเสื้อผ้า\n");
+            strcat(showString, infoString);
+        }
     }
 
     format(infoString, sizeof(infoString), "ราคากิจการ: %s\n", MoneyFormat(BusinessInfo[id][BusinessPrice]));
@@ -271,6 +277,7 @@ stock ShowSelectBusinessType(playerid)
     strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}ร้านอาหาร\n"); 
     strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}ธนาคาร\n"); 
     strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}คลับ\n"); 
+    strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}ร้านขายเสื้อผ้า\n"); 
 
     Dialog_Show(playerid, DIALOG_BU_TYPE, DIALOG_STYLE_LIST, "เปลี่ยนประเภทกิจการ", select_type, "ยืนยัน", "ยกเลิก");
     return 1;
@@ -461,6 +468,11 @@ Dialog:DIALOG_BU_TYPE(playerid, response, listitem, inputtext[])
         case 5:
         {
             BusinessInfo[id][BusinessType] = BUSINESS_TYPE_CLUB;
+            SaveBusiness(id);
+        }
+        case 6:
+        {
+            BusinessInfo[id][BusinessType] = BUSINESS_TYPE_SKIN;
             SaveBusiness(id);
         }
     }
@@ -879,6 +891,11 @@ stock SendBusinessType(playerid, id)
 		{
 			SendClientMessageEx(playerid, COLOR_DARKGREEN, "ยินดีตอยรับเข้าสู่ร้าน %s", BusinessInfo[id][BusinessName]);
 			SendClientMessage(playerid, COLOR_WHITE, "Available commands: /eat."); 
+		}
+        case BUSINESS_TYPE_SKIN:
+		{
+			SendClientMessageEx(playerid, COLOR_DARKGREEN, "ยินดีตอยรับเข้าสู่ร้าน %s", BusinessInfo[id][BusinessName]);
+			SendClientMessage(playerid, COLOR_WHITE, "Available commands: /skin"); 
 		}
 	}
 	return 1;

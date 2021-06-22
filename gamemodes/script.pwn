@@ -376,7 +376,7 @@ public OnPlayerConnect(playerid) {
     return 1;
 }
 
-public OnPlayerDisconnect(playerid, reason) {
+hook OnPlayerDisconnect(playerid, reason) {
 
     static const szDisconnectReason[3][] = {"หลุด","ออกจากเกมส์","ถูกเตะ"};
     ProxDetector(playerid, 20.0, sprintf("*** %s ออกจากเซิร์ฟเวอร์ (%s)", ReturnPlayerName(playerid), szDisconnectReason[reason]));

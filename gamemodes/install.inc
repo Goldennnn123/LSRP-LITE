@@ -51,6 +51,9 @@ hook OnGameModeInit()
     mysql_tquery_file(MySQL_GetHandle(), "db/mc_garage.sql");
     print("[SQL] Install mc_garage.sql");
 
+    mysql_tquery_file(MySQL_GetHandle(), "db/arrest.sql");
+    print("[SQL] Install Arrest.sql");
+
 
     return 1;
 }

@@ -217,6 +217,10 @@ CMD:kick(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
 		return SendUnauthMessage(playerid); 
+
+
+	if(!e_pAccountData[playerid][mForumName])
+		return SendErrorMessage(playerid, "กรุณาตั้งชื่อฟอรั่มของคุณก่อน");
 		
 	new playerb, reason[120];
 	
@@ -231,10 +235,10 @@ CMD:kick(playerid, params[])
 		
 	if(strlen(reason) > 56)
 	{
-		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ถูกเตะออกจากเซืฟเวอร์โดย %s สาเหตุ: %.56s", ReturnRealName(playerb), ReturnRealName(playerid), reason);
+		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ถูกเตะออกจากเซืฟเวอร์โดย %s สาเหตุ: %.56s", ReturnRealName(playerb), e_pAccountData[playerid][mForumName], reason);
 		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: ...%s", reason[56]); 
 	}
-	else SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ถูกเตะออกจากเซืฟเวอร์โดย %s สาเหตุ: %s", ReturnRealName(playerb), ReturnRealName(playerid), reason);
+	else SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ถูกเตะออกจากเซืฟเวอร์โดย %s สาเหตุ: %s", ReturnRealName(playerb), e_pAccountData[playerid][mForumName], reason);
 	
 	new insertLog[256];
 	
@@ -256,6 +260,9 @@ CMD:ban(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
 		return SendUnauthMessage(playerid); 
+
+	if(!e_pAccountData[playerid][mForumName])
+		return SendErrorMessage(playerid, "กรุณาตั้งชื่อฟอรั่มของคุณก่อน");
 		
 	new playerb, reason[120];
 	
@@ -270,10 +277,10 @@ CMD:ban(playerid, params[])
 		
 	if(strlen(reason) > 56)
 	{
-		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกแบนออกจากเซืฟเวอร์โดย %s สาเหตุ: %.56s", ReturnName(playerb), ReturnName(playerid), reason);
+		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกแบนออกจากเซืฟเวอร์โดย %s สาเหตุ: %.56s", ReturnName(playerb), e_pAccountData[playerid][mForumName], reason);
 		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: ...%s", reason[56]); 
 	}
-	else SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกแบนออกจากเซืฟเวอร์โดย %s สาเหตุ: %s", ReturnName(playerb), ReturnName(playerid), reason);
+	else SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกแบนออกจากเซืฟเวอร์โดย %s สาเหตุ: %s", ReturnName(playerb), e_pAccountData[playerid][mForumName], reason);
 	
 	new insertLog[256];
 	
@@ -301,6 +308,9 @@ CMD:ajail(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
 		return SendUnauthMessage(playerid); 
+	
+	if(!e_pAccountData[playerid][mForumName])
+		return SendErrorMessage(playerid, "กรุณาตั้งชื่อฟอรั่มของคุณก่อน");
 		
 	new playerb, length, reason[120];
 	
@@ -318,10 +328,10 @@ CMD:ajail(playerid, params[])
 		
 	if(strlen(reason) > 45)
 	{
-		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกนำสงคุกแอดมิน เป็นเวลา %d นาที โดย %s สาเหตุ: %.56s", ReturnName(playerb), length, ReturnName(playerid), reason);
+		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกนำสงคุกแอดมิน เป็นเวลา %d นาที โดย %s สาเหตุ: %.56s", ReturnName(playerb), length, e_pAccountData[playerid][mForumName], reason);
 		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: ...%s", reason[56]); 
 	}
-	else SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกนำสงคุกแอดมิน เป็นเวลา %d นาที โดย %s สาเหตุ: %s",ReturnName(playerb), length, ReturnName(playerid), reason);
+	else SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกนำสงคุกแอดมิน เป็นเวลา %d นาที โดย %s สาเหตุ: %s",ReturnName(playerb), length, e_pAccountData[playerid][mForumName], reason);
 	
 	ClearAnimations(playerb); 
 	
@@ -346,6 +356,9 @@ CMD:unjail(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
 		return SendUnauthMessage(playerid); 
+
+	if(!e_pAccountData[playerid][mForumName])
+		return SendErrorMessage(playerid, "กรุณาตั้งชื่อฟอรั่มของคุณก่อน");
 		
 	new playerb;
 	
@@ -367,7 +380,7 @@ CMD:unjail(playerid, params[])
 	PlayerInfo[playerb][pAdminjailTime] = 0;
 	
 	CharacterSave(playerb);
-	SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกนำออกจากคุกแอดมินโดย %s", ReturnName(playerb), ReturnName(playerid));
+	SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ได้ถูกนำออกจากคุกแอดมินโดย %s", ReturnName(playerb), e_pAccountData[playerid][mForumName]);
 	return 1;
 }
 
@@ -945,6 +958,9 @@ CMD:aooc(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
 		return SendUnauthMessage(playerid);
+
+	if(!e_pAccountData[playerid][mForumName])
+		return SendErrorMessage(playerid, "คุณต้องตั้งชื่อฟอรั่มก่อน");
 		
 	if(isnull(params)) return SendUsageMessage(playerid, "/aooc [ข้อความ]"); 
 	
@@ -952,7 +968,7 @@ CMD:aooc(playerid, params[])
 		SendClientMessageToAllEx(COLOR_RED, "[AOOC] ผู้ดูแลระบบ %s (%s): %s", ReturnName(playerid), e_pAccountData[playerid][mForumName], params);
 		
 	else SendClientMessageToAllEx(COLOR_RED, "[AOOC] ผู้ดูแลระบบ %s: %s", ReturnName(playerid), params);*/
-	SendClientMessageToAllEx(COLOR_RED, "{C2185B}[AOOC] ผู้ดูแลระบบ %s: %s", ReturnName(playerid), params);
+	SendClientMessageToAllEx(COLOR_RED, "{C2185B}[AOOC] ผู้ดูแลระบบ %s: %s", e_pAccountData[playerid][mForumName], params);
 	return 1;
 }
 

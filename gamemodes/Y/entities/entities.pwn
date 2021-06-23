@@ -145,6 +145,9 @@ enum E_PLAYER_DATA
 	pArrestBy,
 	pArrestTime,
 	pArrestRoom,
+
+	pSkinClothing[3],
+	pDonater
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];

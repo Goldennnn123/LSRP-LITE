@@ -453,6 +453,19 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pSkinClothing1 = %d, pSkinClothing2 = %d, pSkinClothing3 = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pSkinClothing][0],
+			PlayerInfo[playerid][pSkinClothing][1],
+			PlayerInfo[playerid][pSkinClothing][2],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pDonater = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pDonater],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 		mysql_finish(query);
 	}
 	return 1;
@@ -577,6 +590,11 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pHasRadio",PlayerInfo[playerid][pHasRadio]);
 	cache_get_value_name_int(0, "pMainSlot", PlayerInfo[playerid][pMainSlot]);
 	cache_get_value_name_int(0, "pSaving", PlayerInfo[playerid][pSaving]);
+
+	cache_get_value_name_int(0, "pSkinClothing1", PlayerInfo[playerid][pSkinClothing][0]);
+	cache_get_value_name_int(0, "pSkinClothing2", PlayerInfo[playerid][pSkinClothing][1]);
+	cache_get_value_name_int(0, "pSkinClothing3", PlayerInfo[playerid][pSkinClothing][2]);
+	cache_get_value_name_int(0, "pDonater",PlayerInfo[playerid][pDonater]);
 
 	return LoadCharacter(playerid);
 }

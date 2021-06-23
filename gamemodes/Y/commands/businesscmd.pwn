@@ -1,3 +1,11 @@
+new PlayerSkinCloseID[MAX_PLAYERS];
+
+hook OP_Connect(playerid)
+{
+    PlayerSkinCloseID[playerid] = 0;
+    return 1;
+}
+
 CMD:bizcmd(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________________BUSINESS COMMAND__________________________");
@@ -320,13 +328,143 @@ CMD:buyammo(playerid, params[])
 
 CMD:skin(playerid, params[])
 {
-   // new id = PlayerInfo[playerid][pInsideBusiness];
+    new id = PlayerInfo[playerid][pInsideBusiness];
     
 
     if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_SKIN)
         return SendErrorMessage(playerid, "คุณไม่อยุ่ในร้านขายเสื้อผ้า");
 
+    new str[255], longstr[255];
+    format(str, sizeof(str), "ชุดที่ 1: %d\n",PlayerInfo[playerid][pSkinClothing][0]);
+    strcat(longstr, str);
 
+    format(str, sizeof(str), "ชุดที่ 2: %d\n",PlayerInfo[playerid][pSkinClothing][1]);
+    strcat(longstr, str);
+
+    format(str, sizeof(str), "ชุดที่ 3: %d\n",PlayerInfo[playerid][pSkinClothing][2]);
+    strcat(longstr, str);
+
+    Dialog_Show(playerid, DIALOG_SKINCLOST_LIST, DIALOG_STYLE_LIST, "Clothing Skin:", longstr, "ยืนยัน", "ยกเลิก");
+    //Dialog_Show(playerid, DIALOG_BUYSKIN_INPUT, DIALOG_STYLE_INPUT, "ซื้อ Skin", "ในการเปลี่ยน Skin จำเป็นต้องคำนึงถึงบทบาทของตัวละครเป็นหลักหากชื่อเป็นผู้ชายแต่\nเปลี่ยนเป็น Skin ผู้หญิงแล้วทางผู้ดูแลพบเจอจะทำการแตะออกจากเซิร์ฟเวอร์\nหากถูกแต่ออกในกรณีเดียวกันครบ 3 ครั้งจะทำการลบตัวละครตัวนั้นทันที","ยืนยัน", "ยกเลิก");
+    return 1;
+}
+
+alias:changeclothing("cct")
+CMD:changeclothing(playerid, params[])
+{
+    if(PlayerInfo[playerid][pGUI])
+        return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งขณะมีการทำงานของระบบ Textdraw");
+
+    new str[255], longstr[255];
+    format(str, sizeof(str), "ชุดที่ 1: %d\n",PlayerInfo[playerid][pSkinClothing][0]);
+    strcat(longstr, str);
+
+    format(str, sizeof(str), "ชุดที่ 2: %d\n",PlayerInfo[playerid][pSkinClothing][1]);
+    strcat(longstr, str);
+
+    format(str, sizeof(str), "ชุดที่ 3: %d\n",PlayerInfo[playerid][pSkinClothing][2]);
+    strcat(longstr, str);
+
+    Dialog_Show(playerid, DIALOG_SKINCLOST_CHANG, DIALOG_STYLE_LIST, "Clothing Skin:", longstr, "ยืนยัน", "ยกเลิก");
+    return 1;
+}
+
+
+Dialog:DIALOG_SKINCLOST_CHANG(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+
+    switch(listitem)
+    {
+        case 0:
+        {  
+            PlayerSkinCloseID[playerid] = 0;
+            Dialog_Show(playerid, DIALOG_SKINCLOST_CH_SLOT, DIALOG_STYLE_LIST, "Clothing Skin:", "[ ! ] ล้าง\n[ ! ] เปลี่ยน", "ยืนยัน", "ยกเลิก");
+
+        }
+        case 1:
+        {  
+            PlayerSkinCloseID[playerid] = 1;
+            Dialog_Show(playerid, DIALOG_SKINCLOST_CH_SLOT, DIALOG_STYLE_LIST, "Clothing Skin:", "[ ! ] ล้าง\n[ ! ] เปลี่ยน", "ยืนยัน", "ยกเลิก");
+
+        }
+        case 2:
+        {  
+            PlayerSkinCloseID[playerid] = 2;
+            Dialog_Show(playerid, DIALOG_SKINCLOST_CH_SLOT, DIALOG_STYLE_LIST, "Clothing Skin:", "[ ! ] ล้าง\n[ ! ] เปลี่ยน", "ยืนยัน", "ยกเลิก");
+
+        }
+    }
+    return 1;
+}
+
+Dialog:DIALOG_SKINCLOST_CH_SLOT(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+
+    new slotid = PlayerSkinCloseID[playerid];
+    new skinid = PlayerInfo[playerid][pSkinClothing][slotid];
+    switch(listitem)
+    {
+        case 0:
+        {
+            if(PlayerInfo[playerid][pSkinClothing][slotid] == 0)
+                return SendErrorMessage(playerid, "Sloid นี้ว่างอยู่แล้ว");
+
+            PlayerInfo[playerid][pSkinClothing][slotid] = 0;
+            SendClientMessageEx(playerid, -1, "คุณได้ทำการล้างช่อง SkinClothing ช่องที %d เรียบร้อยแล้ว", slotid+1);
+        }
+        case 1:
+        {
+            if(PlayerInfo[playerid][pSkinClothing][slotid] == 0)
+                return SendErrorMessage(playerid, "ไม่สามารถเปลี่ยน Skin ให้คุณได้เนื่องจากช่องนี้เป็นช่องที่ว่าง");
+            
+            new str[255];
+            format(str, sizeof(str), "เปลี่ยนเสื้อผ้าของเขา");
+
+            PlayerInfo[playerid][pLastSkin] = skinid; SetPlayerSkin(playerid, skinid);
+            callcmd::me(playerid,  str);
+        }
+    }
+    return 1;
+}
+
+
+Dialog:DIALOG_SKINCLOST_LIST(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+    
+    switch(listitem)
+    {
+        case 0:
+        {
+            ShowDialogClostingSkin(playerid, 0);
+            PlayerSkinCloseID[playerid] = 0;
+            return 1;
+        }
+        case 1:
+        {
+            ShowDialogClostingSkin(playerid, 1);
+            PlayerSkinCloseID[playerid] = 1;
+        }
+        case 2:
+        {
+            ShowDialogClostingSkin(playerid, 2);
+            PlayerSkinCloseID[playerid] = 2;
+        }
+    }
+    return 1;
+}
+
+stock ShowDialogClostingSkin(playerid, id)
+{
+    SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เลือก SkinClothing Slot ที่ %d", id+1);
     Dialog_Show(playerid, DIALOG_BUYSKIN_INPUT, DIALOG_STYLE_INPUT, "ซื้อ Skin", "ในการเปลี่ยน Skin จำเป็นต้องคำนึงถึงบทบาทของตัวละครเป็นหลักหากชื่อเป็นผู้ชายแต่\nเปลี่ยนเป็น Skin ผู้หญิงแล้วทางผู้ดูแลพบเจอจะทำการแตะออกจากเซิร์ฟเวอร์\nหากถูกแต่ออกในกรณีเดียวกันครบ 3 ครั้งจะทำการลบตัวละครตัวนั้นทันที","ยืนยัน", "ยกเลิก");
     return 1;
 }
@@ -341,13 +479,17 @@ Dialog:DIALOG_BUYSKIN_INPUT(playerid, response, listitem, inputtext[])
     
     new skinid = strval(inputtext);
     new id = PlayerInfo[playerid][pInsideBusiness];
+    new slotid = PlayerSkinCloseID[playerid];
 
     BusinessInfo[id][BusinessCash] += 1000/2;
 
     PlayerInfo[playerid][pLastSkin] = skinid; SetPlayerSkin(playerid, skinid);
+    PlayerInfo[playerid][pSkinClothing][slotid] = skinid;
+
     SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ทำการเปลี่ยน Skin ของคุณเป็น ID: %d คุณจ่ายค่า Skin ไป $1,000",skinid);
     GiveMoney(playerid, -1000);
     SaveBusiness(id);
+    CharacterSave(playerid);
     return 1;
 }
 

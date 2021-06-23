@@ -89,14 +89,14 @@ public Query_LoadHouse()
         if(IsValidDynamicPickup(HouseInfo[i+1][HousePickup]))
             DestroyDynamicPickup(HouseInfo[i+1][HousePickup]);
         
-        if(HouseInfo[i+1][HouseOwnerDBID])
+        /*if(HouseInfo[i+1][HouseOwnerDBID])
         {
             HouseInfo[i+1][HousePickup] = CreateDynamicPickup(1272, 23, HouseInfo[i+1][HouseEntrance][0], HouseInfo[i+1][HouseEntrance][1], HouseInfo[i+1][HouseEntrance][2],-1,-1);
         }
         else
         {
             HouseInfo[i+1][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[i+1][HouseEntrance][0], HouseInfo[i+1][HouseEntrance][1], HouseInfo[i+1][HouseEntrance][2],-1,-1);
-        }
+        }*/
         countHouse++;
 
         HouseInfo[i+1][HouseSwicth] = false;
@@ -249,14 +249,14 @@ Dialog:DIALOG_SELETE_HOUSE(playerid, response, listitem, inputtext[])
                 if(IsValidDynamicPickup(HouseInfo[id][HousePickup]))
                     DestroyDynamicPickup(HouseInfo[id][HousePickup]);
         
-                if(HouseInfo[id][HouseOwnerDBID])
+                /*if(HouseInfo[id][HouseOwnerDBID])
                 {
                     HouseInfo[id][HousePickup] = CreateDynamicPickup(1272, 23, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2],-1,-1);
                 }
                 else
                 {
                     HouseInfo[id][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2],-1,-1);
-                }
+                }*/
             }
             case 5:
             {
@@ -573,7 +573,7 @@ Dialog:DIALOG_SELL_HOUSE(playerid, response, listitem, inputtext[])
         if(IsValidDynamicPickup(HouseInfo[id][HousePickup]))
             DestroyDynamicPickup(HouseInfo[id][HousePickup]);
 
-        HouseInfo[id][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2],-1,-1);
+        //HouseInfo[id][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[id][HouseEntrance][0], HouseInfo[id][HouseEntrance][1], HouseInfo[id][HouseEntrance][2],-1,-1);
 
         SendClientMessageEx(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{009933} คุณได้ขายบ้านของคุณแล้วได้เงินมาจำนวน %s",MoneyFormat(Money));
         SendClientMessageEx(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{009933} คุณมีบิลค่าไฟที่ค้างไว้อยู่เราได้ทำการหักหนี้บิลไฟฟ้าของคุณจำนวน $%s",MoneyFormat(bill));

@@ -261,9 +261,15 @@ CMD:exit(playerid, params[])
 alias:stopanimation("sa", "stopanim")
 CMD:stopanimation(playerid, params[])
 {
-	//TogglePlayerControllable(playerid, 1);
-	ApplyAnimation(playerid, "CARRY", "crry_prtial", 1.0, 0, 0, 0, 0, 0);
-	//ClearAnimations(playerid);
+	if(PlayerInfo[playerid][pHandcuffed])
+	{
+		ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0);
+    	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CUFFED);
+		return 1;
+	}
+
+	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0);
+    SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 	return 1;
 }
 

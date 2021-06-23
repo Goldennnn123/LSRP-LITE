@@ -141,15 +141,6 @@ new globalWeather = 2;
 #include "Y/systems/car_rental.pwn"
 #include "Y/systems/dmv.pwn"
 
-#include "Y/anti-cheat/impl.pwn"
-#include "Y/anti-cheat/money/impl.pwn"
-#include "Y/anti-cheat/airbreak/impl.pwn"
-#include "Y/anti-cheat/carmod/impl"
-#include "Y/anti-cheat/carwarp/impl"
-#include "Y/anti-cheat/flying/impl"
-#include "Y/anti-cheat/remotejack/impl"
-#include "Y/anti-cheat/weapon/impl"
-
 #include "Y/test/functionPlayer.pwn"
 
 #include "Y/systems/textdraw/computer.pwn"
@@ -160,8 +151,6 @@ new globalWeather = 2;
 
 
 main() { }
-
-forward OnPlayerViolate(playerid, severity, violationCode, const violationName[]);
 
 public OnGameModeInit() {
 
@@ -353,7 +342,10 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pArrestRoom] = 0;
     PlayerInfo[playerid][pArrestBy] = 0;
     PlayerInfo[playerid][pArrestTime] = 0;
-
+    PlayerInfo[playerid][pDonater] = 0;
+	PlayerInfo[playerid][pSkinClothing][0] = 0;
+	PlayerInfo[playerid][pSkinClothing][1] = 0;
+	PlayerInfo[playerid][pSkinClothing][2] = 0;
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;

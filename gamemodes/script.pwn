@@ -355,7 +355,7 @@ public OnPlayerConnect(playerid) {
     tToAccept[playerid] = INVALID_PLAYER_ID;
 
 	new query[90];
-    new musicrandom = random(2);
+    new musicrandom = random(3);
     switch(musicrandom)
     {
         case 0:
@@ -365,6 +365,10 @@ public OnPlayerConnect(playerid) {
         case 1:
         {
             PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/16hBMrz3ySPF"); // Blinding Lights [Acoustic Version] - The Weeknd
+        }
+        case 2:
+        {
+            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/134nwjnrnmTd"); // Timber - Pitbull
         }
     }
 

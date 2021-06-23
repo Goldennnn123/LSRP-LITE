@@ -368,7 +368,7 @@ public OnPlayerConnect(playerid) {
         }
         case 2:
         {
-            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/134nwjnrnmTd"); // Timber - Pitbull
+            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/134nwjnrnmTd"); // Timber - Pitbull.
         }
     }
 

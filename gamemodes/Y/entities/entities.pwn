@@ -105,7 +105,7 @@ enum E_PLAYER_DATA
 	pCalling,
 	bool:pPhonespeaker,
 
-	bool:pGUI,
+	pGUI,
 
 
 	bool:pDriverLicense,
@@ -147,7 +147,13 @@ enum E_PLAYER_DATA
 	pArrestRoom,
 
 	pSkinClothing[3],
-	pDonater
+	pDonater,
+
+	pOre,
+	pCoal,
+	pIron,
+	pCopper,
+	pKNO3,
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];

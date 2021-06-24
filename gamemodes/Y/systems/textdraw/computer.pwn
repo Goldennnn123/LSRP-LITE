@@ -1,4 +1,7 @@
 #define TEXTDRAW_CUSTOM "mdl-2000:"
+
+#include <YSI_Coding\y_hooks>
+
 new PlayerText:PL_Computer[MAX_PLAYERS][22];
 
 stock LoadTD_Computer(playerid)
@@ -327,7 +330,7 @@ stock DesTD_Computer(playerid)
     {
         PlayerTextDrawDestroy(playerid, PL_Computer[playerid][t]);
     }
-	PlayerInfo[playerid][pGUI] = false;
+	PlayerInfo[playerid][pGUI] = 0;
     CancelSelectTextDraw(playerid);
     return 1;
 }
@@ -423,7 +426,7 @@ stock ShowTD_Computer_BTC(playerid)
 	PlayerTextDrawSetString(playerid,PL_Computer[playerid][20], str);
 	return 1;
 }
-hook OP_Disconnect(playerid, reason)
+hook OnPlayerDisconnect@036(playerid, reason)
 {
     DesTD_Computer(playerid);
     return 1;
@@ -431,64 +434,67 @@ hook OP_Disconnect(playerid, reason)
 
 hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
-    if(playertextid == PL_Computer[playerid][3])
-    {
-        Dialog_Show(playerid, D_COMPUTER_CLOSE, DIALOG_STYLE_MSGBOX, "คุณจะปิดคอม?", "คุณเลือกที่จะปิดคอมหรือจะไม่ปิด", "ปิด", "ไม่ปิด");
-        return 1;
-    }
-	if(playertextid == PL_Computer[playerid][1])
+	if(PlayerInfo[playerid][pGUI] == 3)
 	{
-		LoadBox(playerid);
-		ShowTD_Computer_ThisPc(playerid);
-		PlayerTextDrawHide(playerid, PL_Computer[playerid][1]);
-		PlayerTextDrawHide(playerid, PL_Computer[playerid][4]);
-		return 1;
-	}
-	if(playertextid == PL_Computer[playerid][7])
-	{
-		for(new t = 5; t <= 21; t++)
+		if(playertextid == PL_Computer[playerid][3])
 		{
-			PlayerTextDrawHide(playerid, PL_Computer[playerid][t]);
-		}
-
-		PlayerTextDrawShow(playerid, PL_Computer[playerid][1]);
-		PlayerTextDrawShow(playerid, PL_Computer[playerid][4]);
-		return 1;
-	}
-	if(playertextid == PL_Computer[playerid][4])
-	{
-		LoadBox(playerid);
-		ShowTD_Computer_BTC(playerid);
-		PlayerTextDrawHide(playerid, PL_Computer[playerid][1]);
-		PlayerTextDrawHide(playerid, PL_Computer[playerid][4]);
-		return 1;
-	}
-	if(playertextid == PL_Computer[playerid][21])
-	{
-		new id = IsPlayerNearComputer(playerid);
-
-		if(id == 0)
-		{
-			DesTD_Computer(playerid);
-			CancelSelectTextDraw(playerid);
-			SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้คอมพิวเตอร์");
-		}
-
-		if(!ComputerInfo[id][ComputerStartBTC])
-		{
-			ComputerInfo[id][ComputerStartBTC] = true;
-			SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้เริ่มขุด เหรียญ BTC..... ด้วยแรงขุด %s", CalculaterBTC(id));
-			ComputerInfo[id][ComputerTimer] = SetTimerEx("StartComputerBTC", 1800000, true, "dd", playerid, id);
-			PlayerTextDrawSetString(playerid,PL_Computer[playerid][21], "~r~STOP");
+			Dialog_Show(playerid, D_COMPUTER_CLOSE, DIALOG_STYLE_MSGBOX, "คุณจะปิดคอม?", "คุณเลือกที่จะปิดคอมหรือจะไม่ปิด", "ปิด", "ไม่ปิด");
 			return 1;
 		}
-		else
+		if(playertextid == PL_Computer[playerid][1])
 		{
-			ComputerInfo[id][ComputerStartBTC] = false;
-			SendClientMessage(playerid, COLOR_DARKGREEN, "คุณได้หยุดขุด เหรียญ BTC.....");
-			KillTimer(ComputerInfo[id][ComputerTimer]);
-			PlayerTextDrawSetString(playerid,PL_Computer[playerid][21], "~r~START");
+			LoadBox(playerid);
+			ShowTD_Computer_ThisPc(playerid);
+			PlayerTextDrawHide(playerid, PL_Computer[playerid][1]);
+			PlayerTextDrawHide(playerid, PL_Computer[playerid][4]);
 			return 1;
+		}
+		if(playertextid == PL_Computer[playerid][7])
+		{
+			for(new t = 5; t <= 21; t++)
+			{
+				PlayerTextDrawHide(playerid, PL_Computer[playerid][t]);
+			}
+
+			PlayerTextDrawShow(playerid, PL_Computer[playerid][1]);
+			PlayerTextDrawShow(playerid, PL_Computer[playerid][4]);
+			return 1;
+		}
+		if(playertextid == PL_Computer[playerid][4])
+		{
+			LoadBox(playerid);
+			ShowTD_Computer_BTC(playerid);
+			PlayerTextDrawHide(playerid, PL_Computer[playerid][1]);
+			PlayerTextDrawHide(playerid, PL_Computer[playerid][4]);
+			return 1;
+		}
+		if(playertextid == PL_Computer[playerid][21])
+		{
+			new id = IsPlayerNearComputer(playerid);
+
+			if(id == 0)
+			{
+				DesTD_Computer(playerid);
+				CancelSelectTextDraw(playerid);
+				SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้คอมพิวเตอร์");
+			}
+
+			if(!ComputerInfo[id][ComputerStartBTC])
+			{
+				ComputerInfo[id][ComputerStartBTC] = true;
+				SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้เริ่มขุด เหรียญ BTC..... ด้วยแรงขุด %s", CalculaterBTC(id));
+				ComputerInfo[id][ComputerTimer] = SetTimerEx("StartComputerBTC", 1800000, true, "dd", playerid, id);
+				PlayerTextDrawSetString(playerid,PL_Computer[playerid][21], "~r~STOP");
+				return 1;
+			}
+			else
+			{
+				ComputerInfo[id][ComputerStartBTC] = false;
+				SendClientMessage(playerid, COLOR_DARKGREEN, "คุณได้หยุดขุด เหรียญ BTC.....");
+				KillTimer(ComputerInfo[id][ComputerTimer]);
+				PlayerTextDrawSetString(playerid,PL_Computer[playerid][21], "~r~START");
+				return 1;
+			}
 		}
 	}
     return 1;

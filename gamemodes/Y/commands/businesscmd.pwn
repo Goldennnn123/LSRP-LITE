@@ -424,12 +424,25 @@ Dialog:DIALOG_SKINCLOST_CH_SLOT(playerid, response, listitem, inputtext[])
                 return SendErrorMessage(playerid, "ไม่สามารถเปลี่ยน Skin ให้คุณได้เนื่องจากช่องนี้เป็นช่องที่ว่าง");
             
             new str[255];
-            format(str, sizeof(str), "เปลี่ยนเสื้อผ้าของเขา");
+            format(str, sizeof(str), "กำกลังเปลี่ยนเสื้อผ้าของเขา");
 
-            PlayerInfo[playerid][pLastSkin] = skinid; SetPlayerSkin(playerid, skinid);
+            SetTimerEx("ChangSkinClosthing", 5000, false, "dd",playerid, skinid);
+            TogglePlayerControllable(playerid, 0);
             callcmd::me(playerid,  str);
         }
     }
+    return 1;
+}
+
+forward ChangSkinClosthing(playerid, skinid);
+public ChangSkinClosthing(playerid, skinid)
+{
+    new str[255];
+    format(str, sizeof(str), "สำเร็จ");
+
+    PlayerInfo[playerid][pLastSkin] = skinid; SetPlayerSkin(playerid, skinid);
+    callcmd::do(playerid,  str);
+    TogglePlayerControllable(playerid, 1);
     return 1;
 }
 

@@ -157,6 +157,75 @@ CMD:goto(playerid, params[])
 	return 1;
 }
 
+
+CMD:gotojob(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid); 
+
+	new jobid;
+
+	if(sscanf(params, "d", jobid))
+	{
+		SendClientMessage(playerid, -1, "[JOB:] 1.ชาวไร่ 2.พนักงานส่งของ 3.ช่างยนต์ 4.นักขุดเหมือง");
+		return 1;
+	}
+
+	switch(jobid)
+	{
+		case 1:
+		{
+			SetPlayerPos(playerid, -382.5893, -1426.3422, 26.2217);
+			SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+			if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+			{
+				PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+			}
+			SendClientMessage(playerid, -1, "คุณได้เคลื่อนย้ายไปที่ งาน ชาวไร่");
+			return 1;
+		}
+		case 2:
+		{
+			SetPlayerPos(playerid, -242.5856,-235.4501,2.4297);
+			SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+			if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+			{
+				PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+			}
+			SendClientMessage(playerid, -1, "คุณได้เคลื่อนย้ายไปที่ งาน ส่งของ");
+			return 1;
+		}
+		case 3:
+		{
+			SetPlayerPos(playerid, 88.1169,-164.9625,2.5938);
+			SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+			if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+			{
+				PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+			}
+			SendClientMessage(playerid, -1, "คุณได้เคลื่อนย้ายไปที่ งาน ช่างยนต์");
+			return 1;
+		}
+		case 4:
+		{
+			SetPlayerPos(playerid, 586.4755,872.6391,-42.4973);
+			SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+			if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+			{
+				PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+			}
+			SendClientMessage(playerid, -1, "คุณได้เคลื่อนย้ายไปที่ งาน นักขุดเหมือง");
+			return 1;
+		}
+		default : SendErrorMessage(playerid, "ไม่มี อาชีพที่ต้องการ");
+	}
+	return 1;
+}
+
 CMD:gethere(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
@@ -2048,6 +2117,7 @@ CMD:makemcgarage(playerid, params[])
 	mysql_tquery(dbCon, query, "Query_InsertMcGarage", "ddfffdd", playerid, idx,x,y,z,World,Interior);
 	return 1;
 }
+
 
 CMD:editmcgarage(playerid, params[])
 {

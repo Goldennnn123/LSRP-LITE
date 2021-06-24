@@ -309,7 +309,7 @@ Dialog:DIALOG_PHONE_SELETE_ID(playerid, response, listitem, inputtext[])
                 return 1;
             }
             
-            SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "* %s มีเสียงกริ๊งโทรสัพท์ดังขึ้น", ReturnRealName(playerid, 0)); 
+            SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "* %s มีเสียงกริ๊งโทรสัพท์ดังขึ้น", ReturnRealName(playerb, 0)); 
             SendClientMessageEx(playerb, COLOR_GREY, "[ ! ] คุณสามารถรับสายโดยการกดปุ่มรับสายโดยการพิมพ์ /p(ickup) เพื่อรับสายเรียกเข้า Phone: %i", PlayerInfo[playerid][pPhone]); 
             
             PlayerInfo[playerid][pCalling] = 1; PlayerInfo[playerb][pCalling] = 1;
@@ -317,7 +317,7 @@ Dialog:DIALOG_PHONE_SELETE_ID(playerid, response, listitem, inputtext[])
             PlayerInfo[playerid][pPhoneline] = playerb;
             PlayerInfo[playerb][pPhoneline] = playerid; 
             
-            playerPhone[playerb] = SetTimerEx("OnSuccessCall", 3000, true, "i", playerid); 
+            playerPhone[playerb] = SetTimerEx("OnSuccessCall", 3000, true, "i", playerb); 
             return 1;
         }
         case 3:
@@ -457,7 +457,7 @@ stock AddPhoneBook(playerid)
 
 CMD:phone(playerid, params[])
 {
-    if(PlayerInfo[playerid][pGUI] == false)
+    if(PlayerInfo[playerid][pGUI] == 0)
     {
         new hour, seconds, minute;
         gettime(hour, seconds, minute);
@@ -473,7 +473,7 @@ CMD:phone(playerid, params[])
         }
 
         SelectTextDraw(playerid, COLOR_GRAD1);
-        PlayerInfo[playerid][pGUI] = true;
+        PlayerInfo[playerid][pGUI] = 1;
 
         format(str, sizeof(str), "หยิบโทรศัพท์ขึ้นมา");
         callcmd::me(playerid,str);
@@ -485,7 +485,7 @@ CMD:phone(playerid, params[])
             PlayerTextDrawHide(playerid, PhonePlayer[playerid][p]);
         }
         CancelSelectTextDraw(playerid);
-        PlayerInfo[playerid][pGUI] = false;
+        PlayerInfo[playerid][pGUI] = 0;
 
         new str[120];
         format(str, sizeof(str), "เก็บโทรศัพท์");
@@ -512,7 +512,7 @@ CMD:call(playerid, params[])
     /*if(PlayerInfo[playerid][pHandcuffed])
 		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมือ");*/
 		
-	if(playerPhone[playerid])
+	if(PlayerInfo[playerid][pCalling])
 		return SendErrorMessage(playerid, "คุณไม่สามารถโทรออกได้ในขณะนี้");
 		
 	if(sscanf(params, "i", phone_number))
@@ -572,15 +572,16 @@ CMD:call(playerid, params[])
 		return 1;
 	}
 	
-	SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "* %s มีเสียงกริ๊งโทรสัพท์ดังขึ้น", ReturnName(playerid, 0)); 
+	SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "* %s มีเสียงกริ๊งโทรสัพท์ดังขึ้น", ReturnName(playerb, 0)); 
 	SendClientMessageEx(playerb, COLOR_GREY, "[ ! ] คุณสามารถรับสายโดยการกดปุ่มรับสายโดยการพิมพ์ /p(ickup) เพื่อรับสายเรียกเข้า Phone: %i", PlayerInfo[playerid][pPhone]); 
 	
 	PlayerInfo[playerid][pCalling] = 1; PlayerInfo[playerb][pCalling] = 1;
 	
 	PlayerInfo[playerid][pPhoneline] = playerb;
 	PlayerInfo[playerb][pPhoneline] = playerid; 
-	
-	playerPhone[playerb] = SetTimerEx("OnSuccessCall", 3000, true, "i", playerid); 
+
+	PlayAudioStreamForPlayer(playerb, "https://media1.vocaroo.com/mp3/1fl8LmutfAzb");
+	playerPhone[playerb] = SetTimerEx("OnSuccessCall", 1000, true, "i", playerb);
 	return 1;
 }
 
@@ -591,18 +592,32 @@ CMD:hangup(playerid, params[])
 	if(PlayerInfo[playerid][pPhoneOff])
 		return SendErrorMessage(playerid, "โทรสัพท์ของคุณปิดเครื่องอยู่");
 		
-	/*if(PlayerInfo[playerid][pHandcuffed])
-		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมืออยู่"); */
+	if(PlayerInfo[playerid][pHandcuffed])
+		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมืออยู่");
 		
-	new
+	/*new
 		str[128]
-	;
+	;*/
 		
 	if(playerPhone[playerid])
 	{
-		KillTimer(playerPhone[playerid]); 
-		
-		SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
+        KillTimer(playerPhone[playerid]);
+
+        if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USECELLPHONE){
+			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
+		}
+
+        if(GetPlayerSpecialAction(PlayerInfo[playerid][pPhoneline]) == SPECIAL_ACTION_USECELLPHONE){
+			SetPlayerSpecialAction(PlayerInfo[playerid][pPhoneline], SPECIAL_ACTION_STOPUSECELLPHONE);
+		}
+
+        PlayerInfo[PlayerInfo[playerid][pPhoneline]][pCalling] = 0; PlayerInfo[playerid][pCalling] = 0;
+
+        PlayerInfo[PlayerInfo[playerid][pPhoneline]][pPhoneline] = INVALID_PLAYER_ID;
+        PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
+
+        SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
+        StopAudioStreamForPlayer(playerid);
 		return 1;
 	}
 	
@@ -617,6 +632,7 @@ CMD:hangup(playerid, params[])
 		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USECELLPHONE){
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
 		}
+        StopAudioStreamForPlayer(playerid);
 		return 1;
 	}
 	
@@ -638,13 +654,14 @@ CMD:hangup(playerid, params[])
 		PlayerInfo[playerid][pCalling] = 0; 
 		PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID; 
 		printf("call 0");
+        StopAudioStreamForPlayer(playerid);
 		return 1;
 	}
 	
 	if(!PlayerInfo[playerid][pCalling] && PlayerInfo[playerid][pPhoneline] != INVALID_PLAYER_ID)
 	{
 		SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
-		SendClientMessage(PlayerInfo[playerid][pPhoneline], COLOR_GREY, "[ ! ] ไม่มีการตอบรับจากเลขหมายที่ท่านเรียก"); 
+		//SendClientMessage(PlayerInfo[playerid][pPhoneline], COLOR_GREY, "[ ! ] ไม่มีการตอบรับจากเลขหมายที่ท่านเรียก"); 
 		
 		printf("pPhoneline = %i", PlayerInfo[playerid][pPhoneline]);
 		
@@ -658,11 +675,11 @@ CMD:hangup(playerid, params[])
 			printf("call 2"); 
 		}
 		
-		format(str, sizeof(str), "* %s ปฏิเสทสายเรียกเข้า", ReturnName(playerid, 0));
+		/*format(str, sizeof(str), "* %s ปฏิเสทสายเรียกเข้า", ReturnName(playerid, 0));
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 3000);
 		
 		format(str, sizeof(str), "* %s ปฏิเสทสายเรียกเข้า", ReturnName(PlayerInfo[playerid][pPhoneline], 0));
-		SetPlayerChatBubble(PlayerInfo[playerid][pPhoneline], str, COLOR_EMOTE, 20.0, 3000);
+		SetPlayerChatBubble(PlayerInfo[playerid][pPhoneline], str, COLOR_EMOTE, 20.0, 3000);*/
 		
 		PlayerInfo[playerid][pCalling] = 0;
 		PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pCalling] = 0;
@@ -670,6 +687,7 @@ CMD:hangup(playerid, params[])
 		PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pPhoneline] = INVALID_PLAYER_ID;
 		PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
 		printf("call 3"); 
+        StopAudioStreamForPlayer(playerid);
 		return 1;
 	}
 	
@@ -683,8 +701,8 @@ CMD:pickup(playerid, params[])
 	if(PlayerInfo[playerid][pPhoneOff])
 		return SendErrorMessage(playerid, "โทรสัพท์ของคุณปิดอยู่");
 		
-	/*if(PlayerInfo[playerid][pHandcuffed])
-		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมือ"); */
+	if(PlayerInfo[playerid][pHandcuffed])
+		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมือ");
 
 	if(PlayerInfo[playerid][pPhoneline] == INVALID_PLAYER_ID)
 		return SendErrorMessage(playerid, "ไม่มีสายเรีบกเข้ามาหาคุณ"); 
@@ -701,7 +719,8 @@ CMD:pickup(playerid, params[])
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 	KillTimer(playerPhone[playerid]); 
 	
-	playerPhone[playerid] = 0; playerPhone[ PlayerInfo[playerid][pPhoneline] ] = 0; 
+	playerPhone[playerid] = 0; playerPhone[ PlayerInfo[playerid][pPhoneline] ] = 0;
+    StopAudioStreamForPlayer(playerid);
 	return 1;
 }
 
@@ -802,7 +821,6 @@ forward OnSuccessCall(playerid);
 public OnSuccessCall(playerid)
 {
 	if(playerid != INVALID_PLAYER_ID){
-		PlayNearbySound(playerid, 23000);
 		return 1;
 	}
 	

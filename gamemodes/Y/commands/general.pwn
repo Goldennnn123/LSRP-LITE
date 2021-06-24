@@ -678,6 +678,26 @@ CMD:acceptdeath(playerid, params[])
 	return 1;
 }
 
+CMD:respawnme(playerid, params[])
+{
+	
+	if(GetPlayerTeam(playerid) != PLAYER_STATE_WOUNDED)
+		return SendErrorMessage(playerid, "คุณยังไม่ได้รับบาดเจ็บ");
+
+	if(gettime() - PlayerInfo[playerid][pRespawnTime] < 60)
+		return SendErrorMessage(playerid, "คุณยังไม่สามารถเกิดได้โปรดรออีก %d",gettime() - PlayerInfo[playerid][pRespawnTime]);
+
+	PlayerInfo[playerid][pRespawnTime] = 0;
+	SetPlayerChatBubble(playerid, "Respawned", COLOR_WHITE, 20.0, 1500);
+	SetPlayerTeam(playerid, PLAYER_STATE_ALIVE); 
+			
+	TogglePlayerControllable(playerid, 1);
+	SetPlayerHealth(playerid, 100);
+	ClearDamages(playerid);
+	SpawnPlayer(playerid);	
+	return 1;
+}
+
 CMD:stats(playerid, params[])
 {
 	new playerb;

@@ -490,14 +490,14 @@ public OnPlayerNereHouseTime()
                 
                 if(HouseInfo[p][HouseOwnerDBID])
                 {
-                    SendClientMessageEx(i,-1,"{3498DB}บ้านเลขที่: {27AE60}%s {3498DB}เจ้าของบ้าน:{27AE60} %s", HouseInfo[p][HouseName],ReturnDBIDName(HouseInfo[p][HouseOwnerDBID]));
-                    SendClientMessage(i,-1,"สามารถพิมพ์ /ds(ตะโกนเข้าไปใน้บาน) /ddo(การกระทำที่ข้างในบ้านรู้) /enter(เข้าบ้าน)");
+                    SendClientMessageEx(i,COLOR_DARKGREEN,"%d %s, Los Santos, San Andreas", HouseInfo[p][HouseDBID],HouseInfo[p][HouseName]);
+                    SendClientMessage(i,-1,"Available commands: /enter, /ds(hout), /ddo, /knock");
                     OnPlayerNereHouse[i][p] = gettime();
                 }
                 else
                 {
-                    SendClientMessageEx(i,-1,"{3498DB}บ้านเลขที่: {27AE60}%s {3498DB}ราคา:{D35400} %s", HouseInfo[p][HouseName],MoneyFormat(HouseInfo[p][HousePrice]));
-                    SendClientMessageEx(i,-1,"{3498DB}เลเวล: {58D68D}%d", HouseInfo[p][HouseLevel]);
+                    SendClientMessageEx(i,COLOR_DARKGREEN,"%d %s, Los Santos, San Andreas", HouseInfo[p][HouseDBID],HouseInfo[p][HouseName]);
+                    SendClientMessageEx(i,-1,"ราคา: $%s เลเวล: %d", HouseInfo[p][HousePrice], HouseInfo[p][HouseLevel]);
                     OnPlayerNereHouse[i][p] = gettime();
                 }
             }

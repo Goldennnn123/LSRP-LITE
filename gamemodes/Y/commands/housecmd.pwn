@@ -184,6 +184,23 @@ CMD:ddo(playerid, params[])
     return 1;
 }
 
+CMD:knock(playerid, params[])
+{
+    if(!IsPlayerNearHouse(playerid))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่หน้า/ใน บ้าน");
+    
+    SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* เคาะประตู (( %s ))", ReturnRealName(playerid, 0));
+
+    foreach(new i : Player)
+    {
+        if(IsPlayerInHouse(i) != IsPlayerNearHouse(playerid) || IsPlayerInHouse(playerid) != IsPlayerNearHouse(i))
+            continue;
+
+        SendClientMessageEx(i, COLOR_PURPLE, "* เคาะประตู (( %s ))",ReturnRealName(playerid, 0));
+    }
+    return 1;
+}
+
 
 CMD:swicth(playerid, params[])
 {
@@ -216,8 +233,16 @@ CMD:swicth(playerid, params[])
                 
             PlayerTextDrawHide(i, PlayerSwicthOff[playerid][0]);
         }
+
+        if(HouseInfo[id][HouseEle] * 7 >=  10000)
+        {
+            GiveMoney(playerid, -HouseInfo[id][HouseEle] * 7 / 2);
+            CharacterSave(playerid);
+            SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณไมได้จ่ายค่าไฟบ้าน เราจำเป็นต้องตัดเงินของคุณ $%s ซึ่งเป็นครึ่งนึงของบิลค่าไฟ",MoneyFormat(HouseInfo[id][HouseEle] * 7 / 2));
+            HouseInfo[id][HouseEle] -= HouseInfo[id][HouseEle] / 2;
+        }
         
-        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 1800000, true, "i",id);
+        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 1800000, true, "i",id);//1800000
         format(str, sizeof(str), "เปิดสวิทซ์ไฟภายในบ้าน");
         callcmd::me(playerid,str);
         return 1;
@@ -374,6 +399,45 @@ CMD:editcom(playerid, params[])
     return 1;
 }
 
+CMD:checkbill(playerid, params[])
+{
+    //1480.9369,-1769.4884,18.7958
+    if(!IsPlayerInRangeOfPoint(playerid, 3.5, 1480.9369,-1769.4884,18.7958))
+        return SendErrorMessage(playerid, "คุณไมได้อยู่ที่หน้า City Hall");
+
+    new str[255], longstr[255], idx[255], houseid;
+
+
+    format(str, sizeof(str), "บ้าน\tค่าไฟ\n");
+    strcat(longstr,str);
+
+    for(new h = 1; h < MAX_HOUSE; h++)
+    {
+        if(!HouseInfo[h][HouseDBID])
+            continue;
+        
+        if(HouseInfo[h][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+            continue;
+
+        if(HouseInfo[h][HouseEle] <= 200)
+            continue;
+        
+		format(idx, sizeof(idx), "%d",houseid);
+		SetPVarInt(playerid, idx, h);
+        houseid++;
+
+        format(str, sizeof(str), "%d %s, Los Santos, San Andreas\t$%s",HouseInfo[h][HouseDBID], HouseInfo[h][HouseName], MoneyFormat(HouseInfo[h][HouseEle] * 7));
+        strcat(longstr,str);
+    }
+    if(!houseid)
+        return Dialog_Show(playerid, DIALOG_ELE_NONEBILL, DIALOG_STYLE_LIST, "ค่าไฟ", "ไม่มีค่าไฟทีต้องจ่าย", "ยืนยัน", "ยกเลิก");
+
+    
+    Dialog_Show(playerid, DIALOG_ELE_BILL, DIALOG_STYLE_TABLIST_HEADERS, "ค่าไฟ:", longstr, "ยืนยัน", "ยกเลิก");
+
+    return 1;
+}
+
 stock EditObjectComputer(playerid, id)
 {
     new Float:x, Float:y, Float:z, worldid, interiorid;
@@ -447,6 +511,26 @@ hook OP_EditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:
             return 1;
         }
     }
+    return 1;
+}
+
+Dialog:DIALOG_ELE_BILL(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        SendServerMessage(playerid, "ยกเลิกการจ่ายค่าไฟ");
+
+    new idx[255];
+    format(idx, sizeof(idx), "%d",listitem);
+    new id = GetPVarInt(playerid, idx);
+
+    if(HouseInfo[id][HouseEle] * 7 > PlayerInfo[playerid][pCash])
+        return SendErrorMessage(playerid, "คุณมียอดเงินไม่เพียงพอต่อการจ่าย");
+
+    GiveMoney(playerid, -HouseInfo[id][HouseEle] * 7);
+    SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้จ่ายค่าไฟบ้านของคุณเรียบร้อยแล้วด้วยจำนวนเงิน $%s",  MoneyFormat(HouseInfo[id][HouseEle] * 7));
+    HouseInfo[id][HouseEle] = 0;
+    Savehouse(id);
+    CharacterSave(playerid);
     return 1;
 }
 

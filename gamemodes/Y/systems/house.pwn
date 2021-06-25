@@ -437,7 +437,6 @@ public HouseElectricitybill(id)
         if(ComputerInfo[c][ComputerOn] == true)
         {
             idx = c;
-            printf("idx = %d", c);
             break;
         }
     }
@@ -447,7 +446,6 @@ public HouseElectricitybill(id)
     if(ComputerInfo[idx][ComputerStartBTC])
     {
         HouseInfo[id][HouseEle] += result *2;
-        printf("result computer: %d", result * 2);
     }
     else
     {
@@ -456,6 +454,27 @@ public HouseElectricitybill(id)
         
     ele = Random(1, 5);
     HouseInfo[id][HouseEle] += ele;
+
+    if(HouseInfo[id][HouseEle] * 7 >=  10000)
+    {
+        new Owner;
+        foreach(new i : Player)
+        {
+            if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[i][pDBID])
+                continue;
+
+            Owner = i;
+            break;
+        }
+
+        if(IsPlayerConnected(Owner))
+        {
+            GiveMoney(Owner, -HouseInfo[id][HouseEle] * 7 / 2);
+            CharacterSave(Owner);
+            SendClientMessageEx(Owner, COLOR_LIGHTRED, "คุณไมได้จ่ายค่าไฟบ้าน เราจำเป็นต้องตัดเงินของคุณ $%s ซึ่งเป็นครึ่งนึงของบิลค่าไฟ",MoneyFormat(HouseInfo[id][HouseEle] * 7 / 2));
+            HouseInfo[id][HouseEle] -= HouseInfo[id][HouseEle] / 2;
+        }
+    }
     //printf("คุณเปิดไฟที่บ้านทิ้งเอาไว้ ค่าไฟในบ้าน %s เพิ่มขึ้น %d หน่วย เป็น %d", HouseInfo[id][HouseName], ele + result, HouseInfo[id][HouseEle]);
     Savehouse(id);
     return 1;

@@ -507,6 +507,10 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
         }
         if(playertextid == VehicleBuy[playerid][10])
         {
+            if(PlayerInfo[playerid][pDonater] < 2)
+                return SendErrorMessage(playerid, "คุณไม่ใช่ Donater ระดับ Gold");
+
+        
             for(new i = 0; i < 13; i++)
             {
                 PlayerTextDrawHide(playerid, VehicleBuy[playerid][i]);

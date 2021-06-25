@@ -118,6 +118,197 @@ CMD:ptze(playerid, params[])
     return 1;
 }
 
+CMD:giveore(playerid, params[])
+{
+    if(PlayerInfo[playerid][pJob] != JOB_MINER && PlayerInfo[playerid][pSideJob] != JOB_MINER)
+        return SendErrorMessage(playerid, "คุณไม่ใช่อาชีพ นักขุดเหมือง");
+
+    new amount, type[60], tagetid;
+
+    if(sscanf(params, "s[60]dd",type, amount, tagetid))
+    {
+        SendUsageMessage(playerid, "/giveore <ประเภท :  แร่> <จำนวน> <ชื่อบางส่วน/ไอดี>");
+        SendClientMessage(playerid, -1, "[ORE TYPE:] ore coal iron copper kno3");
+        return 1;
+    }
+
+
+    if(!strcmp(type, "ore", true))
+    {
+        if(PlayerInfo[playerid][pOre] < amount)
+            return SendErrorMessage(playerid, "คุณมีจำนวนแร่ Ore ไม่เพียงพอ");
+
+        if(!IsPlayerConnected(tagetid))
+            return SendErrorMessage(playerid,"ผู้เล่นไม่ได้อยู่ภายมรเซิร์ฟเวอร์");
+
+        if(playerid  == tagetid)
+            return SendErrorMessage(playerid, "คุณไม่สามารถให้แร่กับตัวเองได้");
+
+        if(IsPlayerLogin(playerid))
+            return SendErrorMessage(playerid,"ผู้เล่นกำลังเข้าสู่ระบบ");
+
+        
+        PlayerInfo[tagetid][pOre] += amount;
+        PlayerInfo[playerid][pOre] -= amount;
+        SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Unprocessed Ores จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
+        SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Unprocessed Ores จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Unprocessed Ores ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        return 1;
+    }
+    else if(!strcmp(type, "coal", true))
+    {
+        if(PlayerInfo[playerid][pCoal] < amount)
+            return SendErrorMessage(playerid, "คุณมีจำนวนแร่ Coal Ore ไม่เพียงพอ");
+
+        if(!IsPlayerConnected(tagetid))
+            return SendErrorMessage(playerid,"ผู้เล่นไม่ได้อยู่ภายมรเซิร์ฟเวอร์");
+
+        if(playerid  == tagetid)
+            return SendErrorMessage(playerid, "คุณไม่สามารถให้แร่กับตัวเองได้");
+
+        if(IsPlayerLogin(playerid))
+            return SendErrorMessage(playerid,"ผู้เล่นกำลังเข้าสู่ระบบ");
+
+        
+        PlayerInfo[tagetid][pCoal] += amount;
+        PlayerInfo[playerid][pCoal] -= amount;
+        SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Coal Ore จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
+        SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Coal Ore จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Coal Ore ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        return 1;
+    }
+    else if(!strcmp(type, "iron", true))
+    {
+        if(PlayerInfo[playerid][pIron] < amount)
+            return SendErrorMessage(playerid, "คุณมีจำนวนแร่ Iron Ore ไม่เพียงพอ");
+
+        if(!IsPlayerConnected(tagetid))
+            return SendErrorMessage(playerid,"ผู้เล่นไม่ได้อยู่ภายมรเซิร์ฟเวอร์");
+
+        if(playerid  == tagetid)
+            return SendErrorMessage(playerid, "คุณไม่สามารถให้แร่กับตัวเองได้");
+
+        if(IsPlayerLogin(playerid))
+            return SendErrorMessage(playerid,"ผู้เล่นกำลังเข้าสู่ระบบ");
+
+        
+        PlayerInfo[tagetid][pIron] += amount;
+        PlayerInfo[playerid][pIron] -= amount;
+        SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Iron Ore จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
+        SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Iron Ore จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Iron Ore ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        return 1;
+    }
+    else if(!strcmp(type, "copper", true))
+    {
+        if(PlayerInfo[playerid][pCopper] < amount)
+            return SendErrorMessage(playerid, "คุณมีจำนวนแร่ Iron Ore ไม่เพียงพอ");
+
+        if(!IsPlayerConnected(tagetid))
+            return SendErrorMessage(playerid,"ผู้เล่นไม่ได้อยู่ภายมรเซิร์ฟเวอร์");
+
+        if(playerid  == tagetid)
+            return SendErrorMessage(playerid, "คุณไม่สามารถให้แร่กับตัวเองได้");
+
+        if(IsPlayerLogin(playerid))
+            return SendErrorMessage(playerid,"ผู้เล่นกำลังเข้าสู่ระบบ");
+
+        
+        PlayerInfo[tagetid][pCopper] += amount;
+        PlayerInfo[playerid][pCopper] -= amount;
+        SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Copper Ore จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
+        SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Copper Ore จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Copper Ore ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        return 1;
+    }
+    else if(!strcmp(type, "kno3", true))
+    {
+        if(PlayerInfo[playerid][pCopper] < amount)
+            return SendErrorMessage(playerid, "คุณมีจำนวนแร่ Potassium Nitrate ไม่เพียงพอ");
+
+        if(!IsPlayerConnected(tagetid))
+            return SendErrorMessage(playerid,"ผู้เล่นไม่ได้อยู่ภายมรเซิร์ฟเวอร์");
+
+        if(playerid  == tagetid)
+            return SendErrorMessage(playerid, "คุณไม่สามารถให้แร่กับตัวเองได้");
+
+        if(IsPlayerLogin(playerid))
+            return SendErrorMessage(playerid,"ผู้เล่นกำลังเข้าสู่ระบบ");
+
+        
+        PlayerInfo[tagetid][pKNO3] += amount;
+        PlayerInfo[playerid][pKNO3] -= amount;
+        SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Potassium Nitrate จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
+        SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Potassium Nitrate จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Potassium Nitrate ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        return 1;
+    }
+    else SendErrorMessage(playerid, "ใส่ประเภทไม่ถูกต้อง");
+
+    return 1;
+}
+
+CMD:sellore(playerid, params[])
+{
+    if(PlayerInfo[playerid][pJob] != JOB_MINER && PlayerInfo[playerid][pSideJob] != JOB_MINER)
+        return SendErrorMessage(playerid, "คุณไม่ใช่อาชีพ นักขุดเหมือง");
+
+    if(!IsPlayerInRangeOfPoint(playerid, 3.0, 2151.4236,-2266.5696,13.3064) && !IsPlayerInRangeOfPoint(playerid, 3.0, 2149.4441,-2264.5461,13.3057))
+        return SendErrorMessage(playerid,  "คุณไม่ได้อยู่ในจุดขายแร่");
+
+    new type[60],amount;
+
+    if(sscanf(params, "s[60]d", type, amount))
+    {
+        SendUsageMessage(playerid, "/sellore <ประเภท  :แร่> <จำนวน>");
+        SendClientMessage(playerid, -1, "[ORE TYPE:] Coal Iron Copper KNO3"); 
+        return 1; 
+    }  
+
+    if(!strcmp(type, "coal", true))
+    {
+        if(PlayerInfo[playerid][pCoal] < amount)
+            return SendErrorMessage(playerid, "คุณมี Coal Ore ไม่เพียงพอ");
+
+        PlayerInfo[playerid][pCoal]-= amount;
+        GiveMoney(playerid, amount*5);
+        SendClientMessageEx(playerid, -1, "คุณได้ขายแร่ Coal Ore จำนวน %d ได้เงินมา %s",amount, MoneyFormat(amount *5));       
+        return 1;
+    }
+    else if(!strcmp(type, "iron", true))
+    {
+        if(PlayerInfo[playerid][pIron] < amount)
+            return SendErrorMessage(playerid, "คุณมี Iron Ore ไม่เพียงพอ");
+
+        PlayerInfo[playerid][pIron]-= amount;
+        GiveMoney(playerid, amount*15);
+        SendClientMessageEx(playerid, -1, "คุณได้ขายแร่ Iron Ore จำนวน %d ได้เงินมา %s",amount, MoneyFormat(amount *15));       
+        return 1;
+    }
+    else if(!strcmp(type, "copper", true))
+    {
+        if(PlayerInfo[playerid][pIron] < amount)
+            return SendErrorMessage(playerid, "คุณมี Copper Ore ไม่เพียงพอ");
+
+        PlayerInfo[playerid][pCopper]-= amount;
+        GiveMoney(playerid, amount*10);
+        SendClientMessageEx(playerid, -1, "คุณได้ขายแร่ Copper Ore จำนวน %d ได้เงินมา %s",amount, MoneyFormat(amount *10));       
+        return 1;
+    }
+    else if(!strcmp(type, "kno3", true))
+    {
+        if(PlayerInfo[playerid][pIron] < amount)
+            return SendErrorMessage(playerid, "คุณมี Potassium Nitrate ไม่เพียงพอ");
+
+        PlayerInfo[playerid][pKNO3]-= amount;
+        GiveMoney(playerid, amount*50);
+        SendClientMessageEx(playerid, -1, "คุณได้ขายแร่ Potassium Nitrate จำนวน %d ได้เงินมา %s",amount, MoneyFormat(amount *50));       
+        return 1;
+    }
+    return 1;
+}
+
+
 forward ProceedOre(playerid, amount);
 public ProceedOre(playerid, amount)
 {

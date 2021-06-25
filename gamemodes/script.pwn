@@ -95,6 +95,7 @@ new globalWeather = 2;
 #include "Y/jobs/fisher.pwn"
 #include "Y/jobs/trucker.pwn"
 #include "Y/jobs/mechanic.pwn"
+#include "Y/jobs/miner.pwn"
 
 #include "Y/mysql/SaveVehicle.pwn"
 #include "Y/mysql/Savefaction.pwn"
@@ -115,6 +116,7 @@ new globalWeather = 2;
 #include "Y/commands/businesscmd.pwn"
 #include "Y/commands/factioncmd.pwn"
 #include "Y/commands/police.pwn"
+#include "Y/commands/medic.pwn"
 
 #include "Y/Interior/Bank.pwn"
 #include "Y/Interior/House1.pwn"
@@ -303,7 +305,7 @@ public OnPlayerConnect(playerid) {
 
     PlayerInfo[playerid][pPhone] = 0;
     PlayerInfo[playerid][pPhonePower] = 100;
-    PlayerInfo[playerid][pGUI] = false;
+    PlayerInfo[playerid][pGUI] = 0;
     PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
     PlayerInfo[playerid][pCalling] = 0;
     PlayerInfo[playerid][pPhonespeaker] = false;

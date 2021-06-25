@@ -634,8 +634,8 @@ CMD:cargo(playerid, params[])
             {
                 PlayerCargo[playerid][v_cargo_cemara]--;
                 BusinessInfo[id][BusinessS_Cemara]+=5;
-                GiveMoney(playerid, 1200);
-                SendClientMessage(playerid, -1, "คุณได้ทำการส่งของ ได้รับเงิน $1,200");
+                GiveMoney(playerid, 1075);
+                SendClientMessage(playerid, -1, "คุณได้ทำการส่งของ ได้รับเงิน $1,075");
                 PlaceCargo(playerid);
                 SaveBusiness(id);
                 return 1;
@@ -644,8 +644,8 @@ CMD:cargo(playerid, params[])
             {
                 PlayerCargo[playerid][v_cargo_mask]--;
                 BusinessInfo[id][BusinessS_Mask]+=3;
-                GiveMoney(playerid, 1200);
-                SendClientMessage(playerid, -1, "คุณได้ทำการส่งของ ได้รับเงิน $2,300");
+                GiveMoney(playerid, 2575);
+                SendClientMessage(playerid, -1, "คุณได้ทำการส่งของ ได้รับเงิน $2,575");
                 PlaceCargo(playerid);
                 SaveBusiness(id);
                 return 1;
@@ -654,8 +654,8 @@ CMD:cargo(playerid, params[])
             {
                 PlayerCargo[playerid][v_cargo_flower]--;
                 BusinessInfo[id][BusinessS_Flower]+=3;
-                GiveMoney(playerid, 1200);
-                SendClientMessage(playerid, -1, "คุณได้ทำการส่งของ ได้รับเงิน $550");
+                GiveMoney(playerid, 275);
+                SendClientMessage(playerid, -1, "คุณได้ทำการส่งของ ได้รับเงิน $275");
                 PlaceCargo(playerid);
                 SaveBusiness(id);
                 return 1;
@@ -667,7 +667,7 @@ CMD:cargo(playerid, params[])
             if(!PlayerCargo[playerid][v_cargo_box])
                 return SendErrorMessage(playerid, "คุณไม่มีลังสินค้าสำหรับอุสาหกรรม");
 
-            new money = Random(520,1200);
+            new money = Random(520,600);
             SendClientMessageEx(playerid, -1, "คุณได้ส่งกล่องสินค้า อุสหกรรมสำเร็จแล้ว "EMBED_GREENMONEY"- ได้รับเงิน $%s", MoneyFormat(money));
             GiveMoney(playerid, money);
             PlayerCargo[playerid][v_cargo_box]--;

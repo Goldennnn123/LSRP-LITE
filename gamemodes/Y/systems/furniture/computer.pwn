@@ -205,7 +205,7 @@ public OpenComputer(playerid, id)
     LoadTD_Computer(playerid);
     ShowTD_Computer(playerid);
     SendClientMessage(playerid, COLOR_DARKGREEN, "ระบบ Windows เริ่มต้น");
-    PlayerInfo[playerid][pGUI] = true;
+    PlayerInfo[playerid][pGUI] = 3;
     return 1;
 }
 
@@ -442,6 +442,9 @@ Dialog:D_BUYCOMPUTER(playerid, response, listitem, inputtext[])
                 return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
             }
 
+            if(PlayerInfo[playerid][pDonater] < 1)
+                return SendErrorMessage(playerid, "คุณไม่ใช่ Donater ระดับ Copper");
+
 
             format(str, sizeof(str), "GTX 1650 $9,900\n");
             strcat(longstr, str);
@@ -467,6 +470,9 @@ Dialog:D_BUYCOMPUTER(playerid, response, listitem, inputtext[])
                 return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
             }
 
+            if(PlayerInfo[playerid][pDonater] < 2)
+                return SendErrorMessage(playerid, "คุณไม่ใช่ Donater ระดับ Gold");
+
             format(str, sizeof(str), "GTX 1650 $9,900\n");
             strcat(longstr, str);
             format(str, sizeof(str), "RTX 2060 $16,900\n");
@@ -488,6 +494,10 @@ Dialog:D_BUYCOMPUTER(playerid, response, listitem, inputtext[])
                 SendErrorMessage(playerid, "คุณได้เลือก GPU แล้ว");
                 return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
             }
+
+            if(PlayerInfo[playerid][pDonater] < 3)
+                return SendErrorMessage(playerid, "คุณไม่ใช่ Donater ระดับ Patinum");
+                
             new str[255], longstr[255];
 
             format(str, sizeof(str), "GTX 1650 $9,900\n");
@@ -511,6 +521,9 @@ Dialog:D_BUYCOMPUTER(playerid, response, listitem, inputtext[])
                 SendErrorMessage(playerid, "คุณได้เลือก GPU แล้ว");
                 return ShowPlayerComputerSpec(playerid, PlayerSelectCom[playerid][p_SelectOption]);
             }
+
+            if(PlayerInfo[playerid][pDonater] < 3)
+                return SendErrorMessage(playerid, "คุณไม่ใช่ Donater ระดับ Patinum");
             new str[255], longstr[255];
 
             format(str, sizeof(str), "GTX 1650 $9,900\n");

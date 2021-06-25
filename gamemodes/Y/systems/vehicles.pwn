@@ -937,6 +937,8 @@ CMD:vehicle(playerid, params[])
 		PlayerOwnerDBID[playerid] = idx;
 
 		ShowVehicleBuy(playerid);
+		SelectTextDraw(playerid, 0xFFFFFF95);
+		PlayerInfo[playerid][pGUI] = 2;
 	}
 	else if(!strcmp(oneString, "sell"))
 	{
@@ -1597,7 +1599,7 @@ forward LoadFactionVehicle();
 public LoadFactionVehicle()
 {
 	if(!cache_num_rows())
-		return print("No Vehicle Faction In Database");
+		return print("[SERVER]: No Vehicle Faction In Database");
 
 	new rows; cache_get_row_count(rows);
 	new vehicleid = INVALID_VEHICLE_ID, amout_veh;
@@ -1653,7 +1655,7 @@ public LoadFactionVehicle()
 		amout_veh++;
 	}
 
-	printf("%d Vehicle Faction In Database...", amout_veh);
+	printf("[SERVER]: %d Vehicle Faction In Database...", amout_veh);
 	return 1;
 }
 

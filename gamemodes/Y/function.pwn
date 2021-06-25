@@ -319,17 +319,6 @@ ptask FunctionPlayers[1000](playerid)
 			SpawnPlayer(playerid);
 		}
 	}
-	if(gettime() - PlayerInfo[playerid][pRespawnTime] == 60)
-	{
-		PlayerInfo[playerid][pRespawnTime] = 0;
-		SetPlayerChatBubble(playerid, "Respawned", COLOR_WHITE, 20.0, 1500);
-		SetPlayerTeam(playerid, PLAYER_STATE_ALIVE); 
-			
-		TogglePlayerControllable(playerid, 1);
-		SetPlayerHealth(playerid, 100);
-		ClearDamages(playerid);
-		SpawnPlayer(playerid);
-	}
 	if (PlayerInfo[playerid][pArrest] == true)
 	{
 		PlayerInfo[playerid][pArrestTime]--; 

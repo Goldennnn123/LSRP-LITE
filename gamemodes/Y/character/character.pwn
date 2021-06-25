@@ -466,6 +466,15 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pOre = %d, pCoal = %d, pIron = %d, pCopper = %d, pKNO3 = %d WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pOre],
+			PlayerInfo[playerid][pCoal],
+			PlayerInfo[playerid][pIron],
+			PlayerInfo[playerid][pCopper],
+			PlayerInfo[playerid][pKNO3],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 		mysql_finish(query);
 	}
 	return 1;
@@ -596,6 +605,12 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pSkinClothing3", PlayerInfo[playerid][pSkinClothing][2]);
 	cache_get_value_name_int(0, "pDonater",PlayerInfo[playerid][pDonater]);
 
+	cache_get_value_name_int(0, "pOre",PlayerInfo[playerid][pOre]);
+	cache_get_value_name_int(0, "pCoal",PlayerInfo[playerid][pCoal]);
+	cache_get_value_name_int(0, "pIron",PlayerInfo[playerid][pIron]);
+	cache_get_value_name_int(0, "pCopper",PlayerInfo[playerid][pCopper]);
+	cache_get_value_name_int(0, "pKNO3",PlayerInfo[playerid][pKNO3]);
+
 	return LoadCharacter(playerid);
 }
 
@@ -676,7 +691,7 @@ Dialog:DIALOG_CREATE_CHARACTER(playerid, response, listitem, inputtext[])
 
 	if (IsValidRoleplayName(inputtext)) {
 		new query[256];
-		mysql_format(dbCon, query, sizeof(query), "INSERT INTO `characters` (char_name, master_id) VALUES('%e', %d)", inputtext, e_pAccountData[playerid][mDBID]);
+		mysql_format(dbCon, query, sizeof(query), "INSERT INTO `characters` (char_name, master_id, pPhone) VALUES('%e', %d, %d)", inputtext, e_pAccountData[playerid][mDBID], random(99999));
 		mysql_tquery(dbCon, query, "OnCharacterCreated", "d", playerid);
 	}
 	else {

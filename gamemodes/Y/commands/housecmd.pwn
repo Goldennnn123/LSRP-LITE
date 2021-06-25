@@ -2,7 +2,7 @@ CMD:housecmds(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________________HOUSE COMMAND__________________________");
 
-    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /house /buyhouse /sellhouse /lock /placepos /swicth");
+    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /house /buyhouse /sellhouse /lock /placepos /swicth /knock /ddo /ds");
 
     SendClientMessage(playerid, COLOR_GREEN,"________________________________________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");

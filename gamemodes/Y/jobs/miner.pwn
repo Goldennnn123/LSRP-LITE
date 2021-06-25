@@ -3,6 +3,7 @@
 new miner_pickup, startjob[2], proceed_pickup;
 new bool:PlayerStartOre[MAX_PLAYERS];
 
+
 hook OnGameModeInit@13()
 {
     miner_pickup = CreateDynamicPickup(1239, 2, 586.4755,872.6391,-42.4973, -1, -1,-1);
@@ -10,6 +11,7 @@ hook OnGameModeInit@13()
 
     startjob[0] = CreateDynamicCircle(595.3938,926.8503, 15.0,-1);
     startjob[1] = CreateDynamicCircle(545.7205,919.6435, 15.0,-1);
+    Create3DTextLabel("คลิก ขวาเพื่อทำการขุดแร่ในบริเวรนี้", COLOR_EMOTE, 594.6451,926.9291,-37.3309, 50, 0, 0);
     //CreateDynamicCircle(Float:x, Float:y, Float:size, worldid = -1, interiorid = -1, playerid = -1);
     return 1;
 }
@@ -33,8 +35,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
     if(RELEASED(KEY_RIGHT))
     {
-
         if(PlayerInfo[playerid][pJob] != JOB_MINER && PlayerInfo[playerid][pSideJob] != JOB_MINER)
+            return 1;
+
+        if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
             return 1;
 
         if(!IsPlayerInDynamicArea(playerid, startjob[0]) && !IsPlayerInDynamicArea(playerid, startjob[1]))

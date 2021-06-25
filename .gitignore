@@ -3,7 +3,8 @@
 #
 
 # Compiled Bytecode, precompiled output and assembly
-*.amx
+#*.amx
+ntd.amx
 *.lst
 *.asm
 *.dll

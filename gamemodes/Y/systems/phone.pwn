@@ -248,10 +248,13 @@ Dialog:DIALOG_PHONE_SELETE_ID(playerid, response, listitem, inputtext[])
         case 1: return Dialog_Show(playerid, DIALOG_PHONE_EDIT_NUMBER, DIALOG_STYLE_INPUT, "แก้ไขเบอร์ติดต่อ:", "โปรดใส่หมายเลขโทรศัพท์ใหม่ของรายชื่อนี้ของคุณ:", "ยืนยัน", "ยกเลิก");
         case 2:
         {
-            new playerb = INVALID_PLAYER_ID, str[128];
+            //new playerb = INVALID_PLAYER_ID, str[128];
+            new str[10];
             new Number = PhoneInfo[id][PhoneNumber];
 
-            foreach(new i : Player)
+            format(str, sizeof(str), "%d",Number);
+            callcmd::call(playerid, str);
+            /*foreach(new i : Player)
             { 
                 if(PlayerInfo[i][pPhone] != Number)
                     continue;
@@ -317,7 +320,7 @@ Dialog:DIALOG_PHONE_SELETE_ID(playerid, response, listitem, inputtext[])
             PlayerInfo[playerid][pPhoneline] = playerb;
             PlayerInfo[playerb][pPhoneline] = playerid; 
             
-            playerPhone[playerb] = SetTimerEx("OnSuccessCall", 3000, true, "i", playerb); 
+            playerPhone[playerb] = SetTimerEx("OnSuccessCall", 3000, true, "i", playerb);*/ 
             return 1;
         }
         case 3:

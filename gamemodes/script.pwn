@@ -133,6 +133,8 @@ new globalWeather = 2;
 #include "Y/Map/LSPDHQ.pwn"
 #include "Y/Map/LSPDVINEWOOD.pwn"
 #include "Y/Map/Police.pwn"
+#include "Y/Map/415garage.pwn"
+#include "Y/Map/Gas_station.pwn"
 //#include "Y/Map/LSPDHQINT.pwn"
 //#include "Y/Map/LSPDHQEXT.pwn"
 //#include "Y/Map/LSPDHQINT2.pwn"

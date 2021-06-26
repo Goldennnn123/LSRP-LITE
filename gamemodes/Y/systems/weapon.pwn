@@ -202,7 +202,6 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 
 					SetTimerEx("PlayerTazer", 10000, false, "i", playerid);
 				}
-				
 			}
 			if(weaponid == 24)
 			{

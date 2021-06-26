@@ -53,7 +53,7 @@ CMD:dolow(playerid, params[])
 	return 1;
 }
 
-alias:local("l", "t")
+alias:local("l")
 CMD:local(playerid, params[])
 {
 	if (isnull(params))

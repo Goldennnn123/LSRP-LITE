@@ -5,7 +5,6 @@
 	"output": "gamemodes/script.amx",
 	"dependencies": [
 		"sampctl/samp-stdlib",
-		"Zeex/samp-plugin-crashdetect",
 		"pBlueG/SA-MP-MySQL",
 		"Southclaws/samp-whirlpool",
 		"maddinat0r/samp-log",
@@ -24,7 +23,7 @@
 		"version": "0.3.DL",
 		"mode": "server",
 		"echo": "-",
-		"rcon_password": "2546",
+		"rcon_password": "2p@{fCw)t)",
 		"port": 7777,
 		"hostname": "SA-MP Open Roleplay",
 		"maxplayers": 50,

@@ -16,6 +16,7 @@ CMD:acmds(playerid, params[])
 	{
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /setarmour, /clearreports, /givegun, /clearpguns, /gotohouse, /gotofaction, /gotopoint,");
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /gotobusiness, /noooc, /backup, /repair.");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /acceptwhitelist");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 3)
 	{
@@ -102,7 +103,7 @@ CMD:a(playerid, params[])
 
 CMD:forumname(playerid, params[])
 {
-    if(!PlayerInfo[playerid][pAdmin])
+    if(!PlayerInfo[playerid][pAdmin] && !PlayerInfo[playerid][pTester])
 		return SendUnauthMessage(playerid);
 		
 	if(isnull(params))
@@ -284,7 +285,7 @@ CMD:showmain(playerid, params[])
 
 CMD:kick(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pAdmin])
+	if(!PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pTester] < 2)
 		return SendUnauthMessage(playerid); 
 
 
@@ -375,7 +376,7 @@ CMD:ban(playerid, params[])
 
 CMD:ajail(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pAdmin])
+	if(!PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pTester] < 3)
 		return SendUnauthMessage(playerid); 
 	
 	if(!e_pAccountData[playerid][mForumName])
@@ -423,7 +424,7 @@ CMD:ajail(playerid, params[])
 
 CMD:unjail(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pAdmin])
+	if(!PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pTester] < 3)
 		return SendUnauthMessage(playerid); 
 
 	if(!e_pAccountData[playerid][mForumName])
@@ -735,11 +736,6 @@ CMD:spec(playerid, params[])
 		
 	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
-		
-	/*if(PlayerInfo[playerb][pSpectating] != INVALID_PLAYER_ID)
-		return SendErrorMessage(playerid, "คุณกำลังส่องผู้เล่นคนอื่นอยู่"); */
-		
-	//if(playerb == playerid) return SendErrorMessage(playerid, "You can't spectate yourself.");
 
 	PlayerSpec(playerid, playerb);
 	return 1;
@@ -1444,6 +1440,24 @@ CMD:repair(playerid, params[])
 	SetVehicleZAngle(vehicleid, angle);
 	return 1; 
 }
+
+alias:acceptwhitelist("acceptwl", "acwl")
+CMD:acceptwhitelist(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 2)
+		return SendUnauthMessage(playerid);
+
+	new id;
+	if(sscanf(params, "d", id))
+		return SendUsageMessage(playerid, "/acceptwhitelist <ID: ตัวละคร>");
+
+	new query[255];
+	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `characters` WHERE char_dbid = '%d'",id);
+	mysql_tquery(dbCon, query, "CheckChar", "dd",playerid, id);
+	return 1;
+}
+
+
 // Admin Level: 2;
 
 // Admin Level: 3:
@@ -2448,6 +2462,51 @@ CMD:createvehicle(playerid, params[])
 // Admin Level: 1336;
 
 // Admin Level: 1337:
+CMD:maketester(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1337)
+		return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
+
+	new tagetid, level;
+	if(sscanf(params, "ud", tagetid, level))
+		return SendUsageMessage(playerid, "/maketester <ชื่อบางส่วน/ไอดี> <เลเวล>");
+
+	if(!IsPlayerConnected(tagetid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซิร์ฟเวอร์");
+
+	if(IsPlayerLogin(tagetid))
+		return SendErrorMessage(playerid, "ผู้เล่นยังไม่ได้เข้าสู่ระบบ");
+
+
+	if(level > 3)
+		return SendErrorMessage(playerid, "โปรดใส่ เลวลให้ถูกต้อง (ห้ามมากกว่า 3)");
+
+	if(PlayerInfo[tagetid][pAdmin])
+		return SendErrorMessage(playerid, "ผู้เล่นเป็นผู้ดูแลระบบอยู่");
+
+	if(PlayerInfo[tagetid][pTester] > level)
+	{
+		if(level == 0)
+		{
+			PlayerInfo[tagetid][pTester] = 0;
+			SendClientMessage(tagetid, COLOR_LIGHTRED, "คุณได้ถูกปลดออกจากตำแหน่ง Tester แล้วขอบคุณที่เข้ามาเป็นส่วนนึงของทีมงาน");
+			CharacterSave(tagetid);
+			return 1;
+		}
+
+		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "คุณถูกปรับให้ลดต่ำแหน่ง Tester จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
+		PlayerInfo[tagetid][pTester] = level;
+		CharacterSave(tagetid);
+		return 1;
+	}
+	else
+	{
+		SendClientMessageEx(tagetid, COLOR_PMS, "คุณได้ถูกเพิ่มต่ำแหน่งจาก Tester จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
+		PlayerInfo[tagetid][pTester] = level;
+		CharacterSave(tagetid);
+		return 1;
+	}
+}
 // Admin Level: 1337;
 
 // Admin Level: 1338:
@@ -2689,7 +2748,7 @@ stock SendUnauthMessage(playerid)
 
 hook OnPlayerClickPlayer(playerid, clickedplayerid, source)
 {
-	if(!PlayerInfo[playerid][pAdmin])
+	if(!PlayerInfo[playerid][pAdmin] && !PlayerInfo[playerid][pTester])
 		return 1;
 
 	new playerb = clickedplayerid;
@@ -2715,6 +2774,35 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
+forward CheckChar(playerid, id);
+public CheckChar(playerid, id)
+{
+	if(!cache_num_rows())
+		return SendErrorMessage(playerid, "ไม่มี ID Character ที่คุณค้นหา");
+
+	
+	new query[255];
+	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `characters` WHERE `char_dbid` = '%d' AND `pWhitelist` = '0'",id);
+	mysql_tquery(dbCon, query, "CheckWhiteList","dd",playerid, id);
+	return 1;
+}
+
+forward CheckWhiteList(playerid, id);
+public CheckWhiteList(playerid, id)
+{
+	if(!cache_num_rows())
+		return SendErrorMessage(playerid, "ID Character ได้ถูกยอมรับแล้ว");
+
+	
+	new query[255];
+	mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pWhitelist` = '1' WHERE `char_dbid` = '%d'",id);
+	mysql_tquery(dbCon, query);
+
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "คุณได้ยืนยันให้ตัวละครไอดี #%d สามารถเข้ามาเล่นภายในเซิร์ฟเวอรได้แล้ว",id);
+	SendAdminMessageEx(COLOR_PMS, 2, "[ADMIN: %d] %s ได้ยืนยันให้ตัวละครไอดี #%d สามารถเข้ามาเล่นภายในเซิร์ฟเวอรได้แล้ว",PlayerInfo[playerid][pAdmin], ReturnName(playerid,0), id);
+	return 1;
+}
+
 Dialog:DIALOG_CALLPAYCHECK(playerid, response, listitem, inputtext[])
 {
 	if(!response)
@@ -2723,3 +2811,4 @@ Dialog:DIALOG_CALLPAYCHECK(playerid, response, listitem, inputtext[])
 	CallPaycheck();
 	return 1;
 }
+

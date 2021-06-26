@@ -117,6 +117,7 @@ new globalWeather = 2;
 #include "Y/commands/factioncmd.pwn"
 #include "Y/commands/police.pwn"
 #include "Y/commands/medic.pwn"
+#include "Y/commands/tester.pwn"
 
 #include "Y/Interior/Bank.pwn"
 #include "Y/Interior/House1.pwn"
@@ -350,6 +351,8 @@ public OnPlayerConnect(playerid) {
 	PlayerInfo[playerid][pSkinClothing][0] = 0;
 	PlayerInfo[playerid][pSkinClothing][1] = 0;
 	PlayerInfo[playerid][pSkinClothing][2] = 0;
+    PlayerInfo[playerid][pWhitelist] = false;
+    PlayerInfo[playerid][pTester] = 0;
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;
@@ -553,6 +556,12 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 			Log(adminactionlog, INFO, "%s: /%s %s", ReturnPlayerName(playerid), cmd, params);
 		}
 	}
+
+    if(PlayerInfo[playerid][pGUI])
+    {
+        SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}คุณมีการใช้หน้าต่าง GUI อยู่");
+        return 0;
+    }
 
 
     Log(allcmdlog, INFO, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);

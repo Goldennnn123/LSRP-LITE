@@ -532,7 +532,13 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
                 PlayerVehicleColor2[playerid] = 0;
 
                 SendErrorMessage(playerid,"คุณมีเงินไม่เพียงพอต่อการซื้อ ยังขาดอเงินอยู่ ($%s)",MoneyFormat(PLayerVehiclePrice[playerid] - PlayerInfo[playerid][pCash]));
-                ShowVehicleBuy(playerid);
+                
+                for(new i = 0; i < 13; i++)
+                {
+                    PlayerTextDrawDestroy(playerid, VehicleBuy[playerid][i]);
+                }
+                CancelSelectTextDraw(playerid);
+
                 return 1;
             }
 

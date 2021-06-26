@@ -261,9 +261,15 @@ CharacterSave(playerid, force = false)
 	{
 		new query[MAX_STRING];
 
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastSkin = %i, pAdmin = %i, pTutorial = %i, pFaction = %i, pCash = %i, pLevel = %i, pExp = %i, pSpawnPoint = %i,pSpawnHouse = %i WHERE char_dbid = %i",	
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pWhitelist = %i WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pWhitelist],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastSkin = %i, pAdmin = %i, pTester = %i, pTutorial = %i, pFaction = %i, pCash = %i, pLevel = %i, pExp = %i, pSpawnPoint = %i,pSpawnHouse = %i WHERE char_dbid = %i",	
 			PlayerInfo[playerid][pLastSkin],
 			PlayerInfo[playerid][pAdmin],
+			PlayerInfo[playerid][pTester],
 			PlayerInfo[playerid][pTutorial],
 			PlayerInfo[playerid][pFaction],
 			GetPlayerMoney(playerid),
@@ -491,6 +497,7 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pCash", PlayerInfo[playerid][pCash]);
 	cache_get_value_name_int(0, "pBank", PlayerInfo[playerid][pBank]);
 	cache_get_value_name_int(0, "pAdmin", PlayerInfo[playerid][pAdmin]);
+	cache_get_value_name_int(0, "pTester", PlayerInfo[playerid][pTester]);
 	cache_get_value_name_int(0, "pLevel", PlayerInfo[playerid][pLevel]);
 	cache_get_value_name_int(0, "pExp", PlayerInfo[playerid][pExp]);
 
@@ -611,6 +618,10 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pCopper",PlayerInfo[playerid][pCopper]);
 	cache_get_value_name_int(0, "pKNO3",PlayerInfo[playerid][pKNO3]);
 
+	cache_get_value_name_int(0, "pWhitelist",PlayerInfo[playerid][pWhitelist]);
+
+	
+
 	return LoadCharacter(playerid);
 }
 
@@ -631,6 +642,15 @@ public LoadCharacter(playerid)
 		PlayerInfo[playerid][pTutorial] = true;
 	}
     BitFlag_On(gPlayerBitFlag[playerid], IS_LOGGED);
+
+	if(!PlayerInfo[playerid][pWhitelist])
+	{
+		SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}ตัวละครของคุณยังไม่ได้รับการยืนยัน โปรดกรอกใบสมัครของคุณให้เรียบร้อยก่อนที่จะเข้าเล่นเล่นเกม");
+		SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}หากคุณกรอกใบสมัครเรียบร้อยแล้วให้คุณเรียบร้อยแล้วให้คุณเข้ามายืนยันใบสมัครของคุณในห้อง ดิสคอร์ด");
+		SendClientMessageEx(playerid, COLOR_YELLOW, "INFO: {FFFFFF}ชื่อ UCP: %s รหัสตัวละคร: %d", e_pAccountData[playerid][mAccName], PlayerInfo[playerid][pDBID]);
+		KickEx(playerid);
+		return 1;
+	}
 
 	SetPlayerScore(playerid, PlayerInfo[playerid][pLevel]);
 	SetPlayerColor(playerid, 0xFFFFFFFF);

@@ -9,6 +9,39 @@ static
     chat_msgOut[144];
 
 
+
+
+new bool:IsAfk[MAX_PLAYERS char];
+new AFKTimer[MAX_PLAYERS];
+new AFKCount[MAX_PLAYERS];
+
+hook OnPlayerUpdate(playerid)
+{
+    AFKTimer[playerid] = 3;
+    return 1;
+}
+
+ptask @2PlayerTimer[1000](playerid)
+{
+    if(AFKTimer[playerid] > 0)
+	{
+		AFKTimer[playerid]--;
+		if(AFKTimer[playerid] <= 0)
+		{
+			AFKTimer[playerid] = 0;
+			AFKCount[playerid]=1;
+			IsAfk{playerid} = true;
+		}
+		else IsAfk{playerid} = false;
+        
+	}
+    else {
+			AFKCount[playerid]++;
+		}
+    return 1;
+}
+
+
 stock PlayerSpec(playerid, playerb)
 {
 	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER)

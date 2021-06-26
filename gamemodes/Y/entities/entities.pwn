@@ -9,7 +9,10 @@
 enum E_PLAYER_DATA
 {
     pDBID,
+	bool:pWhitelist,
     pAdmin,
+	pTester,
+	bool:pTesterDuty,
     bool:pAdminDuty,
     pLastSkin,
     bool:pTutorial,

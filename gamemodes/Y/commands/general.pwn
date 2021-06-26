@@ -62,6 +62,15 @@ CMD:jobhelp(playerid, params[])
 		SendClientMessage(playerid,COLOR_WHITE,"/buycomponents (ซื้อ อะไหล่)");
 	}
 
+	if(PlayerInfo[playerid][pJob] == JOB_MINER)
+	{
+ 		SendClientMessage(playerid,COLOR_LIGHTRED,"คำสั่งของพนักงานช่างยนต์:");
+		SendClientMessage(playerid,COLOR_WHITE,"/checkore (เช็คแร่ในตัว)");
+		SendClientMessage(playerid,COLOR_WHITE,"/ptze (แปรรูป)");
+		SendClientMessage(playerid,COLOR_WHITE,"/sellore (ขายแร่)");
+		SendClientMessage(playerid,COLOR_WHITE,"/giveore (ให้แร่)");
+	}
+
 	return 1;
 }
 

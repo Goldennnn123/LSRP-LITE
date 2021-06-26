@@ -2,6 +2,10 @@
 # Package only files
 #
 
+
+filterscripts/ACBS.pwn
+
+
 # Compiled Bytecode, precompiled output and assembly
 *.amx
 *.lst
@@ -54,4 +58,5 @@ samp.ban
 gamemodes/Y/configuration/database.pwn
 
 scriptfiles/ntd
+scriptfiles/AC-BS
 models

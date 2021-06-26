@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `pRadio1` int(11) NOT NULL,
   `pRadio2` int(11) NOT NULL,
   `pMainSlot` int(11) NOT NULL,
+  `pHasMask` int(11) NOT NULL,
   `pDriverLicense` int(11) NOT NULL DEFAULT 0,
   `pDriverLicenseWarn` int(11) NOT NULL DEFAULT 0,
   `pDriverLicenseRevoke` int(11) NOT NULL DEFAULT 0,

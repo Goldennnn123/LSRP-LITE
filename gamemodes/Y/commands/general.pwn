@@ -637,6 +637,9 @@ CMD:checkweapons(playerid, params[])
 
 	if(PlayerInfo[playerid][pAdmin])
 	{
+		if(sscanf(params, "I(-1)", playerb))
+			return 1; 
+
 		if(playerb == -1)
 		{
 			for(new i = 0; i < 13; i++)
@@ -657,6 +660,24 @@ CMD:checkweapons(playerid, params[])
 						format(longstr, sizeof(longstr), "%s%d. [ว่างเปล่า]\n", longstr, i);
 						
 					else format(longstr, sizeof(longstr), "%s%d. %s[กระสุน: %d]\n", longstr, i, ReturnWeaponName(PlayerInfo[playerb][pWeapons][i]), PlayerInfo[playerb][pWeaponsAmmo][i]); 
+			}
+			new weapons[13][2];
+			SendClientMessage(playerid, -1, "-------------------------WEAPONS NOT IN DATABSE----------------------");
+			for (new i = 0; i <= 12; i++)
+			{	
+				GetPlayerWeaponData(playerb, i, weapons[i][0], weapons[i][1]);
+
+
+				if(!weapons[i][0])
+					continue;
+
+				if(PlayerInfo[playerb][pWeapons][i])
+					continue;
+
+				if(PlayerInfo[playerb][pWeaponsAmmo][i] == weapons[i][1])
+					continue;
+
+				SendClientMessageEx(playerid, COLOR_LIGHTRED, "%s %d", ReturnWeaponName(weapons[i][0]), weapons[i][1]);
 			}
 			Dialog_Show(playerid, DIALOG_MYEAPON, DIALOG_STYLE_LIST, "Weapons: %s", longstr, "ตกลง", "ยกเลิก", ReturnName(playerb,0));
 			return 1;
@@ -1380,5 +1401,72 @@ CMD:fines(playerid, params[])
 	}
 
 	Dialog_Show(playerid, DIALOG_FINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "ใบสั่ง", longstr, "ยืนยัน", "ยกเลิก");
+	return 1;
+}
+
+CMD:helpme(playerid, params[])
+{
+	if(isnull(params) || strlen(params) < 3)
+		return SendUsageMessage(playerid, "/helpme <ข้อความ>"); 
+
+	format(PlayerHelpme[playerid], 120, "%s",params);
+
+	SendClientMessage(playerid, COLOR_LIGHTRED, "SERVER: คำขอความช่วยเหลือของคุณได้ถูกส่งไปยังผู้ดูแลทุกคนที่ออนไลน์");
+
+	new idx;
+	
+	for (new i = 1; i < sizeof(HelpmeData); i ++)
+	{
+		if (HelpmeData[i][hHelpmeExit] == false)
+		{
+			idx = i;
+			break; 
+		}
+	}
+			
+	OnPlayerHelpme(playerid, idx, PlayerHelpme[playerid]);
+	return 1;
+}
+
+
+
+stock OnPlayerHelpme(playerid, reportid, text[])
+{
+	if(HelpmeData[reportid][hHelpmeExit] == true)
+	{
+		for (new i = 1; i < sizeof(PlayerHelpme); i ++)
+		{
+			if(HelpmeData[i][hHelpmeExit] == false)
+			{
+				reportid = i;
+				break;
+			}
+		}
+	}
+	
+	HelpmeData[reportid][hHelpmeDBID] = reportid;
+	HelpmeData[reportid][hHelpmeExit] = true;
+		
+	format(HelpmeData[reportid][hHelpmeDetel], 90, "%s", text);
+	HelpmeData[reportid][hHelpmeBy] = playerid;
+		
+	SendTesterMessageEx(COLOR_YELLOWEX, "มีการขอความช่วยเหลือเข้ามาพิมพ์ /helpmes l เพื่อตรวจสอบ");
+		
+	if(strfind(text, "hack", true) != -1 || strfind(text, "cheat", true) != -1)
+	{
+		foreach(new i : Player)
+		{
+			if(PlayerInfo[i][pAdmin] || PlayerInfo[i][pTester]) GameTextForPlayer(i, "~y~~h~Priority Report", 4000, 1);
+		}
+	}
+	return 1;
+}
+
+stock ClearHelpme(reportid)
+{
+	HelpmeData[reportid][hHelpmeExit] = false;
+	HelpmeData[reportid][hHelpmeDBID] = 0;
+    HelpmeData[reportid][hHelpmeBy] = INVALID_PLAYER_ID;
+    HelpmeData[reportid][hHelpmeDetel] = ' ';
 	return 1;
 }

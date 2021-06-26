@@ -66,6 +66,7 @@ new globalWeather = 2;
 #include "Y/entities/entities.pwn"
 #include "Y/entities/computer.pwn"
 #include "Y/entities/fine.pwn"
+#include "Y/entities/helpme.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -432,6 +433,9 @@ public OnPlayerSpawn(playerid) {
         SetPlayerArmedWeapon(playerid, 0);
         PlayerInfo[playerid][pWeaponsSpawned] = true;
     }
+
+    SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
+	SetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
 
     if(PlayerInfo[playerid][pAdminjailed] == true)
     {

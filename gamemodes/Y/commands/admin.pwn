@@ -1043,6 +1043,9 @@ CMD:revice(playerid, params[])
 		playerb,
 		str[128]
 	;
+
+	if(!PlayerInfo[playerid][pAdmin] || PlayerInfo[playerid][pTester] < 2)
+		return SendUnauthMessage(playerid);
 		
 	if(sscanf(params, "u", playerb))
 		return SendUsageMessage(playerid, "/revive [ชื่อบางส่วน/ไอดี]"); 
@@ -1069,6 +1072,41 @@ CMD:revice(playerid, params[])
 	GameTextForPlayer(playerb, "~b~You were revived", 3000, 4);
 	
 	ClearDamages(playerb);
+	return 1;
+}
+
+CMD:forcerespawn(playerid, params[])
+{
+	new 
+		playerb,
+		str[65]
+	;
+
+	
+	if(!PlayerInfo[playerid][pAdmin] || PlayerInfo[playerid][pTester] < 2)
+		return SendUnauthMessage(playerid);
+		
+	if(sscanf(params, "u", playerb))
+		return SendUsageMessage(playerid, "/forcerespawn [ชื่อบางส่วน/ไอดี]"); 
+	
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+	SetPlayerTeam(playerb, PLAYER_STATE_ALIVE); 
+	SetPlayerHealth(playerb, 100); 
+	
+	TogglePlayerControllable(playerb, 1); 
+	SetPlayerWeather(playerb, globalWeather);
+	
+	ClearDamages(playerb);
+	SpawnPlayer(playerb);
+
+	format(str, sizeof(str), "%s ส่ง %s กลับไปยังจุดเกิด", ReturnName(playerid), ReturnName(playerb));
+	SendAdminMessage(1, str); 
+	SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ส่ง %s กลับไปยังจุดเกิด", ReturnName(playerb));
 	return 1;
 }
 

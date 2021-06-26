@@ -280,6 +280,11 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pHealth = %f, pArmour = %f WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pHealth],
+			PlayerInfo[playerid][pArmour],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
 
 		if (PlayerInfo[playerid][pTimeout]) {
 			/* 
@@ -293,9 +298,7 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
 			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
 
-			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pHealth = %f, pArmour = %f, pLastPosX = %f, pLastPosY = %f, pLastPosZ = %f, pLastInterior = %i, pLastWorld = %i WHERE char_dbid = %i",	
-				PlayerInfo[playerid][pHealth],
-				PlayerInfo[playerid][pArmour],
+			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastPosX = %f, pLastPosY = %f, pLastPosZ = %f, pLastInterior = %i, pLastWorld = %i WHERE char_dbid = %i",	
 				PlayerInfo[playerid][pLastPosX],
 				PlayerInfo[playerid][pLastPosY],
 				PlayerInfo[playerid][pLastPosZ],
@@ -503,6 +506,9 @@ public Query_LoadCharacter(playerid)
 
 	cache_get_value_name_int(0, "pTimeout", PlayerInfo[playerid][pTimeout]);
 
+	cache_get_value_name_float(0, "pHealth", PlayerInfo[playerid][pHealth]);
+	cache_get_value_name_float(0, "pArmour", PlayerInfo[playerid][pArmour]);
+
 	new diff = gettime() - PlayerInfo[playerid][pTimeout];
 
 	if (diff > 0 && diff <= 60 * TIMEOUT_CRASH_TIME) // diff = now - savetime
@@ -510,8 +516,6 @@ public Query_LoadCharacter(playerid)
 		/* 
 			โหลดข้อมูลที่ต้องใช้ตอนหลุด
 		*/	
-		cache_get_value_name_float(0, "pHealth", PlayerInfo[playerid][pHealth]);
-		cache_get_value_name_float(0, "pArmour", PlayerInfo[playerid][pArmour]);
 
 		cache_get_value_name_float(0, "pLastPosX", PlayerInfo[playerid][pLastPosX]);
 		cache_get_value_name_float(0, "pLastPosY", PlayerInfo[playerid][pLastPosY]);
@@ -523,6 +527,11 @@ public Query_LoadCharacter(playerid)
 		cache_get_value_name_int(0, "pBadge", PlayerInfo[playerid][pBadge]);
 
 	} else PlayerInfo[playerid][pTimeout] = 0;
+
+	if(PlayerInfo[playerid][pDonater])
+	{
+		cache_get_value_name_int(0, "pHasMask", PlayerInfo[playerid][pHasMask]);
+	}
 
 	cache_get_value_name_int(0, "pSpawnPoint", PlayerInfo[playerid][pSpawnPoint]);
 	cache_get_value_name_int(0, "pSpawnHouse", PlayerInfo[playerid][pSpawnHouse]);

@@ -102,6 +102,77 @@ CMD:checkafk(playerid, params[])
 }
 
 
+CMD:helpmes(playerid, params[])
+{
+   	if(!PlayerInfo[playerid][pTester] && !PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+
+    new tool[21];
+
+    if(sscanf(params, "s[21] ", tool))
+	{
+		SendUsageMessage(playerid, "/helpmes <tool>");
+		SendClientMessage(playerid, COLOR_GREY, "Tools: List, Accept, Disregard");
+	}
+    else
+    {
+        if(strcmp(tool, "list", true) == 0 || strcmp(tool, "l", true) == 0)
+        {
+            new Helpmecout;
+            SendClientMessage(playerid, COLOR_WHITE, "-------------------------------------------------------------------------------------------------------------------------------");
+            SendClientMessage(playerid, -1, "");
+            for(new i = 1; i < sizeof(HelpmeData); i++)
+            {
+                if(HelpmeData[i][hHelpmeExit] == true)
+                {
+                    SendClientMessageEx(playerid, -1, "[ACTIVE] (%d) %s: รายงานเรื่อง: %s",HelpmeData[i][hHelpmeDBID], ReturnRealName(HelpmeData[i][hHelpmeBy]), HelpmeData[i][hHelpmeDetel]);
+                    Helpmecout++;
+                }
+            }
+            SendClientMessage(playerid, -1, "");
+            SendClientMessageEx(playerid, -1, "ACTIVE HELPMES: %d (ใช้ /helpmes accept เพื่อยืนยัน)", Helpmecout);
+            SendClientMessage(playerid, COLOR_WHITE, "-------------------------------------------------------------------------------------------------------------------------------");
+            return 1;
+        }
+        else if(strcmp(tool, "accept", true) == 0 || strcmp(tool, "a", true) == 0)
+        {
+            new helpmeid;
+
+            if(sscanf(params, "s[21]d", tool, helpmeid))
+		       return SendUsageMessage(playerid, "/helpmes accept <helpmeid>");
+
+            if(HelpmeData[helpmeid][hHelpmeExit] == false)
+                return SendErrorMessage(playerid, "helpmeid not fond.");
+            
+            SendClientMessageEx(playerid, -1, "คุณได้ยืนยัน report id %d",helpmeid);
+            SendClientMessage(HelpmeData[helpmeid][hHelpmeBy], -1, "{DC7633}ขอบคุณที่ส่งรายงานมาให้เรา ได้มีผู้ดูแลรับเรื่องของคุณแล้ว! กรุณารอผู้ดูแลตอบกลับคุณมาอีกที");
+            SendTesterMessageEx(COLOR_YELLOWEX, "[%s: %d] %s: ได้รับการขอความช่วยเหลือของ %s", PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mAccName],ReturnRealName(HelpmeData[helpmeid][hHelpmeBy]));
+            ClearHelpme(helpmeid);
+            return 1;
+        
+        }
+        else if(strcmp(tool, "Disregard", true) == 0 || strcmp(tool, "d", true) == 0)
+        {
+            new helpmeid;
+
+            if(sscanf(params, "s[21]d", tool, helpmeid))
+		       return SendUsageMessage(playerid, "/reports disregard <helpmeid>");
+
+            if(HelpmeData[helpmeid][hHelpmeExit] == false)
+                return SendErrorMessage(playerid, "helpmeid not fond.");
+
+			SendTesterMessageEx(COLOR_YELLOW2, "[%s: %d] %s ได้ลบการขอความช่วยเหลือของ %s",PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mAccName],ReturnRealName(HelpmeData[helpmeid][hHelpmeBy]));
+            
+            ClearHelpme(helpmeid);
+            return 1;
+        }
+        else return SendErrorMessage(playerid, "กรุณาพิมพ์ให้ถูกต้อง");
+    }
+
+
+    return 1;
+}
+
 
 stock SendTesterMessage(level, const str[])
 {

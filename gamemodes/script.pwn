@@ -561,14 +561,7 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 		{
 			Log(adminactionlog, INFO, "%s: /%s %s", ReturnPlayerName(playerid), cmd, params);
 		}
-	}
-
-    if(PlayerInfo[playerid][pGUI])
-    {
-        SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}คุณมีการใช้หน้าต่าง GUI อยู่");
-        return 0;
-    }   
-
+	}   
 
     Log(allcmdlog, INFO, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
     return 1;

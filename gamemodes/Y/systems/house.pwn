@@ -516,7 +516,7 @@ public OnPlayerNereHouseTime()
                 else
                 {
                     SendClientMessageEx(i,COLOR_DARKGREEN,"%d %s, Los Santos, San Andreas", HouseInfo[p][HouseDBID],HouseInfo[p][HouseName]);
-                    SendClientMessageEx(i,-1,"ราคา: $%s เลเวล: %d", HouseInfo[p][HousePrice], HouseInfo[p][HouseLevel]);
+                    SendClientMessageEx(i,-1,"ราคา: $%s เลเวล: %d", MoneyFormat(HouseInfo[p][HousePrice]), HouseInfo[p][HouseLevel]);
                     OnPlayerNereHouse[i][p] = gettime();
                 }
             }

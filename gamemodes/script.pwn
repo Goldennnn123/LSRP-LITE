@@ -530,7 +530,7 @@ public OnPlayerText(playerid, text[]) {
 
 	//printf("[%d]%s: %s", playerid, ReturnPlayerName(playerid), text);*/
 
-	return 1;
+	return 0;
 }
 
 public OnPlayerCommandReceived(playerid, cmd[], params[], flags)

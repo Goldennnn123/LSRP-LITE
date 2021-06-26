@@ -897,12 +897,15 @@ CMD:pay(playerid, params[])
 	if(amount > PlayerInfo[playerid][pCash])
 		return SendErrorMessage(playerid, "คุณไม่มีเงินพอที่จะให้");
 
+	if(!amount)
+		return SendErrorMessage(playerid, "กรุณาใส่เงินให้ถูกต้อง");
+
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); PlayerPlaySound(playerb, 1052, 0.0, 0.0, 0.0);
 
 	SendClientMessageEx(playerid, COLOR_GREY, " คุณได้ทำการจ่ายเงินให้ %s จำนวน $%s.", ReturnRealName(playerb, 0), MoneyFormat(amount)); 
 	SendClientMessageEx(playerb, COLOR_GREY, " คุณได้รับเงิน จำนวน $%s จาก %s", MoneyFormat(amount), ReturnRealName(playerid, 0));
 
-	if(!strcmp(emote, "None"))
+	if(!strcmp(emote, "'None'", false))
 		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ได้ควักเงินบางส่วนออกมาจากกระเป๋าและมอบให้กับ %s", ReturnName(playerid, 0), ReturnName(playerb, 0)); 
 
 	else SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s %s %s", ReturnName(playerid, 0), emote, ReturnName(playerb, 0));

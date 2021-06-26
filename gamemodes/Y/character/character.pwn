@@ -272,7 +272,7 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pTester],
 			PlayerInfo[playerid][pTutorial],
 			PlayerInfo[playerid][pFaction],
-			GetPlayerMoney(playerid),
+			PlayerInfo[playerid][pCash],
 			PlayerInfo[playerid][pLevel],
 			PlayerInfo[playerid][pExp],
 			PlayerInfo[playerid][pSpawnPoint],
@@ -678,6 +678,7 @@ public LoadCharacter(playerid)
 	}
 
     syncAdmin(playerid);
+	ResetPlayerMoney(playerid);
 	GivePlayerMoney(playerid, PlayerInfo[playerid][pCash]);
 
 	SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);

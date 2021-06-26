@@ -765,6 +765,39 @@ CMD:admins(playerid, params[])
 	return 1;
 }
 
+
+CMD:testers(playerid, params[])
+{
+	new bool:TesterOn = false;
+	
+	foreach (new i : Player)
+	{
+		if (PlayerInfo[playerid][pTester]) TesterOn = true;
+	}
+	
+	if(TesterOn == true)
+	{
+		SendClientMessage(playerid, COLOR_GREY, "Tester Online:");
+		
+		foreach(new i : Player)
+		{
+			if(PlayerInfo[i][pTester])
+			{
+				if(PlayerInfo[i][pTesterDuty])
+				{
+					SendClientMessageEx(playerid, COLOR_DARKGREEN, "(Level: %d) %s (%s) - On Duty: Yes", PlayerInfo[i][pTester], ReturnRealName(i, 0), e_pAccountData[i][mForumName]);
+				}
+				else SendClientMessageEx(playerid, COLOR_GREY, "(Level: %d) %s (%s) - On Duty: No", PlayerInfo[i][pTester], ReturnRealName(i, 0), e_pAccountData[i][mForumName]);
+			}
+		}
+	}
+	else
+	{
+		return SendClientMessage(playerid, COLOR_GREY, "Tester Online:");
+	}
+	return 1;
+}
+
 alias:ooc("o")
 CMD:ooc(playerid, params[])
 {

@@ -752,24 +752,25 @@ CMD:towcars(playerid, params[])
 	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[id][eFactionAlterRank])
 		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
 
-	for(new i = 1; i < MAX_VEHICLES; i++)
+	for(new v = 1; v< MAX_VEHICLES; v++)
 	{
-		if(!VehicleInfo[i][eVehicleFaction])
+		if(!VehicleInfo[v][eVehicleFaction])
 			continue;
 
-		if(VehicleInfo[i][eVehicleFaction] != id)
+		if(VehicleInfo[v][eVehicleFaction] != id)
 			continue;
 
-		if(VehicleInfo[i][eVehicleEngineStatus])
+		if(IsVehicleOccupied(v))
 			continue;
 
-		SetVehicleToRespawn(i);
-		LinkVehicleToInterior(i, VehicleInfo[i][eVehicleParkInterior]);
-		SetVehicleVirtualWorld(i, VehicleInfo[i][eVehicleParkWorld]);
-		SetVehicleNumberPlate(i, FactionInfo[id][eFactionAbbrev]);
-		SetVehicleHp(i);
+		SetVehicleToRespawn(v);
+		LinkVehicleToInterior(v, VehicleInfo[v][eVehicleParkInterior]);
+		SetVehicleVirtualWorld(v, VehicleInfo[v][eVehicleParkWorld]);
+		SetVehicleNumberPlate(v, FactionInfo[id][eFactionAbbrev]);
+		SetVehicleHp(v);
 	}
-	SendFactionMessageEx(playerid, -1, "{2ECC71}**(( %s ได้ส่งยานพาหนะที่ดับเครื่องยนต์ทั้งหมดนั่งของกลุ่มกลับจุดเกิดทั้งหมด ))**", ReturnName(playerid, 0));
+
+	SendFactionMessageEx(playerid, -1, "{2ECC71}**(( %s ได้ส่งยานพาหนะที่ไม่มีคนนั่งของกลุ่มกลับจุดเกิดทั้งหมด ))**", ReturnName(playerid, 0));
 	return 1;
 }
 

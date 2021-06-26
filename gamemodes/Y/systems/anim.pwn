@@ -725,18 +725,6 @@ CMD:sleep(playerid, params[])
 	}
     return 1;
 }
-CMD:smoke(playerid, params[])
-{
-    new gesture;
-    if(sscanf(params, "d", gesture)) return SendUsageMessage(playerid,"/smoke [1-2]");
-	//playerData[playerid][pAnimation] = 1;
-	switch(gesture){
-		case 1: ApplyAnimation(playerid,"SMOKING","M_smk_in",4.1, 0, 1, 1, 1, 1, 1);
-		case 2: ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 0, 1, 1, 1, 1, 1);
-		default: return SendUsageMessage(playerid,"/smoke [1-2]");
-	}
-    return 1;
-}
 CMD:chora(playerid, params[])
 {
     ApplyAnimation(playerid, "COP_AMBIENT", "Coplook_watch",4.1, 0, 1, 1, 1, 1, 1);

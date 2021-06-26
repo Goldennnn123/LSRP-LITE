@@ -1044,7 +1044,7 @@ CMD:revice(playerid, params[])
 		str[128]
 	;
 
-	if(!PlayerInfo[playerid][pAdmin] || PlayerInfo[playerid][pTester] < 2)
+	if(!PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pTester] < 2)
 		return SendUnauthMessage(playerid);
 		
 	if(sscanf(params, "u", playerb))
@@ -1083,7 +1083,7 @@ CMD:forcerespawn(playerid, params[])
 	;
 
 	
-	if(!PlayerInfo[playerid][pAdmin] || PlayerInfo[playerid][pTester] < 2)
+	if(!PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pTester] < 2)
 		return SendUnauthMessage(playerid);
 		
 	if(sscanf(params, "u", playerb))

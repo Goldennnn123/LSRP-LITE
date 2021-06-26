@@ -117,6 +117,7 @@ CMD:buy(playerid, params[])
     MenuStore_AddItem(playerid, 2, 19942, "Radio", 10000, "Radio", 200);
     MenuStore_AddItem(playerid, 3, 367, "Camera", 15000, "Cemara To Take Photo", 200);
     MenuStore_AddItem(playerid, 4, 325, "Flower", 300, "Flower", 200);
+    MenuStore_AddItem(playerid, 5, 19897, "Cigarette", 150, "Flower", 200);
     MenuStore_Show(playerid, Shop, "SHOP");
     return 1;
 }

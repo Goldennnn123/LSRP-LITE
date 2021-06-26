@@ -109,6 +109,7 @@ enum E_PLAYER_DATA
 	bool:pPhonespeaker,
 
 	pGUI,
+	pCigare,
 
 
 	bool:pDriverLicense,

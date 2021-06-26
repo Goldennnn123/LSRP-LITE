@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `pIron` int(11) NOT NULL,
   `pCopper` int(11) NOT NULL,
   `pKNO3` int(11) NOT NULL,
+  `pCigare` int(11) NOT NULL,
   `pWeapon0` int(11) NOT NULL,
   `pWeapon1` int(11) NOT NULL,
   `pWeapon2` int(11) NOT NULL,

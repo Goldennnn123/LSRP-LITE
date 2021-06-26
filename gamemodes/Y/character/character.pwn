@@ -484,6 +484,11 @@ CharacterSave(playerid, force = false)
 			PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query);
 
+		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pCigare = %i WHERE char_dbid = %i",	
+			PlayerInfo[playerid][pCigare],
+			PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query);
+
 		mysql_finish(query);
 	}
 	return 1;
@@ -628,6 +633,7 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pKNO3",PlayerInfo[playerid][pKNO3]);
 
 	cache_get_value_name_int(0, "pWhitelist",PlayerInfo[playerid][pWhitelist]);
+	cache_get_value_name_int(0, "pCigare",PlayerInfo[playerid][pCigare]);
 
 	
 

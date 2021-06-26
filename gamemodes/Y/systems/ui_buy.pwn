@@ -40,6 +40,10 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
         GivePlayerWeapon(playerid, 14, 1);
         BusinessInfo[id][BusinessS_Flower]--;
     }
+    if(itemid == 5)
+    {
+        PlayerInfo[playerid][pCigare]+= 20;
+    }
     
     new string[128];
     format(string, 128, "คุณได้ซื้อ %dx %s", amount, itemname);

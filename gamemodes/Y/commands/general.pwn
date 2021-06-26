@@ -1428,6 +1428,57 @@ CMD:helpme(playerid, params[])
 	return 1;
 }
 
+CMD:givecigare(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pCigare])
+		return SendErrorMessage(playerid, "ไม่มีบุหรี่");
+
+	new tagerid, amount;
+
+	if(sscanf(params, "ud", tagerid, amount))
+		return SendUsageMessage(playerid, "/givecigare <ชื่อบางส่วน/ไอดี> <จำนวน>");
+
+	if(amount > PlayerInfo[playerid][pCigare])
+		return SendErrorMessage(playerid, "คุณมีบุหรี่ไม่เพียงพอ");
+
+	if(!IsPlayerConnected(tagerid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์");
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+		
+	if(!IsPlayerNearPlayer(playerid, tagerid, 5.0))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+
+	if(PlayerInfo[tagerid][pCigare] >= 20)
+		return SendErrorMessage(playerid, "ผู้เล่นมี บุหรี่เต็มแล้ว");
+
+	PlayerInfo[tagerid][pCigare]+= amount;
+	PlayerInfo[playerid][pCigare]-= amount;
+	SendClientMessageEx(playerid, -1, "คุณได้ให้บุหรี่จำนวน %d ม้วนกับ %s",amount, ReturnName(tagerid,0));
+	SendClientMessageEx(tagerid, -1, "คุณได้รับบุหรี่จำนวน %d ม้วนจาก %s",amount, ReturnName(playerid,0));
+	SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s ได้หยิบซองบุหรี่ออกมาแล้วหยิบม้วนบุหรี่บางส่วนให้กับ %s", ReturnName(playerid,0),ReturnName(tagerid,0));
+	return 1;
+}
+
+CMD:smoke(playerid, params[])
+{
+    new gesture;
+    if(sscanf(params, "d", gesture)) 
+		return SendUsageMessage(playerid,"/smoke [1-2]");
+
+	if(!PlayerInfo[playerid][pCigare])
+		return SendErrorMessage(playerid, "คุณไม่มีบุหรี่");
+
+	switch(gesture)
+	{
+		case 1: ApplyAnimation(playerid,"SMOKING","M_smk_in",4.1, 0, 1, 1, 1, 1, 1);
+		case 2: ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 0, 1, 1, 1, 1, 1);
+		default: return SendUsageMessage(playerid,"/smoke [1-2]");
+	}
+    return 1;
+}
+
 
 
 stock OnPlayerHelpme(playerid, reportid, text[])

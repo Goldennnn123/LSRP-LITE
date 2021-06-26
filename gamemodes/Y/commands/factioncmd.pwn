@@ -738,6 +738,7 @@ CMD:park(playerid ,params[])
 	DestroyVehicle(vehicleid);
 
 	vehicleid = CreateVehicle(VehicleInfo[vehicleid][eVehicleModel], VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], VehicleInfo[vehicleid][eVehicleParkPos][3], VehicleInfo[vehicleid][eVehicleColor1], VehicleInfo[vehicleid][eVehicleColor2], -1, 0);
+	ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 	return 1;
 }
 

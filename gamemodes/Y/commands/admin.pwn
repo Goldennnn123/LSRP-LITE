@@ -2761,7 +2761,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(RELEASED(KEY_WALK))
 	{
-		if(!PlayerInfo[playerid][pAdmin])
+		if(!PlayerInfo[playerid][pAdmin] && !PlayerInfo[playerid][pTester])
 			return 1;
 
 		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)

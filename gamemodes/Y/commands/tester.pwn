@@ -61,17 +61,17 @@ CMD:tcmds(playerid, params[])
     if(!PlayerInfo[playerid][pTester] && !PlayerInfo[playerid][pAdmin])
 	    return SendClientMessage(playerid, COLOR_GRAD1, "คุณไม่ใช่ Tester");
 
-    if (PlayerInfo[playerid][pTester] >= 1 && PlayerInfo[playerid][pAdmin])
+    if(PlayerInfo[playerid][pTester] >= 1 || PlayerInfo[playerid][pAdmin])
 	{
 	    SendClientMessage(playerid, COLOR_GREEN, "___________________________Tester COMMANDS___________________________");
 
 		SendClientMessage(playerid, COLOR_GRAD1, "[Level 1]: /tduty (/t)ester(c)hat /helpmes /checkafk");
 	}
-	if (PlayerInfo[playerid][pTester] >= 2 && PlayerInfo[playerid][pAdmin])
+	if (PlayerInfo[playerid][pTester] >= 2 || PlayerInfo[playerid][pAdmin])
 	{
 		SendClientMessage(playerid, COLOR_GRAD1, "[Level 2]: /kick");
 	}
-	if (PlayerInfo[playerid][pTester] >= 3 && PlayerInfo[playerid][pAdmin])
+	if (PlayerInfo[playerid][pTester] >= 3 || PlayerInfo[playerid][pAdmin])
 	{
 		SendClientMessage(playerid, COLOR_GRAD1, "[Level 3]: /ajail, /aunjail");
 	}

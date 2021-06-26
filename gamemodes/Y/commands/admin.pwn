@@ -2459,6 +2459,42 @@ CMD:createvehicle(playerid, params[])
 	mysql_tquery(dbCon, thread, "CountVehicle", "dddddffffd", playerid,factionid,modelid,color1,color2,x,y,z,a,World);
 	return 1;
 }
+
+alias:deletevehicle("delveh","removeveh")
+CMD:deletevehicle(playerid, params[])
+{	
+	if(PlayerInfo[playerid][pAdmin] < 1336)
+	    return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
+
+	new vehicleid;
+
+	if(sscanf(params, "d", vehicleid))
+		return SendUsageMessage(playerid, "/deletevehicle <ไอดีรถ>");
+
+	if(!IsValidVehicle(vehicleid))
+		return SendErrorMessage(playerid, "ไม่มี ID ยานพาหนะที่ต้องการ");
+
+	if(!VehicleInfo[vehicleid][eVehicleFaction])
+		return SendErrorMessage(playerid, "ยานพาหนะคันนี้ไม่มีอยู่ในแฟคชั่น");
+
+
+	SendClientMessageEx(playerid, -1, "คุณได้ลบยานพาหนะของแฟคชั่น %s ไอดี %d",ReturnFactionNameEx(VehicleInfo[vehicleid][eVehicleFaction]), vehicleid);
+	new thread[MAX_STRING]; 
+
+	mysql_format(dbCon, thread, sizeof(thread), "DELETE FROM `vehicle_faction` WHERE `VehicleDBID` = '%d'", VehicleInfo[vehicleid][eVehicleDBID]);
+	mysql_tquery(dbCon, thread);
+
+	VehicleInfo[vehicleid][eVehicleDBID] = 0;
+	VehicleInfo[vehicleid][eVehicleModel] = 0;
+	VehicleInfo[vehicleid][eVehicleFaction] = 0;
+
+	VehicleInfo[vehicleid][eVehicleColor1] = 0;
+	VehicleInfo[vehicleid][eVehicleColor2] = 0;
+	VehicleInfo[vehicleid][eVehicleFuel] = 0;
+	DestroyVehicle(vehicleid);
+	ResetVehicleVars(vehicleid);
+	return 1;
+}
 // Admin Level: 1336;
 
 // Admin Level: 1337:
@@ -2636,6 +2672,11 @@ hook OnRconLoginAttempt(ip[], password[], success)
 
 	if (success) {
 		defer RetrieveRconPlayer(ip2);
+	}
+	else
+	{
+		//SendClientMessageToAllEx(COLOR_LIGHTRED, "%s ถูกแตะออกจากเซิร์ฟเวอร์เนื่องจากมีการใช้คำสั่งต้องห้ามของเซิร์ฟเวอร์",ReturnName(playerid,0));
+		return 1;
 	}
 
 	return 1;

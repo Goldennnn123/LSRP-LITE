@@ -616,6 +616,7 @@ CMD:hangup(playerid, params[])
 
         PlayerInfo[PlayerInfo[playerid][pPhoneline]][pCalling] = 0; PlayerInfo[playerid][pCalling] = 0;
 
+        StopAudioStreamForPlayer(PlayerInfo[playerid][pPhoneline]);
         PlayerInfo[PlayerInfo[playerid][pPhoneline]][pPhoneline] = INVALID_PLAYER_ID;
         PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
 
@@ -655,9 +656,11 @@ CMD:hangup(playerid, params[])
 		PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pCalling] = 0; 
 		
 		PlayerInfo[playerid][pCalling] = 0; 
+        StopAudioStreamForPlayer(PlayerInfo[playerid][pPhoneline]);
 		PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID; 
 		printf("call 0");
         StopAudioStreamForPlayer(playerid);
+        
 		return 1;
 	}
 	
@@ -687,6 +690,7 @@ CMD:hangup(playerid, params[])
 		PlayerInfo[playerid][pCalling] = 0;
 		PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pCalling] = 0;
 		
+        StopAudioStreamForPlayer(PlayerInfo[playerid][pPhoneline]);
 		PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pPhoneline] = INVALID_PLAYER_ID;
 		PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
 		printf("call 3"); 
@@ -935,6 +939,20 @@ hook OnPlayerText(playerid, text[])
 			}
 		}
 		return 0; 
+	}
+	if (strlen(text) > 99)
+	{
+		format (string, sizeof(string), "%s ¾Ù´ÇèÒ: %.99s...", ReturnName(playerid, 0), text);
+		LocalChat(playerid, 20.0, string, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4);
+				
+		format (string, sizeof(string), "%s ¾Ù´ÇèÒ: ... %s", ReturnName(playerid, 0), text[99]); 
+		LocalChat(playerid, 20.0, string, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4);
+				
+	}
+	else 
+	{	
+		format (string, sizeof(string), "%s ¾Ù´ÇèÒ: %s", ReturnName(playerid, 0), text);
+		LocalChat(playerid, 20.0, string, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4);
 	}
     return 1;
 }

@@ -44,7 +44,8 @@ ptask @2PlayerTimer[1000](playerid)
 
 stock PlayerSpec(playerid, playerb)
 {
-	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER)
+	
+	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER || GetPlayerState(playerb) == PLAYER_STATE_PASSENGER)
 	{
 		new vehicleid = GetPlayerVehicleID(playerb);
 

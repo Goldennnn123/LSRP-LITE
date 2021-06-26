@@ -519,14 +519,14 @@ public OnPlayerSpawn(playerid) {
 
 public OnPlayerText(playerid, text[]) {
 
-    new str[144];
+    /*new str[144];
 
     format(str, sizeof(str), "%s ¾Ù´ÇèÒ: %s", ReturnRealName(playerid, 0), text);
     ProxDetector(playerid, 20.0, str);
 
-	//printf("[%d]%s: %s", playerid, ReturnPlayerName(playerid), text);
+	//printf("[%d]%s: %s", playerid, ReturnPlayerName(playerid), text);*/
 
-	return 0;
+	return 1;
 }
 
 public OnPlayerCommandReceived(playerid, cmd[], params[], flags)

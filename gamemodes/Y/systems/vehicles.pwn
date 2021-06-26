@@ -2143,6 +2143,7 @@ public CountVehicle2(playerid,factionid, modelid,color1,color2,Float:x,Float:y,F
 
 		VehicleInfo[vehicleid][eVehicleColor1] = color1;
 		VehicleInfo[vehicleid][eVehicleColor2] = color2;
+		VehicleInfo[vehicleid][eVehicleFuel] = 100;
 	}
 
 	SendClientMessageEx(playerid, -1, "คุณได้สร้างรถเฟคชั่นให้กับ {FF5722}%s {FFFFFF}(%d)",FactionInfo[factionid][eFactionName],newid);

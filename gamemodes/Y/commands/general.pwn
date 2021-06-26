@@ -1,3 +1,6 @@
+new rental_vehicles[10];
+new RentCarKey[MAX_PLAYERS];
+
 CMD:help(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
@@ -383,7 +386,7 @@ CMD:lock(playerid,params[])
 		}
 		if(foundCar == true)
 		{
-			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid)
+			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid)
 				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้"); 
 				
 			new statusString[90]; 
@@ -628,18 +631,49 @@ CMD:place(playerid, params[])
 	return 1;
 }
 
-CMD:myweapon(playerid, params[])
+CMD:checkweapons(playerid, params[])
 {
-	new longstr[MAX_STRING];
+	new longstr[MAX_STRING], playerb;
 
-	for(new i = 0; i < 13; i++)
+	if(PlayerInfo[playerid][pAdmin])
 	{
-			if(!PlayerInfo[playerid][pWeapons][i])
-				format(longstr, sizeof(longstr), "%s%d. [ว่างเปล่า]\n", longstr, i);
-				
-			else format(longstr, sizeof(longstr), "%s%d. %s[กระสุน: %d]\n", longstr, i, ReturnWeaponName(PlayerInfo[playerid][pWeapons][i]), PlayerInfo[playerid][pWeaponsAmmo][i]); 
+		if(playerb == -1)
+		{
+			for(new i = 0; i < 13; i++)
+			{
+					if(!PlayerInfo[playerid][pWeapons][i])
+						format(longstr, sizeof(longstr), "%s%d. [ว่างเปล่า]\n", longstr, i);
+						
+					else format(longstr, sizeof(longstr), "%s%d. %s[กระสุน: %d]\n", longstr, i, ReturnWeaponName(PlayerInfo[playerid][pWeapons][i]), PlayerInfo[playerid][pWeaponsAmmo][i]); 
+			}
+			Dialog_Show(playerid, DIALOG_MYEAPON, DIALOG_STYLE_LIST, "Weapons:", longstr, "ตกลง", "ยกเลิก");
+			return 1;
+		}
+		else
+		{
+			for(new i = 0; i < 13; i++)
+			{
+					if(!PlayerInfo[playerb][pWeapons][i])
+						format(longstr, sizeof(longstr), "%s%d. [ว่างเปล่า]\n", longstr, i);
+						
+					else format(longstr, sizeof(longstr), "%s%d. %s[กระสุน: %d]\n", longstr, i, ReturnWeaponName(PlayerInfo[playerb][pWeapons][i]), PlayerInfo[playerb][pWeaponsAmmo][i]); 
+			}
+			Dialog_Show(playerid, DIALOG_MYEAPON, DIALOG_STYLE_LIST, "Weapons: %s", longstr, "ตกลง", "ยกเลิก", ReturnName(playerb,0));
+			return 1;
+		}
+		
 	}
-	Dialog_Show(playerid, DIALOG_MYEAPON, DIALOG_STYLE_LIST, "Weapons:", longstr, "ตกลง", "ยกเลิก");
+	else
+	{
+		for(new i = 0; i < 13; i++)
+		{
+				if(!PlayerInfo[playerid][pWeapons][i])
+					format(longstr, sizeof(longstr), "%s%d. [ว่างเปล่า]\n", longstr, i);
+					
+				else format(longstr, sizeof(longstr), "%s%d. %s[กระสุน: %d]\n", longstr, i, ReturnWeaponName(PlayerInfo[playerid][pWeapons][i]), PlayerInfo[playerid][pWeaponsAmmo][i]); 
+		}
+		Dialog_Show(playerid, DIALOG_MYEAPON, DIALOG_STYLE_LIST, "Weapons:", longstr, "ตกลง", "ยกเลิก");
+	}
 	return 1;
 }
 
@@ -772,7 +806,7 @@ CMD:testers(playerid, params[])
 	
 	foreach (new i : Player)
 	{
-		if (PlayerInfo[playerid][pTester]) TesterOn = true;
+		if (PlayerInfo[i][pTester]) TesterOn = true;
 	}
 	
 	if(TesterOn == true)

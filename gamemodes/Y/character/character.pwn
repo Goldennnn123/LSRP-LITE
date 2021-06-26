@@ -711,7 +711,7 @@ Dialog:DIALOG_CREATE_CHARACTER(playerid, response, listitem, inputtext[])
 
 	if (IsValidRoleplayName(inputtext)) {
 		new query[256];
-		mysql_format(dbCon, query, sizeof(query), "INSERT INTO `characters` (char_name, master_id, pPhone) VALUES('%e', %d, %d)", inputtext, e_pAccountData[playerid][mDBID], random(99999));
+		mysql_format(dbCon, query, sizeof(query), "INSERT INTO `characters` (char_name, master_id, pPhone, pCash) VALUES('%e', %d, %d, %d)", inputtext, e_pAccountData[playerid][mDBID], random(99999), 5000);
 		mysql_tquery(dbCon, query, "OnCharacterCreated", "d", playerid);
 	}
 	else {

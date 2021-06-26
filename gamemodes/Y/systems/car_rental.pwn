@@ -2,9 +2,6 @@
 
 // Static Vehicle
 
-new rental_vehicles[10];
-new RentCarKey[MAX_PLAYERS];
-
 hook OnGameModeInit()
 {
     rental_vehicles[0] = AddStaticVehicleEx(492,1664.2168,-2248.0488,-2.9842,90.2306,223,0, -1);

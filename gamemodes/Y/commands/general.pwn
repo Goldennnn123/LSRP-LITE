@@ -1,3 +1,13 @@
+#include <YSI_Coding\y_hooks>
+
+new bool:PlayerHelpUp[MAX_PLAYERS];
+
+hook OnPlayerConnect(playerid)
+{
+	PlayerHelpUp[playerid] = false;
+	return 1;
+}
+
 CMD:help(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
@@ -1475,6 +1485,82 @@ CMD:checkcom(playerid, params[])
 	if(!count)
 		return SendClientMessage(playerid, COLOR_GREY, "คุณยังไม่มีการซื้อคอมพิวเตอร์");
 
+	return 1;
+}
+
+CMD:helpup(playerid, params[])
+{
+	new tagerid;
+
+	if(sscanf(params, "u", tagerid))
+		return SendUsageMessage(playerid, "/helpup <ชื่อบางส่วน/ไอดี>");
+
+	if(tagerid == playerid)
+		return SendErrorMessage(playerid, "ไม่สามารถใช้กับตัวเองได้");
+
+	if(!IsPlayerConnected(tagerid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์");
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+		
+	if(!IsPlayerNearPlayer(playerid, tagerid, 2.5))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+
+	if(GetPlayerTeam(playerid) == PLAYER_STATE_DEAD || GetPlayerTeam(playerid) == PLAYER_STATE_WOUNDED)
+		return SendErrorMessage(playerid, "คุณไม่สามารถช่วยได้เนืองจากคุณเองก็มีสภาพร่างกายไม่พร้อม และต้องการการรักษาอย่างด่านเช่นกัน");
+
+	
+	if(GetPlayerTeam(tagerid) == PLAYER_STATE_ALIVE)
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้รับบาดเจ็บขนาดขั้นเสียชีวิต");
+
+	if(GetPlayerTeam(tagerid) == PLAYER_STATE_DEAD)
+		return SendErrorMessage(playerid, "ผู้เล่นเสียชีวิตแล้ว");
+
+	if(PlayerHelpUp[tagerid])
+		return SendErrorMessage(playerid, "มีการช่วยเหลืออยู่...");
+
+	SendClientMessageEx(playerid, -1, "คุณกำลังช่วยเหลือ %s ห้ามขยับหรืออกไปไหน ในระหว่างการช่วยเหลือ", ReturnName(tagerid,0));
+	PlayerHelpUp[tagerid] = true;
+	SetTimerEx("HelpUpPLayer", 15000, false, "dd",playerid, tagerid);
+	return 1;
+}
+
+forward HelpUpPLayer(playerid, tagerid);
+public HelpUpPLayer(playerid, tagerid)
+{
+	if(GetPlayerTeam(playerid) == PLAYER_STATE_DEAD || GetPlayerTeam(playerid) == PLAYER_STATE_WOUNDED)
+	{
+		SendClientMessage(playerid, COLOR_LIGHTRED, "การช่วยเหลือไม่สำเร็จเนื่องจากคุณได้เสียชีวิตก่อน");
+		PlayerHelpUp[tagerid] = false;
+		return 1;
+	}
+
+	if(GetPlayerTeam(tagerid) == PLAYER_STATE_ALIVE)
+	{
+		PlayerHelpUp[tagerid] = false;
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้รับบาจเจ็บขนาดขั้นเสียชีวิต");
+	}
+
+	if(GetPlayerTeam(tagerid) == PLAYER_STATE_DEAD)
+	{
+		SendErrorMessage(playerid, "ผู้เล่นเสียชีวิตแล้ว");
+		PlayerHelpUp[tagerid] = false;
+		return 1;
+	}
+
+	if(!IsPlayerNearPlayer(playerid, tagerid, 2.5))
+	{
+		PlayerHelpUp[tagerid] = false;
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+	}
+
+	SetPlayerTeam(tagerid, PLAYER_STATE_ALIVE); 
+	SetPlayerHealth(tagerid, 10); 
+	TogglePlayerControllable(tagerid, 1); 
+	SetPlayerWeather(tagerid, globalWeather);  
+	PlayerHelpUp[tagerid] = false;
+	SendNearbyMessage(playerid, 3.5, COLOR_EMOTE, "* %s ปฐมพยาบาลเบื่องต้นให้กับ %s",ReturnName(playerid,0), ReturnName(tagerid,0));
 	return 1;
 }
 

@@ -81,11 +81,6 @@ CMD:lowbodypush(playerid, params[])
     ApplyAnimation(playerid,"GANGS","shake_carSH",4.1, 0, 1, 1, 0, 0, 1);
     return 1;
 }
-CMD:handsup(playerid, params[])
-{
-    ApplyAnimation(playerid, "ROB_BANK","SHP_HandsUp_Scr",4.1, 0, 1, 1, 1, 1, 1);
-    return 1;
-}
 CMD:bomb(playerid, params[])
 {
     ApplyAnimation(playerid, "BOMBER","BOM_Plant_Loop",4.1, 1, 1, 1, 1, 1, 1);
@@ -104,6 +99,12 @@ CMD:getarrested(playerid, params[])
 CMD:laugh(playerid, params[])
 {
     ApplyAnimation(playerid, "RAPPING", "Laugh_01", 4.1, 0, 1, 1, 1, 1, 1);
+    return 1;
+}
+
+CMD:salute(playerid, params[])
+{
+    ApplyAnimation(playerid, "GHANDS", "GSIGN5LH", 4.1, false, false, false, false, 0, false);
     return 1;
 }
 CMD:sup(playerid, params[])
@@ -709,6 +710,18 @@ CMD:gsign(playerid, params[])
 }
 
 ///sleep | /smoke | /pee | /chora | /relax | /crabs | /stop | /wash | /mourn | /fuck | /tosteal | /crawl
+
+
+CMD:handsup(playerid, params[])
+{
+	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
+	{
+	    SetPlayerSpecialAction(playerid,SPECIAL_ACTION_HANDSUP);
+  		return 1;
+	}
+	else return SendClientMessage(playerid, COLOR_GRAD2, "ไม่สามารถเล่น Animation ได้ในขณะนี้");
+}
+
 
 CMD:sleep(playerid, params[])
 {

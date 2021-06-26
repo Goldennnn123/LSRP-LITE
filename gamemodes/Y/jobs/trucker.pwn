@@ -106,6 +106,7 @@ CMD:cargo(playerid, params[])
         SendClientMessage(playerid, -1, ""EMBED_YELLOW"/cargo pickup "EMBED_WHITE"- หยิบลังสินค้าขึ้นมาจากพื้น");
         SendClientMessage(playerid, -1, ""EMBED_YELLOW"/cargo buy "EMBED_WHITE"- ซื้อสินค้าจากโรงงานอุตสาหกรรม");
         SendClientMessage(playerid, -1, ""EMBED_YELLOW"/cargo sell "EMBED_WHITE"- ขายสินค้าให้กับอุตสาหกรรม / ธุรกิจ");
+        SendClientMessage(playerid, -1, ""EMBED_YELLOW"/cargo gps "EMBED_WHITE"- เพิ่มเปิด GPS เกี่ยวกับการงาน Trucker");
         return 1;
     }
     if(!strcmp(option, "list", true))
@@ -676,31 +677,27 @@ CMD:cargo(playerid, params[])
         }
         else SendErrorMessage(playerid, "คุณไมได้อยู่จุดส่งสินค้า");
     }
-    return 1;
-}
+    else if(!strcmp(option, "gps", true))
+    {
+        if(PlayerGetcargo[playerid])
+            return SendErrorMessage(playerid, "วางกล่องที่ถือก่อนที่จะใช้คำสั่งนี้");
 
-CMD:gpscargo(playerid, params[])
-{
-    if(PlayerInfo[playerid][pJob] != JOB_TRUCKER)
-        return SendErrorMessage(playerid, "คุณไม่ใช่พนักงานส่งของ");
+        new vehicleid = GetPlayerVehicleID(playerid), modelid = GetVehicleModel(vehicleid);
 
-    if(PlayerGetcargo[playerid])
-        return SendErrorMessage(playerid, "วางกล่องที่ถือก่อนที่จะใช้คำสั่งนี้");
+        if(!IsPlayerInVehicle(playerid, vehicleid))
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
 
-    new vehicleid = GetPlayerVehicleID(playerid), modelid = GetVehicleModel(vehicleid);
+        if(modelid != 422 && modelid != 413 && modelid != 543 && modelid != 554 && modelid != 600)
+            return SendErrorMessage(playerid, "ยานพนะไม่ใช่ยานพนะสำหรับขนกล่องสินค้าโปรดเปลี่ยนคันเพื่อทำอาชีพนี้");
 
-    if(!IsPlayerInVehicle(playerid, vehicleid))
-        return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
+        if(!VehicleCargo[vehicleid][v_cargo_result])
+            return SendErrorMessage(playerid, "ไม่มีลังสินค้าอยู่ในรถ");
 
-    if(modelid != 422 && modelid != 413 && modelid != 543 && modelid != 554 && modelid != 600)
-        return SendErrorMessage(playerid, "ยานพนะไม่ใช่ยานพนะสำหรับขนกล่องสินค้าโปรดเปลี่ยนคันเพื่อทำอาชีพนี้");
-
-    if(!VehicleCargo[vehicleid][v_cargo_result])
-        return SendErrorMessage(playerid, "ไม่มีลังสินค้าอยู่ในรถ");
-
-    new str[200];
-    format(str, sizeof(str), "[ ! ] ส่งให้ธุรกิจ 24/7\n[ ! ] ส่งให้โรงงานอุสาหกรรม");
-    Dialog_Show(playerid, DIALOG_TRUCKER_LIST_SELL, DIALOG_STYLE_LIST, "GPS TRUCKER:", str, "ยืนยัน", "ยกเลิก");
+        new str[200];
+        format(str, sizeof(str), "[ ! ] ส่งให้ธุรกิจ 24/7\n[ ! ] ส่งให้โรงงานอุสาหกรรม");
+        Dialog_Show(playerid, DIALOG_TRUCKER_LIST_SELL, DIALOG_STYLE_LIST, "GPS TRUCKER:", str, "ยืนยัน", "ยกเลิก");
+        return 1;
+    }
     return 1;
 }
 

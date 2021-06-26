@@ -249,7 +249,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 					else
 					{
-						amount = 100;
+						amount = 50;
 						SetPlayerHealth(playerid, health - amount);
 					}
 				}
@@ -264,7 +264,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 					else
 					{
-						amount = 30;
+						amount = 15;
 						SetPlayerHealth(playerid, health - amount);
 					}
 				}
@@ -276,13 +276,13 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					if(armor && bodypart == BODY_PART_CHEST)
 					{
 						amount_armour = 45;
-						amount = 20;
+						amount = 15;
 						SetPlayerArmour(playerid, armor - amount_armour);
 						SetPlayerHealth(playerid, health - amount);
 					}
 					else
 					{
-						amount = 75;
+						amount = 35;
 						SetPlayerHealth(playerid, health - amount);
 					}
 				}
@@ -297,7 +297,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 					else
 					{
-						amount = 50;
+						amount = 10;
 						SetPlayerHealth(playerid, health - amount);
 					}
 				}
@@ -347,6 +347,448 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
+			if(weaponid == 0)
+			{
+				if(armor)
+				{
+					amount = 0;
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 5;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 1)
+			{
+				if(armor)
+				{
+					amount_armour = 10;
+					amount = 1;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid,health - amount);
+				}
+				else
+				{
+					amount = 10;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 2)
+			{
+				if(armor)
+				{
+					amount_armour = 5;
+					amount = 1;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 5;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 3)
+			{
+				if(armor)
+				{
+					amount_armour = 15;
+					amount = 2;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 20;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 4)
+			{
+				if(armor)
+				{
+					amount_armour = 0;
+					amount = 1;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 50;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 5)
+			{
+				if(armor)
+				{
+					amount_armour = 25;
+					amount = 2;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 45;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 6)
+			{
+				if(armor)
+				{
+					amount_armour = 25;
+					amount = 3;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 45;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 7)
+			{
+				if(armor)
+				{
+					amount_armour = 0;
+					amount = 0;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 2;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 8)
+			{
+				if(armor)
+				{
+					amount_armour = 0;
+					amount = 1;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 50;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 9)
+			{
+				if(armor)
+				{
+					amount_armour = 15;
+					amount = 5;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 50;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 15)
+			{
+				if(armor)
+				{
+					amount_armour = 0;
+					amount = 1;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 15;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}
+			if(weaponid == 22)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 10;
+						amount = 5;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 85;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+				else
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 5;
+						amount = 2;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 45;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+			}
+			if(weaponid == 27)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 45;
+						amount = 15;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 90;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+				else
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 35;
+						amount = 10;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 45;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+			}
+			if(weaponid == 28)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 10;
+						amount = 5;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 35;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+				else
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 6;
+						amount = 3;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 25;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+			}
+			if(weaponid == 29)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 50;
+						amount = 10;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 65;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+				else
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 25;
+						amount = 5;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 45;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+			}
+			if(weaponid == 30)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 45;
+						amount = 15;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 35;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+				else
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 22.5;
+						amount = 15;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 10;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+			}
+			if(weaponid == 32)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 25;
+						amount = 15;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 45;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+				else
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 15;
+						amount = 10;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 35;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+			}
+			if(weaponid == 33)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 50;
+						amount = 25;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 95;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+				else
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 25;
+						amount = 15;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 85;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+			}
+			if(weaponid == 38)
+			{
+				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 0;
+						amount = 0;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 0;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+				else
+				{
+					if(armor && bodypart == BODY_PART_CHEST)
+					{
+						amount_armour = 0;
+						amount = 0;
+						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else
+					{
+						amount = 0;
+						SetPlayerHealth(playerid, health - amount);
+					}
+				}
+			}
+			/*if(weaponid < 400 || weaponid > 611)
+			{
+				if(armor)
+				{
+					amount_armour = 10;
+					amount = 2;
+					SetPlayerArmour(playerid, armor - amount_armour);
+					SetPlayerHealth(playerid, health - amount);
+				}
+				else
+				{
+					amount = 15;
+					SetPlayerHealth(playerid, health - amount);
+				}
+			}*/
 			//SetPlayerHealth(playerid, health - amount); 
 			CallbackDamages(playerid, issuerid, bodypart, weaponid, amount, amount_armour); 
 		}
@@ -366,13 +808,8 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		}
 		
 		if(GetPlayerTeam(playerid) == PLAYER_STATE_WOUNDED)
-		{
-			if(!PlayerInfo[playerid][pDeathFix])
-			{				
-				CallLocalFunction("OnPlayerDead", "iiii", playerid, issuerid, weaponid, 1);
-				return 0;
-			}
-			
+		{			
+			CallLocalFunction("OnPlayerDead", "iiii", playerid, issuerid, weaponid, 1);
 			return 0;
 		}
 		

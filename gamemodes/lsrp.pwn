@@ -48205,7 +48205,6 @@ CMD:surrender(playerid,params[])
 {
 	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && !AnimationCheck(playerid))
 	{
-		playerData[playerid][pAnimation] = 1;
 	    SetPlayerSpecialAction(playerid,SPECIAL_ACTION_HANDSUP);
   		return 1;
 	}

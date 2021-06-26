@@ -519,12 +519,12 @@ public OnPlayerSpawn(playerid) {
 
 public OnPlayerText(playerid, text[]) {
 
-    /*new str[144];
+    new str[144];
 
     format(str, sizeof(str), "%s พูดว่า: %s", ReturnRealName(playerid, 0), text);
     ProxDetector(playerid, 20.0, str);
 
-	printf("[%d]%s: %s", playerid, ReturnPlayerName(playerid), text);*/
+	//printf("[%d]%s: %s", playerid, ReturnPlayerName(playerid), text);
 
 	return 0;
 }
@@ -563,7 +563,7 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
     {
         SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}คุณมีการใช้หน้าต่าง GUI อยู่");
         return 0;
-    }
+    }   
 
 
     Log(allcmdlog, INFO, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);

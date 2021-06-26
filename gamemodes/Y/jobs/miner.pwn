@@ -291,7 +291,7 @@ CMD:sellore(playerid, params[])
     }
     else if(!strcmp(type, "copper", true))
     {
-        if(PlayerInfo[playerid][pIron] < amount)
+        if(PlayerInfo[playerid][pCopper] < amount)
             return SendErrorMessage(playerid, "คุณมี Copper Ore ไม่เพียงพอ");
 
         PlayerInfo[playerid][pCopper]-= amount;
@@ -301,7 +301,7 @@ CMD:sellore(playerid, params[])
     }
     else if(!strcmp(type, "kno3", true))
     {
-        if(PlayerInfo[playerid][pIron] < amount)
+        if(PlayerInfo[playerid][pKNO3] < amount)
             return SendErrorMessage(playerid, "คุณมี Potassium Nitrate ไม่เพียงพอ");
 
         PlayerInfo[playerid][pKNO3]-= amount;

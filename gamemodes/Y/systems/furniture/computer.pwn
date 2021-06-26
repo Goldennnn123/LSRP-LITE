@@ -164,8 +164,8 @@ CMD:opencom(playerid, params[])
 
     new id = IsPlayerNearComputer(playerid), id_h = IsPlayerInHouse(playerid);
 
-    /*if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
-        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");*/
+    if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
 
     if(id_h == 0)
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในบ้าน");
@@ -175,7 +175,6 @@ CMD:opencom(playerid, params[])
 
     if(PlayerInfo[playerid][pGUI])
         return SendErrorMessage(playerid, "มีการใช้ UI อยู่");
-
 
     if(!ComputerInfo[id][ComputerCPU])
         return SendErrorMessage(playerid, "คุณไม่ได้มี "EMBED_LIGHTRED"CPU"EMBED_WHITE" อยู่ในเครื่องคอมพิวเตอร์ของคุณไม่สามารถเปิดคอมพิวเตอร์ได้");
@@ -636,15 +635,14 @@ Dialog:D_BUYCOMPUTER(playerid, response, listitem, inputtext[])
                 PlayerInfo[playerid][pDBID],
                 0,
                 0,
-                PlayerSelectCom[playerid][p_SelectCPU],
-                PlayerSelectCom[playerid][p_SelectRAM],
-                PlayerSelectCom[playerid][p_SelectGPU][0],
-                PlayerSelectCom[playerid][p_SelectGPU][1],
-                PlayerSelectCom[playerid][p_SelectGPU][2],
-                PlayerSelectCom[playerid][p_SelectGPU][3],
-                PlayerSelectCom[playerid][p_SelectGPU][4],
-                PlayerSelectCom[playerid][p_SelectStored]
-                );
+                CPU,
+                RAM,
+                GPU1,
+                GPU2,
+                GPU3,
+                GPU4,
+                GPU5,
+                Stored);
             mysql_tquery(dbCon, query, "OnplayerBuyComputerSucess", "dddddddddd", playerid, idx,  CPU, GPU1, GPU2, GPU3, GPU4, GPU5, RAM, Stored);
             return 1;
 

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS `computer` (
-    `ComputerDBID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `ComputerOwnerDBID` int(11) UNSIGNED NOT NULL,
+    `ComputerDBID` int(11) NOT NULL AUTO_INCREMENT,
+    `ComputerOwnerDBID` int(11) NOT NULL,
     `ComputerSpawn` int(11) NOT NULL DEFAULT 0,
     `ComputerOn` int(11) NOT NULL DEFAULT 0,
     `ComputerCPU` int(11) NOT NULL DEFAULT 0,
@@ -23,13 +23,5 @@ CREATE TABLE IF NOT EXISTS `computer` (
     `ComputerPosWorld` int(11) NOT NULL DEFAULT 0,
     `ComputerPosInterior` int(11) NOT NULL DEFAULT 0,
     PRIMARY KEY
-        (ComputerDBID),
-    FOREIGN KEY
-        (ComputerOwnerDBID)
-    REFERENCES
-        masters(acc_dbid)
-    ON DELETE
-        CASCADE
-    ON UPDATE
-        NO ACTION
+        (ComputerDBID)
 );

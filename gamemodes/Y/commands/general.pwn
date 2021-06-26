@@ -1,6 +1,3 @@
-new rental_vehicles[10];
-new RentCarKey[MAX_PLAYERS];
-
 CMD:help(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
@@ -379,48 +376,7 @@ CMD:lock(playerid,params[])
 		return 1;
 
 	}
-	else
-	{
-		new bool:foundCar = false, vehicleid, Float:fetchPos[3];
-		
-		for (new i = 0; i < MAX_VEHICLES; i++)
-		{
-			GetVehiclePos(i, fetchPos[0], fetchPos[1], fetchPos[2]);
-			if(IsPlayerInRangeOfPoint(playerid, 4.0, fetchPos[0], fetchPos[1], fetchPos[2]))
-			{
-				foundCar = true;
-				vehicleid = i; 
-				break; 
-			}
-		}
-		if(foundCar == true)
-		{
-			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid)
-				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้"); 
-				
-			new statusString[90]; 
-			new engine, lights, alarm, doors, bonnet, boot, objective; 
-	
-			GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-			
-			if(VehicleInfo[vehicleid][eVehicleLocked])
-			{
-				format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
-			
-				SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
-				VehicleInfo[vehicleid][eVehicleLocked] = false;
-			}
-			else 
-			{
-				format(statusString, sizeof(statusString), "~r~%s LOCKED", ReturnVehicleName(vehicleid));
-				
-				SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
-				VehicleInfo[vehicleid][eVehicleLocked] = true;
-			}
-			GameTextForPlayer(playerid, statusString, 3000, 3);
-		}
-		else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ/ยานพาหนะ");
-	}
+	else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ");
 	return 1;
 }
 
@@ -1499,6 +1455,27 @@ CMD:smoke(playerid, params[])
 		default: return SendUsageMessage(playerid,"/smoke [1-2]");
 	}
     return 1;
+}
+
+CMD:checkcom(playerid, params[])
+{
+	new count;
+	for(new i = 1; i < MAX_COMPUTER; i++)
+	{
+		if(!ComputerInfo[i][ComputerDBID])
+			continue;
+
+		if(ComputerInfo[i][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+			continue;
+
+
+		count++;
+		SendClientMessageEx(playerid, COLOR_GREY, "COMPUTER ID %d: Spawn: %s",ComputerInfo[i][ComputerDBID], (ComputerInfo[i][ComputerSpawn] != 0) ? ("ยังไม่ได้วาง") : ("วางอยู่"));
+	}
+	if(!count)
+		return SendClientMessage(playerid, COLOR_GREY, "คุณยังไม่มีการซื้อคอมพิวเตอร์");
+
+	return 1;
 }
 
 

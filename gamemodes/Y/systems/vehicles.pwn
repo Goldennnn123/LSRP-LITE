@@ -20,6 +20,9 @@ new PlayerSellVehicleID[MAX_PLAYERS];
 new PlayerSellVehiclePrice[MAX_PLAYERS];
 new bool:PlayerSellVehicleAccept[MAX_PLAYERS];
 
+new rental_vehicles[10];
+new RentCarKey[MAX_PLAYERS];
+
 
 enum c_data {
 	Float:c_maxhp,
@@ -776,7 +779,7 @@ CMD:vehicle(playerid, params[])
 	{
  	    SendClientMessage(playerid, COLOR_YELLOWEX, "___________________________________________________________");
 	 	SendClientMessage(playerid, COLOR_YELLOWEX, "USAGE: /(v)ehicle [action]");
-	    SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] get, park, sell,buy, upgrade, list");
+	    SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] get, park, sell,buy, upgrade, list, lock");
         SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] stats, tow, duplicatekey, find, buypark($5,000)");
         SendClientMessage(playerid, COLOR_YELLOWEX, "[Delete] scrap (ตำเตือน: หากใช้คำสั่งนี้จะทำการขายรถทิ้งในทันที.)");
         SendClientMessage(playerid, COLOR_YELLOWEX, "[Hint] หากพบบัคหรือสิ่งผิดปกติให้ทำการแจ้งผู้ดูแลในทันที");
@@ -1225,6 +1228,47 @@ CMD:vehicle(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, "Life Span: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%i]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "Security: Lock Level[%i], Alarm Level[%i], Immobilizer[%i]", VehicleInfo[vehicleid][eVehicleLockLevel], VehicleInfo[vehicleid][eVehicleAlarmLevel], VehicleInfo[vehicleid][eVehicleImmobLevel]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "Misc: Primary Color[%d], Secondary Color[%d], License Plate[%s]",VehicleInfo[vehicleid][eVehicleColor1],VehicleInfo[vehicleid][eVehicleColor2], VehicleInfo[vehicleid][eVehiclePlates]);
+	}
+	else if(!strcmp(oneString, "lock"))
+	{
+		new bool:foundCar = false, vehicleid, Float:fetchPos[3];
+		
+		for (new i = 0; i < MAX_VEHICLES; i++)
+		{
+			GetVehiclePos(i, fetchPos[0], fetchPos[1], fetchPos[2]);
+			if(IsPlayerInRangeOfPoint(playerid, 4.0, fetchPos[0], fetchPos[1], fetchPos[2]))
+			{
+				foundCar = true;
+				vehicleid = i; 
+				break; 
+			}
+		}
+		if(foundCar == true)
+		{
+			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin])
+				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้"); 
+				
+			new statusString[90]; 
+			new engine, lights, alarm, doors, bonnet, boot, objective; 
+	
+			GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+			
+			if(VehicleInfo[vehicleid][eVehicleLocked])
+			{
+				format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
+			
+				SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
+				VehicleInfo[vehicleid][eVehicleLocked] = false;
+			}
+			else 
+			{
+				format(statusString, sizeof(statusString), "~r~%s LOCKED", ReturnVehicleName(vehicleid));
+				
+				SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
+				VehicleInfo[vehicleid][eVehicleLocked] = true;
+			}
+			GameTextForPlayer(playerid, statusString, 3000, 3);
+		}
 	}
 	return 1;
 }

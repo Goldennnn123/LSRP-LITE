@@ -470,6 +470,7 @@ public OnPlayerSpawn(playerid) {
         PlayerInfo[playerid][pTimeout] = 0;
 
         GameTextForPlayer(playerid, "~r~crashed. ~w~returning to last position", 1000, 1);
+        StopAudioStreamForPlayer(playerid);
         return 1;
     }
     if(PlayerInfo[playerid][pSpectating] != INVALID_PLAYER_ID)
@@ -479,6 +480,7 @@ public OnPlayerSpawn(playerid) {
 
         SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
         PlayerInfo[playerid][pSpectating] = INVALID_PLAYER_ID;
+        StopAudioStreamForPlayer(playerid);
         return 1;
     }
     switch (PlayerInfo[playerid][pSpawnPoint]) {

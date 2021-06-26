@@ -1430,6 +1430,145 @@ CMD:hood(playerid, params[])
 	return 1;
 }
 
+alias:rollwindow("rw")
+CMD:rollwindow(playerid, params[])
+{
+	if (!IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GRAD2, "คุณต้องอยู่ในพาหนะเพื่อใช้สิ่งนี้ !");
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+	if (!IsDoorVehicle(vehicleid)) return SendClientMessage(playerid, COLOR_GRAD2, "พาหนะนี้ไม่มีหน้าต่าง");
+
+	new item[16];
+
+	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	{
+	  	if(sscanf(params, "s[32]", item)) {
+	  	    SendClientMessage(playerid, COLOR_LIGHTRED, "[ ! ]"EMBED_WHITE" TIP: เมื่อเป็นคนขับ คุณสามารถระบุหน้าต่างที่จะเปิดได้");
+			SendClientMessage(playerid, COLOR_LIGHTRED, "การใช้: "EMBED_WHITE"/rollwindow [all/frontleft(fl)/frontright(fr)/rearleft(rl)/rearright(rr)]");
+		}
+		else
+		{
+			new wdriver, wpassenger, wbackleft, wbackright;
+			GetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, wbackleft, wbackright);
+
+			if(strcmp(item, "all", true) == 0)
+			{
+			    if(wdriver == VEHICLE_PARAMS_OFF)
+			    {
+					SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาขึ้น", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, 1, 1, 1, 1);
+				}
+				else if(wdriver == VEHICLE_PARAMS_ON || wdriver == VEHICLE_PARAMS_UNSET)
+				{
+		    		SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาลง", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, 0, 0, 0, 0);
+				}
+			}
+			if(strcmp(item, "frontleft", true) == 0 || strcmp(item, "fl", true) == 0)
+			{
+			    if(wdriver == VEHICLE_PARAMS_OFF)
+			    {
+					SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาขึ้น", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, 1, wpassenger, wbackleft, wbackright);
+				}
+				else if(wdriver == VEHICLE_PARAMS_ON || wdriver == VEHICLE_PARAMS_UNSET)
+				{
+		    		SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาลง", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, 0, wpassenger, wbackleft, wbackright);
+				}
+			}
+			if(strcmp(item, "frontright", true) == 0 || strcmp(item, "fr", true) == 0)
+			{
+			    if(wpassenger == VEHICLE_PARAMS_OFF)
+			    {
+					SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาขึ้น", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, wdriver, 1, wbackleft, wbackright);
+				}
+				else if(wpassenger == VEHICLE_PARAMS_ON || wpassenger == VEHICLE_PARAMS_UNSET)
+				{
+					SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาลง", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, wdriver, 0, wbackleft, wbackright);
+				}
+			}
+			if(strcmp(item, "rearleft", true) == 0 || strcmp(item, "rl", true) == 0)
+			{
+	      		if(wbackleft == VEHICLE_PARAMS_OFF)
+			    {
+					SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาขึ้น", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, 1, wbackright);
+				}
+				else if(wbackleft == VEHICLE_PARAMS_ON || wbackleft == VEHICLE_PARAMS_UNSET)
+				{
+					SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาลง", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, 0, wbackright);
+				}
+			}
+			if(strcmp(item, "rearright", true) == 0 || strcmp(item, "rr", true) == 0)
+			{
+			    if(wbackright == VEHICLE_PARAMS_OFF)
+			    {
+					SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาขึ้น", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, wbackleft, 1);
+				}
+				else if(wbackright == VEHICLE_PARAMS_ON || wbackright == VEHICLE_PARAMS_UNSET)
+				{
+					SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาลง", ReturnRealName(playerid));
+					SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, wbackleft, 0);
+				}
+			}
+		}
+	}
+	else if(GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)
+	{
+		new iSeat = GetPlayerVehicleSeat(playerid);
+		new wdriver, wpassenger, wbackleft, wbackright;
+		GetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, wbackleft, wbackright);
+
+		if(iSeat == 128) return SendClientMessage(playerid, COLOR_LIGHTRED, "เกิดข้อผิดพลาดเกี่ยวกับหมายเลขที่นั่ง");
+
+		if(iSeat == 1)
+		{
+			if(wpassenger == VEHICLE_PARAMS_OFF)
+			{
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาขึ้น", ReturnRealName(playerid));
+				SetVehicleParamsCarWindows(vehicleid, wdriver, 1, wbackleft, wbackright);
+			}
+			else if(wpassenger == VEHICLE_PARAMS_ON || wpassenger == VEHICLE_PARAMS_UNSET)
+			{
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาลง", ReturnRealName(playerid));
+				SetVehicleParamsCarWindows(vehicleid, wdriver, 0, wbackleft, wbackright);
+			}
+		}
+		else if(iSeat == 2)
+		{
+			if(wbackleft == VEHICLE_PARAMS_OFF)
+			{
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาขึ้น", ReturnRealName(playerid));
+				SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, 1, wbackright);
+			}
+			else if(wbackleft == VEHICLE_PARAMS_ON || wbackleft == VEHICLE_PARAMS_UNSET)
+			{
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาลง", ReturnRealName(playerid));
+				SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, 0, wbackright);
+			}
+		}
+		else if(iSeat == 3)
+		{
+			if(wbackright == VEHICLE_PARAMS_OFF)
+			{
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาขึ้น", ReturnRealName(playerid));
+				SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, wbackleft, 1);
+			}
+			else if(wbackright == VEHICLE_PARAMS_ON || wbackright == VEHICLE_PARAMS_UNSET)
+			{
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s เลื่อนหน้าต่างของเขาลง", ReturnRealName(playerid));
+				SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, wbackleft, 0);
+			}
+		}
+	}
+	return 1;
+}
+
 stock ShowVehicleList(playerid)
 {
 	new thread[MAX_STRING];
@@ -2191,4 +2330,19 @@ IsPlayerInRangeOfVehicle(playerid, vehicleid, Float: radius) {
 
 	GetVehiclePos(vehicleid, Floats[0], Floats[1], Floats[2]);
 	return IsPlayerInRangeOfPoint(playerid, radius, Floats[0], Floats[1], Floats[2]);
+}
+
+IsDoorVehicle(vehicleid)
+{
+	switch (GetVehicleModel(vehicleid)) {
+		case 400..424, 426..429, 431..440, 442..445, 451, 455, 456, 458, 459, 466, 467, 470, 474, 475:
+		    return 1;
+
+		case 477..480, 482, 483, 486, 489, 490..492, 494..496, 498..500, 502..508, 514..518, 524..529, 533..536:
+		    return 1;
+
+		case 540..547, 549..552, 554..562, 565..568, 573, 575, 576, 578..580, 582, 585, 587..589, 596..605, 609:
+			return 1;
+	}
+	return 0;
 }

@@ -42,6 +42,10 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     }
     if(itemid == 5)
     {
+        if(PlayerInfo[playerid][pCigare] >= 20)
+            return SendErrorMessage(playerid, "คุณมีบุหรี่เต็มแล้ว");
+
+
         PlayerInfo[playerid][pCigare]+= 20;
     }
     

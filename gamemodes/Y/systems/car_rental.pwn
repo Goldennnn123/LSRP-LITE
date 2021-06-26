@@ -101,7 +101,6 @@ CMD:rentvehicle(playerid)
 			if(PlayerInfo[playerid][pCash] >= cost)
 			{
 			    RentCarKey[playerid] = GetPlayerVehicleID(playerid);
-			    PlayerInfo[playerid][pCash] -= cost;
 				GiveMoney(playerid, -cost);
 
 				SendClientMessage(playerid,COLOR_GREEN,"คุณได้เช่ายานพาหนะ (/unrentvehicle เพื่อเลิกเช่า)");

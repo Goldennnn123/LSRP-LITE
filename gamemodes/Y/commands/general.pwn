@@ -309,7 +309,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = IsPlayerNearHouse(playerid);
 
-		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] || PlayerInfo[playerid][pAdminDuty])
+		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pAdminDuty])
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของบ้านหลังนี้");
 
 		if(HouseInfo[id][HouseLock])
@@ -1472,8 +1472,18 @@ CMD:smoke(playerid, params[])
 
 	switch(gesture)
 	{
-		case 1: ApplyAnimation(playerid,"SMOKING","M_smk_in",4.1, 0, 1, 1, 1, 1, 1);
-		case 2: ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 0, 1, 1, 1, 1, 1);
+		case 1: 
+		{
+			ApplyAnimation(playerid,"SMOKING","M_smk_in",4.1, 0, 1, 1, 1, 1, 1);
+			PlayerInfo[playerid][pCigare]--;
+			SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "* %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
+		}
+		case 2: 
+		{
+			ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 0, 1, 1, 1, 1, 1);
+			PlayerInfo[playerid][pCigare]--;
+			SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "* %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
+		}
 		default: return SendUsageMessage(playerid,"/smoke [1-2]");
 	}
     return 1;

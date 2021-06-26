@@ -781,6 +781,7 @@ stock GiveMoney(playerid, amount)
 {
 	PlayerInfo[playerid][pCash] += amount;
 	GivePlayerMoney(playerid, amount);
+	CharacterSave(playerid);
 	
 	new string[128]; 
 	

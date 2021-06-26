@@ -593,7 +593,7 @@ Dialog:D_BUYCOMPUTER(playerid, response, listitem, inputtext[])
             new Price = PlayerSelectCom[playerid][p_SelePrice] - PlayerInfo[playerid][pCash];
             new money = PlayerSelectCom[playerid][p_SelePrice];
 
-            if(PlayerSelectCom[playerid][p_SelePrice] > PlayerInfo[playerid][pCash])
+            if(PlayerInfo[playerid][pCash] < PlayerSelectCom[playerid][p_SelePrice])
             {
                 ClearSelectBuyComputer(playerid);
                 return SendClientMessageEx(playerid, COLOR_RED, "ERROR: "EMBED_WHITE"คุณมีเงินไมเพียงพอ (ยังขาดีอก $%s)",MoneyFormat(Price));

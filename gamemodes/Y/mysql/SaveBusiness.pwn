@@ -1,60 +1,45 @@
-stock SaveBusiness(id)
+stock SaveBusiness(id, thread = MYSQL_TYPE_THREAD)
 {
     new query[MAX_STRING];
-    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessName = '%e', BusinessOwnerDBID = %i, BusinessType = %i, BusinessEntranceX = %f, BusinessEntranceY = %f, BusinessEntranceZ = %f, BusinessEntranceWorld = %i, BusinessEntranceInterior = %i WHERE BusinessDBID = %i",
-        BusinessInfo[id][BusinessName],
-        BusinessInfo[id][BusinessOwnerDBID],
-        BusinessInfo[id][BusinessType],
-        BusinessInfo[id][BusinessEntrance][0],
-        BusinessInfo[id][BusinessEntrance][1],
-        BusinessInfo[id][BusinessEntrance][2],
-        BusinessInfo[id][BusinessEntranceWorld],
-        BusinessInfo[id][BusinessEntranceInterior],
-        BusinessInfo[id][BusinessDBID]);
-    mysql_tquery(dbCon, query);
+
+    mysql_init("business", "BusinessDBID", BusinessInfo[id][BusinessDBID], thread);
+
+    mysql_str(query, "BusinessName",BusinessInfo[id][BusinessName]);
+    mysql_int(query, "BusinessOwnerDBID",BusinessInfo[id][BusinessOwnerDBID]);
+
+    mysql_int(query, "BusinessType",BusinessInfo[id][BusinessType]);
+    mysql_flo(query, "BusinessEntranceX",BusinessInfo[id][BusinessEntrance][0]);
+    mysql_flo(query, "BusinessEntranceY",BusinessInfo[id][BusinessEntrance][1]);
+    mysql_flo(query, "BusinessEntranceZ",BusinessInfo[id][BusinessEntrance][2]);
+    mysql_int(query, "BusinessEntranceWorld",BusinessInfo[id][BusinessEntranceWorld]);
+    mysql_int(query, "BusinessEntranceInterior",BusinessInfo[id][BusinessEntranceInterior]);
 
 
-    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessInteriorX = %f, BusinessInteriorY = %f, BusinessInteriorZ = %f, BusinessInteriorWorld = %i, BusinessInteriorID = %i WHERE BusinessDBID = %i",
-        BusinessInfo[id][BusinessInterior][0],
-        BusinessInfo[id][BusinessInterior][1],
-        BusinessInfo[id][BusinessInterior][2],
-        BusinessInfo[id][BusinessInteriorWorld],
-        BusinessInfo[id][BusinessInteriorID],
-        BusinessInfo[id][BusinessDBID]);
-    mysql_tquery(dbCon, query);
+    mysql_flo(query, "BusinessInteriorX",BusinessInfo[id][BusinessInterior][0]);
+    mysql_flo(query, "BusinessInteriorY",BusinessInfo[id][BusinessInterior][1]);
+    mysql_flo(query, "BusinessInteriorZ",BusinessInfo[id][BusinessInterior][2]);
+    mysql_int(query, "BusinessInteriorWorld",BusinessInfo[id][BusinessInteriorWorld]);
+    mysql_int(query, "BusinessInteriorID",BusinessInfo[id][BusinessInteriorID]);
 
 
-    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessBankPickupLocX = %f, BusinessBankPickupLocY = %f, BusinessBankPickupLocZ = %f, BusinessBankWorld = %i WHERE BusinessDBID = %i",
-        BusinessInfo[id][BusinessBankPickupLoc][0],
-        BusinessInfo[id][BusinessBankPickupLoc][1],
-        BusinessInfo[id][BusinessBankPickupLoc][2],
-        BusinessInfo[id][BusinessBankWorld],
-        BusinessInfo[id][BusinessDBID]);
-    mysql_tquery(dbCon, query);
+    mysql_flo(query, "BusinessBankPickupLocX",BusinessInfo[id][BusinessBankPickupLoc][0]);
+    mysql_flo(query, "BusinessBankPickupLocY",BusinessInfo[id][BusinessBankPickupLoc][1]);
+    mysql_flo(query, "BusinessBankPickupLocZ",BusinessInfo[id][BusinessBankPickupLoc][2]);
+    mysql_int(query, "BusinessBankWorld",BusinessInfo[id][BusinessBankWorld]);
+    
+    mysql_int(query, "BusinessCash",BusinessInfo[id][BusinessCash]);
+    mysql_int(query, "BusinessPrice",BusinessInfo[id][BusinessPrice]);
+    mysql_int(query, "Businesslevel",BusinessInfo[id][Businesslevel]);
+    mysql_int(query, "BusinessEntrancePrice",BusinessInfo[id][BusinessEntrancePrice]);
 
-    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessCash = %d WHERE BusinessDBID = %i",
-        BusinessInfo[id][BusinessCash],
-        BusinessInfo[id][BusinessDBID]);
-    mysql_tquery(dbCon, query);
 
-    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessPrice = %d,BusinessLevel = %d,BusinessEntrancePrice = %d WHERE BusinessDBID = %i",
-        BusinessInfo[id][BusinessPrice],
-        BusinessInfo[id][Businesslevel],
-        BusinessInfo[id][BusinessEntrancePrice],
-        BusinessInfo[id][BusinessDBID]);
-    mysql_tquery(dbCon, query);
+    mysql_int(query, "BusinessLock",BusinessInfo[id][BusinessLock]);
 
-    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessLock = %d, WHERE BusinessDBID = %i",
-        BusinessInfo[id][BusinessLock],
-        BusinessInfo[id][BusinessDBID]);
-    mysql_tquery(dbCon, query);
+    mysql_int(query, "BusinessS_Cemara",BusinessInfo[id][BusinessS_Cemara]);
+    mysql_int(query, "BusinessS_Mask",BusinessInfo[id][BusinessS_Mask]);
+    mysql_int(query, "BusinessS_Flower",BusinessInfo[id][BusinessS_Flower]);
+    mysql_int(query, "BusinessS_Flower",BusinessInfo[id][BusinessS_Flower]);
 
-    mysql_format(dbCon, query, sizeof(query),"UPDATE business SET BusinessS_Cemara = %d, BusinessS_Mask = %d, BusinessS_Flower = %d WHERE BusinessDBID = %i",
-        BusinessInfo[id][BusinessS_Cemara],
-        BusinessInfo[id][BusinessS_Mask],
-        BusinessInfo[id][BusinessS_Flower],
-        BusinessInfo[id][BusinessDBID]);
-    mysql_tquery(dbCon, query);
-
+    mysql_finish(query);
     return 1;
 }

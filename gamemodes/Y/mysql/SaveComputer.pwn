@@ -1,43 +1,34 @@
-stock SaveComputer(id)
+stock SaveComputer(id, thread = MYSQL_TYPE_THREAD)
 {
-    new query[1000];
+    new query[250], str[120];
 
-    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerOwnerDBID = %d, ComputerSpawn = %d, ComputerHouseDBID = %d WHERE ComputerDBID = %d",
-        ComputerInfo[id][ComputerOwnerDBID],
-        ComputerInfo[id][ComputerSpawn],
-        ComputerInfo[id][ComputerHouseDBID],
-        ComputerInfo[id][ComputerDBID]);
-    mysql_tquery(dbCon, query);
+    mysql_init("computer", "ComputerDBID", ComputerInfo[id][ComputerDBID], thread);
 
-    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerCPU = %d, ComputerRAM = %d, ComputerGPU1 = %d, ComputerGPU2 = %d, ComputerGPU3 = %d, ComputerGPU4 = %d, ComputerGPU5 = %d, ComputerStored = %d WHERE ComputerDBID = %d",
-        ComputerInfo[id][ComputerCPU],
-        ComputerInfo[id][ComputerRAM],
-        ComputerInfo[id][ComputerGPU][0],
-        ComputerInfo[id][ComputerGPU][1],
-        ComputerInfo[id][ComputerGPU][2],
-        ComputerInfo[id][ComputerGPU][3],
-        ComputerInfo[id][ComputerGPU][4],
-        ComputerInfo[id][ComputerStored],
-        ComputerInfo[id][ComputerDBID]);
-    mysql_tquery(dbCon, query);
+    mysql_int(query, "ComputerCPU",ComputerInfo[id][ComputerCPU]);
+    mysql_int(query, "ComputerRAM",ComputerInfo[id][ComputerRAM]);
+
+    mysql_int(query, "ComputerGPU",ComputerInfo[id][ComputerCPU]);
+    mysql_int(query, "ComputerRAM",ComputerInfo[id][ComputerRAM]);
+
+    for(new i = 1; i <= 5; i++)
+    {
+        format(str, sizeof(str), "ComputerGPU%d",i);
+        mysql_int(query, str,ComputerInfo[id][ComputerGPU][i-1]);
+    }
+
+    mysql_int(query, "ComputerStored",ComputerInfo[id][ComputerStored]);
+    mysql_flo(query, "ComputerPosX",ComputerInfo[id][ComputerPos][0]);
+    mysql_flo(query, "ComputerPosY",ComputerInfo[id][ComputerPos][1]);
+    mysql_flo(query, "ComputerPosZ",ComputerInfo[id][ComputerPos][2]);
+    mysql_flo(query, "ComputerPosRX",ComputerInfo[id][ComputerPos][3]);
+    mysql_flo(query, "ComputerPosRY",ComputerInfo[id][ComputerPos][4]);
+    mysql_flo(query, "ComputerPosRZ",ComputerInfo[id][ComputerPos][5]);
 
 
-    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerPosX = %f, ComputerPosY = %f, ComputerPosZ = %f, ComputerPosRX = %f, ComputerPosRY = %f, ComputerPosRZ = %f WHERE ComputerDBID = %d",
-        ComputerInfo[id][ComputerPos][0],
-        ComputerInfo[id][ComputerPos][1],
-        ComputerInfo[id][ComputerPos][2],
-        ComputerInfo[id][ComputerPos][3],
-        ComputerInfo[id][ComputerPos][4],
-        ComputerInfo[id][ComputerPos][5],
-        ComputerInfo[id][ComputerDBID]);
-    mysql_tquery(dbCon, query);
-
-    mysql_format(dbCon, query, sizeof(query), "UPDATE computer SET ComputerPosWorld = %d, ComputerPosInterior = %d, ComputerStartBTC = %d, ComputerBTC = %.5f WHERE ComputerDBID = %d",
-        ComputerInfo[id][ComputerPosWorld],
-        ComputerInfo[id][ComputerPosInterior],
-        ComputerInfo[id][ComputerStartBTC],
-        ComputerInfo[id][ComputerBTC],
-        ComputerInfo[id][ComputerDBID]);
-    mysql_tquery(dbCon, query);
+    mysql_int(query, "ComputerPosWorld",ComputerInfo[id][ComputerPosWorld]);
+    mysql_int(query, "ComputerPosInterior",ComputerInfo[id][ComputerPosInterior]);
+    mysql_int(query, "ComputerStartBTC",ComputerInfo[id][ComputerStartBTC]);
+    mysql_flo(query, "ComputerBTC",ComputerInfo[id][ComputerBTC]);
+    mysql_finish(query);
     return 1;
 }

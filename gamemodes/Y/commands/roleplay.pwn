@@ -4,10 +4,10 @@ CMD:me(playerid, params[])
 	    return SendSyntaxMessage(playerid, "/me [action]");
 
 	if (strlen(params) > 80) {
-	    SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s %.80s", ReturnRealName(playerid,0), params);
-	    SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "... %s", params[80]);
+	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s %.80s", ReturnRealName(playerid,0), params);
+	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "... %s", params[80]);
 	}
-	else SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s %s", ReturnRealName(playerid,0), params);
+	else SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s %s", ReturnRealName(playerid,0), params);
 
 	return 1;
 }
@@ -21,7 +21,7 @@ CMD:ame(playerid, params[])
 	format(string, sizeof(string), "* %s %s", ReturnRealName(playerid,0), params);
 	SendClientMessage(playerid, COLOR_PURPLE, string);
 
- 	SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 30.0, 6000);
+ 	SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 5.0, 6000);
 	return 1;
 }
 
@@ -31,10 +31,10 @@ CMD:do(playerid, params[])
 	    return SendSyntaxMessage(playerid, "/do [action]");
 
 	if (strlen(params) > 80) {
-	    SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %.80s", params);
-	    SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "... %s (( %s ))", params[80],ReturnRealName(playerid,0));
+	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %.80s", params);
+	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "... %s (( %s ))", params[80],ReturnRealName(playerid,0));
 	}
-	else SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s (( %s ))", params, ReturnRealName(playerid,0));
+	else SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s (( %s ))", params, ReturnRealName(playerid,0));
 
 	return 1;
 }

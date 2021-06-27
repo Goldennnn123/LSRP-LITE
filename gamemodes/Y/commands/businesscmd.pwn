@@ -101,6 +101,7 @@ CMD:eat(playerid, params[])
     if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_RESTAURANT)
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ร้านขายอาหาร");
 
+    PlayerInfo[playerid][pGUI] = 5;
     ShowPlayerBuyFood(playerid);
     return 1;
 }
@@ -367,6 +368,13 @@ CMD:changeclothing(playerid, params[])
     strcat(longstr, str);
 
     Dialog_Show(playerid, DIALOG_SKINCLOST_CHANG, DIALOG_STYLE_LIST, "Clothing Skin:", longstr, "ยืนยัน", "ยกเลิก");
+    return 1;
+}
+
+alias:advertisements("ads")
+CMD:advertisements(playerid, params[])
+{
+    
     return 1;
 }
 

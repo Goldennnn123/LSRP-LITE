@@ -1941,14 +1941,6 @@ public Query_LoadPrivateVehicle(playerid)
 				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][j]);
 			}
 			
-			for(new d = 1; d < 5; d++)
-			{
-				format(str, sizeof(str), "VehicleLastDrivers%d", d);
-				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleLastDrivers][d]);
-				
-				format(str, sizeof(str), "VehicleLastPassengers%d", d);
-				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleLastPassengers][d]);
-			}
 			
 			if(VehicleInfo[vehicleid][eVehicleParkInterior] != 0)
 			{
@@ -2104,6 +2096,15 @@ stock IsVehicleOccupied(vehicleid)
 		if(IsPlayerInVehicle(i, vehicleid))return true; 
 	}
 	return false;
+}
+
+public OnVehicleDeath(vehicleid, killerid)
+{
+	VehicleInfo[vehicleid][eVehicleTimesDestroyed]++;
+	VehicleInfo[vehicleid][eVehicleEngine]--;
+	VehicleInfo[vehicleid][eVehicleBattery]--;
+	SaveVehicle(vehicleid);
+    return 1;
 }
 
 forward OnVehicleTow(playerid);

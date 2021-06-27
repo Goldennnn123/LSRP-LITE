@@ -521,7 +521,11 @@ CMD:setskin(playerid, params[])
 	
 	format(str, sizeof(str), "%s ตั้ง 'Skin' ให้ %s เป็น %d.", ReturnName(playerid), ReturnName(playerb), skinid);
 	SendAdminMessage(1, str);
-	CharacterSave(playerb);
+	//CharacterSave(playerb);
+	new query[60], thread = MYSQL_TYPE_THREAD;
+	mysql_init("characters", "char_dbid", PlayerInfo[playerid][pDBID], thread);
+	mysql_int(query, "pLastSkin",skinid);
+	mysql_finish(query);
 	
 	return 1;
 }

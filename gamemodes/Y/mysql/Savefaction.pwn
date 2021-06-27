@@ -10,53 +10,52 @@ stock SaveFactions()
 	return 1;
 }
 
-stock SaveFaction(id)
+stock SaveFaction(id, thread = MYSQL_TYPE_THREAD)
 {
 	if(!FactionInfo[id][eFactionDBID])
 		return 0;
 		
-	new threadSave[256];
-	
-	mysql_format(dbCon, threadSave, sizeof(threadSave), "UPDATE factions SET FactionName = '%e', FactionAbbrev = '%e', FactionJoinRank = %i, FactionAlterRank = %i, FactionChatRank = %i, FactionTowRank = %i, FactionType = %i, FactionChatColor = %i WHERE DBID = %i",
-		FactionInfo[id][eFactionName],
-		FactionInfo[id][eFactionAbbrev],
-		FactionInfo[id][eFactionJoinRank],
-		FactionInfo[id][eFactionAlterRank],
-		FactionInfo[id][eFactionChatRank],
-		FactionInfo[id][eFactionTowRank],
-		FactionInfo[id][eFactionType],
-		FactionInfo[id][eFactionChatColor],
-		FactionInfo[id][eFactionDBID]);
-	mysql_tquery(dbCon, threadSave);
-	
-	mysql_format(dbCon, threadSave, sizeof(threadSave), "UPDATE factions SET FactionSpawnX = %f, FactionSpawnY = %f, FactionSpawnZ = %f, FactionInterior = %i, FactionWorld = %i WHERE DBID = %i",
-		FactionInfo[id][eFactionSpawn][0],
-		FactionInfo[id][eFactionSpawn][1],
-		FactionInfo[id][eFactionSpawn][2],
-		FactionInfo[id][eFactionSpawnInt],
-		FactionInfo[id][eFactionSpawnWorld],
-		FactionInfo[id][eFactionDBID]);
-	mysql_tquery(dbCon, threadSave);
+	new query[250];
 
-	mysql_format(dbCon, threadSave, sizeof(threadSave), "UPDATE factions SET FactionJob = %d WHERE DBID = %i",
-		FactionInfo[id][eFactionJob],
-		FactionInfo[id][eFactionDBID]);
-	mysql_tquery(dbCon, threadSave);
+	mysql_init("factions", "DBID", FactionInfo[id][eFactionDBID], thread);
+
+	mysql_str(query, "FactionName",FactionInfo[id][eFactionName]);
+	mysql_str(query, "FactionAbbrev",FactionInfo[id][eFactionAbbrev]);
+	mysql_int(query, "FactionJoinRank",FactionInfo[id][eFactionJoinRank]);
+	mysql_int(query, "FactionAlterRank",FactionInfo[id][eFactionAlterRank]);
+	mysql_int(query, "FactionChatRank",FactionInfo[id][eFactionChatRank]);
+	mysql_int(query, "FactionTowRank",FactionInfo[id][eFactionTowRank]);
+
+	mysql_int(query, "FactionType",FactionInfo[id][eFactionType]);
+	mysql_int(query, "FactionJob",FactionInfo[id][eFactionJob]);
+
+	mysql_int(query, "FactionChatColor",FactionInfo[id][eFactionChatColor]);
+
+
+	mysql_flo(query, "FactionSpawnX",FactionInfo[id][eFactionSpawn][0]);
+	mysql_flo(query, "FactionSpawnY",FactionInfo[id][eFactionSpawn][1]);
+	mysql_flo(query, "FactionSpawnZ",FactionInfo[id][eFactionSpawn][2]);
+	mysql_int(query, "FactionSpawnWorld",FactionInfo[id][eFactionSpawnWorld]);
+	mysql_int(query, "FactionSpawnInt",FactionInfo[id][eFactionSpawnInt]);
+	mysql_finish(query);
 	return 1;
 }
 
-stock SaveFactionRanks(id)
+stock SaveFactionRanks(id, thread = MYSQL_TYPE_THREAD)
 {
 	if(!FactionInfo[id][eFactionDBID])
 		return 0;
 		
-	new threadSave[256];
-	
+	new query[250], str[10];
+
+	mysql_init("faction_ranks", "factionid", FactionInfo[id][eFactionDBID], thread);
+
 	for(new i = 1; i < MAX_FACTION_RANKS; i++)
 	{
-		mysql_format(dbCon, threadSave, sizeof(threadSave), "UPDATE faction_ranks SET FactionRank%i = '%e' WHERE factionid = %i", i, FactionRanks[id][i], FactionInfo[id][eFactionDBID]); 
-		mysql_tquery(dbCon, threadSave);
+		format(str, sizeof(str), "FactionRank%d",i);
+		mysql_str(query, str,FactionRanks[id][i]);
 	}
 	
+	mysql_finish(query);
 	return 1;
 }

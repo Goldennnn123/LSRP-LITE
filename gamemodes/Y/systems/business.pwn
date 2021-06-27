@@ -1118,97 +1118,101 @@ stock ShowPlayerBuyFood(playerid)
 
 hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
-    if(playertextid == BuyFood[playerid][2])
+    if(PlayerInfo[playerid][pGUI] == 5)
     {
-        for(new f = 0; f <= 12; f++)
+        if(playertextid == BuyFood[playerid][2])
         {
-            PlayerTextDrawDestroy(playerid, BuyFood[playerid][f]);
+            for(new f = 0; f <= 12; f++)
+            {
+                PlayerTextDrawDestroy(playerid, BuyFood[playerid][f]);
+            }
+            CancelSelectTextDraw(playerid);
+            return 1;
         }
-        CancelSelectTextDraw(playerid);
-        return 1;
-    }
-    if(playertextid == BuyFood[playerid][3])
-    {
-        new Float:HP, id = PlayerInfo[playerid][pInsideBusiness];
-        GetPlayerHealth(playerid, HP);
+        if(playertextid == BuyFood[playerid][3])
+        {
+            new Float:HP, id = PlayerInfo[playerid][pInsideBusiness];
+            GetPlayerHealth(playerid, HP);
 
-        if(HP > 100)
-            return SendErrorMessage(playerid, "คุณมีเลือดมากว่า 100");
+            if(HP > 100)
+                return SendErrorMessage(playerid, "คุณมีเลือดมากว่า 100");
 
-        if(HP >= 90)
-        {
-            SetPlayerHealth(playerid, HP+10);
-        }
-        else if(HP >= 85)
-        {
-            SetPlayerHealth(playerid, HP+15);
-        }
-        else
-        {
-            SetPlayerHealth(playerid, HP+15);
-        }
+            if(HP >= 90)
+            {
+                SetPlayerHealth(playerid, HP+10);
+            }
+            else if(HP >= 85)
+            {
+                SetPlayerHealth(playerid, HP+15);
+            }
+            else
+            {
+                SetPlayerHealth(playerid, HP+15);
+            }
 
-        SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $150");
-        GiveMoney(playerid, -150);
-        BusinessInfo[id][BusinessCash] += 150;
-        CharacterSave(playerid);
-        SaveBusiness(id);
-        return 1;
-    }
-    if(playertextid == BuyFood[playerid][4])
-    {
-        new Float:HP, id = PlayerInfo[playerid][pInsideBusiness];
-        GetPlayerHealth(playerid, HP);
-
-        if(HP > 100)
-            return SendErrorMessage(playerid, "คุณมีเลือดมากว่า 100");
-
-        if(HP >= 90)
-        {
-            SetPlayerHealth(playerid, HP+10);
+            SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $150");
+            GiveMoney(playerid, -150);
+            BusinessInfo[id][BusinessCash] += 150;
+            CharacterSave(playerid);
+            SaveBusiness(id);
+            return 1;
         }
-        else if(HP >= 85)
+        if(playertextid == BuyFood[playerid][4])
         {
-            SetPlayerHealth(playerid, HP+15);
-        }
-        else
-        {
-            SetPlayerHealth(playerid, HP+30);
-        }
+            new Float:HP, id = PlayerInfo[playerid][pInsideBusiness];
+            GetPlayerHealth(playerid, HP);
 
-        SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $300");
-        GiveMoney(playerid, -300);
-        BusinessInfo[id][BusinessCash] += 300;
-        CharacterSave(playerid);
-        SaveBusiness(id);
-        return 1;
-    }
-    if(playertextid == BuyFood[playerid][5])
-    {
-        new Float:HP, id = PlayerInfo[playerid][pInsideBusiness];
-        GetPlayerHealth(playerid, HP);
+            if(HP > 100)
+                return SendErrorMessage(playerid, "คุณมีเลือดมากว่า 100");
 
-        if(HP > 100)
-            return SendErrorMessage(playerid, "คุณมีเลือดมากว่า 100");
+            if(HP >= 90)
+            {
+                SetPlayerHealth(playerid, HP+10);
+            }
+            else if(HP >= 85)
+            {
+                SetPlayerHealth(playerid, HP+15);
+            }
+            else
+            {
+                SetPlayerHealth(playerid, HP+30);
+            }
 
-        if(HP >= 90)
-        {
-            SetPlayerHealth(playerid, HP+10);
+            SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $300");
+            GiveMoney(playerid, -300);
+            BusinessInfo[id][BusinessCash] += 300;
+            CharacterSave(playerid);
+            SaveBusiness(id);
+            return 1;
         }
-        else if(HP >= 85)
+        if(playertextid == BuyFood[playerid][5])
         {
-            SetPlayerHealth(playerid, HP+15);
-        }
-        else
-        {
-            SetPlayerHealth(playerid, HP+50);
-        }
+            new Float:HP, id = PlayerInfo[playerid][pInsideBusiness];
+            GetPlayerHealth(playerid, HP);
 
-        SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $500");
-        GiveMoney(playerid, -500);
-        BusinessInfo[id][BusinessCash] += 500;
-        CharacterSave(playerid);
-        SaveBusiness(id);
+            if(HP > 100)
+                return SendErrorMessage(playerid, "คุณมีเลือดมากว่า 100");
+
+            if(HP >= 90)
+            {
+                SetPlayerHealth(playerid, HP+10);
+            }
+            else if(HP >= 85)
+            {
+                SetPlayerHealth(playerid, HP+15);
+            }
+            else
+            {
+                SetPlayerHealth(playerid, HP+50);
+            }
+
+            SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $500");
+            GiveMoney(playerid, -500);
+            BusinessInfo[id][BusinessCash] += 500;
+            CharacterSave(playerid);
+            SaveBusiness(id);
+            return 1;
+        }
         return 1;
     }
     return 1;

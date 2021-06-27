@@ -56,7 +56,8 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     GiveMoney(playerid, -price);
     new Float:result_price = price * 0.03;
 
-    BusinessInfo[id][BusinessCash] += price - result_price;
+    BusinessInfo[id][BusinessCash] += price - floatround(result_price, floatround_round);
+    SaveBusiness(id);
     CharacterSave(playerid);
     return true;
 }

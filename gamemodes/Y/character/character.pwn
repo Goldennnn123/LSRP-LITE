@@ -255,244 +255,6 @@ ShowCharacterSelection(playerid) {
     characterPickTime[playerid] = 1;
 }
 
-CharacterSave(playerid, force = false)
-{
-	if(BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED) || force)
-	{
-		new query[MAX_STRING];
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pWhitelist = %i WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pWhitelist],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastSkin = %i, pAdmin = %i, pTester = %i, pTutorial = %i, pFaction = %i, pCash = %i, pLevel = %i, pExp = %i, pSpawnPoint = %i,pSpawnHouse = %i WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pLastSkin],
-			PlayerInfo[playerid][pAdmin],
-			PlayerInfo[playerid][pTester],
-			PlayerInfo[playerid][pTutorial],
-			PlayerInfo[playerid][pFaction],
-			PlayerInfo[playerid][pCash],
-			PlayerInfo[playerid][pLevel],
-			PlayerInfo[playerid][pExp],
-			PlayerInfo[playerid][pSpawnPoint],
-			PlayerInfo[playerid][pSpawnHouse],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pHealth = %f, pArmour = %f WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pHealth],
-			PlayerInfo[playerid][pArmour],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		if (PlayerInfo[playerid][pTimeout]) {
-			/* 
-				บันทึกข้อมูลที่ต้องใช้หลังจากเข้าเกม
-			*/
-			GetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
-			GetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
-
-			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-
-			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
-			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
-
-			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastPosX = %f, pLastPosY = %f, pLastPosZ = %f, pLastInterior = %i, pLastWorld = %i WHERE char_dbid = %i",	
-				PlayerInfo[playerid][pLastPosX],
-				PlayerInfo[playerid][pLastPosY],
-				PlayerInfo[playerid][pLastPosZ],
-				PlayerInfo[playerid][pLastInterior],
-				PlayerInfo[playerid][pLastWorld],
-				PlayerInfo[playerid][pDBID]);
-			mysql_tquery(dbCon, query);
-			
-			printf("[%d] %s: save last data", playerid, ReturnPlayerName(playerid));
-		}
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pTimeout = %i WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pTimeout],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pBank = %i WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pBank],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pFactionRank = %i WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pFactionRank],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pHasRadio = %i, pMainSlot = %i WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pFactionRank],
-			PlayerInfo[playerid][pMainSlot],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pJob = %i, pSideJob = %i, pCareer = %i, pJobRank = %i, pPaycheck = %i, pFishes = %i WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pJob],
-			PlayerInfo[playerid][pSideJob],
-			PlayerInfo[playerid][pCareer],
-			PlayerInfo[playerid][pJobRank],
-			PlayerInfo[playerid][pPaycheck],
-			PlayerInfo[playerid][pFishes],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE masters SET forum_name = '%e', active_ip = '%e' WHERE acc_dbid = %i",	
-			e_pAccountData[playerid][mForumName],
-			PlayerInfo[playerid][pActiveIP],
-			e_pAccountData[playerid][mDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pAdminjailed = %i, pAdminjailTime = %i WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pAdminjailed],
-			PlayerInfo[playerid][pAdminjailTime],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pLastOnline = '%e', pTimeplayed = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pLastOnline],
-			PlayerInfo[playerid][pTimeplayed],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pPhone = %d, pPhonePower = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pPhone],
-			PlayerInfo[playerid][pPhonePower],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-
-		for(new i = 0; i < 13; i++)
-		{
-			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pWeapon%d = %i, pWeaponsAmmo%d = %i WHERE char_dbid = %i",
-				i,
-				PlayerInfo[playerid][pWeapons][i],
-				i,
-				PlayerInfo[playerid][pWeaponsAmmo][i],
-				PlayerInfo[playerid][pDBID]);
-			mysql_tquery(dbCon, query);
-		}
-
-		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
-		{
-			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pOwnedVehicles%d = %i WHERE char_dbid = %i", i, PlayerInfo[playerid][pOwnedVehicles][i], PlayerInfo[playerid][pDBID]);
-			mysql_tquery(dbCon, query);
-		}
-
-		for(new i = 1; i < 3; i++)
-		{
-			mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pRadio%i = %i WHERE char_dbid = %i", 
-				i, 
-				PlayerInfo[playerid][pRadio][i],
-				PlayerInfo[playerid][pDBID]);
-			mysql_tquery(dbCon, query);
-		}
-
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pDriverLicense = %d, pDriverLicenseWarn = %d,pDriverLicenseRevoke = %d,pDriverLicenseSus = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pDriverLicense],
-			PlayerInfo[playerid][pDriverLicenseWarn],
-			PlayerInfo[playerid][pDriverLicenseRevoke],
-			PlayerInfo[playerid][pDriverLicenseSus],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pWeaponLicense = %d, pWeaponLicenseType = %d,pWeaponLicenseRevoke = %d, pDriverLicenseSus = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pWeaponLicense],
-			PlayerInfo[playerid][pWeaponLicenseType],
-			PlayerInfo[playerid][pWeaponLicenseRevoke],
-			PlayerInfo[playerid][pWeaponLicenseSus],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pPilotLicense = %d, pPilotLicenseBlacklist = %d,pPilotLicenseRevoke = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pPilotLicense],
-			PlayerInfo[playerid][pPilotLicenseBlacklist],
-			PlayerInfo[playerid][pPilotLicenseRevoke],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pMedicLicense = %d, pMedicLicenseRevoke = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pMedicLicense],
-			PlayerInfo[playerid][pMedicLicenseRevoke],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pTuckingLicense = %d, pTuckingLicenseWarn = %d,pTuckingLicenseSus = %d, pTuckingLicenseRevoke = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pTuckingLicense],
-			PlayerInfo[playerid][pTuckingLicenseWarn],
-			PlayerInfo[playerid][pTuckingLicenseSus],
-			PlayerInfo[playerid][pTuckingLicenseRevoke],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pBadge = %d, pHasRadio = %d, pSaving = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pBadge],
-			PlayerInfo[playerid][pHasRadio],
-			PlayerInfo[playerid][pSaving],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pJobExp = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pJobExp],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pCPU = %d, pGPU = %d, pRAM = %d, pStored = %d, pBTC = %.5f WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pCPU],
-			PlayerInfo[playerid][pGPU],
-			PlayerInfo[playerid][pRAM],
-			PlayerInfo[playerid][pStored],
-			PlayerInfo[playerid][pBTC],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pArrest = %d, pArrestBy = %d, pArrestTime = %d, pArrestRoom = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pArrest],
-			PlayerInfo[playerid][pArrestBy],
-			PlayerInfo[playerid][pArrestTime],
-			PlayerInfo[playerid][pArrestRoom],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pSkinClothing1 = %d, pSkinClothing2 = %d, pSkinClothing3 = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pSkinClothing][0],
-			PlayerInfo[playerid][pSkinClothing][1],
-			PlayerInfo[playerid][pSkinClothing][2],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pDonater = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pDonater],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pOre = %d, pCoal = %d, pIron = %d, pCopper = %d, pKNO3 = %d WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pOre],
-			PlayerInfo[playerid][pCoal],
-			PlayerInfo[playerid][pIron],
-			PlayerInfo[playerid][pCopper],
-			PlayerInfo[playerid][pKNO3],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_format(dbCon, query, sizeof(query), "UPDATE characters SET pCigare = %i WHERE char_dbid = %i",	
-			PlayerInfo[playerid][pCigare],
-			PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query);
-
-		mysql_finish(query);
-	}
-	return 1;
-}
 
 forward Query_LoadCharacter(playerid);
 public Query_LoadCharacter(playerid)
@@ -635,8 +397,8 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pWhitelist",PlayerInfo[playerid][pWhitelist]);
 	cache_get_value_name_int(0, "pCigare",PlayerInfo[playerid][pCigare]);
 
-	
-
+	cache_get_value_name_int(0, "pVehicleSpawned",PlayerInfo[playerid][pVehicleSpawned]);
+	cache_get_value_name_int(0, "pVehicleSpawnedID",PlayerInfo[playerid][pVehicleSpawnedID]);
 	return LoadCharacter(playerid);
 }
 
@@ -663,6 +425,7 @@ public LoadCharacter(playerid)
 		SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}ตัวละครของคุณยังไม่ได้รับการยืนยัน โปรดกรอกใบสมัครของคุณให้เรียบร้อยก่อนที่จะเข้าเล่นเล่นเกม");
 		SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}หากคุณกรอกใบสมัครเรียบร้อยแล้วให้คุณเรียบร้อยแล้วให้คุณเข้ามายืนยันใบสมัครของคุณในห้อง ดิสคอร์ด");
 		SendClientMessageEx(playerid, COLOR_YELLOW, "INFO: {FFFFFF}ชื่อ UCP: %s รหัสตัวละคร: %d", e_pAccountData[playerid][mAccName], PlayerInfo[playerid][pDBID]);
+		ResetPlayerCharacter(playerid);
 		KickEx(playerid);
 		return 1;
 	}
@@ -793,6 +556,149 @@ stock GiveMoney(playerid, amount)
 		format(string, sizeof(string), "~g~$%d", amount);
 		GameTextForPlayer(playerid, string, 2000, 1);
 	}
+	return 1;
+}
+
+
+stock ResetPlayerCharacter(playerid)
+{
+	gPlayerBitFlag[playerid] = PlayerFlags:0;
+    format(e_pAccountData[playerid][mForumName], e_pAccountData[playerid][mForumName], "");
+
+	PlayerInfo[playerid][pDBID] = 0;
+    PlayerInfo[playerid][pCMDPermission] = CMD_PLAYER;
+    PlayerInfo[playerid][pAdmin] = CMD_PLAYER;
+
+
+    PlayerInfo[playerid][pJob] = 0;
+    PlayerInfo[playerid][pSideJob] = 0;
+    PlayerInfo[playerid][pCareer] = 0;
+    PlayerInfo[playerid][pJobRank] = 0;
+    PlayerInfo[playerid][pJobExp] = 0;
+
+    PlayerInfo[playerid][pPaycheck] = 0;
+    PlayerInfo[playerid][pFishes] = 0;
+    PlayerInfo[playerid][pCash] = 0;
+    PlayerInfo[playerid][pBank] = 0;
+    PlayerInfo[playerid][pFaction] = 0;
+    PlayerInfo[playerid][pFactionRank] = 0;
+    PlayerInfo[playerid][pLevel] = 0;
+    PlayerInfo[playerid][pExp] = 0;
+    PlayerInfo[playerid][pLastSkin] = 264;
+    PlayerInfo[playerid][pTutorial] = false;
+
+    PlayerInfo[playerid][pLastInterior] = 
+    PlayerInfo[playerid][pLastWorld] = 
+    PlayerInfo[playerid][pTimeout] = 
+    PlayerInfo[playerid][pSpawnPoint] = 
+    PlayerInfo[playerid][pSpawnHouse] = 0;
+
+    PlayerInfo[playerid][pHealth] = 100.0;
+    PlayerInfo[playerid][pArmour] = 
+    PlayerInfo[playerid][pLastPosX] = 
+    PlayerInfo[playerid][pLastPosY] = 
+    PlayerInfo[playerid][pLastPosZ] = 0.0;
+
+    PlayerInfo[playerid][pUnscrambleID] = 0;
+    PlayerInfo[playerid][pUnscrambling] = false;
+	PlayerInfo[playerid][pScrambleFailed] = 0;
+	PlayerInfo[playerid][pScrambleSuccess] = 0; 
+
+    PlayerInfo[playerid][pDuplicateKey] = 0;
+    PlayerInfo[playerid][pUnscramblerTime] = 0;
+
+    PlayerInfo[playerid][pInsideProperty] = 0;
+    PlayerInfo[playerid][pInsideBusiness] = 0;
+
+    PlayerInfo[playerid][pAdminjailed] = false;
+	PlayerInfo[playerid][pAdminjailTime] = 0;
+
+    PlayerInfo[playerid][pSpectating] = INVALID_PLAYER_ID;
+
+    PlayerInfo[playerid][pMaskID][0] = 200000+random(199991);
+	PlayerInfo[playerid][pMaskID][1] = 40+random(59);
+	PlayerInfo[playerid][pMasked] = false;
+    PlayerInfo[playerid][pHasMask] = false;
+
+    PlayerInfo[playerid][pWeaponsSpawned] = false;
+	
+	for(new i = 0; i < 13; i++){
+		PlayerInfo[playerid][pWeapons][i] = 0;
+		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
+	}
+
+    for(new i = 1; i < MAX_PLAYER_VEHICLES; i++) {
+		PlayerInfo[playerid][pOwnedVehicles][i] = 0; 
+	}
+
+    PlayerInfo[playerid][pHasRadio] = false;
+	PlayerInfo[playerid][pMainSlot] = 1; 
+	
+	for(new i = 1; i < 3; i++){
+		PlayerInfo[playerid][pRadio][i] = 0;
+	}
+
+    PlayerInfo[playerid][pLastDamagetime] = 0;
+    PlayerInfo[playerid][pDeathFix] = 0;
+    PlayerInfo[playerid][pRespawnTime] = 0;
+    
+
+    PlayerInfo[playerid][pPhone] = 0;
+    PlayerInfo[playerid][pPhonePower] = 100;
+    PlayerInfo[playerid][pGUI] = 0;
+    PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
+    PlayerInfo[playerid][pCalling] = 0;
+    PlayerInfo[playerid][pPhonespeaker] = false;
+
+    PlayerInfo[playerid][pDriverLicense] = false;
+    PlayerInfo[playerid][pDriverLicenseWarn] = 0;
+    PlayerInfo[playerid][pDriverLicenseRevoke] = false;
+    PlayerInfo[playerid][pDriverLicenseSus] = false;
+
+    PlayerInfo[playerid][pWeaponLicense] = false;
+    PlayerInfo[playerid][pWeaponLicenseType] = 0;
+    PlayerInfo[playerid][pWeaponLicenseRevoke] = false;
+    PlayerInfo[playerid][pWeaponLicenseSus] = false;
+
+    PlayerInfo[playerid][pPilotLicense] = false;
+    PlayerInfo[playerid][pPilotLicenseBlacklist] = false;
+    PlayerInfo[playerid][pPilotLicenseRevoke] = false;
+
+    PlayerInfo[playerid][pMedicLicense] = false;
+    PlayerInfo[playerid][pMedicLicenseRevoke] = false;
+
+    PlayerInfo[playerid][pTuckingLicense] = false;
+    PlayerInfo[playerid][pTuckingLicenseRevoke] = false;
+    PlayerInfo[playerid][pTuckingLicenseWarn] = 0;
+    PlayerInfo[playerid][pTuckingLicenseSus] = false;
+    PlayerInfo[playerid][pFactionChat] = false;
+    PlayerInfo[playerid][pFactionInvite] = 0;
+	PlayerInfo[playerid][pFactionInvitedBy] = INVALID_PLAYER_ID;
+
+    PlayerInfo[playerid][pHandcuffed] = false;
+
+    PlayerInfo[playerid][pCPU] = 0;
+    PlayerInfo[playerid][pGPU] = 0;
+    PlayerInfo[playerid][pRAM] = 0;
+    PlayerInfo[playerid][pStored] = 0;
+
+    PlayerInfo[playerid][pArrest] = false;
+    PlayerInfo[playerid][pArrestRoom] = 0;
+    PlayerInfo[playerid][pArrestBy] = 0;
+    PlayerInfo[playerid][pArrestTime] = 0;
+    PlayerInfo[playerid][pDonater] = 0;
+	PlayerInfo[playerid][pSkinClothing][0] = 0;
+	PlayerInfo[playerid][pSkinClothing][1] = 0;
+	PlayerInfo[playerid][pSkinClothing][2] = 0;
+    PlayerInfo[playerid][pWhitelist] = false;
+    PlayerInfo[playerid][pTester] = 0;
+	// vehicles.pwn
+	gLastCar[playerid] = 0;
+	gPassengerCar[playerid] = 0;
+
+    SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
+
+    tToAccept[playerid] = INVALID_PLAYER_ID;
 	return 1;
 }
 

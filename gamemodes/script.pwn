@@ -98,6 +98,7 @@ new globalWeather = 2;
 #include "Y/jobs/mechanic.pwn"
 #include "Y/jobs/miner.pwn"
 
+#include "Y/mysql/CharacterSave.pwn"
 #include "Y/mysql/SaveVehicle.pwn"
 #include "Y/mysql/Savefaction.pwn"
 #include "Y/mysql/SaveHouse.pwn"
@@ -227,6 +228,7 @@ public OnPlayerConnect(playerid) {
 
     // เคลียร์ตัวแปรผู้เล่น
     gPlayerBitFlag[playerid] = PlayerFlags:0;
+    format(e_pAccountData[playerid][mForumName], e_pAccountData[playerid][mForumName], "");
 
     PlayerInfo[playerid][pCMDPermission] = CMD_PLAYER;
     PlayerInfo[playerid][pAdmin] = CMD_PLAYER;
@@ -400,6 +402,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 	if(reason == 0) {
 		PlayerInfo[playerid][pTimeout] = gettime();
     }
+    
 
     new playerTime = NetStats_GetConnectedTime(playerid);
 	new secondsConnection = (playerTime % (1000*60*60)) / (1000*60);

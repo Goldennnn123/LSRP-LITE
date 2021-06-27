@@ -1,26 +1,18 @@
-stock SaveFacVehicle(vehicleid)
+stock SaveFacVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 {
-	new query[MAX_STRING];
+	new query[250];
 
-    mysql_format(dbCon, query, sizeof(query), "UPDATE vehicle_faction SET VehicleModel = %d, VehicleFaction = %d WHERE VehicleDBID = %i",
-		VehicleInfo[vehicleid][eVehicleModel],
-		VehicleInfo[vehicleid][eVehicleFaction],
-		VehicleInfo[vehicleid][eVehicleDBID]);
-	mysql_tquery(dbCon, query);
+	mysql_init("vehicle_faction", "VehicleDBID", VehicleInfo[vehicleid][eVehicleDBID], thread);
 
-    mysql_format(dbCon, query, sizeof(query), "UPDATE vehicle_faction SET VehicleParkPosX = %f, VehicleParkPosY = %f, VehicleParkPosZ = %f, VehicleParkPosA = %f WHERE VehicleDBID = %i",
-		VehicleInfo[vehicleid][eVehicleParkPos][0],
-		VehicleInfo[vehicleid][eVehicleParkPos][1],
-        VehicleInfo[vehicleid][eVehicleParkPos][2],
-        VehicleInfo[vehicleid][eVehicleParkPos][3],
-		VehicleInfo[vehicleid][eVehicleDBID]);
-	mysql_tquery(dbCon, query);
+	mysql_int(query, "VehicleModel",VehicleInfo[vehicleid][eVehicleModel]);
+	mysql_int(query, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
 
-    mysql_format(dbCon, query, sizeof(query), "UPDATE vehicle_faction SET VehicleColor1 = %d, VehicleColor2 = %d WHERE VehicleDBID = %i",
-		VehicleInfo[vehicleid][eVehicleColor1],
-		VehicleInfo[vehicleid][eVehicleColor2],
-		VehicleInfo[vehicleid][eVehicleDBID]);
-	mysql_tquery(dbCon, query);
+	mysql_flo(query, "VehicleParkPosX",VehicleInfo[vehicleid][eVehicleParkPos][0]);
+	mysql_flo(query, "VehicleParkPosY",VehicleInfo[vehicleid][eVehicleParkPos][1]);
+	mysql_flo(query, "VehicleParkPosZ",VehicleInfo[vehicleid][eVehicleParkPos][2]);
 
+	mysql_int(query, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);
+	mysql_int(query, "VehicleColor2",VehicleInfo[vehicleid][eVehicleColor2]);
+	mysql_finish(query);
     return 1;
 }

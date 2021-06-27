@@ -136,14 +136,14 @@ stock ShowPhoneBook(playerid)
         format(str, sizeof(str), "%s: %d\n",PhoneInfo[l][PhoneName], PhoneInfo[l][PhoneNumber]);
         strcat(str_long, str);
 
-        format(str, sizeof(str), "จัดการรายชื่อ\n");
-        strcat(str_long, str);
-
         format(str_p, sizeof(str_p), "%d",Phoneid);
         SetPVarInt(playerid, str_p, l);
 
         Phoneid++;
     }
+
+    format(str, sizeof(str), "จัดการรายชื่อ\n");
+    strcat(str_long, str);
 
     if(!Phoneid)
     {
@@ -163,7 +163,32 @@ Dialog:DIALOG_PHONEBOOK_LIST(playerid, response, listitem, inputtext[])
     
     switch(listitem)
     {
-        case 0: return Dialog_Show(playerid, DIALOG_ADD_PHONEBOOK, DIALOG_STYLE_INPUT, "เพื่มรายชื่อผู้ติดต่อ", "เพื่มรายชื่อผู้ติดต่อใหม่ของคุณ", "ยืนยัน", "ยกเลิก");
+        case 0: 
+        {
+            new Phoneid;
+            for(new l = 0; l < MAX_PHONEBOOK; l++)
+            {
+                if(!PhoneInfo[l][PhoneDBID])
+                    continue;
+                    
+                if(PhoneInfo[l][PhoneOwnerDBID] != PlayerInfo[playerid][pDBID])
+                    continue;
+
+                Phoneid++;
+            }
+
+            if(Phoneid >= 3)
+            {
+                if(PlayerInfo[playerid][pDonater] < 1)
+                {
+                    ShowPhoneBook(playerid);
+                    SendErrorMessage(playerid, "คุณไม่สามารถเพิ่มเบอร์รายชื่อผู้ติดต่อของคุณมากกว่านี้ได้เนื่องจากคุณไม่ใช่ Donter ระบบ Copper");
+                    return 1;
+                }
+            }
+
+            Dialog_Show(playerid, DIALOG_ADD_PHONEBOOK, DIALOG_STYLE_INPUT, "เพื่มรายชื่อผู้ติดต่อ", "เพื่มรายชื่อผู้ติดต่อใหม่ของคุณ", "ยืนยัน", "ยกเลิก");
+        }
         case 1: return ShowPhoneBook(playerid);
     }
     return 1;
@@ -254,77 +279,26 @@ Dialog:DIALOG_PHONE_SELETE_ID(playerid, response, listitem, inputtext[])
 
             format(str, sizeof(str), "%d",Number);
             callcmd::call(playerid, str);
-            /*foreach(new i : Player)
+            return 1;
+        }
+        case 3:
+        {
+            new Number = PhoneInfo[id][PhoneNumber];
+
+            new playerb = INVALID_PLAYER_ID;
+
+            foreach(new i : Player)
             { 
                 if(PlayerInfo[i][pPhone] != Number)
-                    continue;
-                
+                        continue;
+                            
                 if(PlayerInfo[i][pPhone] == Number)
                 {
                     playerb = i;
                 }
             }
-            
-            format(str, sizeof(str), "* %s กดหมายเลขโทรสัพท์และกดปุ่มโทรออก", ReturnRealName(playerid, 0));
-            SendClientMessageEx(playerid, -1,"คุณกำลังโทรหาเบอร์ %d",Number);
-            SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 3000);
-            SendClientMessage(playerid, COLOR_EMOTE, str); 
-            
-            SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
-            PlayerPlaySound(playerid, 3600, 0.0, 0.0, 0.0);
-            
-            if(Number == 911)
-            {
-                PlayerInfo[playerid][pPhoneline] = 999;
-                PlayerInfo[playerid][pCalling] = 1; 
-            
-                Player911Timer[0][playerid] = SetTimerEx("On911Call", 2000, false, "i", playerid);
-                return 1;
-            }
-
-            if(!IsPlayerConnected(playerb))
-            {
-                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 4500, false, "ii", playerid, 1); 
-                return 1;
-            }
-            
-            if(playerb == INVALID_PLAYER_ID)
-            {
-                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 4500, false, "ii", playerid, 1); 
-                return 1;
-            }
-            
-            if(PlayerInfo[playerb][pPhoneOff])
-            {
-                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 3000, false, "ii", playerid, 2); 
-                return 1;
-            }
-            
-            if(PlayerInfo[playerb][pCalling])
-            {
-                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 3000, false, "ii", playerid, 3);
-                return 1;
-            }
-            
-            if(PlayerInfo[playerb][pPhoneline] != INVALID_PLAYER_ID)
-            {
-                playerPhone[playerid] = SetTimerEx("OnPhoneCall", 3300, false, "ii", playerid, 4);
-                return 1;
-            }
-            
-            SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "* %s มีเสียงกริ๊งโทรสัพท์ดังขึ้น", ReturnRealName(playerb, 0)); 
-            SendClientMessageEx(playerb, COLOR_GREY, "[ ! ] คุณสามารถรับสายโดยการกดปุ่มรับสายโดยการพิมพ์ /p(ickup) เพื่อรับสายเรียกเข้า Phone: %i", PlayerInfo[playerid][pPhone]); 
-            
-            PlayerInfo[playerid][pCalling] = 1; PlayerInfo[playerb][pCalling] = 1;
-            
-            PlayerInfo[playerid][pPhoneline] = playerb;
-            PlayerInfo[playerb][pPhoneline] = playerid; 
-            
-            playerPhone[playerb] = SetTimerEx("OnSuccessCall", 3000, true, "i", playerb);*/ 
-            return 1;
-        }
-        case 3:
-        {
+            PhoneNumberSMS[playerid] = playerb;
+            Dialog_Show(playerid, DIALOG_SEND_MESSAGE, DIALOG_STYLE_INPUT, "กรอกข้อความ:", "กรอกข้อความที่ต้องการจะส่ง SMS ไปหายังเบอร์ปลายทางของคุณ\n"EMBED_LIGHTRED"เสียค่าธรรมเนียมในการส่ง $3", "ยืนยัน", "ยกเลิก");
             return 1;
         }
         case 4:
@@ -1526,7 +1500,7 @@ Dialog:DIALOG_SEND_MESSAGE(playerid, response, listitem, inputtext[])
     }
 
     format(text, 90, "%s", inputtext);
-
+    GiveMoney(playerid, -3);
     SendClientMessageEx(playerb, COLOR_REPORT, "SMS %d: %s", PlayerInfo[playerid][pPhone], text);
     return 1;
 }

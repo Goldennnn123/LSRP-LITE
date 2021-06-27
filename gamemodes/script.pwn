@@ -17,6 +17,9 @@
 #include <YSI_Coding\y_timers>
 #include <YSI_Coding\y_hooks>
 #include <YSI_Coding\y_va>
+#include <YSI_Core\y_utils>
+#include <YSI_Players\y_android>
+#include <YSI_Coding\y_inline>
 
 #include <streamer>      // maddinat0r/sscanf        //aktah/SAMP-CEFixs
 #include <sscanf2>      // maddinat0r/sscanf
@@ -127,7 +130,7 @@ new globalWeather = 2;
 #include "Y/Interior/House2.pwn"
 #include "Y/Interior/pizza.pwn"
 
-#include "Y/Map/slrp.pwn"
+/*#include "Y/Map/slrp.pwn"
 #include "Y/Map/apartment.pwn"
 #include "Y/Map/LSPDHABOR.pwn"
 #include "Y/Map/Police.pwn"
@@ -143,7 +146,7 @@ new globalWeather = 2;
 #include "Y/Map/Gas_station.pwn"
 //#include "Y/Map/LSPDHQINT.pwn"
 //#include "Y/Map/LSPDHQEXT.pwn"
-//#include "Y/Map/LSPDHQINT2.pwn"
+//#include "Y/Map/LSPDHQINT2.pwn"*/
 
 
 #include "Y/systems/car_rental.pwn"

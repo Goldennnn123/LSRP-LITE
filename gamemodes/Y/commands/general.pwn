@@ -1529,6 +1529,23 @@ CMD:helpup(playerid, params[])
 	return 1;
 }
 
+CMD:id(playerid, params[])
+{
+	new tagerid;
+
+	if(tagerid == playerid)
+		return SendErrorMessage(playerid, "ไม่สามารถใช้กับตัวเองได้");
+
+	if(!IsPlayerConnected(tagerid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์");
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+	SendClientMessageEx(playerid, COLOR_GREY, "ชื่อ: %s",ReturnName(tagerid,0));
+	return 1;
+}
+
 forward HelpUpPLayer(playerid, tagerid);
 public HelpUpPLayer(playerid, tagerid)
 {

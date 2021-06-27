@@ -1818,7 +1818,7 @@ CMD:setmoney(playerid, params[])
 	if(IsPlayerLogin(playerb))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
 		
-	ResetPlayerMoney(playerid);
+	ResetPlayerMoney(playerb);
 	PlayerInfo[playerb][pCash] = 0;
 
 	GiveMoney(playerb, value);

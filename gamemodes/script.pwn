@@ -130,6 +130,9 @@ new globalWeather = 2;
 #include "Y/Interior/House2.pwn"
 #include "Y/Interior/pizza.pwn"
 
+
+#include "Y/Map/LSPDHQ.pwn"
+#include "Y/Map/415garage.pwn"
 /*#include "Y/Map/slrp.pwn"
 #include "Y/Map/apartment.pwn"
 #include "Y/Map/LSPDHABOR.pwn"

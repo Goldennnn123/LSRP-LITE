@@ -29,6 +29,7 @@
 #include <Pawn.RakNet>
 #include <cec>
 #include <MenuStore>
+#include <compat>
 
 /*======================================================================================================
 										[Macros]

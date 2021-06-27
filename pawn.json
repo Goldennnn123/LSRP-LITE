@@ -16,7 +16,8 @@
 		"urShadow/Pawn.CMD",
 		"samp-incognito/samp-streamer-plugin",
 		"Coystark/MenuStore",
-		"katursis/Pawn.RakNet"
+		"katursis/Pawn.RakNet",
+		"AGraber/samp-compat"
 	],
 	"local": true,
 	"runtime": {

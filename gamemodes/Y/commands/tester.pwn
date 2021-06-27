@@ -48,8 +48,7 @@ CMD:tduty(playerid, params[])
 		format(str, sizeof(str), "{FF5722}%s {43A047}ได้เริ่มปฏิบัตรหน้าที่เป็นผู้ดูแลระบบแล้วในขณะนี้", ReturnRealName(playerid)); 
 		SendAdminMessage(1, str);
 		
-		SetPlayerColor(playerid, 0x587B95FF);
-		SetPlayerHealth(playerid, 250);
+		SetPlayerColor(playerid, 0x66000000);
 	}
 	
 	return 1; 

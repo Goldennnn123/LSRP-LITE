@@ -411,6 +411,9 @@ CMD:check(playerid,params[])
 			vehicleid = GetNearestVehicle(playerid)
 		;
 
+		if(HasNoEngine(vehicleid))
+			return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะไม่สามารถเก็บของได้"); 
+
 		if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
 			return SendServerMessage(playerid, "รถคันนี้เป็นรถส่วนบุคคนไม่สามารถใช้คำสั่ง /check ได้");
 

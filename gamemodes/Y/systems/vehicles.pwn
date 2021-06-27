@@ -1976,7 +1976,7 @@ public Query_LoadPrivateVehicle(playerid)
 			VehicleInfo[vehicleid][eVehicleAdminSpawn] = false;
 			
 			
-			//LoadVeh(vehicleid);
+			SetVehicleToRespawn(vehicleid); 
 			SetVehicleHp(vehicleid);
 			
 			if(HasNoEngine(playerid))

@@ -17,12 +17,15 @@ hook OnGameModeInit()
 	rental_vehicles[9] = AddStaticVehicleEx(492,1560.5668,-2331.8062,13.3845,269.5466,223,0, -1);
 
 	new engine, lights, alarm, doors, bonnet, boot, objective; 
+
 	for(new c = 0; c < sizeof rental_vehicles; c++) {
     	SetVehicleNumberPlate(rental_vehicles[c], "RENTAL");
+
 		GetVehicleParamsEx(rental_vehicles[c], engine, lights, alarm, doors, bonnet, boot, objective);
-		ToggleVehicleEngine(rental_vehicles[c], false);
+		ToggleVehicleEngine(rental_vehicles[c], false); VehicleInfo[rental_vehicles[c]][eVehicleEngineStatus] = false;
+
 		VehicleInfo[rental_vehicles[c]][eVehicleLocked] = false;
-		SetVehicleParamsEx(rental_vehicles[c], engine, lights, alarm, false, bonnet, boot, objective);
+		SetVehicleParamsEx(rental_vehicles[c], false, lights, alarm, false, bonnet, boot, objective);
 		ResetVehicleVars(rental_vehicles[c]);
 	}
 

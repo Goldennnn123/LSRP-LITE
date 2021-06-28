@@ -434,7 +434,7 @@ stock AddPhoneBook(playerid)
 
 CMD:phone(playerid, params[])
 {
-    if(!isPlayerAndroid(playerid))
+    if(IsPlayerAndroid(playerid))
     {
         new str[255], longstr[255];
 

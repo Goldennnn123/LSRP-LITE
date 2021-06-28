@@ -1542,7 +1542,7 @@ CMD:id(playerid, params[])
 	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-	SendClientMessageEx(playerid, COLOR_GREY, "ชื่อ: %s เล่นผ่าน: %s",ReturnName(tagerid,0), (isPlayerAndroid(tagerid) == false) ? ("Android") : ("PC"));
+	SendClientMessageEx(playerid, COLOR_GREY, "ชื่อ: %s เล่นผ่าน: %s",ReturnName(tagerid,0), (IsPlayerAndroid(tagerid)) ? ("Android") : ("PC"));
 	return 1;
 }
 

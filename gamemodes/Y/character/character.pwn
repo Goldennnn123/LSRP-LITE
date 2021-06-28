@@ -463,6 +463,13 @@ public LoadCharacter(playerid)
 	{
 		RemovePlayerAttachedObject(playerid, i);
 	}
+
+	if(IsPlayerAndroid(playerid) == 1)
+	{
+		SendClientMessage(playerid, -1, "คุณเข้าสู่ระบบด้วยอุปกรณ์ Android");
+	}
+	else SendClientMessage(playerid, -1, "คุณเข้าสู่ระบบด้วยอุปกรณ์ PC");
+
 	return 1;
 }
 

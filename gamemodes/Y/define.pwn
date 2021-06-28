@@ -43,6 +43,8 @@
 #define PRESSING(%0,%1) \
 	(%0 & (%1))
 
+#define IsPlayerAndroid(%0)                 GetPVarInt(%0, "NotAndroid") == 0
+
 
 
 

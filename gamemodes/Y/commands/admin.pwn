@@ -2337,7 +2337,7 @@ CMD:makebusiness(playerid,params[])
 	{
 		SendUsageMessage(playerid, "/makebusiness [ประเภท]");
 		SendUsageMessage(playerid, "Type: 1.ร้านค้า(24/7) 2.ร้านตัวแทนจำหน่ายรถ 3.ร้านปืน");
-		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร 7.ร้านขายเสื้อผ้า");
+		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร  6.คลับ 7.ร้านขายเสื้อผ้า");
 		return 1;
 	}
 
@@ -2346,7 +2346,7 @@ CMD:makebusiness(playerid,params[])
 		SendClientMessageEx(playerid,-1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF0000} คุณไม่สามารถตั้งชื่อกิจการเกิน 90 ตัวอักษร");
 		SendUsageMessage(playerid, "/makebusiness [ประเภท]");
 		SendUsageMessage(playerid, "Type: 1.ร้านค้า(24/7) 2.ร้านตัวแทนจำหน่ายรถ 3.ร้านปืน");
-		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร 7.ร้านขายเสื้อผ้า ");
+		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร  6.คลับ 7.ร้านขายเสื้อผ้า ");
 		return 1;
 	}
 	if(type < 1 || type > 7)

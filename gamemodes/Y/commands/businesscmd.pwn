@@ -376,9 +376,29 @@ CMD:changeclothing(playerid, params[])
 alias:advertisements("ads")
 CMD:advertisements(playerid, params[])
 {
+    if(isnull(params)) 
+        return SendUsageMessage(playerid, "/advertisements [ข้อความ]");
+
+    if(PlayerInfo[playerid][pCash] < 1000)
+        return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ (จำเป็นต้องมี $1,000)");
+
     
+    if(strlen(params) > 50)
+    {
+		SendClientMessageToAllEx(COLOR_LIGHTGREEN, "[Advertisements] %.89s", params);
+        SendClientMessageToAllEx(COLOR_LIGHTGREEN, "... %s",params[89]);
+    }
+    else 
+    {
+        SendClientMessageToAllEx(COLOR_LIGHTGREEN, "[Advertisements] %s",params);
+    }
+
+    GiveMoney(playerid, -1000);
+
     return 1;
 }
+
+
 
 
 Dialog:DIALOG_SKINCLOST_CHANG(playerid, response, listitem, inputtext[])

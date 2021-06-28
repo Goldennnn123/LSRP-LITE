@@ -1536,6 +1536,9 @@ Dialog:DIALOG_SEND_MESSAGE(playerid, response, listitem, inputtext[])
 
 Dialog:DIALOG_APH_MENU(playerid, response, listitem, inputtext[])
 {
+    if(!response)
+        return 1;
+
     switch(listitem)
     {
         case 0: return Dialog_Show(playerid, DIALOG_CALL_INPUT, DIALOG_STYLE_INPUT, "ใส่เบอร์ที่ต้องการจะติดต่อ", "กรอกเบอร์ปลายทางของคุณที่ต้องการจะติดต่อไป (เบอร์ 5 หลัก)", "ยืนยัน", "ยกเลิก");

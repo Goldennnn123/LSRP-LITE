@@ -464,7 +464,7 @@ public LoadCharacter(playerid)
 		RemovePlayerAttachedObject(playerid, i);
 	}
 
-	if(IsPlayerAndroid(playerid) == 1)
+	if(IsPlayerAndroid(playerid) == true)
 	{
 		SendClientMessage(playerid, -1, "คุณเข้าสู่ระบบด้วยอุปกรณ์ Android");
 	}

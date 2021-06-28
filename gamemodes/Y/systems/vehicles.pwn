@@ -2400,3 +2400,26 @@ IsDoorVehicle(vehicleid)
 	}
 	return 0;
 }
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+	
+	if(vehicleid != 0)
+	{
+		if(RELEASED(KEY_CTRL_BACK))
+		{
+			if(!IsPlayerInAnyVehicle(playerid))
+				return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
+
+			new Float:x, Float:y, Float:z;
+
+			GetVehiclePos(vehicleid, x, y, z);
+			SetPlayerPos(playerid, x, y+2, z);	
+			TogglePlayerControllable(playerid, 1);
+			return 1;
+
+		}
+	}
+	return 1;
+}

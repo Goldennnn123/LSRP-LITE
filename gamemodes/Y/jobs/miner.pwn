@@ -33,7 +33,7 @@ hook OP_PickUpDynamicPickup(playerid, STREAMER_TAG_PICKUP:pickupid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-    if(RELEASED(KEY_RIGHT))
+    if(RELEASED(KEY_RIGHT) || RELEASED(KEY_CTRL_BACK))
     {
         if(PlayerInfo[playerid][pJob] != JOB_MINER && PlayerInfo[playerid][pSideJob] != JOB_MINER)
             return 1;

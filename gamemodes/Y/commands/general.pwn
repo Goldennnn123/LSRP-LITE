@@ -1626,3 +1626,28 @@ stock ClearHelpme(reportid)
     HelpmeData[reportid][hHelpmeDetel] = ' ';
 	return 1;
 }
+
+CMD:close(playerid, params[])
+{
+	if(PlayerInfo[playerid][pGUI] != 6)
+		return 1;
+
+	PlayerInfo[playerid][pGUI] = 6;
+	MenuStore_Close(playerid);
+	return 1;
+}
+
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(PlayerInfo[playerid][pGUI] == 6)
+	{
+		if(RELEASED(KEY_CTRL_BACK))
+		{
+			PlayerInfo[playerid][pGUI] = 0;
+			MenuStore_Close(playerid);
+			return 1;
+		}
+	}
+	return 1;
+}	

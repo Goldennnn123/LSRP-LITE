@@ -945,7 +945,7 @@ CMD:vehicle(playerid, params[])
 	}
 	else if(!strcmp(oneString, "sell"))
 	{
-		if(PlayerSellVehicleAccept[playerid])
+		/*if(PlayerSellVehicleAccept[playerid])
 			return SendErrorMessage(playerid, "ตอนนี้คุณอยู่ในการตกลงกันระหว่างการซื้อขายยานพาหนะอยู่ กับ %s", ReturnName(PlayerSellVehicleBy[playerid], 0));
 
 		if(!IsPlayerInAnyVehicle(playerid))
@@ -1004,7 +1004,8 @@ CMD:vehicle(playerid, params[])
 
 		SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ส่งข้อเสนอราคาให้กับ %s ในการขายยานพนะ %s ในราคา $%s",ReturnName(tagetid, 0), ReturnVehicleName(vehicleid), MoneyFormat(price));
 		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "คุณได้รับข้อเสนอราคาจาก %s ในการขายยานพนะ %s ในราคา $%s พิมพ์ /v accept เพื่อยืนยันข้อเสนอ",ReturnName(playerid, 0), ReturnVehicleName(vehicleid), MoneyFormat(price));
-		
+		*/
+		SendClientMessage(playerid, COLOR_LIGHTRED, "ขออถัยในความไม่สดวกเนื่องจากเราพบบัคในการขายรถอยู่เราขออนุญาตทำการปิดคำสั่งนี้ชั่วคราวก่อน");
 		return 1;
 	}
 	else if(!strcmp(oneString, "accept"))
@@ -1700,7 +1701,7 @@ public OnVehicleSpawn(vehicleid)
 	if(HasNoEngine(vehicleid))
 		ToggleVehicleEngine(vehicleid, true);
 	
-
+	ToggleVehicleEngine(vehicleid, false);
 	return 1;
 }
 

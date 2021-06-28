@@ -114,6 +114,8 @@ CMD:buy(playerid, params[])
     if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE)
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านสดวกซื้อ");
 
+    PlayerInfo[playerid][pGUI] = 6;
+    SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
     MenuStore_AddItem(playerid, 1, 18919, "Mask", 5000, "Mask use /mask", 200);
     MenuStore_AddItem(playerid, 2, 19942, "Radio", 10000, "Radio", 200);
     MenuStore_AddItem(playerid, 3, 367, "Camera", 15000, "Cemara To Take Photo", 200);

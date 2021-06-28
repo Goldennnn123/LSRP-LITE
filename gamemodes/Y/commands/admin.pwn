@@ -2592,11 +2592,22 @@ CMD:restart(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1338)
 	    return SendErrorMessage(playerid, "¤Ø³äÁèãªè¼Ùé´ÙáÅÃÐºº");
-	    
+	
 	foreach (new i : Player)
 	{
+		
+		PlayerInfo[i][pVehicleSpawned] = false;
+		PlayerInfo[i][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+
 		CharacterSave(i);
 		SetPlayerName(i, e_pAccountData[i][mAccName]);
+	}
+
+	new query[150];
+	for (new i = 1; i < 100; i++)
+	{
+        mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0', `pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d' ",i);
+        mysql_tquery(dbCon, query);
 	}
 
 	//Saving systems:
@@ -2605,7 +2616,7 @@ CMD:restart(playerid, params[])
 	SaveBusinesses();*/
 
 	//Closing database:
-	mysql_close(dbCon);
+	
 	SendRconCommand("gmx");
 	return 1;
 	

@@ -198,6 +198,18 @@ public OnGameModeInit() {
 
     adminactionlog = CreateLog("server/admin_action");
     allcmdlog = CreateLog("server/allcmdlog");
+
+
+
+
+
+    new query[150];
+	for (new i = 1; i < 100; i++)
+	{
+        mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0', `pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d' ",i);
+        mysql_tquery(dbCon, query);
+	}
+
     return 1;
 }
 

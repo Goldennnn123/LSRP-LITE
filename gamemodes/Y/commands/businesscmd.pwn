@@ -386,7 +386,7 @@ CMD:advertisements(playerid, params[])
     if(strlen(params) > 50)
     {
 		SendClientMessageToAllEx(COLOR_LIGHTGREEN, "[Advertisements] %.89s", params);
-        SendClientMessageToAllEx(COLOR_LIGHTGREEN, "... %s",params[89]);
+        SendClientMessageToAllEx(COLOR_LIGHTGREEN, "... %s",params[50]);
     }
     else 
     {

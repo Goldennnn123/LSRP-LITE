@@ -159,6 +159,7 @@ new globalWeather = 2;
 #include "Y/test/functionPlayer.pwn"
 
 #include "Y/systems/textdraw/computer.pwn"
+#include "Y/systems/textdraw/blindfold.pwn"
 
 #if SETUP_TABLE
     #include "install"
@@ -429,6 +430,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 	
 	PlayerInfo[playerid][pLastOnlineTime] = secondsConnection;
     CharacterSave(playerid);
+    ResetPlayerCharacter(playerid);
 }
 
 public OnPlayerRequestClass(playerid, classid) {

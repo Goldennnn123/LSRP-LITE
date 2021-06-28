@@ -432,23 +432,10 @@ stock AddPhoneBook(playerid)
 }
 
 
-CMD:ph(playerid, params[])
-{
-    new str[255], longstr[255];
-
-    format(str, sizeof(str), "โทรออก\n");
-    strcat(longstr, str);
-    format(str, sizeof(str), "รายชื่อผู้ติดต่อ\n");
-    strcat(longstr, str);
-    format(str, sizeof(str), "ส่งข้อความ\n");
-    strcat(longstr, str);
-
-    Dialog_Show(playerid, DIALOG_APH_MENU, DIALOG_STYLE_LIST, "PHONE:", longstr, "ยืนยัน", "ยกเลิก");
-    return 1;
-}
+alias:phone("ph")
 CMD:phone(playerid, params[])
 {
-    if(IsPlayerAndroid(playerid))
+    if(IsPlayerAndroid(playerid) == true)
     {
         new str[255], longstr[255];
 
@@ -466,7 +453,7 @@ CMD:phone(playerid, params[])
     if(PlayerInfo[playerid][pGUI] == 0)
     {
         new hour, seconds, minute;
-        gettime(hour, seconds, minute);
+        gettime(hour, minute, seconds);
 
         new str_time[60], str[60];
 

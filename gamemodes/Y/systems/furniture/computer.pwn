@@ -150,6 +150,9 @@ stock ShowPlayerComputerSpec(playerid, option)
 
 CMD:buycomputer(playerid, params[])
 {
+    if(IsPlayerAndroid(playerid) == true)
+        return SendErrorMessage(playerid, "ระบบนี้บนแพล็ตฟอร์มของคุณยังไม่รองรับ");
+        
     if(!IsPlayerInRangeOfPoint(playerid, 2.5, 1091.1954,-1528.2493,22.7391))
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในจุดที่จะซื้อคอมพิวเตอร์ หรือ แล็ปท็อป");
 
@@ -159,6 +162,9 @@ CMD:buycomputer(playerid, params[])
 
 CMD:opencom(playerid, params[])
 {
+    if(IsPlayerAndroid(playerid) == true)
+        return SendErrorMessage(playerid, "ระบบนี้บนแพล็ตฟอร์มของคุณยังไม่รองรับ");
+
     if(!IsPlayerNearComputer(playerid))
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ คอมพิวเตอร์ / แล็ปท็อป");
 

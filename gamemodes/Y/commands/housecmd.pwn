@@ -292,6 +292,9 @@ CMD:checkele(playerid, params[])
 
 CMD:placecom(playerid, params[])
 {
+    if(IsPlayerAndroid(playerid) == true)
+        return SendErrorMessage(playerid, "ระบบนี้บนแพล็ตฟอร์มของคุณยังไม่รองรับ");
+        
     new id = PlayerInfo[playerid][pInsideProperty];
 
     if(!PlayerInfo[playerid][pInsideProperty])

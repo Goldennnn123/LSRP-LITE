@@ -17,7 +17,7 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_int(query, "pFactionRank",PlayerInfo[playerid][pFactionRank]);
 
         mysql_int(query, "pCash",PlayerInfo[playerid][pCash]);
-        mysql_int(query, "pPaycheck",PlayerInfo[playerid][pJobRank]);
+        mysql_int(query, "pPaycheck",PlayerInfo[playerid][pPaycheck]);
         mysql_int(query, "pBank",PlayerInfo[playerid][pBank]);
         mysql_int(query, "pSaving",PlayerInfo[playerid][pSaving]);
 

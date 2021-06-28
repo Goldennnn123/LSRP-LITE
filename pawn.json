@@ -17,8 +17,7 @@
 		"samp-incognito/samp-streamer-plugin",
 		"Coystark/MenuStore",
 		"katursis/Pawn.RakNet",
-		"AGraber/samp-compat",
-		"aktah/io"
+		"AGraber/samp-compat"
 	],
 	"local": true,
 	"runtime": {

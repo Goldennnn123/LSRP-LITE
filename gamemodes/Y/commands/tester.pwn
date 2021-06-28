@@ -68,7 +68,7 @@ CMD:tcmds(playerid, params[])
 	}
 	if (PlayerInfo[playerid][pTester] >= 2 || PlayerInfo[playerid][pAdmin])
 	{
-		SendClientMessage(playerid, COLOR_GRAD1, "[Level 2]: /kick");
+		SendClientMessage(playerid, COLOR_GRAD1, "[Level 2]: /kick /forcerespawn");
 	}
 	if (PlayerInfo[playerid][pTester] >= 3 || PlayerInfo[playerid][pAdmin])
 	{

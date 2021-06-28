@@ -434,6 +434,21 @@ stock AddPhoneBook(playerid)
 
 CMD:phone(playerid, params[])
 {
+    if(isPlayerAndroid(playerid))
+    {
+        new str[255], longstr[255];
+
+        format(str, sizeof(str), "โทรออก\n");
+        strcat(longstr, str);
+        format(str, sizeof(str), "รายชื่อผู้ติดต่อ\n");
+        strcat(longstr, str);
+        format(str, sizeof(str), "ส่งข้อความ\n");
+        strcat(longstr, str);
+
+        Dialog_Show(playerid, DIALOG_APH_MENU, DIALOG_STYLE_LIST, "PHONE:", longstr, "ยืนยัน", "ยกเลิก");
+        return 1;
+    }
+
     if(PlayerInfo[playerid][pGUI] == 0)
     {
         new hour, seconds, minute;
@@ -1502,5 +1517,16 @@ Dialog:DIALOG_SEND_MESSAGE(playerid, response, listitem, inputtext[])
     format(text, 90, "%s", inputtext);
     GiveMoney(playerid, -3);
     SendClientMessageEx(playerb, COLOR_REPORT, "SMS %d: %s", PlayerInfo[playerid][pPhone], text);
+    return 1;
+}
+
+Dialog:DIALOG_APH_MENU(playerid, response, listitem, inputtext[])
+{
+    switch(listitem)
+    {
+        case 0: return Dialog_Show(playerid, DIALOG_CALL_INPUT, DIALOG_STYLE_INPUT, "ใส่เบอร์ที่ต้องการจะติดต่อ", "กรอกเบอร์ปลายทางของคุณที่ต้องการจะติดต่อไป (เบอร์ 5 หลัก)", "ยืนยัน", "ยกเลิก");
+        case 1: return ShowPhoneBook(playerid);
+        case 2: return Dialog_Show(playerid,DIALOG_SMS_NUMBER,DIALOG_STYLE_INPUT,"ส่ง SMS","กรอกเบอร์ที่ต้องการส่ง SMS ไปหาเบอร์ที่ต้องการ","ยืนยัน","ยกเลิก");
+    }
     return 1;
 }

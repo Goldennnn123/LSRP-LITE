@@ -1533,8 +1533,8 @@ CMD:id(playerid, params[])
 {
 	new tagerid;
 
-	if(tagerid == playerid)
-		return SendErrorMessage(playerid, "ไม่สามารถใช้กับตัวเองได้");
+	if(sscanf(params, "u", tagerid))
+		return SendUsageMessage(playerid, "/id <ชื่อบางส่วน/ไอดี>");
 
 	if(!IsPlayerConnected(tagerid))
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์");
@@ -1542,7 +1542,7 @@ CMD:id(playerid, params[])
 	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-	SendClientMessageEx(playerid, COLOR_GREY, "ชื่อ: %s",ReturnName(tagerid,0));
+	SendClientMessageEx(playerid, COLOR_GREY, "ชื่อ: %s เล่นผ่าน: %s",ReturnName(tagerid,0), (isPlayerAndroid(tagerid) == false) ? ("Android") : ("PC"));
 	return 1;
 }
 

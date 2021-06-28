@@ -1187,6 +1187,21 @@ CMD:clearchat(playerid, params[])
 	}
 	return 1;
 }
+
+alias:randdomphone("rddp")
+CMD:randdomphone(playerid, params[])
+{
+	foreach (new i : Player)
+	{
+		if(PlayerInfo[i][pPhone])
+			continue;
+
+		PlayerInfo[i][pPhone] = random(99999);
+		SendClientMessageEx(i, COLOR_GREY, "คุณได้รับเบอร์โทรศัพท์ใหม่: %d",PlayerInfo[i][pPhone]);
+	}
+	SendClientMessage(playerid, -1, "คุณได้สุ่มเบอร์โทรศัพท์ให้กับคนที่ไม่มีเบอร์โทรศัพท์แล้ว");
+	return 1;
+}
 /// Admin Level: 1;
 
 
@@ -2606,7 +2621,7 @@ CMD:restart(playerid, params[])
 	new query[150];
 	for (new i = 1; i < 100; i++)
 	{
-        mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0', `pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d' ",i);
+        mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0', `pVehicleSpawnedID` = '0', `RentCarKey` = '0' WHERE `char_dbid` = '%d' ",i);
         mysql_tquery(dbCon, query);
 	}
 

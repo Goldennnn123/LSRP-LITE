@@ -1674,7 +1674,7 @@ public Query_ShowVehicleList(playerid, idx)
 		cache_get_value_name_int(0,"VehicleAlarmLevel",vehicleAlarmLevel);
 		cache_get_value_name_int(0,"VehicleImmobLevel",vehicleImmobLevel);
 
-		cache_get_value_name_int(0,"vehicleTimesDestroyed",vehicleTimesDestroyed);
+		cache_get_value_name_int(0,"VehicleTimesDestroyed",vehicleTimesDestroyed);
 
 		cache_get_value_name(0,"VehiclePlates",vehiclePlates,32);
 	}

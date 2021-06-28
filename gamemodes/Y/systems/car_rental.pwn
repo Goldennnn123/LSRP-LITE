@@ -19,7 +19,9 @@ hook OnGameModeInit()
 	for(new c = 0; c < sizeof rental_vehicles; c++) {
     	SetVehicleNumberPlate(rental_vehicles[c], "RENTAL");
 		ResetVehicleVars(rental_vehicles[c]);
+		ToggleVehicleEngine(rental_vehicles[c], false);
 	}
+
 	return 1;
 }
 
@@ -79,15 +81,11 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		{
             new model = GetVehicleModel(vehicleid);
 			SendClientMessageEx(playerid, COLOR_WHITE, "บริการเช่ายานพาหนะ: เช่า %s ในราคา %s (/rentvehicle)", ReturnVehicleName(vehicleid), MoneyFormat(VehicleRentalPrice(model)));
-			SendClientMessage(playerid, COLOR_GREEN, "การเช่ายานพาหนะนี้ คุณจะสามารถใช้ /lock มันได้");
+			SendClientMessage(playerid, COLOR_GREEN, "การเช่ายานพาหนะนี้ คุณจะสามารถใช้ /v lock มันได้");
 		}
 	}
 	
     return 1;
-}
-
-hook OnPlayerConnect(playerid) {
-    RentCarKey[playerid]=-1;
 }
 
 CMD:rentvehicle(playerid)
@@ -104,7 +102,7 @@ CMD:rentvehicle(playerid)
 				GiveMoney(playerid, -cost);
 
 				SendClientMessage(playerid,COLOR_GREEN,"คุณได้เช่ายานพาหนะ (/unrentvehicle เพื่อเลิกเช่า)");
-                SendClientMessage(playerid,COLOR_WHITE,"ข้อแนะ: คุณสามารถล็อกยานพาหนะที่เช่าด้วย /lock");
+                SendClientMessage(playerid,COLOR_WHITE,"ข้อแนะ: คุณสามารถล็อกยานพาหนะที่เช่าด้วย /v lock");
                 SendClientMessage(playerid,COLOR_WHITE,"/engine เพื่อสตาร์ท");
 				return 1;
 			}

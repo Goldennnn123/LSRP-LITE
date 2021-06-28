@@ -399,6 +399,11 @@ public Query_LoadCharacter(playerid)
 
 	cache_get_value_name_int(0, "pVehicleSpawned",PlayerInfo[playerid][pVehicleSpawned]);
 	cache_get_value_name_int(0, "pVehicleSpawnedID",PlayerInfo[playerid][pVehicleSpawnedID]);
+
+	cache_get_value_name_int(0, "RentCarKey",RentCarKey[playerid]);
+
+	cache_get_value_name_int(0, "pInsideBusiness",PlayerInfo[playerid][pInsideBusiness]);
+	cache_get_value_name_int(0, "pInsideProperty",PlayerInfo[playerid][pInsideProperty]);
 	return LoadCharacter(playerid);
 }
 

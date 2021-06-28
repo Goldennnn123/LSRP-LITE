@@ -46,6 +46,10 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
             mysql_flo(query, "pLastPosX",PlayerInfo[playerid][pLastPosX]);
             mysql_flo(query, "pLastPosY",PlayerInfo[playerid][pLastPosY]);
             mysql_flo(query, "pLastPosZ",PlayerInfo[playerid][pLastPosZ]);
+            mysql_int(query, "RentCarKey",RentCarKey[playerid]);
+
+            mysql_int(query, "pInsideBusiness",PlayerInfo[playerid][pInsideBusiness]);
+            mysql_int(query, "pInsideProperty",PlayerInfo[playerid][pInsideProperty]);
 		
 			printf("[%d] %s: save last data", playerid, ReturnPlayerName(playerid));
 		}

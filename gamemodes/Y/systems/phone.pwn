@@ -432,6 +432,20 @@ stock AddPhoneBook(playerid)
 }
 
 
+CMD:ph(playerid, params[])
+{
+    new str[255], longstr[255];
+
+    format(str, sizeof(str), "โทรออก\n");
+    strcat(longstr, str);
+    format(str, sizeof(str), "รายชื่อผู้ติดต่อ\n");
+    strcat(longstr, str);
+    format(str, sizeof(str), "ส่งข้อความ\n");
+    strcat(longstr, str);
+
+    Dialog_Show(playerid, DIALOG_APH_MENU, DIALOG_STYLE_LIST, "PHONE:", longstr, "ยืนยัน", "ยกเลิก");
+    return 1;
+}
 CMD:phone(playerid, params[])
 {
     if(IsPlayerAndroid(playerid))

@@ -262,10 +262,15 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "char_dbid", PlayerInfo[playerid][pDBID]);
 	cache_get_value_name_int(0, "pLastSkin", PlayerInfo[playerid][pLastSkin]);
 	cache_get_value_name_bool(0, "pTutorial", PlayerInfo[playerid][pTutorial]);
+
+	cache_get_value_name_int(0, "pBadge", PlayerInfo[playerid][pBadge]);
 	cache_get_value_name_int(0, "pFaction", PlayerInfo[playerid][pFaction]);
 	cache_get_value_name_int(0, "pFactionRank", PlayerInfo[playerid][pFactionRank]);
+
+	cache_get_value_name_int(0, "pPaycheck", PlayerInfo[playerid][pPaycheck]);
 	cache_get_value_name_int(0, "pCash", PlayerInfo[playerid][pCash]);
 	cache_get_value_name_int(0, "pBank", PlayerInfo[playerid][pBank]);
+
 	cache_get_value_name_int(0, "pAdmin", PlayerInfo[playerid][pAdmin]);
 	cache_get_value_name_int(0, "pTester", PlayerInfo[playerid][pTester]);
 	cache_get_value_name_int(0, "pLevel", PlayerInfo[playerid][pLevel]);
@@ -291,14 +296,18 @@ public Query_LoadCharacter(playerid)
 		cache_get_value_name_int(0, "pLastInterior", PlayerInfo[playerid][pLastInterior]);
 		cache_get_value_name_int(0, "pLastWorld", PlayerInfo[playerid][pLastWorld]);
 
-		cache_get_value_name_int(0, "pBadge", PlayerInfo[playerid][pBadge]);
-
 	} else PlayerInfo[playerid][pTimeout] = 0;
 
 	if(PlayerInfo[playerid][pDonater])
 	{
 		cache_get_value_name_int(0, "pHasMask", PlayerInfo[playerid][pHasMask]);
 	}
+
+	cache_get_value_name_float(0, "pLastPosX", PlayerInfo[playerid][pLastPosX]);
+	cache_get_value_name_float(0, "pLastPosY", PlayerInfo[playerid][pLastPosY]);
+	cache_get_value_name_float(0, "pLastPosZ", PlayerInfo[playerid][pLastPosZ]);
+	cache_get_value_name_int(0, "pLastInterior", PlayerInfo[playerid][pLastInterior]);
+	cache_get_value_name_int(0, "pLastWorld", PlayerInfo[playerid][pLastWorld]);
 
 	cache_get_value_name_int(0, "pSpawnPoint", PlayerInfo[playerid][pSpawnPoint]);
 	cache_get_value_name_int(0, "pSpawnHouse", PlayerInfo[playerid][pSpawnHouse]);
@@ -309,7 +318,6 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pJobRank", PlayerInfo[playerid][pJobRank]);
 	cache_get_value_name_int(0, "pJobExp", PlayerInfo[playerid][pJobExp]);
 
-	cache_get_value_name_int(0, "pPaycheck", PlayerInfo[playerid][pPaycheck]);
 	cache_get_value_name_int(0, "pFishes", PlayerInfo[playerid][pFishes]);
 	
 
@@ -433,6 +441,17 @@ public LoadCharacter(playerid)
 		ResetPlayerCharacter(playerid);
 		KickEx(playerid);
 		return 1;
+	}
+
+	foreach(new i : Player)
+	{
+		if(e_pAccountData[playerid][mDBID] != e_pAccountData[i][mDBID])
+			continue;
+		
+		if(playerid == i)
+			continue;
+
+		SendAdminMessageEx(COLOR_LIGHTRED, 1, "มีการใช้ UCP เดียวกันในการเข้าสองตัวละครในเวลาเดียวกัน (%d) %s กับ (%d) %s",playerid, ReturnName(playerid,0), i, ReturnName(i,0));
 	}
 
 	SetPlayerScore(playerid, PlayerInfo[playerid][pLevel]);

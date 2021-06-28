@@ -1236,7 +1236,7 @@ CMD:vehicle(playerid, params[])
 		
 		if(PlayerInfo[playerid][pAdmin])
 		{
-			SendClientMessageEx(playerid, COLOR_WHITE, "เจ้าของรถ: %s", VehicleInfo[vehicleid][eVehicleOwnerDBID]);
+			SendClientMessageEx(playerid, COLOR_WHITE, "เจ้าของรถ: %s", ReturnDBIDName(VehicleInfo[vehicleid][eVehicleOwnerDBID]));
 		}
 		SendClientMessageEx(playerid, COLOR_WHITE, "Life Span: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%i]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "Security: Lock Level[%i], Alarm Level[%i], Immobilizer[%i]", VehicleInfo[vehicleid][eVehicleLockLevel], VehicleInfo[vehicleid][eVehicleAlarmLevel], VehicleInfo[vehicleid][eVehicleImmobLevel]);

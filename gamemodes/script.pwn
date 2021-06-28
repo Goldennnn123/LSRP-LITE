@@ -254,7 +254,8 @@ public OnPlayerConnect(playerid) {
     format(e_pAccountData[playerid][mForumName], e_pAccountData[playerid][mForumName], "");
 
     PlayerInfo[playerid][pCMDPermission] = CMD_PLAYER;
-    PlayerInfo[playerid][pAdmin] = CMD_PLAYER;
+    PlayerInfo[playerid][pAdmin] = 0;
+    PlayerInfo[playerid][pTester] = 0;
 
 
     PlayerInfo[playerid][pJob] = 0;
@@ -425,7 +426,7 @@ hook OnPlayerDisconnect(playerid, reason) {
 	if(reason == 0) {
 		PlayerInfo[playerid][pTimeout] = gettime();
     }
-    
+
 
     new playerTime = NetStats_GetConnectedTime(playerid);
 	new secondsConnection = (playerTime % (1000*60*60)) / (1000*60);
@@ -504,6 +505,7 @@ public OnPlayerSpawn(playerid) {
         StopAudioStreamForPlayer(playerid);
         return 1;
     }
+
     if(PlayerInfo[playerid][pSpectating] != INVALID_PLAYER_ID)
     {
         SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld]);
@@ -535,12 +537,19 @@ public OnPlayerSpawn(playerid) {
 
             SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseInteriorWorld]);
             SetPlayerInterior(playerid, HouseInfo[id][HouseInteriorID]);
-            SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1]-2, HouseInfo[id][HouseInterior][2]);
+            SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]-2);
             TogglePlayerControllable(playerid, 0);
             SetTimerEx("OnPlayerEnterProperty", 2000, false, "ii", playerid, id); 
 
             PlayerInfo[playerid][pInsideProperty] = id;
         }
+        case SPAWN_AT_LASTPOS: 
+        {
+            SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+            SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld]);
+            SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInterior]);
+        }
+
     }
 
     StopAudioStreamForPlayer(playerid); //ËÂØ´à¾Å§à¢éÒà«Ô¿

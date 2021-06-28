@@ -235,7 +235,7 @@ CMD:gethere(playerid, params[])
 	new playerb;
 	
 	if (sscanf(params, "u", playerb)) 
-		return SendUsageMessage(playerid, "/goto [ชื่อบางส่วน/ไอดี]"); 
+		return SendUsageMessage(playerid, "/gethere [ชื่อบางส่วน/ไอดี]"); 
 	
 	if(!IsPlayerConnected(playerb))
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
@@ -244,7 +244,6 @@ CMD:gethere(playerid, params[])
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 		
 	GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-	//Using the player variable to avoid making other variables; 
 	
 	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER)
 		SetVehiclePos(GetPlayerVehicleID(playerb), PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY] -1, PlayerInfo[playerid][pLastPosZ]);
@@ -253,9 +252,9 @@ CMD:gethere(playerid, params[])
 		SetPlayerPos(playerb, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY] -1, PlayerInfo[playerid][pLastPosZ]);
 		
 	SetPlayerVirtualWorld(playerb, GetPlayerVirtualWorld(playerid));
-	
-	if(GetPlayerInterior(playerid) != 0)
-		SetPlayerInterior(playerb, GetPlayerInterior(playerid)); 
+	SetPlayerInterior(playerb, GetPlayerInterior(playerid)); 
+	PlayerInfo[playerb][pInsideProperty] = PlayerInfo[playerid][pInsideProperty];
+	PlayerInfo[playerb][pInsideBusiness] = PlayerInfo[playerid][pInsideBusiness];
 		
 	SendTeleportMessage(playerb);
 	SendServerMessage(playerb, "คุณถูกเคลื่อนย้ายโดยผู้ดูแลระบบ  %s", ReturnRealName(playerb));
@@ -374,6 +373,23 @@ CMD:ban(playerid, params[])
 	return 1;
 }
 
+CMD:checkucp(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+	
+	foreach(new i : Player)
+	{
+		if(e_pAccountData[playerid][mDBID] != e_pAccountData[i][mDBID])
+			continue;
+		
+		if(playerid == i)
+			continue;
+
+		SendAdminMessageEx(COLOR_LIGHTRED, 1, "มีการใช้ UCP เดียวกันในการเข้าสองตัวละครในเวลาเดียวกัน (%d) %s กับ (%d) %s",playerid, ReturnName(playerid,0), i, ReturnName(i,0));
+	}
+	return 1;
+}
 CMD:ajail(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pTester] < 3)

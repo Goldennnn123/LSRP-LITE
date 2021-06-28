@@ -41,6 +41,7 @@ public OnPlayerLogin(playerid, race_check)
 		cache_get_value_index(0, 0, pPass, 129);
 		cache_get_value_index_int(0, 1, e_pAccountData[playerid][mDBID]);
         cache_get_value_index(0, 2, e_pAccountData[playerid][mAccName], 60);
+		cache_get_value_index(0, 3, e_pAccountData[playerid][mForumName], 60);
 		
         if (strequal(unhashed_pass, pPass, true)) {
             DeletePVar(playerid, "Unhashed_Pass");
@@ -110,7 +111,7 @@ Dialog:DIALOG_LOGIN(playerid, response, listitem, inputtext[])
     SetPVarString(playerid, "Unhashed_Pass",buf);
 
 	g_MysqlRaceCheck[playerid]++;
-    mysql_format(dbCon, query, sizeof(query), "SELECT acc_pass, acc_dbid, acc_name, admin from `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
+    mysql_format(dbCon, query, sizeof(query), "SELECT acc_pass, acc_dbid, acc_name, forum_name ,admin from `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
     mysql_tquery(dbCon, query, "OnPlayerLogin", "id", playerid, g_MysqlRaceCheck[playerid]);
 
     return 1;

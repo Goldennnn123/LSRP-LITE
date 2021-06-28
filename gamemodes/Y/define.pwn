@@ -14,6 +14,7 @@
 #define	SPAWN_AT_DEFAULT			0
 #define	SPAWN_AT_HOUSE				1
 #define	SPAWN_AT_FACTION			2
+#define	SPAWN_AT_LASTPOS			3
 
 #define MAX_PLAYER_VEHICLES			(6)
 

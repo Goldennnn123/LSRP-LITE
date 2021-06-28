@@ -842,7 +842,9 @@ CMD:ooc(playerid, params[])
 		
 	if(PlayerInfo[playerid][pAdminDuty])
 		SendClientMessageToAllEx(COLOR_SAMP, "{adc3e7}[OOC] {FB8C00}%s{adc3e7}: %s", ReturnRealName(playerid, 0), params); 
-		
+	else if(PlayerInfo[playerid][pTesterDuty])	
+		SendClientMessageToAllEx(COLOR_SAMP, "{adc3e7}[OOC] {229954}%s{adc3e7}: %s", ReturnRealName(playerid, 0), params);
+
 	else SendClientMessageToAllEx(COLOR_SAMP, "{adc3e7}[OOC] %s: %s", ReturnRealName(playerid, 0), params);
 	return 1;
 }
@@ -1037,12 +1039,12 @@ CMD:setspawn(playerid, params[])
 	if(sscanf(params, "i", id))
 	{
 		SendUsageMessage(playerid, "/setspawn [spawn id]");
-		SendClientMessage(playerid, COLOR_WHITE, "1. สนามบิน, 2. บ้าน, 3. เฟคชั่น");
+		SendClientMessage(playerid, COLOR_WHITE, "1. สนามบิน, 2. บ้าน, 3. เฟคชั่น, 4.จุดเกิดล่าสุด");
 		return 1;
 	}
 
-	if(id > 3 || id < 1)
-		return SendErrorMessage(playerid, "ไอ้ดีสปาว มีเพียง (1-3)");
+	if(id > 4 || id < 1)
+		return SendErrorMessage(playerid, "ไอ้ดีสปาว มีเพียง (1-4)");
 
 	switch(id)
 	{
@@ -1080,6 +1082,11 @@ CMD:setspawn(playerid, params[])
 
 			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_FACTION;
 			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น เฟคชั่น");
+		}
+		case 4:
+		{
+			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_LASTPOS;
+			SendServerMessage(playerid, "คุณได้เลือกจุดเกิดไปจุดปัจจุบันของคุณ");
 		}
 	}
 	return 1;
@@ -1302,6 +1309,15 @@ CMD:b(playerid, params[])
 		}
 		else SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {FF9900}%s{AFAFAF}: %s ))", playerid, ReturnName(playerid), params);
 	}
+	else if(PlayerInfo[playerid][pTesterDuty] == true)
+	{
+		if(strlen(params) > 84)
+		{
+			SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {229954}%s{AFAFAF}: %.84s ))", playerid, ReturnName(playerid), params);
+			SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {229954}%s{AFAFAF}: ...%s ))", playerid, ReturnName(playerid), params[84]);
+		}
+		else SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {229954}%s{AFAFAF}: %s ))", playerid, ReturnName(playerid), params);
+	}
 	else
 	{
 		if(strlen(params) > 84)
@@ -1336,12 +1352,26 @@ CMD:pm(playerid, params[])
 			
 		else SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 	}
+	else if(PlayerInfo[playerid][pTesterDuty])
+	{
+		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {229954}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
+		
+		if(!PlayerInfo[playerb][pTesterDuty])
+			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+			
+		else SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+	}
 	else
 	{
 		if(PlayerInfo[playerb][pAdminDuty])
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+		}
+		else if(PlayerInfo[playerb][pTesterDuty])
+		{
+			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
+			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		}
 		else
 		{

@@ -54,6 +54,23 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 			printf("[%d] %s: save last data", playerid, ReturnPlayerName(playerid));
 		}
 
+        if(PlayerInfo[playerid][pSpawnPoint] == SPAWN_AT_LASTPOS)
+        {
+            GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+
+			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
+			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+
+            mysql_int(query, "pLastInterior",PlayerInfo[playerid][pLastInterior]);
+            mysql_int(query, "pLastWorld",PlayerInfo[playerid][pLastWorld]);
+
+            mysql_flo(query, "pLastPosX",PlayerInfo[playerid][pLastPosX]);
+            mysql_flo(query, "pLastPosY",PlayerInfo[playerid][pLastPosY]);
+            mysql_flo(query, "pLastPosZ",PlayerInfo[playerid][pLastPosZ]);
+            mysql_int(query, "pInsideBusiness",PlayerInfo[playerid][pInsideBusiness]);
+            mysql_int(query, "pInsideProperty",PlayerInfo[playerid][pInsideProperty]);
+        }
+
         mysql_int(query, "pTimeout",PlayerInfo[playerid][pTimeout]);
 
 
@@ -173,7 +190,7 @@ stock SaveUCP(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 
         mysql_init("masters", "acc_dbid", e_pAccountData[playerid][mDBID], thread);
         mysql_str(query, "forum_name",e_pAccountData[playerid][mForumName]);
-        mysql_str(query, "active_ip",PlayerInfo[playerid][pActiveIP]);
+        mysql_str(query, "active_ip",ReturnIP(playerid));
         mysql_finish(query);
     }
     return 1;

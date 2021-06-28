@@ -72,8 +72,8 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_str(query, "pLastOnline",PlayerInfo[playerid][pLastOnline]);
         mysql_int(query, "pTimeplayed",PlayerInfo[playerid][pTimeplayed]);
 
-        mysql_str(query, "pPhone",PlayerInfo[playerid][pPhone]);
-        mysql_str(query, "pPhonePower",PlayerInfo[playerid][pPhonePower]);
+        mysql_int(query, "pPhone",PlayerInfo[playerid][pPhone]);
+        mysql_int(query, "pPhonePower",PlayerInfo[playerid][pPhonePower]);
 
         new str[255];
 		for(new i = 0; i < 13; i++)

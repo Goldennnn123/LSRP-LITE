@@ -1037,9 +1037,10 @@ CMD:aooc(playerid, params[])
 		SendClientMessageToAllEx(COLOR_RED, "[AOOC] ผู้ดูแลระบบ %s (%s): %s", ReturnName(playerid), e_pAccountData[playerid][mForumName], params);
 		
 	else SendClientMessageToAllEx(COLOR_RED, "[AOOC] ผู้ดูแลระบบ %s: %s", ReturnName(playerid), params);*/
-	SendClientMessageToAllEx(COLOR_RED, "{C2185B}[AOOC] ผู้ดูแลระบบ %s: %s", e_pAccountData[playerid][mForumName], params);
+	SendClientMessageToAllEx(COLOR_RED, "{C2185B}[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %s", e_pAccountData[playerid][mForumName], params);
 	return 1;
 }
+
 
 CMD:revice(playerid, params[])
 {

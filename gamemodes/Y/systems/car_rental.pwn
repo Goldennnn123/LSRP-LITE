@@ -20,6 +20,7 @@ hook OnGameModeInit()
     	SetVehicleNumberPlate(rental_vehicles[c], "RENTAL");
 		ResetVehicleVars(rental_vehicles[c]);
 		ToggleVehicleEngine(rental_vehicles[c], false);
+		VehicleInfo[rental_vehicles[c]][eVehicleLocked] = false;
 	}
 
 	return 1;

@@ -539,8 +539,13 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		new vehicleid = GetPlayerVehicleID(playerid);
 
 		ShowspeedVehicle(playerid, vehicleid);
-		if(!VehicleInfo[vehicleid][eVehicleEngineStatus] && !IsRentalVehicle(vehicleid))
-			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ (/engine)");
+
+		if(!VehicleInfo[vehicleid][eVehicleEngineStatus] && !IsRentalVehicle(vehicleid) && !HasNoEngine(vehicleid))
+		{
+			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ /en(gine)");
+			SendClientMessage(playerid,COLOR_WHITE,"ข้อแนะ: คุณสามารถออกจากรถด้วยการพิมพ์ /exitveh(icle)");
+			TogglePlayerControllable(playerid, 0);
+		}
 	
 		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] == PlayerInfo[playerid][pDBID])
 			SendClientMessageEx(playerid, COLOR_WHITE, "ยินดีต้อนรับสู่ %s ของคุณ", ReturnVehicleName(vehicleid));
@@ -594,6 +599,7 @@ public Query_AddPlayerVehicle(playerid, playerb)
 	return 1;
 }
 
+alias:engine("en")
 CMD:engine(playerid, params[])
 {
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
@@ -675,11 +681,13 @@ CMD:engine(playerid, params[])
 	{
 		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s สตาร์ทเครื่องยนต์ของ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
 		ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
+		TogglePlayerControllable(playerid, 1);
 	}
 	else
 	{
 		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s ดับเครื่องยนต์ของ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
 		ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+		TogglePlayerControllable(playerid, 0);
 	}
 	return 1;
 }
@@ -1701,7 +1709,6 @@ public OnVehicleSpawn(vehicleid)
 	if(HasNoEngine(vehicleid))
 		ToggleVehicleEngine(vehicleid, true);
 	
-	ToggleVehicleEngine(vehicleid, false);
 	return 1;
 }
 
@@ -2104,6 +2111,7 @@ public OnVehicleDeath(vehicleid, killerid)
 	VehicleInfo[vehicleid][eVehicleTimesDestroyed]++;
 	VehicleInfo[vehicleid][eVehicleEngine]--;
 	VehicleInfo[vehicleid][eVehicleBattery]--;
+	VehicleInfo[vehicleid][eVehicleLocked] = true;
 	SaveVehicle(vehicleid);
     return 1;
 }

@@ -16,16 +16,8 @@ hook OnGameModeInit()
 	rental_vehicles[8] = AddStaticVehicleEx(492,1560.5928,-2328.5264,13.3775,269.5466,223,0, -1);
 	rental_vehicles[9] = AddStaticVehicleEx(492,1560.5668,-2331.8062,13.3845,269.5466,223,0, -1);
 
-	new engine, lights, alarm, doors, bonnet, boot, objective; 
-
 	for(new c = 0; c < sizeof rental_vehicles; c++) {
     	SetVehicleNumberPlate(rental_vehicles[c], "RENTAL");
-
-		GetVehicleParamsEx(rental_vehicles[c], engine, lights, alarm, doors, bonnet, boot, objective);
-		ToggleVehicleEngine(rental_vehicles[c], false); VehicleInfo[rental_vehicles[c]][eVehicleEngineStatus] = false;
-
-		VehicleInfo[rental_vehicles[c]][eVehicleLocked] = false;
-		SetVehicleParamsEx(rental_vehicles[c], false, lights, alarm, false, bonnet, boot, objective);
 		ResetVehicleVars(rental_vehicles[c]);
 	}
 
@@ -89,6 +81,8 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
             new model = GetVehicleModel(vehicleid);
 			SendClientMessageEx(playerid, COLOR_WHITE, "บริการเช่ายานพาหนะ: เช่า %s ในราคา %s (/rentvehicle)", ReturnVehicleName(vehicleid), MoneyFormat(VehicleRentalPrice(model)));
 			SendClientMessage(playerid, COLOR_GREEN, "การเช่ายานพาหนะนี้ คุณจะสามารถใช้ /v lock มันได้");
+			SendClientMessage(playerid,COLOR_WHITE,"ข้อแนะ: คุณสามารถออกจากรถด้วยการพิมพ์ /exitveh(icle)");
+			TogglePlayerControllable(playerid, 0);
 		}
 	}
 	
@@ -111,6 +105,7 @@ CMD:rentvehicle(playerid)
 				SendClientMessage(playerid,COLOR_GREEN,"คุณได้เช่ายานพาหนะ (/unrentvehicle เพื่อเลิกเช่า)");
                 SendClientMessage(playerid,COLOR_WHITE,"ข้อแนะ: คุณสามารถล็อกยานพาหนะที่เช่าด้วย /v lock");
                 SendClientMessage(playerid,COLOR_WHITE,"/engine เพื่อสตาร์ท");
+				TogglePlayerControllable(playerid, 1);
 				return 1;
 			}
 			else return SendClientMessage(playerid, COLOR_GRAD1, "   คุณมีเงินไม่พอ !");
@@ -130,6 +125,20 @@ CMD:unrentvehicle(playerid)
         return SendClientMessage(playerid,COLOR_GREEN,"คุณได้คืนยานพาหนะ");
  	}
  	else return GameTextForPlayer(playerid, "~r~you're not in any vehicle.", 5000, 1);
+}
+
+alias:exitvehicle("exitveh")
+CMD:exitvehicle(playerid, params[])
+{
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
+
+	new vehicleid = GetPlayerVehicleID(playerid), Float:x, Float:y, Float:z;
+
+	GetVehiclePos(vehicleid, x, y, z);
+	SetPlayerPos(playerid, x, y+2, z);	
+	TogglePlayerControllable(playerid, 1);
+	return 1;
 }
 
 task rental_vehiclesalTimer[300000]() {

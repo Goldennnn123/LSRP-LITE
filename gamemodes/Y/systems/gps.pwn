@@ -96,6 +96,9 @@ Dialog:D_GPS_LIST(playerid, response, listitem, inputtext[])
                 
                 if(GpsInfo[i][GPSGobal])
                     continue;
+
+                if(GpsInfo[i][GPSOwner] != PlayerInfo[playerid][pDBID])
+                    continue;
                 
                 format(str, sizeof(str), "%d: %s\n",i, GpsInfo[i][GPSName]);
                 strcat(longstr,str);

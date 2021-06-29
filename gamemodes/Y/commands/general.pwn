@@ -117,7 +117,7 @@ CMD:mask(playerid, params[])
 
 CMD:gps(playerid, params[])
 {
-	Dialog_Show(playerid, D_GPS_LIST, DIALOG_STYLE_LIST, "GPS SYSTEM:", "[GPS GOBEL]\n[GPS PRIVTE]", "ยินยัน", "ยกเลิก");
+	Dialog_Show(playerid, D_GPS_LIST, DIALOG_STYLE_LIST, "GPS SYSTEM:", "[GPS GLOBAL]\n[GPS PRIVATE]", "ยินยัน", "ยกเลิก");
 	return 1;
 }
 

@@ -1265,8 +1265,9 @@ CMD:editgps(playerid, params[])
 	
 	if(sscanf(params, "dd", editgps, option))
 	{
-
-		return SendUsageMessage(playerid, "/editgps <ไอดี> <option>");
+		SendUsageMessage(playerid, "/editgps <ไอดี> <option>");
+		SendClientMessage(playerid, COLOR_GREEN, "OPTION: 1.ชื่อ 2.จุด 3.ลบ 4.ปรับสาธารณะ");
+		return 1;
 	}
 
 	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])

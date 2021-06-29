@@ -72,6 +72,7 @@ new globalWeather = 2;
 #include "Y/entities/fine.pwn"
 #include "Y/entities/helpme.pwn"
 #include "Y/entities/gps.pwn"
+#include "Y/entities/vehicle_faction.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"

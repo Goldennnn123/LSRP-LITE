@@ -724,21 +724,22 @@ CMD:park(playerid ,params[])
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 		return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
 
-	if(VehicleInfo[vehicleid][eVehicleFaction] != factionid)
+	if(VehFacInfo[vehicleid][VehFacFaction] != factionid)
 		return SendErrorMessage(playerid, "รถคันนี้ไม่ใช่รถเฟคชั่นของคุณ");
 
-	GetVehiclePos(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2]);
-	GetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][3]);
-	VehicleInfo[vehicleid][eVehicleParkWorld] = GetPlayerVirtualWorld(playerid); 
+	GetVehiclePos(vehicleid, VehFacInfo[vehicleid][VehFacPos][0], VehFacInfo[vehicleid][VehFacPos][1], VehFacInfo[vehicleid][VehFacPos][2]);
+	GetVehicleZAngle(vehicleid, VehFacInfo[vehicleid][VehFacPos][3]);
+	VehFacInfo[vehicleid][VehFacPosWorld] = GetPlayerVirtualWorld(playerid); 
 
-	SendFactionMessage(playerid, "{2ECC71}**(( %s ได้เปลี่ยนจุดยานพาหนะ ไอดี %d ))**",ReturnRealName(playerid, 0), VehicleInfo[vehicleid][eVehicleDBID]);
+	SendFactionMessage(playerid, "{2ECC71}**(( %s ได้เปลี่ยนจุดยานพาหนะ ไอดี %d ))**",ReturnRealName(playerid, 0), VehFacInfo[vehicleid][VehFacDBID]);
 
 	SaveFacVehicle(vehicleid);
 
 	DestroyVehicle(vehicleid);
 
-	vehicleid = CreateVehicle(VehicleInfo[vehicleid][eVehicleModel], VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], VehicleInfo[vehicleid][eVehicleParkPos][3], VehicleInfo[vehicleid][eVehicleColor1], VehicleInfo[vehicleid][eVehicleColor2], -1, 0);
+	vehicleid = CreateVehicle(VehFacInfo[vehicleid][VehFacModel], VehFacInfo[vehicleid][VehFacPos][0], VehFacInfo[vehicleid][VehFacPos][1], VehFacInfo[vehicleid][VehFacPos][2], VehFacInfo[vehicleid][VehFacPos][3], VehFacInfo[vehicleid][VehFacColor][0], VehFacInfo[vehicleid][VehFacColor][1], -1, 0);
 	ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+	PutPlayerInVehicle(playerid, vehicleid, 0);
 	return 1;
 }
 

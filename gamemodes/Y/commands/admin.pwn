@@ -2751,6 +2751,18 @@ CMD:createvehicle(playerid, params[])
 	if(color1 > 255 || color2 > 255)
 		return SendErrorMessage(playerid, "โปรดใส่สีให้ถูกด้วย");
 
+	new idx = 0;
+
+	for(new i = 1; i < MAX_FACTION_VEHICLE; i++)
+	{
+		if(!VehFacInfo[i][VehFacDBID])
+		{
+			idx = i;
+			break;
+		}
+	}
+	if(idx == 0) return SendErrorMessage(playerid, "รถแฟคชั่นเต็มแล้ว");
+
 	new Float:x,Float:y,Float:z,Float:a;
 	GetPlayerPos(playerid, x,y,z);
 	GetPlayerFacingAngle(playerid, a);
@@ -2758,8 +2770,17 @@ CMD:createvehicle(playerid, params[])
 
 	new thread[MAX_STRING]; 
 
-	mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicles ORDER BY VehicleDBID");
-	mysql_tquery(dbCon, thread, "CountVehicle", "dddddffffd", playerid,factionid,modelid,color1,color2,x,y,z,a,World);
+	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%f,%f,%f,%f,%d)",
+		modelid,
+		factionid,
+		color1,
+		color2,
+		x,
+		y,
+		z,
+		a,
+		World);
+	mysql_tquery(dbCon, thread, "InsertVehicleFaction", "dddddd", playerid,idx, modelid, factionid, color1, color2);
 	return 1;
 }
 
@@ -2777,22 +2798,22 @@ CMD:deletevehicle(playerid, params[])
 	if(!IsValidVehicle(vehicleid))
 		return SendErrorMessage(playerid, "ไม่มี ID ยานพาหนะที่ต้องการ");
 
-	if(!VehicleInfo[vehicleid][eVehicleFaction])
+	if(!VehFacInfo[vehicleid][VehFacFaction])
 		return SendErrorMessage(playerid, "ยานพาหนะคันนี้ไม่มีอยู่ในแฟคชั่น");
 
 
-	SendClientMessageEx(playerid, -1, "คุณได้ลบยานพาหนะของแฟคชั่น %s ไอดี %d",ReturnFactionNameEx(VehicleInfo[vehicleid][eVehicleFaction]), vehicleid);
+	SendClientMessageEx(playerid, -1, "คุณได้ลบยานพาหนะของแฟคชั่น %s ไอดี %d",ReturnFactionNameEx(VehFacInfo[vehicleid][VehFacFaction]), vehicleid);
 	new thread[MAX_STRING]; 
 
-	mysql_format(dbCon, thread, sizeof(thread), "DELETE FROM `vehicle_faction` WHERE `VehicleDBID` = '%d'", VehicleInfo[vehicleid][eVehicleDBID]);
+	mysql_format(dbCon, thread, sizeof(thread), "DELETE FROM `vehicle_faction` WHERE `VehicleDBID` = '%d'", VehFacInfo[vehicleid][VehFacDBID]);
 	mysql_tquery(dbCon, thread);
 
-	VehicleInfo[vehicleid][eVehicleDBID] = 0;
-	VehicleInfo[vehicleid][eVehicleModel] = 0;
-	VehicleInfo[vehicleid][eVehicleFaction] = 0;
+	VehFacInfo[vehicleid][VehFacDBID] = 0;
+	VehFacInfo[vehicleid][VehFacModel] = 0;
+	VehFacInfo[vehicleid][VehFacFaction] = 0;
 
-	VehicleInfo[vehicleid][eVehicleColor1] = 0;
-	VehicleInfo[vehicleid][eVehicleColor2] = 0;
+	VehFacInfo[vehicleid][VehFacColor][0] = 0;
+	VehFacInfo[vehicleid][VehFacColor][1] = 0;
 	VehicleInfo[vehicleid][eVehicleFuel] = 0;
 	DestroyVehicle(vehicleid);
 	ResetVehicleVars(vehicleid);

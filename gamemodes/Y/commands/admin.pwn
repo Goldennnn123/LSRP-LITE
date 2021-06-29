@@ -7,7 +7,7 @@ CMD:acmds(playerid, params[])
 	
     if(PlayerInfo[playerid][pAdmin] >= 1)
 	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /aduty, /forumname, /goto, /gethere, /a (achat), /showmain, /kick"); 
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /aduty, /forumname, /goto, /gethere, /a (achat), /showmain, /kick /checkucp"); 
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /unjail, /setint, /setworld, /setskin, /health, /reports, /ar (accept), /dr (disregard),"); 
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /slap, /mute, /freeze, /unfreeze, /spec, /specoff, /stats (id), /gotols, /respawncar,"); 
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /gotocar, /getcar, /listmasks, /dropinfo, /aooc, /revice, /towcars (aduty), /listweapons");
@@ -1208,6 +1208,9 @@ CMD:clearchat(playerid, params[])
 alias:randdomphone("rddp")
 CMD:randdomphone(playerid, params[])
 {
+	if(PlayerInfo[playerid][pAdmin] < 1)
+	    return SendUnauthMessage(playerid);
+
 	foreach (new i : Player)
 	{
 		if(PlayerInfo[i][pPhone])
@@ -1217,6 +1220,119 @@ CMD:randdomphone(playerid, params[])
 		SendClientMessageEx(i, COLOR_GREY, "คุณได้รับเบอร์โทรศัพท์ใหม่: %d",PlayerInfo[i][pPhone]);
 	}
 	SendClientMessage(playerid, -1, "คุณได้สุ่มเบอร์โทรศัพท์ให้กับคนที่ไม่มีเบอร์โทรศัพท์แล้ว");
+	return 1;
+}
+
+
+CMD:makegps(playerid, params[])
+{
+	new name[32];
+	
+	if(sscanf(params, "s[32]", name))
+		return SendUsageMessage(playerid, "/makegps <ชื่อ GPS>");
+
+	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+		return SendErrorMessage(playerid, "คุณต้องไม่อยู่ภายในบ้าน หรือ กิจการ");
+
+
+
+	new idx = 0, Float:x, Float:y, Float:z;
+	for(new i = 1; i < MAX_GPS; i++)
+	{
+		if(!GpsInfo[i][GPSDBID])
+		{
+			idx = i;
+			break;
+		}
+	}
+	if(idx == 0) return SendErrorMessage(playerid, "คุณไม่สามารถสร้าง GPS ได้แล้ว");
+
+	GetPlayerPos(playerid, x, y, z);
+	new query[255];
+	mysql_format(dbCon, query, sizeof(query), "INSERT INTO `gps` (`GPSOwner`, `GPSName`, `GPSPosX`, `GPSPosY`, `GPSPosZ`) VALUES('%d', '%e', '%f', '%f', '%f')",
+	PlayerInfo[playerid][pDBID],
+	name,
+	x,
+	y,
+	z);
+	mysql_tquery(dbCon, query, "InsertGps","ddsfff",idx,playerid, name, x, y, z);
+	return 1;
+}
+
+CMD:editgps(playerid, params[])
+{
+	new editgps, option;
+	
+	if(sscanf(params, "dd", editgps, option))
+	{
+
+		return SendUsageMessage(playerid, "/editgps <ไอดี> <option>");
+	}
+
+	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+		return SendErrorMessage(playerid, "คุณต้องไม่อยู่ภายในบ้าน หรือ กิจการ");
+
+	if(!GpsInfo[editgps][GPSDBID])
+		return SendErrorMessage(playerid, "ไม่มีไอดีที่ท่านต้องการ");
+
+	if(GpsInfo[editgps][GPSGobal] && GpsInfo[editgps][GPSOwner] != PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdmin])
+		return SendErrorMessage(playerid, "คุณไม่สามารถแก้ไข GPS ที่เป็น สาธาระณะได้");
+
+	switch(option)
+	{
+		case 1:
+		{
+			PlayerEditGps[playerid] = editgps;
+			Dialog_Show(playerid, D_GPS_CHANG_NAME, DIALOG_STYLE_INPUT, "GPS SYSTEM:", "ใส่ชื่อ GPS ใหม่", "ยืนยัน", "ยกเลิก");
+		}
+		case 2:
+		{
+			new Float:x, Float:y, Float:z;
+			GetPlayerPos(playerid, x, y,z);
+			GpsInfo[editgps][GPSPos][0] = x;
+			GpsInfo[editgps][GPSPos][1] = y;
+			GpsInfo[editgps][GPSPos][2] = z;
+			SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "คุณได้เปลี่ยน จุด GPS %s ของคุณแล้ว",GpsInfo[editgps][GPSName]);
+			return 1;
+		}
+		case 3:
+		{
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณได้ลบ GPS %s ของคุณออกแล้ว", GpsInfo[editgps][GPSName]);
+
+			new query[150];
+			mysql_format(dbCon, query, sizeof(query), "DELETE FROM `gps` WHERE `GPSDBID` = '%d'",GpsInfo[editgps][GPSDBID]);
+			mysql_tquery(dbCon, query);
+
+			GpsInfo[editgps][GPSDBID] = 0;
+			GpsInfo[editgps][GPSOwner] = 0;
+			format(GpsInfo[editgps][GPSName], 20, "");
+			GpsInfo[editgps][GPSGobal] = 0;
+			GpsInfo[editgps][GPSPos][0] = 0.0;
+			GpsInfo[editgps][GPSPos][1] = 0.0;
+			GpsInfo[editgps][GPSPos][2] = 0.0;
+			return 1;
+		}
+		case 4:
+		{
+			if(!PlayerInfo[playerid][pAdmin])
+				return SendUnauthMessage(playerid);
+
+			if(GpsInfo[editgps][GPSGobal])
+			{
+				GpsInfo[editgps][GPSGobal] = 0;
+				SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "คุณได้ปรับให้ %s ไม่เป็นสาธารณะ", GpsInfo[editgps][GPSName]);
+				SaveGps(editgps);
+				return 1;
+			}
+			else
+			{
+				GpsInfo[editgps][GPSGobal] = 1;
+				SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "คุณได้ปรับให้ %s เป็นสาธารณะ", GpsInfo[editgps][GPSName]);
+				SaveGps(editgps);
+				return 1;
+			}
+		}
+	}
 	return 1;
 }
 /// Admin Level: 1;
@@ -2173,6 +2289,114 @@ CMD:viewhouse(playerid, params[])
 	return 1;
 }
 
+CMD:edithouse(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+	new id, option[32],secstr[32];
+	if(sscanf(params, "ds[32]S()[32]", id, option, secstr))
+		return SendUsageMessage(playerid, "/edithouse <ไอดี> <option>");
+
+	if(!HouseInfo[id][HouseDBID])
+		return SendErrorMessage(playerid, "ไม่มีบ้านไอดีนี้");
+
+	if(!strcmp(option, "name"))
+	{
+		new NewName[32];
+		if(sscanf(secstr, "s[32]", NewName))
+			return SendUsageMessage(playerid, "/edithouse %d name <enter_name>", id);
+
+		if(strlen(NewName) < 3 || strlen(NewName) > 32)
+			return SendErrorMessage(playerid, "ใส่ชื่อที่ถูกต้อง");
+
+		format(HouseInfo[id][HouseName], 32, "%s", NewName);
+
+		SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้เปลี่ยนชื่อ บ้าน %d เป็น %s",id, HouseInfo[id][HouseName]);
+		Savehouse(id);
+		return 1;
+	}
+	else if(!strcmp(option, "price"))
+	{
+		new price;
+		if(sscanf(secstr, "d", price))
+			return SendUsageMessage(playerid, "/edithouse %d price <ราคาบ้าน>", id);
+
+
+		if(price < 1 || price > 10000000)
+			return SendErrorMessage(playerid, "กรุณาใส่ราคาบ้านให้ถูกต้องด้วย");
+
+		HouseInfo[playerid][HousePrice] = price;
+		SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้เปลี่ยนราคาบ้าน %d เป็น %s",id, MoneyFormat(price));
+		Savehouse(id);
+		return 1;
+	}
+	else if(!strcmp(option, "level"))
+	{
+		new level;
+		if(sscanf(secstr, "d", level))
+			return SendUsageMessage(playerid, "/edithouse %d level <เลเวล>", id);
+
+
+		if(level < 1 || level > 99999)
+			return SendErrorMessage(playerid, "กรุณาใส่ราคาบ้านให้ถูกต้องด้วย");
+
+		HouseInfo[playerid][HouseLevel] = level;
+		SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้เปลี่ยนเลเวลบ้าน %d เป็น %s",id, MoneyFormat(level));
+		Savehouse(id);
+		return 1;
+	}
+	else if(!strcmp(option, "enterpos"))
+	{
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(playerid, x, y, z);
+
+		HouseInfo[id][HouseEntrance][0] = x;
+		HouseInfo[id][HouseEntrance][1] = y;
+		HouseInfo[id][HouseEntrance][2] = z;
+		HouseInfo[id][HouseEntranceInterior] = GetPlayerInterior(playerid);
+		HouseInfo[id][HouseInteriorWorld] = GetPlayerVirtualWorld(playerid);
+		Savehouse(id);
+		SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้เปลี่ยนจุดทางเข้าบ้าน %d แล้ว",id);
+		return 1;
+	}
+	else if(!strcmp(option, "interiorpos"))
+	{
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(playerid, x, y, z);
+
+		HouseInfo[id][HouseInterior][0] = x;
+		HouseInfo[id][HouseInterior][1] = y;
+		HouseInfo[id][HouseInterior][2] = z;
+
+		HouseInfo[id][HouseInteriorID] = GetPlayerInterior(playerid);
+
+		if(GetPlayerVirtualWorld(playerid) == 0)
+		{
+			HouseInfo[id][HouseInteriorWorld] = random(99999);
+		}
+		else HouseInfo[id][HouseInteriorWorld] = GetPlayerVirtualWorld(playerid);
+
+		Savehouse(id);
+		SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้เปลี่ยนจุดภายในบ้านแล้ว %d แล้ว",id);
+		
+		foreach(new i : Player)
+		{
+			if(PlayerInfo[i][pInsideProperty] == id)
+			{
+				SetPlayerPos(playerid,x, y,z);
+				SetPlayerInterior(playerid, GetPlayerInterior(playerid));
+				SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerid));
+				SendServerMessage(playerid, "ขออถัยในความไม่สวดเนื่องจากมีการเปลี่ยนแปลง ภายในบ้านหลังนี้จากผู้ดูแล เราจึงนำท่าเคลื่อนย้ายมาที่นี่");
+			}
+		}
+		PlayerInfo[playerid][pInsideProperty] = id;
+		return 1;
+	}
+	else SendErrorMessage(playerid, "กรุณาใส่ให้ถูกต้อง");
+	return 1;
+}
+
 CMD:makemcgarage(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 5)
@@ -2323,6 +2547,8 @@ CMD:editentrance(playerid, params[])
 	Dialog_Show(playerid, EDIT_ENTRANCE, DIALOG_STYLE_LIST, "Entrance Editer", longstr, "ยืนยัน", "ยกเลิก");
 	return 1;
 }
+
+
 // Admin Level: 5;
 
 

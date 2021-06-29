@@ -72,6 +72,7 @@ new globalWeather = 2;
 #include "Y/entities/computer.pwn"
 #include "Y/entities/fine.pwn"
 #include "Y/entities/helpme.pwn"
+#include "Y/entities/gps.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -96,6 +97,7 @@ new globalWeather = 2;
 #include "Y/systems/anim.pwn"
 #include "Y/systems/furniture/computer.pwn"
 #include "Y/systems/fine.pwn"
+#include "Y/systems/gps.pwn"
 
 #include "Y/jobs/farmer.pwn"
 #include "Y/jobs/fisher.pwn"
@@ -112,6 +114,7 @@ new globalWeather = 2;
 #include "Y/mysql/SaveFacVehicle.pwn"
 #include "Y/mysql/SaveMc_Garage.pwn"
 #include "Y/mysql/SaveComputer.pwn"
+#include "Y/mysql/SaveGps.pwn"
 
 #include "Y/registration/login.pwn"
 #include "Y/character/character.pwn"

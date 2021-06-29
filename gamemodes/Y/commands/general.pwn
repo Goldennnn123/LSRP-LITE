@@ -12,7 +12,7 @@ CMD:help(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines");
-	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold");
+	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation)");
@@ -115,6 +115,11 @@ CMD:mask(playerid, params[])
 	return 1;
 }
 
+CMD:gps(playerid, params[])
+{
+	Dialog_Show(playerid, D_GPS_LIST, DIALOG_STYLE_LIST, "GPS SYSTEM:", "[GPS GOBEL]\n[GPS PRIVTE]", "ยินยัน", "ยกเลิก");
+	return 1;
+}
 
 CMD:enter(playerid,params[])
 {
@@ -1378,6 +1383,18 @@ CMD:pm(playerid, params[])
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		}
+	}
+	return 1;
+}
+
+alias:quit("q")
+CMD:quit(playerid, params[])
+{
+	if(IsPlayerAndroid(playerid))
+	{
+		CharacterSave(playerid);
+		Kick(playerid);
+		return 1;
 	}
 	return 1;
 }

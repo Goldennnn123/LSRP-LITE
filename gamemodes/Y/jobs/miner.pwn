@@ -52,7 +52,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
         if(IsPlayerInRangeOfPoint(playerid, 2.5, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]))
             return SendErrorMessage(playerid, "คุณต้องเปลี่ยนจุดขุดของคุณ");
 
-        if(PlayerInfo[playerid][pOre] > 50)
+        if(PlayerInfo[playerid][pOre] >= 50)
             return SendErrorMessage(playerid, "คุณมีแร่ในตัวเต็มแล้ว");
 
         new str[120];

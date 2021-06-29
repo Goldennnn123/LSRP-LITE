@@ -65,8 +65,8 @@ stock VehicleRentalPrice(model)
 {
 	switch(model)
 	{
-	    case 492: return 2500;
-	    case 422: return 3000;
+	    case 492: return 1500;
+	    case 422: return 2000;
 	}
 	return 0;
 }

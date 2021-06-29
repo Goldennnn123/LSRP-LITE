@@ -1,6 +1,6 @@
 stock SaveEntrance(id, thread = MYSQL_TYPE_THREAD)
 {
-    new query[250];
+    new query[MAX_STRING];
 
     mysql_init("entrance", "EntranceDBID", EntranceInfo[id][EntranceDBID], thread);
 

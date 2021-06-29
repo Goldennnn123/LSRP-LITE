@@ -184,7 +184,7 @@ stock ShowSelectHouse(playerid)
 Dialog:DIALOG_VIEWHOUSE(playerid, response, listitem, inputtext[])
 {
     if(!response)
-        return SendClientMessage(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} ยกเลิกการสร้างบ้าน");
+        return SendClientMessage(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} ยกเลิกกาแก้ไขบ้าน");
     
     new str_h[MAX_STRING], str[MAX_STRING];
     format(str_h, sizeof(str_h), "%d",listitem);
@@ -302,21 +302,21 @@ Dialog:DIALOG_HOUSE_NAME(playerid, response, listitem, inputtext[])
     if(!response)
         return ShowSelectHouse(playerid);
     
-    else
-    {
-        if(strlen(inputtext) > 90 || strlen(inputtext) < 3)
-        {   
-            SendClientMessage(playerid,COLOR_RED,"ใส่ชื่อไม่ถูกต้อง");
-            return ShowSelectHouse(playerid);
-        }
+    if(strlen(inputtext) > 90 || strlen(inputtext) < 3)
+    {   
+        SendClientMessage(playerid,COLOR_RED,"ใส่ชื่อไม่ถูกต้อง");
+        return ShowSelectHouse(playerid);
+    }
 
         
-        new id = PlayerSelectHouse[playerid];
+    new id = PlayerSelectHouse[playerid];
 
-        format(HouseInfo[id][HouseName], 90, "%s", inputtext);
-        Savehouse(id);
-    }
-    return ShowSelectHouse(playerid);
+    format(HouseInfo[id][HouseName], 90, "%s", inputtext);
+    Savehouse(id);
+
+    ShowSelectHouse(playerid);
+
+    return 1;
 }
 
 Dialog:DIALOG_HOUSE_PRICE(playerid, response, listitem, inputtext[])

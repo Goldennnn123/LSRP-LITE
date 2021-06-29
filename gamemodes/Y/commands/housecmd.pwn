@@ -68,6 +68,7 @@ CMD:buyhouse(playerid, params[])
             //HouseInfo[p][HousePickup] = CreateDynamicPickup(1272, 23, HouseInfo[p][HouseEntrance][0], HouseInfo[p][HouseEntrance][1], HouseInfo[p][HouseEntrance][2],-1,-1);
             return 1;
         }
+        else SendErrorMessage(playerid, "คุณไมได้อยู่ใกล้บ้านที่จะซื้อ");
     }
     return 1;
 }

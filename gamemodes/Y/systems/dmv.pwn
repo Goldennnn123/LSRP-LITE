@@ -218,6 +218,7 @@ CMD:licenseexam(playerid, params[])
 	VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
 	
 	SendClientMessage(playerid, COLOR_GREY, "พนักงานใบขับขี่ พูดว่า: กรุณาขับรถตามจุดเช็คพ้อยอย่างระมัดระวัง");
+	TogglePlayerControllable(playerid, 1);
 
 	VehicleID[playerid] = GetPlayerVehicleID(playerid);
 	SetPlayerCheckpoint(playerid, LicensetestInfo[0][eCheckpointX], LicensetestInfo[1][eCheckpointY], LicensetestInfo[2][eCheckpointZ], 3.0); 

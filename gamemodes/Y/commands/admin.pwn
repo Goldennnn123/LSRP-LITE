@@ -1294,6 +1294,7 @@ CMD:editgps(playerid, params[])
 			GpsInfo[editgps][GPSPos][1] = y;
 			GpsInfo[editgps][GPSPos][2] = z;
 			SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "คุณได้เปลี่ยน จุด GPS %s ของคุณแล้ว",GpsInfo[editgps][GPSName]);
+			SaveGps(editgps);
 			return 1;
 		}
 		case 3:
@@ -1311,6 +1312,7 @@ CMD:editgps(playerid, params[])
 			GpsInfo[editgps][GPSPos][0] = 0.0;
 			GpsInfo[editgps][GPSPos][1] = 0.0;
 			GpsInfo[editgps][GPSPos][2] = 0.0;
+			SaveGps(editgps);
 			return 1;
 		}
 		case 4:

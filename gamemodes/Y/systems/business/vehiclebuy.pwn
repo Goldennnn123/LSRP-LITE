@@ -12,11 +12,6 @@ new PlayerVehicleColor2[MAX_PLAYERS];
 new possibleVehiclePlates[][] = 
 	{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
-hook OnGameModeInit()
-{
-    return 1;
-}
-
 
 stock ShowVehicleSelect(playerid)
 {
@@ -426,7 +421,7 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
         }
         if(playertextid == VehicleBuy[playerid][2])
         {
-            for(new i = 0; i < 12; i++)
+            for(new i = 0; i < 13; i++)
             {
                 PlayerTextDrawHide(playerid, VehicleBuy[playerid][i]);
             }
@@ -906,7 +901,7 @@ Dialog:DIALOG_BUY_BIKE_LIST(playerid, response, listitem, inputtext[])
 {
 	if(!response)
 	{
-		for(new i = 0; i < 12; i++)
+		for(new i = 0; i < 13; i++)
 		{
 			PlayerTextDrawShow(playerid, VehicleBuy[playerid][i]);
 		}
@@ -2188,9 +2183,8 @@ public OnPlayerVehiclePurchase(playerid, newid, plates[], Float:x, Float:y, Floa
 			VehicleInfo[vehicleid][eVehicleWeapons][i] = 0;
 			VehicleInfo[vehicleid][eVehicleWeaponsAmmo][i] = 0; 
 		}
-
-        SetVehicleHp(vehicleid);
 		SaveVehicle(vehicleid);
+
 		
 		PlayerInfo[playerid][pVehicleSpawned] = true;
 		PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
@@ -2202,6 +2196,8 @@ public OnPlayerVehiclePurchase(playerid, newid, plates[], Float:x, Float:y, Floa
     PlayerVehicleColor1[playerid] = 0;
     PlayerVehicleColor2[playerid] = 0;
     PLayerVehiclePrice[playerid] = 0;
+
+    SetVehicleHp(vehicleid);
 
     for(new v = 0; v < 13; v++)
     {

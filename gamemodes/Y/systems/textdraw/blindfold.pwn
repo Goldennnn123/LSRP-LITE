@@ -23,15 +23,15 @@ hook OnPlayerConnect(playerid)
 alias:blindfold("screenshot")
 CMD:blindfold(playerid, params[])
 {
-	PlayerInfo[playerid][pGUI] = 7;
-
-	PlayerTextDrawShow(playerid, Blindfold[playerid][0]);
-	
 
 	if(PlayerInfo[playerid][pGUI] == 7)
 	{
 		PlayerTextDrawHide(playerid, Blindfold[playerid][0]);
+		PlayerInfo[playerid][pGUI] = 0;
 		return 1;
 	}
+	
+	PlayerTextDrawShow(playerid, Blindfold[playerid][0]);
+	PlayerInfo[playerid][pGUI] = 7;
 	return 1;
 }

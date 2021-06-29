@@ -857,7 +857,7 @@ CMD:vehicle(playerid, params[])
 				SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้จัดเก็บรถ %s เรียบร้อย", ReturnVehicleName(vehicleid));
 				
 				SaveVehicle(vehicleid);
-				
+				TogglePlayerControllable(playerid, 1);
 				ResetVehicleVars(vehicleid);
 				DestroyVehicle(vehicleid); 
 				return 1;	
@@ -1713,6 +1713,8 @@ public OnVehicleSpawn(vehicleid)
 	if(HasNoEngine(vehicleid))
 		ToggleVehicleEngine(vehicleid, true);
 	
+	SetVehicleHp(vehicleid);
+
 	return 1;
 }
 
@@ -1720,6 +1722,11 @@ stock SetVehicleHp(vehicleid)
 {
 	new modelid = GetVehicleModel(vehicleid);
 	SetVehicleHealth(vehicleid, VehicleData[modelid - 400][c_maxhp]);
+
+	if(modelid == 463)
+	{
+		SetVehicleHealth(vehicleid, 700);
+	}
 	return 1;
 }
 

@@ -18,7 +18,6 @@
 #include <YSI_Coding\y_hooks>
 #include <YSI_Coding\y_va>
 #include <YSI_Core\y_utils>
-#include <YSI_Players\y_android>
 #include <YSI_Coding\y_inline>
 
 #include <streamer>      // maddinat0r/sscanf        //aktah/SAMP-CEFixs

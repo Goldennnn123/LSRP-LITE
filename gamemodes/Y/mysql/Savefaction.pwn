@@ -15,7 +15,7 @@ stock SaveFaction(id, thread = MYSQL_TYPE_THREAD)
 	if(!FactionInfo[id][eFactionDBID])
 		return 0;
 		
-	new query[250];
+	new query[MAX_STRING];
 
 	mysql_init("factions", "DBID", FactionInfo[id][eFactionDBID], thread);
 
@@ -35,8 +35,8 @@ stock SaveFaction(id, thread = MYSQL_TYPE_THREAD)
 	mysql_flo(query, "FactionSpawnX",FactionInfo[id][eFactionSpawn][0]);
 	mysql_flo(query, "FactionSpawnY",FactionInfo[id][eFactionSpawn][1]);
 	mysql_flo(query, "FactionSpawnZ",FactionInfo[id][eFactionSpawn][2]);
-	mysql_int(query, "FactionSpawnWorld",FactionInfo[id][eFactionSpawnWorld]);
-	mysql_int(query, "FactionSpawnInt",FactionInfo[id][eFactionSpawnInt]);
+	mysql_int(query, "FactionWorld",FactionInfo[id][eFactionSpawnWorld]);
+	mysql_int(query, "FactionInterior",FactionInfo[id][eFactionSpawnInt]);
 	mysql_finish(query);
 	return 1;
 }

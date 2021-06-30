@@ -2267,7 +2267,7 @@ hook OnPlayerUpdate(playerid)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 
-		format(str, sizeof(str), "%d KPH/MPH",GetVehicleSpeed(vehicleid));
+		format(str, sizeof(str), "%d KM/H",GetVehicleSpeed(vehicleid));
 		PlayerTextDrawSetString(playerid, Statsvehicle[playerid][0], str);
 	}
 	return 1;

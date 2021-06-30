@@ -517,9 +517,12 @@ hook OP_EditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:
                 ComputerEdit[playerid]  = 0;
                 PlayerEditObject[playerid] = false;
                 SaveComputer(id);
-                DestroyDynamicObject(objectid);
+
+                if(IsValidDynamicObject(objectid))
+                    DestroyDynamicObject(objectid);
                 
                 objectid = CreateDynamicObject(19893, x, y, z, rx, ry, rz, ComputerInfo[id][ComputerPosWorld], ComputerInfo[id][ComputerPosInterior], -1);
+                
                 return 1;
             }
             

@@ -14,8 +14,8 @@ stock Savehouse(id, thread = MYSQL_TYPE_THREAD)
     mysql_int(query, "HouseEntranceInterior",HouseInfo[id][HouseEntranceInterior]);
 
     mysql_flo(query, "HouseInteriorX",HouseInfo[id][HouseInterior][0]);
-    mysql_flo(query, "HouseInteriorY",HouseInfo[id][HouseEntrance][1]);
-    mysql_flo(query, "HouseInteriorZ",HouseInfo[id][HouseEntrance][2]);
+    mysql_flo(query, "HouseInteriorY",HouseInfo[id][HouseInterior][1]);
+    mysql_flo(query, "HouseInteriorZ",HouseInfo[id][HouseInterior][2]);
     mysql_int(query, "HouseInteriorWorld",HouseInfo[id][HouseInteriorWorld]);
     mysql_int(query, "HouseInteriorID",HouseInfo[id][HouseInteriorID]);
 

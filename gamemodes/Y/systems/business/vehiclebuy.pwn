@@ -2142,7 +2142,7 @@ public OnPlayerVehiclePurchase(playerid, newid, plates[], Float:x, Float:y, Floa
 	}
 
     SendClientMessageEx(playerid, 0xB9E35EFF, "PROCESSED: คุณได้ทำการซื้อรถรุ่น %s ด้วยเงิน $%s  เรียบร้อยแล้ว", ReturnVehicleName(vehicleid), MoneyFormat(Price));
-
+    GiveMoney(playerid, -Price);
     PlayerSeleteVehicle[playerid] = 0;
     PlayerVehicleColor1[playerid] = 0;
     PlayerVehicleColor2[playerid] = 0;

@@ -1,3 +1,5 @@
+#include <YSI_Coding\y_hooks>
+
 CMD:housecmds(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________________HOUSE COMMAND__________________________");
@@ -492,7 +494,7 @@ stock EditObjectComputer(playerid, id)
     return 1;
 }
 
-hook OP_EditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+hook OP_EditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
     //if()
     switch (response)
@@ -522,7 +524,6 @@ hook OP_EditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:
                     DestroyDynamicObject(objectid);
                 
                 objectid = CreateDynamicObject(19893, x, y, z, rx, ry, rz, ComputerInfo[id][ComputerPosWorld], ComputerInfo[id][ComputerPosInterior], -1);
-                
                 return 1;
             }
             

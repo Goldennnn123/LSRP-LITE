@@ -138,7 +138,6 @@ new globalWeather = 2;
 #include "Y/Map/LSPDHQ.pwn"
 #include "Y/Map/415garage.pwn"
 #include "Y/Map/idlewoodmap.pwn"
-#include "Y/Map/LSMALL.pwn"
 /*#include "Y/Map/slrp.pwn"
 #include "Y/Map/apartment.pwn"
 #include "Y/Map/LSPDHABOR.pwn"

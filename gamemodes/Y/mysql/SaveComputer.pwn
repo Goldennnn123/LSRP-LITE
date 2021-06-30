@@ -30,5 +30,6 @@ stock SaveComputer(id, thread = MYSQL_TYPE_THREAD)
     mysql_int(query, "ComputerStartBTC",ComputerInfo[id][ComputerStartBTC]);
     mysql_flo(query, "ComputerBTC",ComputerInfo[id][ComputerBTC]);
     mysql_finish(query);
+    printf("%s",query);
     return 1;
 }

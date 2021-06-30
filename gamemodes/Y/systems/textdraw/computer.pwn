@@ -489,10 +489,19 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 			else
 			{
+				new str[150];
 				ComputerInfo[id][ComputerStartBTC] = false;
 				SendClientMessage(playerid, COLOR_DARKGREEN, "คุณได้หยุดขุด เหรียญ BTC.....");
 				KillTimer(ComputerInfo[id][ComputerTimer]);
 				PlayerTextDrawSetString(playerid,PL_Computer[playerid][21], "~r~START");
+				PlayerInfo[id][pBTC] +=ComputerInfo[id][ComputerBTC];
+				SendClientMessageEx(playerid, COLOR_DARKGOLDENROD, "BITSAMP: จำนวน %.5f เข้าไปที่บัญชี BITSAMP ของคุณ",ComputerInfo[id][ComputerBTC]);
+				ComputerInfo[id][ComputerBTC] = 0.0;
+
+				format(str, sizeof(str), "%.5f", ComputerInfo[id][ComputerBTC]);
+				PlayerTextDrawSetString(playerid,PL_Computer[playerid][19], str);
+				SaveComputer(id);
+				CharacterSave(playerid);
 				return 1;
 			}
 		}
@@ -535,7 +544,7 @@ public StartComputerBTC(playerid, id)
 {
 	new all_cpu_gpu, Float:result;
 
-	if(!ComputerInfo[id][ComputerGPU][0] && !ComputerInfo[id][ComputerGPU][1] && !ComputerInfo[id][ComputerGPU][2] && !ComputerInfo[id][ComputerGPU][3] && !ComputerInfo[id][ComputerGPU][4])
+	if(!ComputerInfo[id][ComputerGPU][0] && !ComputerInfo[id][ComputerGPU][1] && !ComputerInfo[id][ComputerGPU][2] && !ComputerInfo[id][ComputerGPU][3] && !ComputerInfo[id][ComputerGPU][4] && !ComputerInfo[id][ComputerRAM])
 	{
 		return 1;
 	}
@@ -545,7 +554,6 @@ public StartComputerBTC(playerid, id)
 
 	
 	ComputerInfo[id][ComputerBTC] += result;
-	PlayerInfo[playerid][pBTC] = ComputerInfo[id][ComputerBTC];
 	SaveComputer(id);
 	CharacterSave(playerid);
 	return 1;

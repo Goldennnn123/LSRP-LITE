@@ -442,6 +442,42 @@ CMD:checkbill(playerid, params[])
     return 1;
 }
 
+CMD:checkbit(playerid, params[])
+{
+    SendClientMessageEx(playerid, -1, "BITSAMP: %.5f",PlayerInfo[playerid][pBTC]);    
+    return 1;
+}
+
+CMD:givebit(playerid, params[])
+{
+    new number,tagetid, Float:bit;
+
+    if(sscanf(params, "df",number, bit))
+        return SendUsageMessage(playerid, "/givebit <ชื่อบางส่วน/ไอดี> <จำนวน>");
+
+    foreach(new i : Player)
+    {
+        if(PlayerInfo[i][pPhone] == i)
+        {
+            tagetid = i;
+        }
+    }
+
+    if(!IsPlayerConnected(tagetid))
+		return SendErrorMessage(playerid, "เบอร์ที่คุณต้องการโอนไม่ออนไลน์อยู่");
+
+	if(!BitFlag_Get(gPlayerBitFlag[tagetid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+
+    if(PlayerInfo[playerid][pBTC] < bit)
+        return SendErrorMessage(playerid, "คุณมี BIT ไม่เพียงพอ");
+
+    PlayerInfo[playerid][pBTC]-=bit;
+    PlayerInfo[tagetid][pBTC]+=bit;
+    SendClientMessageEx(playerid, COLOR_REPORT, "SMS: คุณได้โอน BITSAMP จำนวน %.5f ให้กับเบอร์ %d",bit, PlayerInfo[tagetid][pPhone]);
+    return 1;
+}
+
 stock EditObjectComputer(playerid, id)
 {
     new Float:x, Float:y, Float:z, worldid, interiorid;

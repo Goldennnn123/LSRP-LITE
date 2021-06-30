@@ -148,6 +148,18 @@ stock ShowPlayerComputerSpec(playerid, option)
     return 1;
 }
 
+CMD:computerhelp(playerid, params[])
+{
+    SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
+    SendClientMessage(playerid, COLOR_GRAD2, "/buycomputer (ซื่อคอม)");
+    SendClientMessage(playerid, COLOR_GRAD2, "/checkcom (วางคอม)");
+    SendClientMessage(playerid, COLOR_GRAD2, "/placecom (วางคอม)");
+    SendClientMessage(playerid, COLOR_GRAD2, "/editcom (แก้ไข, pos, upgrade)");
+    SendClientMessage(playerid, COLOR_GREEN,"_____________________________________");
+    SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
+    return 1;
+}
+
 CMD:buycomputer(playerid, params[])
 {
     if(IsPlayerAndroid(playerid) == true)

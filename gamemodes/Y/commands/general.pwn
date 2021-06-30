@@ -244,6 +244,24 @@ CMD:exit(playerid, params[])
 	{
 		if(!IsPlayerInRangeOfPoint(playerid, 3.0, BusinessInfo[b_id][BusinessInterior][0], BusinessInfo[b_id][BusinessInterior][1], BusinessInfo[b_id][BusinessInterior][2]))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ประตูทางออก");
+
+		if(BusinessInfo[b_id][BusinessType] == BUSINESS_TYPE_RESTAURANT || BusinessInfo[b_id][BusinessType] == BUSINESS_TYPE_STORE)
+		{
+			if(PlayerInfo[playerid][pGUI] == 5)
+			{
+				for(new f = 0; f < 8; f++)
+				{
+					PlayerTextDrawDestroy(playerid, BuyFood[playerid][f]);
+				}
+				PlayerInfo[playerid][pGUI] = 0;
+				CancelSelectTextDraw(playerid);
+			}
+			if(PlayerInfo[playerid][pGUI] == 6)
+			{
+				MenuStore_Close(playerid);
+				PlayerInfo[playerid][pGUI] = 0;
+			}
+		}
 		
 		SetPlayerPos(playerid, BusinessInfo[b_id][BusinessEntrance][0], BusinessInfo[b_id][BusinessEntrance][1], BusinessInfo[b_id][BusinessEntrance][2]);
 		SetPlayerVirtualWorld(playerid, BusinessInfo[b_id][BusinessEntranceWorld]);

@@ -99,7 +99,7 @@ hook OnPlayerEnterCheckpoint(playerid)
 		{
 			SendClientMessage(playerid, COLOR_GREY, "พนักงานสอบใบขับขี่ พูดว่า: ขับรถไปตามจุดอย่างระมัดระวัง"); 
 			PlayerLicensePoint[playerid]++;
-			PlayerLicenseTime[playerid] += 15; 
+			PlayerLicenseTime[playerid] += 35; 
 				
 			new 
 				idx = PlayerLicensePoint[playerid]
@@ -123,34 +123,31 @@ hook OnPlayerEnterCheckpoint(playerid)
     return 1;
 }
 
-hook FunctionPlayers()
+ptask PlayerLicenseTimeCount[1000](playerid) 
 {
-    foreach (new i : Player)
+	if(PlayerTakingLicense[playerid] && PlayerLicenseTime[playerid] <= 2000)
     {
-        if(PlayerTakingLicense[i] && PlayerLicenseTime[i] <= 2000)
+        PlayerLicenseTime[playerid]--; 
+                
+        new
+            str[128]
+        ;
+                
+        format(str, sizeof(str), "~w~%d", PlayerLicenseTime[playerid]);
+        GameTextForPlayer(playerid, str, 2000, 3); 
+                
+        if(PlayerLicenseTime[playerid] < 1)
         {
-            PlayerLicenseTime[i]--; 
-                
-            new
-                str[128]
-            ;
-                
-            format(str, sizeof(str), "~w~%d", PlayerLicenseTime[i]);
-            GameTextForPlayer(i, str, 2000, 3); 
-                
-            if(PlayerLicenseTime[i] < 1)
-            {
-                StopDriverstest(i);
-                SendClientMessage(i, COLOR_RED, "คุณขับรถนานเกินไปกว่าเวลาที่กำหนด"); 
-            }
-            if(GetVehicleSpeed(VehicleID[i]) > 60)
-            {
-				Speedveh[i]++;
-				SendClientMessageEx(i, COLOR_RED, "ขับเกิน 60 กิโลเมตรต่อชั่วโมง คุณอาจจะไม่ผ่านบททดสอบนี้ได้ (%d)", Speedveh[i]); 
-            }
+            StopDriverstest(playerid);
+            SendClientMessage(playerid, COLOR_RED, "คุณขับรถนานเกินไปกว่าเวลาที่กำหนด"); 
+        }
+        if(GetVehicleSpeed(VehicleID[playerid]) > 60)
+        {
+			Speedveh[playerid]++;
+			SendClientMessageEx(playerid, COLOR_RED, "ขับเกิน 60 กิโลเมตรต่อชั่วโมง คุณอาจจะไม่ผ่านบททดสอบนี้ได้ (%d)", Speedveh[playerid]); 
         }
     }
-    return 1;
+	return 1;
 }
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)

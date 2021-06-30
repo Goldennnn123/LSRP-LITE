@@ -138,7 +138,8 @@ new globalWeather = 2;
 #include "Y/Map/LSPDHQ.pwn"
 #include "Y/Map/LSPDVINEWOOD.pwn"
 #include "Y/Map/415garage.pwn"
-#include "Y/Map/lsrp_lite.pwn"
+#include "Y/Map/idlewoodmap.pwn"
+#include "Y/Map/LSMALL.pwn"
 /*#include "Y/Map/slrp.pwn"
 #include "Y/Map/apartment.pwn"
 #include "Y/Map/LSPDHABOR.pwn"
@@ -529,10 +530,12 @@ public OnPlayerSpawn(playerid) {
         case SPAWN_AT_FACTION: {
             new id = PlayerInfo[playerid][pFaction];
 
-            SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0], FactionInfo[id][eFactionSpawn][1], FactionInfo[id][eFactionSpawn][2]);
+            SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0], FactionInfo[id][eFactionSpawn][1], FactionInfo[id][eFactionSpawn][2]-2);
             
             SetPlayerVirtualWorld(playerid, FactionInfo[id][eFactionSpawnWorld]);
             SetPlayerInterior(playerid, FactionInfo[id][eFactionSpawnInt]);
+            TogglePlayerControllable(playerid, 0);
+            SetTimerEx("SpawnFaction", 2000, false, "dd",playerid,id);
         }
         case SPAWN_AT_HOUSE: {
             

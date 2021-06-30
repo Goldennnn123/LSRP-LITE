@@ -651,3 +651,14 @@ Dialog:DIALOG_COM_FAC_INV(playerid, response, listitem, inputtext[])
 	}
 	return 1;
 }
+
+
+forward SpawnFaction(playerid,id);
+public SpawnFaction(playerid,id)
+{
+    SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0], FactionInfo[id][eFactionSpawn][1], FactionInfo[id][eFactionSpawn][2]);        
+    SetPlayerVirtualWorld(playerid, FactionInfo[id][eFactionSpawnWorld]);
+    SetPlayerInterior(playerid, FactionInfo[id][eFactionSpawnInt]);
+    TogglePlayerControllable(playerid, 1);
+	return 1;
+}

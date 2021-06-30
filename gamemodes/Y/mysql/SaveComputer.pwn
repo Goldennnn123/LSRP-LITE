@@ -1,16 +1,15 @@
 stock SaveComputer(id, thread = MYSQL_TYPE_THREAD)
 {
-    new query[250], str[120];
+    new query[MAX_STRING], str[120];
 
     mysql_init("computer", "ComputerDBID", ComputerInfo[id][ComputerDBID], thread);
 
     mysql_int(query, "ComputerCPU",ComputerInfo[id][ComputerCPU]);
     mysql_int(query, "ComputerRAM",ComputerInfo[id][ComputerRAM]);
 
-    mysql_int(query, "ComputerGPU",ComputerInfo[id][ComputerCPU]);
-    mysql_int(query, "ComputerRAM",ComputerInfo[id][ComputerRAM]);
+    mysql_int(query, "ComputerSpawn",ComputerInfo[id][ComputerSpawn]);
 
-    for(new i = 1; i <= 5; i++)
+    for(new i = 1; i < 6; i++)
     {
         format(str, sizeof(str), "ComputerGPU%d",i);
         mysql_int(query, str,ComputerInfo[id][ComputerGPU][i-1]);
@@ -30,6 +29,5 @@ stock SaveComputer(id, thread = MYSQL_TYPE_THREAD)
     mysql_int(query, "ComputerStartBTC",ComputerInfo[id][ComputerStartBTC]);
     mysql_flo(query, "ComputerBTC",ComputerInfo[id][ComputerBTC]);
     mysql_finish(query);
-    printf("%s",query);
     return 1;
 }

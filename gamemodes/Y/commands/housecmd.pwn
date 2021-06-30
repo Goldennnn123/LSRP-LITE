@@ -329,6 +329,9 @@ CMD:editcom(playerid, params[])
 {
     new id, option[32];
 
+    if(IsPlayerAndroid(playerid) == true)
+        return SendErrorMessage(playerid, "ระบบนี้บนแพล็ตฟอร์มของคุณยังไม่รองรับ");
+
     if(!PlayerInfo[playerid][pInsideProperty])
         return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} คุณไม่ได้อยู่ในบ้าน");
 
@@ -344,7 +347,11 @@ CMD:editcom(playerid, params[])
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้คอม หรือ แล็ปท็อป");
 
     if(sscanf(params, "s[32]", option))
-        return SendUsageMessage(playerid, "/editcom < option >");
+    {
+        SendUsageMessage(playerid, "/editcom < option >");
+        SendClientMessageEx(playerid, COLOR_GREY, "pos upgrade");
+        return 1;
+    }  
 
 
     if(!strcmp(option, "pos"))
@@ -402,6 +409,7 @@ CMD:editcom(playerid, params[])
         Dialog_Show(playerid, D_COMPUTER_UPGRAD_LIST, DIALOG_STYLE_LIST, "Upgrade computer:", longstr, "ยืนยัน", "ยกเลิก");
         return 1;
     }
+    else SendErrorMessage(playerid, "ใส่ให้ถูกต้อง");
     return 1;
 }
 
@@ -493,14 +501,15 @@ stock EditObjectComputer(playerid, id)
     PlayerEditObject[playerid] = true;
     return 1;
 }
-
-hook OP_EditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
-    //if()
-    switch (response)
+    print("OnPlayerEditDynamicObject Is Working on");
+
+    switch(response)
     {
         case EDIT_RESPONSE_FINAL:
         {
+
             if(ComputerEdit[playerid])
             {
                 new id = ComputerEdit[playerid];
@@ -518,17 +527,13 @@ hook OP_EditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Floa
                 ComputerInfo[id][ComputerHouseDBID] = id_h;
                 ComputerEdit[playerid]  = 0;
                 PlayerEditObject[playerid] = false;
-                SaveComputer(id);
 
-                if(IsValidDynamicObject(objectid))
-                    DestroyDynamicObject(objectid);
+                DestroyDynamicObject(ComputerInfo[id][ComputerObject]);
                 
-                objectid = CreateDynamicObject(19893, x, y, z, rx, ry, rz, ComputerInfo[id][ComputerPosWorld], ComputerInfo[id][ComputerPosInterior], -1);
+                ComputerInfo[id][ComputerObject] = CreateDynamicObject(19893, x, y, z, rx, ry, rz, ComputerInfo[id][ComputerPosWorld], ComputerInfo[id][ComputerPosInterior], -1);
+                SaveComputer(id);
                 return 1;
             }
-            
-            
-            return 1;
         }
         case EDIT_RESPONSE_CANCEL:
         {
@@ -551,8 +556,6 @@ hook OP_EditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Floa
                 PlayerEditObject[playerid] = false;
                 return 1;
             }
-
-            return 1;
         }
     }
     return 1;

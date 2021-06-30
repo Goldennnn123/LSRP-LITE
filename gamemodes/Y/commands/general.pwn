@@ -1546,9 +1546,8 @@ CMD:checkcom(playerid, params[])
 		if(ComputerInfo[i][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
 			continue;
 
-
 		count++;
-		SendClientMessageEx(playerid, COLOR_GREY, "COMPUTER ID %d: Spawn: %s",ComputerInfo[i][ComputerDBID], (ComputerInfo[i][ComputerSpawn] != 0) ? ("ยังไม่ได้วาง") : ("วางอยู่"));
+		SendClientMessageEx(playerid, COLOR_GREY, "COMPUTER ID %d: Spawn: %s",ComputerInfo[i][ComputerDBID], (ComputerInfo[i][ComputerSpawn] != 0) ? (""EMBED_GREENMONEY"วางอยู่") : ("ยังไม่ได้วาง"));
 	}
 	if(!count)
 		return SendClientMessage(playerid, COLOR_GREY, "คุณยังไม่มีการซื้อคอมพิวเตอร์");

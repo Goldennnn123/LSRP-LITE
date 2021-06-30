@@ -194,6 +194,7 @@ CMD:opencom(playerid, params[])
     {
         LoadTD_Computer(playerid);
         ShowTD_Computer(playerid);
+        PlayerInfo[playerid][pGUI] = 3;
     }
     else
     {

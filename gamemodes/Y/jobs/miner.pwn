@@ -135,6 +135,7 @@ CMD:ptze(playerid, params[])
     callcmd::me(playerid, str);
     TogglePlayerControllable(playerid, 0);
     SendClientMessageEx(playerid, COLOR_YELLOW, "คุณเริ่มแปรรูปแร่ของคุณ จำนวน %d ชิ้น ต้องใช้เวลาในการแปรรูป %d วินาที",amount, amount);
+    PlayerInfo[playerid][pOre]-= amount;
     SetTimerEx("ProceedOre", amount*1000, false, "dd", playerid, amount);
     return 1;
 }
@@ -333,7 +334,6 @@ CMD:sellore(playerid, params[])
 forward ProceedOre(playerid, amount);
 public ProceedOre(playerid, amount)
 {
-    PlayerInfo[playerid][pOre]-= amount;
     TogglePlayerControllable(playerid, 1);
     
     new randore = random(9);

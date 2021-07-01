@@ -241,7 +241,10 @@ enum E_VEHICLE_SYSTEM
 
 	eVehiclePrice,
 
-	eVehicleComp
+	eVehicleComp,
+
+	bool:eVehicleMusic,
+	eVehicleMusicLink,
 }
 
 new VehicleInfo[MAX_VEHICLES][E_VEHICLE_SYSTEM];
@@ -337,6 +340,9 @@ enum E_HOUSE_INFO
 	HouseStockGPU,
 	HouseStockRAM,
 	HouseStockStored,
+
+	bool:HouseMusic,
+	HouseMusicLink[150],
 	
 }
 new HouseInfo[MAX_HOUSE][E_HOUSE_INFO];
@@ -370,6 +376,9 @@ enum E_BUSINESS_INFO
 	BusinessS_Cemara,
 	BusinessS_Mask,
 	BusinessS_Flower,
+
+	bool:BusinessMusic,
+	BusinessMusicLink[150]
 }
 new BusinessInfo[MAX_BUSINESS][E_BUSINESS_INFO];
 

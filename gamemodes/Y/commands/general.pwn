@@ -13,7 +13,7 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
-	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp");
+	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstaion");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation)");
@@ -198,6 +198,12 @@ CMD:enter(playerid,params[])
 			
 			TogglePlayerControllable(playerid, 0);
 			SetTimerEx("OnPlayerEnterProperty", 2000, false, "ii", playerid, p); 
+
+			if(HouseInfo[p][HouseMusic])
+			{
+				StopAudioStreamForPlayer(playerid);
+				PlayAudioStreamForPlayer(playerid, HouseInfo[p][HouseMusicLink]);
+			}
 		}
 
 	}
@@ -236,9 +242,10 @@ CMD:enter(playerid,params[])
 			TogglePlayerControllable(playerid, 0);
 			SetTimerEx("OnPlayerEnterBusiness", 2000, false, "ii", playerid, b); 
 
-			if(BusinessInfo[b][BusinessType] == BUSINESS_TYPE_CLUB)
+			if(BusinessInfo[b][BusinessMusic])
 			{
-				PlayAudioStreamForPlayer(playerid,  "https://media1.vocaroo.com/mp3/15QIoQc2m1IP");
+				StopAudioStreamForPlayer(playerid);
+				PlayAudioStreamForPlayer(playerid,  BusinessInfo[b][BusinessMusicLink]);
 			}
 			SendBusinessType(playerid, b);
 		}
@@ -290,6 +297,7 @@ CMD:exit(playerid, params[])
 		SetPlayerInterior(playerid, HouseInfo[id][HouseEntranceInterior]);
 		PlayerInfo[playerid][pInsideProperty] = 0;
 		PlayerTextDrawHide(playerid, PlayerSwicthOff[playerid][0]);
+		StopAudioStreamForPlayer(playerid);
 		return 1;
     }
 	if(b_id != 0)
@@ -316,15 +324,13 @@ CMD:exit(playerid, params[])
 		}
 
 
-		if(BusinessInfo[b_id][BusinessType] == BUSINESS_TYPE_CLUB)
-		{
-			StopAudioStreamForPlayer(playerid);
-		}
+		StopAudioStreamForPlayer(playerid);
 		
 		SetPlayerPos(playerid, BusinessInfo[b_id][BusinessEntrance][0], BusinessInfo[b_id][BusinessEntrance][1], BusinessInfo[b_id][BusinessEntrance][2]);
 		SetPlayerVirtualWorld(playerid, BusinessInfo[b_id][BusinessEntranceWorld]);
 		SetPlayerInterior(playerid, BusinessInfo[b_id][BusinessEntranceInterior]);
 		PlayerInfo[playerid][pInsideBusiness] = b_id;
+
 		return 1;
 	}
 	for(new e = 1; e < MAX_ENTRANCE; e++)
@@ -1666,6 +1672,140 @@ CMD:id(playerid, params[])
 
 	SendClientMessageEx(playerid, COLOR_GREY, "ชื่อ: %s เล่นผ่าน: %s",ReturnName(tagerid,0), (IsPlayerAndroid(tagerid)) ? ("Android") : ("PC"));
 	return 1;
+}
+
+CMD:setstaion(playerid, params[])
+{
+	new option[15],url[400], secstr[150];
+
+	if(sscanf(params, "s[15]S()[150]", option,secstr)) 
+	{
+		SendUsageMessage(playerid, "/setstaion <option>");
+		SendClientMessage(playerid, COLOR_GREY, "OPTION: Close Open");
+		return 1;
+	}
+
+	if(!strcmp(option, "close", true))
+	{
+		if(PlayerInfo[playerid][pInsideProperty])
+		{
+			new id = PlayerInfo[playerid][pInsideProperty];
+
+			foreach(new i : Player)
+			{
+				if(PlayerInfo[i][pInsideProperty] != PlayerInfo[playerid][pInsideProperty])
+					continue;
+
+				StopAudioStreamForPlayer(i);
+			}
+
+			HouseInfo[id][HouseMusic] = true;
+			format(HouseInfo[id][HouseMusicLink], 150, "");
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
+			return 1;
+		}
+		if(GetPlayerVehicleID(playerid) != 0)
+		{
+			foreach(new i : Player)
+			{
+				if(GetPlayerVehicleID(i) != GetPlayerVehicleID(playerid))
+					continue;
+
+				StopAudioStreamForPlayer(i);
+			}
+			new vehicleid = GetPlayerVehicleID(playerid);
+			VehicleInfo[vehicleid][eVehicleMusic] = false;
+			format(VehicleInfo[vehicleid][eVehicleMusicLink],1,"");
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
+			return 1;
+		}
+		else if(PlayerInfo[playerid][pInsideBusiness])
+		{
+			new id = PlayerInfo[playerid][pInsideBusiness];
+
+			foreach(new i : Player)
+			{
+				if(PlayerInfo[i][pInsideBusiness] != PlayerInfo[playerid][pInsideBusiness])
+					continue;
+
+				StopAudioStreamForPlayer(i);
+			}
+
+			BusinessInfo[id][BusinessMusic] = true;
+			format(BusinessInfo[id][BusinessMusicLink], 150, "");
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
+			return 1;
+		}
+	}
+	else if(!strcmp(option, "open", true))
+	{
+		if(sscanf(secstr, "s[400]",url))
+			return SendUsageMessage(playerid, "/setstaion <open> <url>");
+	
+		if(PlayerInfo[playerid][pInsideProperty])
+		{
+			new id = PlayerInfo[playerid][pInsideProperty];
+
+			if(strlen(url) < 5)
+				return SendErrorMessage(playerid, "กรุณาใส่ลิ้งค์ที่ถูกต้อง");
+
+			foreach(new i : Player)
+			{
+				if(PlayerInfo[i][pInsideProperty] != PlayerInfo[playerid][pInsideProperty])
+					continue;
+
+				StopAudioStreamForPlayer(i);
+				PlayAudioStreamForPlayer(i, url);
+			}
+
+			HouseInfo[id][HouseMusic] = true;
+			format(HouseInfo[id][HouseMusicLink], 150, "%s",url);
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
+			return 1;
+		}
+		else if(GetPlayerVehicleID(playerid) != 0)
+		{
+			if(strlen(url) < 5)
+				return SendErrorMessage(playerid, "กรุณาใส่ลิ้งค์ที่ถูกต้อง");
+
+			foreach(new i : Player)
+			{
+				if(GetPlayerVehicleID(i) != GetPlayerVehicleID(playerid))
+					continue;
+
+				StopAudioStreamForPlayer(i);
+				PlayAudioStreamForPlayer(i, url);
+			}
+			new vehicleid = GetPlayerVehicleID(playerid);
+			VehicleInfo[vehicleid][eVehicleMusic] = true;
+			format(VehicleInfo[vehicleid][eVehicleMusicLink], 150, "%s",url);
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
+			return 1;
+		}
+		if(PlayerInfo[playerid][pInsideBusiness])
+		{
+			new id = PlayerInfo[playerid][pInsideBusiness];
+
+			if(strlen(url) < 5)
+				return SendErrorMessage(playerid, "กรุณาใส่ลิ้งค์ที่ถูกต้อง");
+
+			foreach(new i : Player)
+			{
+				if(PlayerInfo[i][pInsideBusiness] != PlayerInfo[playerid][pInsideBusiness])
+					continue;
+
+				StopAudioStreamForPlayer(i);
+				PlayAudioStreamForPlayer(i, url);
+			}
+
+			BusinessInfo[id][BusinessMusic] = true;
+			format(BusinessInfo[id][BusinessMusicLink], 150, "%s",url);
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
+		}
+		else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใน ยานพาหนะ / บ้าน / กิจการ");
+	}
+	else SendErrorMessage(playerid, "กรุณาพิพม์ให้ถูกต้อง");
+    return 1;
 }
 
 forward HelpUpPLayer(playerid, tagerid);

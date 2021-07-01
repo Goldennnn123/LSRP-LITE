@@ -2402,6 +2402,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			RemovePlayerFromVehicle(playerid);
 			TogglePlayerControllable(playerid, 1);
+
+			if(VehicleInfo[vehicleid][eVehicleMusic])
+			{
+				StopAudioStreamForPlayer(playerid);
+			}
 			return 1;
 
 		}
@@ -2431,6 +2436,25 @@ public OnVehicleUpdate()
 			ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 			SendClientMessage(playerid, -1, "ö�Ѻ");
 		}
+	}
+	return 1;
+}
+
+public OnPlayerExitVehicle(playerid, vehicleid)
+{
+	if(VehicleInfo[vehicleid][eVehicleMusic])
+	{
+		StopAudioStreamForPlayer(playerid);
+	}
+	return 1;
+}
+
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+	if(VehicleInfo[vehicleid][eVehicleMusic])
+	{
+		StopAudioStreamForPlayer(playerid);
+		PlayAudioStreamForPlayer(playerid, VehicleInfo[vehicleid][eVehicleMusicLink]);
 	}
 	return 1;
 }

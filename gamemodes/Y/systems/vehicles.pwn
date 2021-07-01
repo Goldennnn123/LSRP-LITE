@@ -922,7 +922,7 @@ CMD:vehicle(playerid, params[])
 		VehicleInfo[vehicleid][eVehicleParkInterior] = GetPlayerInterior(playerid);
 		VehicleInfo[vehicleid][eVehicleParkWorld] = GetPlayerVirtualWorld(playerid); 
 		
-		SendServerMessage(playerid, "คุณได้ซื้อพื้นที่จอดรถใหม่ในราคา $5,000.");
+		SendServerMessage(playerid, "คุณได้ซื้อพื้นที่จอดรถใหม่ในราคา $2,500.");
 		GiveMoney(playerid, -2500);
 		SaveVehicle(vehicleid);
 	}

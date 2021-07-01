@@ -1811,6 +1811,10 @@ CMD:setstaion(playerid, params[])
 			if(strlen(url) < 5)
 				return SendErrorMessage(playerid, "กรุณาใส่ลิ้งค์ที่ถูกต้อง");
 
+
+			if(BusinessInfo[id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
+				return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของกิจการนี้");
+
 			foreach(new i : Player)
 			{
 				if(PlayerInfo[i][pInsideBusiness] != PlayerInfo[playerid][pInsideBusiness])

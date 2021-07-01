@@ -1151,11 +1151,24 @@ CMD:setspawn(playerid, params[])
 				return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในบ้าน");
 
 			if(HouseInfo[id_house][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
-				return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของบ้าน");
+			{
+				new tagerid = INVALID_PLAYER_ID;
+
+				foreach(new i : Player)
+				{
+					if(HouseInfo[id_house][HouseOwnerDBID] != PlayerInfo[i][pDBID])
+						continue;
+					
+					tagerid = i;
+				}
+
+				if(tagerid == INVALID_PLAYER_ID)
+					return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของบ้านหลังนี้");
+			}
 
 			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_HOUSE;
 			PlayerInfo[playerid][pSpawnHouse] = id_house;
-			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น บ้าน");
+			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น บ้าน %s", HouseInfo[id_house][HouseName]);
 		}
 		case 3:
 		{

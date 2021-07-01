@@ -264,6 +264,17 @@ CMD:swicth(playerid, params[])
 
             PlayerTextDrawShow(i, PlayerSwicthOff[playerid][0]);
         }
+
+        for(new c = 1; c < MAX_COMPUTER; c++)
+        {
+            if(ComputerInfo[c][ComputerOwnerDBID] != HouseInfo[id][HouseOwnerDBID])
+                continue;
+            
+            ComputerInfo[c][ComputerStartBTC] = false;
+            ComputerInfo[id][ComputerOn] = false;
+            KillTimer(ComputerInfo[id][ComputerTimer]);
+        }
+
         KillTimer(HouseInfo[id][HouseTimerEle]);
 
         format(str, sizeof(str), "»Ô´ÊÇÔ·«ìä¿ÀÒÂã¹ºéÒ¹");

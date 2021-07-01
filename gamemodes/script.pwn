@@ -390,6 +390,9 @@ public OnPlayerConnect(playerid) {
 
     tToAccept[playerid] = INVALID_PLAYER_ID;
 
+    KillTimer(playerTowTimer[playerid]);
+    playerTowingVehicle[playerid] = false;
+
 	new query[90];
     new musicrandom = random(3);
     switch(musicrandom)

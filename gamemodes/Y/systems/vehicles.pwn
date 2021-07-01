@@ -2151,7 +2151,7 @@ public OnVehicleTow(playerid)
 		KillTimer(playerTowTimer[playerid]);
 		SendServerMessage(playerid, "การนำรถกลับมยังจุดเกิดนั้นถูกขัดด้วยอะไรบางอย่าง"); 
 		
-		playerTowingVehicle[playerid] = false;	
+		playerTowingVehicle[playerid] = false;
 		Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleTowDisplay]);
 		
 		VehicleInfo[vehicleid][eVehicleTowCount] = 0;

@@ -85,15 +85,19 @@ CMD:checkore(playerid, params[])
     if(PlayerInfo[playerid][pJob] != JOB_MINER && PlayerInfo[playerid][pSideJob] != JOB_MINER)
         return SendErrorMessage(playerid, "คุณไม่ใช่อาชีพ นักขุดเหมือง");
 
-    SendClientMessage(playerid, COLOR_DARKGREEN, "---------- ORE ----------");
-    SendClientMessageEx(playerid, COLOR_WHITE, "Unprocessed Ores: %d ชิ้น", PlayerInfo[playerid][pOre]);
-    SendClientMessageEx(playerid, COLOR_WHITE, "Coal Ore: %d ชิ้น", PlayerInfo[playerid][pCoal]);
-    SendClientMessageEx(playerid, COLOR_WHITE, "Iron Ore: %d ชิ้น", PlayerInfo[playerid][pIron]);
-    SendClientMessageEx(playerid, COLOR_WHITE, "Copper Ore: %d ชิ้น", PlayerInfo[playerid][pCopper]);
-    SendClientMessageEx(playerid, COLOR_WHITE, "Potassium Nitrate: %d ชิ้น", PlayerInfo[playerid][pKNO3]);
-    SendClientMessage(playerid, COLOR_DARKGREEN, "---------- ORE ----------");
+    if(PlayerInfo[playerid][pAdmin])
+    {
+        new tagetid;
+        if(sscanf(params, "u(-1)", tagetid))
+            ShowOre(playerid);
+            
+        ShowOre(tagetid);
+        return 1;
+    }
+    else ShowOre(playerid);
     return 1;
 }
+
 
 CMD:ptze(playerid, params[])
 {
@@ -387,5 +391,17 @@ public ProceedOre(playerid, amount)
             return 1;
         }
     }
+    return 1;
+}
+
+stock ShowOre(playerid)
+{
+    SendClientMessage(playerid, COLOR_DARKGREEN, "---------- ORE ----------");
+    SendClientMessageEx(playerid, COLOR_WHITE, "Unprocessed Ores: %d ชิ้น", PlayerInfo[playerid][pOre]);
+    SendClientMessageEx(playerid, COLOR_WHITE, "Coal Ore: %d ชิ้น", PlayerInfo[playerid][pCoal]);
+    SendClientMessageEx(playerid, COLOR_WHITE, "Iron Ore: %d ชิ้น", PlayerInfo[playerid][pIron]);
+    SendClientMessageEx(playerid, COLOR_WHITE, "Copper Ore: %d ชิ้น", PlayerInfo[playerid][pCopper]);
+    SendClientMessageEx(playerid, COLOR_WHITE, "Potassium Nitrate: %d ชิ้น", PlayerInfo[playerid][pKNO3]);
+    SendClientMessage(playerid, COLOR_DARKGREEN, "---------- ORE ----------");
     return 1;
 }

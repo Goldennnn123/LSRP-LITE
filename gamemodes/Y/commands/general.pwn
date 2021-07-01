@@ -235,6 +235,11 @@ CMD:enter(playerid,params[])
 
 			TogglePlayerControllable(playerid, 0);
 			SetTimerEx("OnPlayerEnterBusiness", 2000, false, "ii", playerid, b); 
+
+			if(BusinessInfo[b][BusinessType] == BUSINESS_TYPE_CLUB)
+			{
+				PlayAudioStreamForPlayer(playerid,  "https://media1.vocaroo.com/mp3/15QIoQc2m1IP", BusinessInfo[b][BusinessInterior][0], BusinessInfo[b][BusinessInterior][1], BusinessInfo[b][BusinessInterior][2], 100, 0);
+			}
 			SendBusinessType(playerid, b);
 		}
 	}
@@ -308,6 +313,12 @@ CMD:exit(playerid, params[])
 				MenuStore_Close(playerid);
 				PlayerInfo[playerid][pGUI] = 0;
 			}
+		}
+
+
+		if(BusinessInfo[b_id][BusinessType] == BUSINESS_TYPE_CLUB)
+		{
+			StopAudioStreamForPlayer(playerid);
 		}
 		
 		SetPlayerPos(playerid, BusinessInfo[b_id][BusinessEntrance][0], BusinessInfo[b_id][BusinessEntrance][1], BusinessInfo[b_id][BusinessEntrance][2]);

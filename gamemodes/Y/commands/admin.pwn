@@ -1231,7 +1231,7 @@ CMD:makegps(playerid, params[])
 	if(sscanf(params, "s[32]", name))
 		return SendUsageMessage(playerid, "/makegps <ชื่อ GPS>");
 
-	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+	if(PlayerInfo[playerid][pInsideProperty] && PlayerInfo[playerid][pInsideBusiness])
 		return SendErrorMessage(playerid, "คุณต้องไม่อยู่ภายในบ้าน หรือ กิจการ");
 
 

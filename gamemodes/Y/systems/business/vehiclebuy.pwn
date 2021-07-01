@@ -613,10 +613,6 @@ stock ShowVehicleBike(playerid)
 
     format(str, sizeof(str), "BIKE\t$%s\n",MoneyFormat(700));
     strcat(longstr, str);
-    format(str, sizeof(str), "BMX\t$%s\n",MoneyFormat(1200));
-    strcat(longstr, str);
-    format(str, sizeof(str), "Mountain Bike\t$%s\n",MoneyFormat(1500));
-    strcat(longstr, str);
     format(str, sizeof(str), "Faggio\t$%s\n",MoneyFormat(10000));
     strcat(longstr, str);
     format(str, sizeof(str), "Pizzaboy\t$%s\n",MoneyFormat(12000));
@@ -950,25 +946,6 @@ Dialog:DIALOG_BUY_BIKE_LIST(playerid, response, listitem, inputtext[])
         }
         case 1:
         {
-            PlayerSeleteVehicle[playerid] = 481;
-            PLayerVehiclePrice[playerid] = 1200;
-            PlayerVehicleColor1[playerid] = random(255);
-            PlayerVehicleColor2[playerid] = random(255);
-            SelectTextDraw(playerid, 0xFFFFFF95);
-            ShowVehicleSelect(playerid);
-            return 1;
-        }
-        case 2:
-        {
-            PlayerSeleteVehicle[playerid] = 510;
-            PLayerVehiclePrice[playerid] = 1500;
-            PlayerVehicleColor1[playerid] = random(255);
-            PlayerVehicleColor2[playerid] = random(255);
-            ShowVehicleSelect(playerid);
-            return 1;
-        }
-        case 3:
-        {
             PlayerSeleteVehicle[playerid] = 462;
             PLayerVehiclePrice[playerid] = 10000;
             PlayerVehicleColor1[playerid] = random(255);
@@ -976,7 +953,7 @@ Dialog:DIALOG_BUY_BIKE_LIST(playerid, response, listitem, inputtext[])
             ShowVehicleSelect(playerid);
             return 1;
         }
-        case 4:
+        case 2:
         {
             PlayerSeleteVehicle[playerid] = 448;
             PLayerVehiclePrice[playerid] = 12000;
@@ -985,7 +962,7 @@ Dialog:DIALOG_BUY_BIKE_LIST(playerid, response, listitem, inputtext[])
             ShowVehicleSelect(playerid);
             return 1;
         }
-        case 5:
+        case 3:
         {
             PlayerSeleteVehicle[playerid] = 463;
             PLayerVehiclePrice[playerid] = 30000;
@@ -994,7 +971,7 @@ Dialog:DIALOG_BUY_BIKE_LIST(playerid, response, listitem, inputtext[])
             ShowVehicleSelect(playerid);
             return 1;
         }
-        case 6:
+        case 4:
         {
             PlayerSeleteVehicle[playerid] = 586;
             PLayerVehiclePrice[playerid] = 35000;

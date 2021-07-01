@@ -41767,7 +41767,7 @@ IsJobSide(jobid)
 	return 0;
 }
 
-ReturnJobName(playerid, jobid)
+ ReturnJobName(playerid, jobid)
 {
 	new name[32];
 

@@ -1681,6 +1681,9 @@ CMD:setstaion(playerid, params[])
 	if(sscanf(params, "s[15]S()[150]", option,secstr)) 
 	{
 		SendUsageMessage(playerid, "/setstaion <option>");
+		SendClientMessage(playerid, -1, "ลิ้งค์สำหรับการแปลง: https://vocaroo.com/upload");
+		SendClientMessage(playerid, -1, "วิธีการใช้คือ อัปโหลดเพลงที่ต้องการจากคอมพิวเตอร์ของคุณลงไปในลิ้งค์นี้");
+		SendClientMessage(playerid, -1, "และนำลิ้งค์นั้นมาเป็นลิ้งในการเปิดเพลง");
 		SendClientMessage(playerid, COLOR_GREY, "OPTION: Close Open");
 		return 1;
 	}

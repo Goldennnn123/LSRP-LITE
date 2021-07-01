@@ -908,7 +908,7 @@ CMD:vehicle(playerid, params[])
 
 		if(PlayerInfo[playerid][pVehicleSpawned] == false) return SendErrorMessage(playerid, "รถของคุณไม่ได้ถูกนำออกมา");
 
-		if(PlayerInfo[playerid][pCash] < 5000)
+		if(PlayerInfo[playerid][pCash] < 2500)
 			return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ");
 
 		new  vehicleid = GetPlayerVehicleID(playerid);
@@ -923,7 +923,7 @@ CMD:vehicle(playerid, params[])
 		VehicleInfo[vehicleid][eVehicleParkWorld] = GetPlayerVirtualWorld(playerid); 
 		
 		SendServerMessage(playerid, "คุณได้ซื้อพื้นที่จอดรถใหม่ในราคา $5,000.");
-		GiveMoney(playerid, -5000);
+		GiveMoney(playerid, -2500);
 		SaveVehicle(vehicleid);
 	}
 	else if(!strcmp(oneString, "list"))

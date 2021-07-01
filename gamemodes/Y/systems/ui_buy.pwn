@@ -57,6 +57,7 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     new Float:result_price = price * 0.03;
 
     BusinessInfo[id][BusinessCash] += price - floatround(result_price, floatround_round);
+    GlobalInfo[G_GovCash]+= floatround(result_price, floatround_round);
     SaveBusiness(id);
     CharacterSave(playerid);
     return true;

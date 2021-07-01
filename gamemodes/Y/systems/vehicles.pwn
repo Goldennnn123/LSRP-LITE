@@ -2183,6 +2183,7 @@ public OnVehicleTow(playerid)
 		KillTimer(playerTowTimer[playerid]);
 		
 		VehicleInfo[vehicleid][eVehicleTowCount] = 0; 
+		VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 		return 1;
 	}
 	
@@ -2399,10 +2400,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(!IsPlayerInAnyVehicle(playerid))
 				return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
 
-			new Float:x, Float:y, Float:z;
-
-			GetVehiclePos(vehicleid, x, y, z);
-			SetPlayerPos(playerid, x, y+2, z);	
+			RemovePlayerFromVehicle(playerid);
 			TogglePlayerControllable(playerid, 1);
 			return 1;
 

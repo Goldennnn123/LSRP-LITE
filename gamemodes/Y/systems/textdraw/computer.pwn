@@ -496,7 +496,7 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				KillTimer(ComputerInfo[id][ComputerTimer]);
 				PlayerTextDrawSetString(playerid,PL_Computer[playerid][21], "~g~START");
 				
-				PlayerInfo[id][pBTC] += ComputerInfo[id][ComputerBTC];
+				PlayerInfo[playerid][pBTC] += ComputerInfo[id][ComputerBTC];
 				SendClientMessageEx(playerid, COLOR_DARKGOLDENROD, "BITSAMP: จำนวน %.5f เข้าไปที่บัญชี BITSAMP ของคุณ",ComputerInfo[id][ComputerBTC]);
 				
 				ComputerInfo[id][ComputerBTC] = 0.0;

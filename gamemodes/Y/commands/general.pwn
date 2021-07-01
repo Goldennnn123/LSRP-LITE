@@ -13,6 +13,7 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
+	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation)");
@@ -81,6 +82,42 @@ CMD:jobhelp(playerid, params[])
 	return 1;
 }
 
+CMD:bitsamphelp(playerid, params[])
+{
+	SendClientMessage(playerid, COLOR_DARKGREEN, "___________BITSAMP : HELP___________");
+	SendClientMessage(playerid, COLOR_DARKGREEN, "");
+	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /checkbit /givebit /sellbit");
+	SendClientMessage(playerid, COLOR_DARKGREEN, "");
+	SendClientMessage(playerid, COLOR_DARKGREEN, "___________BITSAMP : HELP___________");
+	return 1;
+}
+
+
+CMD:sellbit(playerid, params[])
+{
+	new Float:bit;
+	if(sscanf(params, "f", bit))
+		return SendUsageMessage(playerid, "/sellbit <จำนวนบิต:>");
+
+	if(bit < 0.00001)
+		return SendErrorMessage(playerid, "กรุณาใส่จำนวน บิตให้ถูกต้อง (*ต้องมากกว่า 0.00001*)");
+
+
+	if(PlayerInfo[playerid][pBTC] < bit)
+		return SendErrorMessage(playerid, "คุณมีบิตไม่เพียงพอ");
+	new Float:result;
+	
+	PlayerInfo[playerid][pBTC]-= bit;
+	result  = GlobalInfo[G_BITSAMP] * bit;
+	
+	floatround(result,floatround_round);
+	GiveMoney(playerid, floatround(result,floatround_round));
+	CharacterSave(playerid);
+	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ขาย BITSMAP ได้เงินมาจำนวน $%s", MoneyFormat(floatround(result,floatround_round)));
+	SendClientMessageEx(playerid, COLOR_GREY, "เหลือ: %.5f",PlayerInfo[playerid][pBTC]);
+	return 1;
+}
+
 
 CMD:mask(playerid, params[])
 {
@@ -118,6 +155,16 @@ CMD:mask(playerid, params[])
 CMD:gps(playerid, params[])
 {
 	Dialog_Show(playerid, D_GPS_LIST, DIALOG_STYLE_LIST, "GPS SYSTEM:", "[GPS GLOBAL]\n[GPS PRIVATE]", "ยินยัน", "ยกเลิก");
+	return 1;
+}
+
+CMD:global(playerid, params[])
+{
+	SendClientMessage(playerid, COLOR_DARKGREEN, "___________GLOBAL: PRICE___________");
+	SendClientMessage(playerid, COLOR_DARKGREEN, "");
+	SendClientMessageEx(playerid, COLOR_GRAD2, "BITSAMP: 1 บิตมีค่าเท่ากับ %s ", MoneyFormat(GlobalInfo[G_BITSAMP]));
+	SendClientMessage(playerid, COLOR_DARKGREEN, "");
+	SendClientMessage(playerid, COLOR_DARKGREEN, "___________GLOBAL: PRICE___________");
 	return 1;
 }
 

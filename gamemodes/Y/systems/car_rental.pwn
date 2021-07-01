@@ -132,11 +132,8 @@ CMD:exitvehicle(playerid, params[])
 {
 	if(!IsPlayerInAnyVehicle(playerid))
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
-
-	new vehicleid = GetPlayerVehicleID(playerid), Float:x, Float:y, Float:z;
-
-	GetVehiclePos(vehicleid, x, y, z);
-	SetPlayerPos(playerid, x, y+2, z);	
+		
+	RemovePlayerFromVehicle(playerid);
 	TogglePlayerControllable(playerid, 1);
 	return 1;
 }

@@ -82,16 +82,29 @@ public StartMine(playerid)
 
 CMD:checkore(playerid, params[])
 {
-    if(PlayerInfo[playerid][pJob] != JOB_MINER && PlayerInfo[playerid][pSideJob] != JOB_MINER)
+    if(PlayerInfo[playerid][pJob] != JOB_MINER && PlayerInfo[playerid][pSideJob] != JOB_MINER && !PlayerInfo[playerid][pAdmin])
         return SendErrorMessage(playerid, "คุณไม่ใช่อาชีพ นักขุดเหมือง");
 
     if(PlayerInfo[playerid][pAdmin])
     {
         new tagetid;
-        if(sscanf(params, "u(-1)", tagetid))
-            ShowOre(playerid);
-            
-        ShowOre(tagetid);
+        if(sscanf(params, "i(-1)", tagetid))
+            return 1;
+
+        if(tagetid == -1)
+		{
+			return  ShowOre(playerid);
+		}
+		else
+		{
+			if(!IsPlayerConnected(tagetid))
+				return SendErrorMessage(tagetid, "ผู้เล่นไม่ได้ทำการเชื่อมต่อเข้าเซืฟเวอร์");
+				
+			if(!BitFlag_Get(gPlayerBitFlag[tagetid], IS_LOGGED))
+				return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+				
+			ShowOre(tagetid);
+		}
         return 1;
     }
     else ShowOre(playerid);
@@ -396,7 +409,7 @@ public ProceedOre(playerid, amount)
 
 stock ShowOre(playerid)
 {
-    SendClientMessage(playerid, COLOR_DARKGREEN, "---------- ORE ----------");
+    SendClientMessageEx(playerid, COLOR_DARKGREEN, "---------- ORE %s ----------",  ReturnName(playerid,0));
     SendClientMessageEx(playerid, COLOR_WHITE, "Unprocessed Ores: %d ชิ้น", PlayerInfo[playerid][pOre]);
     SendClientMessageEx(playerid, COLOR_WHITE, "Coal Ore: %d ชิ้น", PlayerInfo[playerid][pCoal]);
     SendClientMessageEx(playerid, COLOR_WHITE, "Iron Ore: %d ชิ้น", PlayerInfo[playerid][pIron]);

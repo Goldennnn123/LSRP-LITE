@@ -463,11 +463,11 @@ CMD:givebit(playerid, params[])
     new number,tagetid, Float:bit;
 
     if(sscanf(params, "df",number, bit))
-        return SendUsageMessage(playerid, "/givebit <ชื่อบางส่วน/ไอดี> <จำนวน>");
+        return SendUsageMessage(playerid, "/givebit <เบอร์โทร> <จำนวน>");
 
     foreach(new i : Player)
     {
-        if(PlayerInfo[i][pPhone] == i)
+        if(PlayerInfo[i][pPhone] == number)
         {
             tagetid = i;
         }

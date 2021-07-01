@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `gps` (
         FOREIGN KEY
             (GPSOwner)
         REFERENCES
-            masters(acc_dbid)
+            characters(char_dbid)
         ON DELETE
             CASCADE
         ON UPDATE

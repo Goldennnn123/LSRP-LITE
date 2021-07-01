@@ -238,7 +238,7 @@ CMD:enter(playerid,params[])
 
 			if(BusinessInfo[b][BusinessType] == BUSINESS_TYPE_CLUB)
 			{
-				PlayAudioStreamForPlayer(playerid,  "https://media1.vocaroo.com/mp3/15QIoQc2m1IP", BusinessInfo[b][BusinessInterior][0], BusinessInfo[b][BusinessInterior][1], BusinessInfo[b][BusinessInterior][2], 100, 0);
+				PlayAudioStreamForPlayer(playerid,  "https://media1.vocaroo.com/mp3/15QIoQc2m1IP");
 			}
 			SendBusinessType(playerid, b);
 		}

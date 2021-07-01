@@ -1765,6 +1765,12 @@ CMD:setstaion(playerid, params[])
 		}
 		else if(GetPlayerVehicleID(playerid) != 0)
 		{
+			if(HasNoEngine(GetPlayerVehicleID(playerid)))
+				return SendErrorMessage(playerid, "ไม่มีเครื่องยนต์");
+
+			if(!VehicleInfo[GetPlayerVehicleID(playerid)][eVehicleEngineStatus])
+				return SendErrorMessage(playerid, "ต้องติดเครื่องยนต์ก่อน");
+
 			if(strlen(url) < 5)
 				return SendErrorMessage(playerid, "กรุณาใส่ลิ้งค์ที่ถูกต้อง");
 

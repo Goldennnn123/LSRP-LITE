@@ -503,7 +503,6 @@ stock EditObjectComputer(playerid, id)
 }
 public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
-    print("OnPlayerEditDynamicObject Is Working on");
 
     switch(response)
     {

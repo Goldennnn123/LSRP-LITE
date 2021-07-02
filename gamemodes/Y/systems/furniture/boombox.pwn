@@ -58,7 +58,12 @@ CMD:boombox(playerid, params[])
         }
         if(idx == 0) return SendErrorMessage(playerid, "มีการใช้  BoomBox ถึงขีดจำกัดของเซิร์ฟเวอร์แล้ว");
         
-        EditObjectBoomBox(playerid, idx);
+        if(IsPlayerAndroid(playerid) == true)
+        {
+            PlaceBoomBox(playerid, idx);
+            return 1;
+        }
+        else EditObjectBoomBox(playerid, idx);
         return 1;
     }
     if(!strcmp(option, "get",true))
@@ -96,6 +101,26 @@ stock EditObjectBoomBox(playerid, id)
     PlayerEditBoomBox[playerid] = id;
     PlayerEditObject[playerid] = true;
     PlayerInfo[playerid][pBoomBoxSpawnID] = id;
+    return 1;
+}
+
+stock PlaceBoomBox(playerid, id)
+{
+    new Float:x,Float:y, Float:z;
+    GetPlayerPos(playerid, x,y, z);
+
+    BoomBoxInfo[id][BoomBoxPos][0] = x;
+    BoomBoxInfo[id][BoomBoxPos][1] = y;
+    BoomBoxInfo[id][BoomBoxPos][2] = z-1;
+    BoomBoxInfo[id][BoomBoxPos][3] = 0.0;
+    BoomBoxInfo[id][BoomBoxPos][4] = 0.0;
+    BoomBoxInfo[id][BoomBoxPos][5] = 0.0;
+    BoomBoxInfo[id][BoomBoxWorld] = GetPlayerVirtualWorld(playerid);
+
+    SendClientMessageEx(playerid, -1, "คุณได้มีการวาง BoomBox (%d)",id);
+    SendNearbyMessage(playerid, 5.5, COLOR_EMOTE, "* %s วาง BoomBox",ReturnName(playerid,0));
+    PlayerEditBoomBox[playerid] = 0;
+    PlayerEditObject[playerid] = false;
     return 1;
 }
 

@@ -8,6 +8,16 @@ hook OnPlayerDisconnect(playerid, reason)
     if(PlayerInfo[playerid][pBoomBoxSpawnID])
     {
         DestroyDynamicObject(BoomBoxInfo[PlayerInfo[playerid][pBoomBoxSpawnID]][BoomBoxObject]);
+
+        foreach(new i : Player)
+        {
+            new id = PlayerInfo[playerid][pBoomBoxSpawnID];
+
+            if(!IsPlayerInRangeOfPoint(i, 35.0, BoomBoxInfo[id][BoomBoxPos][0], BoomBoxInfo[id][BoomBoxPos][1], BoomBoxInfo[id][BoomBoxPos][2]))
+                continue;
+
+            StopAudioStreamForPlayer(i);
+        }
     }
     return 1;
 }
@@ -60,7 +70,7 @@ CMD:boombox(playerid, params[])
         
         if(!IsPlayerInRangeOfPoint(playerid, 3.5, BoomBoxInfo[id][BoomBoxPos][0], BoomBoxInfo[id][BoomBoxPos][1], BoomBoxInfo[id][BoomBoxPos][2]))
             return  SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ BoomBox ของคุณ");
-            
+
         BoomBoxInfo[id][BoomBoxID] = 0;
         BoomBoxInfo[id][BoomBoxSpawn] = false;
         PlayerInfo[playerid][pBoomBoxSpawnID] = 0;

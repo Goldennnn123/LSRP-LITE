@@ -1164,6 +1164,8 @@ CMD:setspawn(playerid, params[])
 
 				if(tagerid == INVALID_PLAYER_ID)
 					return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของบ้านหลังนี้");
+
+				SendClientMessageEx(tagerid, COLOR_REPORT, "SMS-HOUSE: %s ได้เริ่มเข้ามาอยู่บ้านของคุณ", ReturnName(playerid,0));
 			}
 
 			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_HOUSE;

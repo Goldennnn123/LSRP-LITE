@@ -84,3 +84,4 @@ AddCharModel( 108, 29072, "civ31.dff", "civ31.txd");
 ////Skin ส่วนตัว
 AddCharModel( 180, 29073, "kurt.dff", "kurt.txd");
 AddCharModel( 180, 29074, "wmyst.dff", "wmyst.txd");
+AddCharModel( 180, 29075, "wmydrug.dff", "wmydrug.txd");

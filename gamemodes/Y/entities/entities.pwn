@@ -1,7 +1,7 @@
 #define MAX_FACTION_RANKS       	(21)
 #define MAX_FACTIONS				(30)
 #define MAX_HOUSE					(30)
-#define MAX_BUSINESS				(30)
+#define MAX_BUSINESS				(150)
 #define MAX_PHONEBOOK				(700)
 #define MAX_ENTRANCE				(700)
 #define MAX_FACTION_VEHICLE			(60)

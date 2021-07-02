@@ -74,6 +74,7 @@ new globalWeather = 2;
 #include "Y/entities/gps.pwn"
 #include "Y/entities/vehicle_faction.pwn"
 #include "Y/entities/global.pwn"
+#include "Y/entities/boombox.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -93,10 +94,11 @@ new globalWeather = 2;
 #include "Y/systems/entrance.pwn"
 
 #include "Y/systems/phone.pwn"
-#include "Y/systems/ui_buy.pwn"
+#include "Y/systems/business/ui_buy.pwn"
 #include "Y/systems/business/vehiclebuy.pwn"
 #include "Y/systems/anim.pwn"
 #include "Y/systems/furniture/computer.pwn"
+#include "Y/systems/furniture/boombox.pwn"
 #include "Y/systems/fine.pwn"
 #include "Y/systems/gps.pwn"
 #include "Y/systems/global.pwn"
@@ -388,6 +390,9 @@ public OnPlayerConnect(playerid) {
 	PlayerInfo[playerid][pSkinClothing][2] = 0;
     PlayerInfo[playerid][pWhitelist] = false;
     PlayerInfo[playerid][pTester] = 0;
+
+    PlayerInfo[playerid][pBoomBox] = false;
+    PlayerInfo[playerid][pBoomBoxSpawnID] = 0;
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;

@@ -13,7 +13,7 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
-	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstaion");
+	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstaion /boombox");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation)");
@@ -329,7 +329,7 @@ CMD:exit(playerid, params[])
 		SetPlayerPos(playerid, BusinessInfo[b_id][BusinessEntrance][0], BusinessInfo[b_id][BusinessEntrance][1], BusinessInfo[b_id][BusinessEntrance][2]);
 		SetPlayerVirtualWorld(playerid, BusinessInfo[b_id][BusinessEntranceWorld]);
 		SetPlayerInterior(playerid, BusinessInfo[b_id][BusinessEntranceInterior]);
-		PlayerInfo[playerid][pInsideBusiness] = b_id;
+		PlayerInfo[playerid][pInsideBusiness] = 0;
 
 		return 1;
 	}
@@ -1752,6 +1752,22 @@ CMD:setstaion(playerid, params[])
 			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
 			return 1;
 		}
+		else if(PlayerInfo[playerid][pBoomBoxSpawnID] && !PlayerInfo[playerid][pInsideBusiness] && !PlayerInfo[playerid][pInsideProperty])
+		{
+			new id = PlayerInfo[playerid][pBoomBoxSpawnID];
+			if(IsPlayerInRangeOfPoint(playerid, 2.5, BoomBoxInfo[id][BoomBoxPos][0], BoomBoxInfo[id][BoomBoxPos][1], BoomBoxInfo[id][BoomBoxPos][2]))
+			{
+				foreach(new i : Player)
+				{
+					if(!IsPlayerInRangeOfPoint(i, 35.0, BoomBoxInfo[id][BoomBoxPos][0], BoomBoxInfo[id][BoomBoxPos][1], BoomBoxInfo[id][BoomBoxPos][2]))
+						continue;
+
+					StopAudioStreamForPlayer(i);
+				}
+			}
+			SendNearbyMessage(playerid, 15.5, COLOR_EMOTE, "* %s ได้ปิดสถานีวิทยุ", ReturnName(playerid,0));
+		}
+		else SendErrorMessage(playerid, "คุณไมได้อยู่ใกล้ บ้าน / กิจการ / BoomBox");
 	}
 	else if(!strcmp(option, "open", true))
 	{
@@ -1804,7 +1820,7 @@ CMD:setstaion(playerid, params[])
 			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
 			return 1;
 		}
-		if(PlayerInfo[playerid][pInsideBusiness])
+		else if(PlayerInfo[playerid][pInsideBusiness])
 		{
 			new id = PlayerInfo[playerid][pInsideBusiness];
 
@@ -1828,7 +1844,24 @@ CMD:setstaion(playerid, params[])
 			format(BusinessInfo[id][BusinessMusicLink], 150, "%s",url);
 			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
 		}
-		else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใน ยานพาหนะ / บ้าน / กิจการ");
+		else if(PlayerInfo[playerid][pBoomBoxSpawnID] && !PlayerInfo[playerid][pInsideBusiness] && !PlayerInfo[playerid][pInsideProperty])
+		{
+			new id = PlayerInfo[playerid][pBoomBoxSpawnID];
+			if(IsPlayerInRangeOfPoint(playerid, 2.5, BoomBoxInfo[id][BoomBoxPos][0], BoomBoxInfo[id][BoomBoxPos][1], BoomBoxInfo[id][BoomBoxPos][2]))
+			{
+				foreach(new i : Player)
+				{
+					if(!IsPlayerInRangeOfPoint(i, 35.0, BoomBoxInfo[id][BoomBoxPos][0], BoomBoxInfo[id][BoomBoxPos][1], BoomBoxInfo[id][BoomBoxPos][2]))
+						continue;
+
+					StopAudioStreamForPlayer(i);
+					PlayAudioStreamForPlayer(i, url, BoomBoxInfo[id][BoomBoxPos][0], BoomBoxInfo[id][BoomBoxPos][1], BoomBoxInfo[id][BoomBoxPos][2], 35.0,1);
+				}
+				SendNearbyMessage(playerid, 15.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
+				return 1;
+			}
+		}
+		else SendErrorMessage(playerid, "คุณไมได้อยู่ใกล้ บ้าน / กิจการ / BoomBox");
 	}
 	else SendErrorMessage(playerid, "กรุณาพิพม์ให้ถูกต้อง");
     return 1;

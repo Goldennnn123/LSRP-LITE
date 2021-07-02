@@ -174,6 +174,8 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 
         mysql_int(query, "pVehicleSpawned",PlayerInfo[playerid][pVehicleSpawned]);
         mysql_int(query, "pVehicleSpawnedID",PlayerInfo[playerid][pVehicleSpawnedID]);
+
+        mysql_int(query, "pBoomBox",PlayerInfo[playerid][pBoomBox]);
 		mysql_finish(query);
         
         SaveUCP(playerid);

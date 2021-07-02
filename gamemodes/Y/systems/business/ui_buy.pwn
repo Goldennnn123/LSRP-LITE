@@ -48,6 +48,14 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
 
         PlayerInfo[playerid][pCigare]+= 20;
     }
+
+    if(itemid == 6)
+    {
+        if(PlayerInfo[playerid][pBoomBox])
+            return SendErrorMessage(playerid, "คุณมี BoomBox อยู่แล้ว");
+
+        PlayerInfo[playerid][pBoomBox] = true;
+    }
     
     new string[128];
     format(string, 128, "คุณได้ซื้อ %dx %s", amount, itemname);

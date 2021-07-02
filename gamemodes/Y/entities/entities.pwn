@@ -110,6 +110,8 @@ enum E_PLAYER_DATA
 
 	pGUI,
 	pCigare,
+	bool:pBoomBox,
+	pBoomBoxSpawnID,
 
 
 	bool:pDriverLicense,

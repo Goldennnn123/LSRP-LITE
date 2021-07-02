@@ -1338,6 +1338,26 @@ CMD:editgps(playerid, params[])
 	}
 	return 1;
 }
+
+CMD:setbit(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+
+	new price;
+
+	if(sscanf(params, "d", price))
+		return SendUsageMessage(playerid,  "/setbit <ราคา  BITSMAP>");
+
+	GlobalInfo[G_BITSAMP] = price;
+	SendClientMessageEx(playerid, -1, "คุณได้เปลี่ยนราคาตลาด BITSAMP: %s", MoneyFormat(price));
+	SendClientMessageToAll(COLOR_YELLOWEX, "มีการเปลี่ยนแปลงทางราคาตลาด");
+	new query[150], thread = MYSQL_TYPE_THREAD;
+	mysql_init("global", "ID",1, thread);
+	mysql_int(query, "G_BITSAMP",GlobalInfo[G_BITSAMP]);
+	mysql_finish(query);
+	return 1;
+}
 /// Admin Level: 1;
 
 

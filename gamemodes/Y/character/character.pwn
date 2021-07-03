@@ -573,25 +573,6 @@ public Query_SelectCharacter(playerid)
 	return 1;
 }
 
-stock GiveMoney(playerid, amount)
-{
-	PlayerInfo[playerid][pCash] += amount;
-	GivePlayerMoney(playerid, amount);
-	CharacterSave(playerid);
-	
-	new string[128]; 
-	
-	if(amount < 0) {
-		format(string, sizeof(string), "~r~$%d", amount);
-		GameTextForPlayer(playerid, string, 2000, 1);
-	}
-	else{
-		format(string, sizeof(string), "~g~$%d", amount);
-		GameTextForPlayer(playerid, string, 2000, 1);
-	}
-	return 1;
-}
-
 
 stock ResetPlayerCharacter(playerid)
 {

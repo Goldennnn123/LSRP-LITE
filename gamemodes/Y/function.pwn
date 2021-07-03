@@ -420,7 +420,7 @@ stock ShowCharacterStats(playerid, playerb)
 	
 	SendClientMessageEx(playerb, COLOR_DARKGREEN, "|__________________%s [%s]__________________|", ReturnRealName(playerid, 0), ReturnDate());
 
-	SendClientMessageEx(playerb, COLOR_GRAD2, "ตัวละคร: กลุ่ม/แก๊ง:[%s] ตำแหน่ง:[%s] อาชีพ:[%s]", ReturnFactionName(playerid), ReturnFactionRank(playerid), GetJobName(PlayerInfo[playerid][pCareer], PlayerInfo[playerid][pJob]));
+	SendClientMessageEx(playerb, COLOR_GRAD2, "ตัวละคร: กลุ่ม/แก๊ง:[%s] ตำแหน่ง:[%s] อาชีพ:[%s] เลือด:[%.2f] เกราะ:[%.2f]", ReturnFactionName(playerid), ReturnFactionRank(playerid), GetJobName(PlayerInfo[playerid][pCareer], PlayerInfo[playerid][pJob]), PlayerInfo[playerid][pHealth],PlayerInfo[playerid][pArmour]);
 	SendClientMessageEx(playerb, COLOR_GRAD1, "ประสบการณ์: เลเวล:[%d] ค่าประสบการณ์:[%d/%d] เวลาออนไลน์:[%d ชัวโมง]", PlayerInfo[playerid][pLevel], PlayerInfo[playerid][pExp], ((PlayerInfo[playerid][pLevel]) * 4 + 2), PlayerInfo[playerid][pTimeplayed]);
 	SendClientMessageEx(playerb, COLOR_GRAD2, "อาวุธ: อาวุธ หลัก:[%s] กระสุน:[%d] อาวุธสำรอง:[%s] กระสุน:[%d]", ShowPlayerWeapons(playerid, 4), PlayerInfo[playerid][pWeaponsAmmo][3], ShowPlayerWeapons(playerid, 3), PlayerInfo[playerid][pWeaponsAmmo][2]);
 	SendClientMessageEx(playerb, COLOR_GRAD1, "ช่องเก็บของ: เบอร์โทรศัพท์:[%d] วิทยุ:[%s] แชแนล:[%d] แมส:[%s] Melee:[%s]", PlayerInfo[playerid][pPhone], (PlayerInfo[playerid][pHasRadio] != true) ? ("ไม่มี") : ("มี"), PlayerInfo[playerid][pRadio][PlayerInfo[playerid][pMainSlot]], (PlayerInfo[playerid][pHasMask] != true) ? ("ไม่มี") : ("มี"), ShowPlayerWeapons(playerid, 1));

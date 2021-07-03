@@ -270,7 +270,7 @@ CMD:service(playerid, params[])
                 if(GetVehicleHealth(vehicleid, vehhp) == VehicleData[modelid_taget - 400][c_maxhp])
                     return SendErrorMessage(playerid, "ภายในของรถไม่ได้รับความเสียหาย");
                 
-                comp = floatround(VehicleData[modelid_taget - 400][c_maxhp]- vehhp/ 50.0 * 2.0);
+                comp = floatround(VehicleData[modelid_taget - 400][c_maxhp]- vehhp / 50.0 * 2.0);
                 
                 if(!strcmp(confirm, "yes", true) && strlen(confirm))
                 {

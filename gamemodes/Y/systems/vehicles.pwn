@@ -258,6 +258,19 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
+hook OnPlayerDisconnect(playerid, reason)
+{
+	if(playerTowingVehicle[playerid])
+	{
+		new vehicleid = PlayerInfo[playerid][pVehicleSpawnedID];
+		KillTimer(playerTowTimer[playerid]);
+		playerTowingVehicle[playerid] = false;
+		Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleTowDisplay]);
+		VehicleInfo[vehicleid][eVehicleTowCount] = 0;
+	}
+	return 1;
+}
+
 
 hook OnGameModeInit()
 {

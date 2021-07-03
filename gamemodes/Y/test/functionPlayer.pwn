@@ -1,6 +1,6 @@
 #include <YSI_Coding\y_hooks>
 
-ptask CheckPlayer[500](playerid) 
+ptask CheckPlayer[1000](playerid) 
 {
     new weapons[13][2];
 	for (new i = 0; i <= 12; i++)

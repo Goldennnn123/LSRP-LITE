@@ -38,6 +38,8 @@ stock SaveFaction(id, thread = MYSQL_TYPE_THREAD)
 	mysql_int(query, "FactionWorld",FactionInfo[id][eFactionSpawnWorld]);
 	mysql_int(query, "FactionInterior",FactionInfo[id][eFactionSpawnInt]);
 	mysql_finish(query);
+
+	SaveFactionRanks(id);
 	return 1;
 }
 
@@ -46,7 +48,7 @@ stock SaveFactionRanks(id, thread = MYSQL_TYPE_THREAD)
 	if(!FactionInfo[id][eFactionDBID])
 		return 0;
 		
-	new query[250], str[10];
+	new query[MAX_STRING], str[MAX_STRING];
 
 	mysql_init("faction_ranks", "factionid", FactionInfo[id][eFactionDBID], thread);
 

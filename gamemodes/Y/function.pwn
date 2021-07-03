@@ -568,6 +568,9 @@ public CallPaycheck()
 			
 		else if(PlayerInfo[i][pLevel] == 2)
 			total_paycheck+= 1500; 
+
+		else if(PlayerInfo[i][pJob] == 4)
+			total_paycheck+= 1000;
 			
 		//Add an auto-level up on paycheck for level 1 and 2 to prevent paycheck farming.
 		if(!PlayerInfo[i][pSaving])

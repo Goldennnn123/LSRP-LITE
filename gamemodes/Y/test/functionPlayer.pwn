@@ -25,7 +25,6 @@ ptask CheckPlayer[500](playerid)
 				SendAdminMessageEx(COLOR_LIGHTRED, COLOR_LIGHTRED, "%s มีการเสกอาวุธ 44 หรือ 45 หรือ 38 Code 3",ReturnName(playerid,0));
 				SendClientMessage(playerid, COLOR_LIGHTRED, "คุณได้มีการใช้โปรแกรมช่วยเล่นในการเสกอาวุธ");
 				Kick(playerid);
-				return 1;
 			}
 
 			if(PlayerInfo[playerid][pPoliceDuty])
@@ -43,15 +42,8 @@ ptask CheckPlayer[500](playerid)
 hook function SetPlayerHealth(playerid, Float:health)
 {
 	PlayerInfo[playerid][pHealth] = health;
-	CharacterSave(playerid);
-    return continue(playerid, health);
+    return continue(playerid, PlayerInfo[playerid][pHealth]);
 }
-
-hook function GetPlayerMoney(playerid)
-{
-	return continue(playerid, PlayerInfo[playerid][pCash]);
-}
-
 
 stock GiveMoney(playerid, amount)
 {

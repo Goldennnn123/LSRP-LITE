@@ -50,6 +50,9 @@ new
 new
     Logger:allcmdlog;
 
+new
+    Logger:DeathLog;
+
 new globalWeather = 2;
 
 /*======================================================================================================
@@ -211,7 +214,7 @@ public OnGameModeInit() {
 
     adminactionlog = CreateLog("server/admin_action");
     allcmdlog = CreateLog("server/allcmdlog");
-
+    DeathLog = CreateLog("server/deathlog");
 
 
 

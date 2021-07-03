@@ -11,8 +11,8 @@ stock ReturnWeaponName(weaponid)
 	new weapon[22];
     switch(weaponid)
     {
-        case 0: weapon = "Fists";
-        case 18: weapon = "Molotov Cocktail";
+        case 0: weapon = "Á×Í";
+        case 18: weapon = "ÃÐàºÔ´¢Ç´";
         case 44: weapon = "Night Vision Goggles";
         case 45: weapon = "Thermal Goggles";
 		case 54: weapon = "Fall";
@@ -203,7 +203,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetTimerEx("PlayerTazer", 10000, false, "i", playerid);
 				}
 			}
-			if(weaponid == 24)
+			else if(weaponid == 24)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -236,7 +236,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 25)
+			else if(weaponid == 25)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -269,7 +269,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 31)
+			else if(weaponid == 31)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -302,7 +302,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == WEAPON_SNIPER)
+			else if(weaponid == WEAPON_SNIPER)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -347,7 +347,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 0)
+			else if(weaponid == 0)
 			{
 				if(armor)
 				{
@@ -360,7 +360,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 1)
+			else if(weaponid == 1)
 			{
 				if(armor)
 				{
@@ -375,7 +375,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 2)
+			else if(weaponid == 2)
 			{
 				if(armor)
 				{
@@ -390,7 +390,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 3)
+			else if(weaponid == 3)
 			{
 				if(armor)
 				{
@@ -405,7 +405,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 4)
+			else if(weaponid == 4)
 			{
 				if(armor)
 				{
@@ -420,7 +420,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 5)
+			else if(weaponid == 5)
 			{
 				if(armor)
 				{
@@ -435,7 +435,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 6)
+			else if(weaponid == 6)
 			{
 				if(armor)
 				{
@@ -450,7 +450,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 7)
+			else if(weaponid == 7)
 			{
 				if(armor)
 				{
@@ -465,7 +465,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 8)
+			else if(weaponid == 8)
 			{
 				if(armor)
 				{
@@ -480,7 +480,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 9)
+			else if(weaponid == 9)
 			{
 				if(armor)
 				{
@@ -495,7 +495,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 15)
+			else if(weaponid == 15)
 			{
 				if(armor)
 				{
@@ -510,7 +510,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}
-			if(weaponid == 22)
+			else if(weaponid == 22)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -543,7 +543,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 27)
+			else if(weaponid == 27)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -576,7 +576,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 28)
+			else if(weaponid == 28)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -609,7 +609,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 29)
+			else if(weaponid == 29)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -642,7 +642,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 30)
+			else if(weaponid == 30)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -675,7 +675,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 32)
+			else if(weaponid == 32)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -708,7 +708,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 33)
+			else if(weaponid == 33)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -741,7 +741,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			if(weaponid == 38)
+			else if(weaponid == 38)
 			{
 				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
 				{
@@ -774,21 +774,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					}
 				}
 			}
-			/*if(weaponid < 400 || weaponid > 611)
-			{
-				if(armor)
-				{
-					amount_armour = 10;
-					amount = 2;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 15;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}*/
+			else SetPlayerHealth(playerid, health - 3);
 			//SetPlayerHealth(playerid, health - amount); 
 			CallbackDamages(playerid, issuerid, bodypart, weaponid, amount, amount_armour); 
 		}
@@ -1003,7 +989,8 @@ public OnPlayerDead(playerid, killerid, reason, executed)
 	if(executed == 1)
 	{
 		format(str, sizeof(str), "%s â´¹ÊÑ§ËÒÃ«éÓâ´Â %s. (%s)", ReturnName(playerid), ReturnName(killerid), ReturnWeaponName(reason)); 
-		SendAdminMessageEx(COLOR_RED, 1, str); 
+		SendAdminMessageEx(COLOR_RED, 1, str);
+		Log(DeathLog, WARNING, "[KILL] %s â´¹ÊÑ§ËÒÃ«éÓâ´Â %s. (%s)", ReturnName(playerid, 0), ReturnName(killerid, 0), ReturnWeaponName(reason)); 
 	}
 	
 	SetPlayerTeam(playerid, PLAYER_STATE_DEAD); 

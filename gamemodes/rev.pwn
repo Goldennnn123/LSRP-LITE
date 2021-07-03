@@ -4249,6 +4249,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	if(killerid != INVALID_PLAYER_ID)
 		SendAdminMessageEx(COLOR_RED, 4, "[DEBUG DEBUG] %s was killed by %s. (%s)", ReturnName(playerid), ReturnName(killerid), ReturnWeaponName(reason));
 
+	Log(DeathLog, INFO, "[DEBUG DEBUG] %s was killed by %s. (%s)", ReturnName(playerid), ReturnName(killerid), ReturnWeaponName(reason));
 	printf("Callback OnPlayerDeath called for player %s (ID: %i)", ReturnName(playerid), playerid); 
 	//SetTimerEx("SetPlayersSpawn", 2100, false, "i", playerid); 
 	return 1; 

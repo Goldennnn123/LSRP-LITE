@@ -6,20 +6,34 @@ ptask CheckPlayer[500](playerid)
 	for (new i = 0; i <= 12; i++)
 	{	
 			GetPlayerWeaponData(playerid, i, weapons[i][0], weapons[i][1]);
-
-
-			if(!weapons[playerid][0])
-				continue;
-
+			
 			if(PlayerInfo[playerid][pWeapons][i])
 				continue;
 
+			if(weapons[i][0] == WEAPON_CAMERA)
+				continue;
+
+			if(PlayerInfo[playerid][pWeapons][i] == WEAPON_CAMERA)
+				continue;
+			
 			if(PlayerInfo[playerid][pWeaponsAmmo][i] == weapons[i][1])
 				continue;
 
-            if(weapons[i][1] > 500)
+
+			if(weapons[i][0] == 44 || weapons[i][0] == 45 || weapons[i][0] == 38)
+			{
+				SendAdminMessageEx(COLOR_LIGHTRED, COLOR_LIGHTRED, "%s มีการเสกอาวุธ 44 หรือ 45 หรือ 38 Code 3",ReturnName(playerid,0));
+				SendClientMessage(playerid, COLOR_LIGHTRED, "คุณได้มีการใช้โปรแกรมช่วยเล่นในการเสกอาวุธ");
+				Kick(playerid);
+				return 1;
+			}
+
+			if(PlayerInfo[playerid][pPoliceDuty])
+				continue;
+
+            if(weapons[i][1] > 400 || weapons[i][0] != WEAPON_CAMERA)
             {
-                SendAdminMessageEx(COLOR_LIGHTRED, 1, "%s มีกระสุนเยอะเกินไป",ReturnName(playerid,0));
+                SendAdminMessageEx(COLOR_LIGHTRED, 1, "%s ผู้ต้องสงสัยในการเสกอาวุธ",ReturnName(playerid,0));
             }
 	}
     return 1;
@@ -52,14 +66,14 @@ stock GiveMoney(playerid, amount)
 	if(amount < 0) {
 		format(string, sizeof(string), "~r~$%d", amount);
 		GameTextForPlayer(playerid, string, 2000, 1);
-		format(str, sizeof(str),"%s มีเงินออกจากตัว %s", ReturnName(playerid,0),MoneyFormat(amount));
+		format(str, sizeof(str),"%s มีเงินออกจากตัว $%s", ReturnName(playerid,0),MoneyFormat(amount));
 	}
 	else{
 		format(string, sizeof(string), "~g~$%d", amount);
 		GameTextForPlayer(playerid, string, 2000, 1);
-		format(str, sizeof(str),"%s มีเงินเข้าตัว %s",ReturnName(playerid,0), MoneyFormat(amount));
+		format(str, sizeof(str),"%s มีเงินเข้าตัว $%s",ReturnName(playerid,0), MoneyFormat(amount));
 	}
 
-	SendAdminMessage(2, str);
+	SendAdminMessage(3, str);
 	return 1;
 }

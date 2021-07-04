@@ -755,18 +755,17 @@ CMD:towcars(playerid, params[])
 
 	for(new v = 1; v< MAX_VEHICLES; v++)
 	{
-		if(!VehicleInfo[v][eVehicleFaction])
+		if(!VehFacInfo[v][VehFacFaction])
 			continue;
 
-		if(VehicleInfo[v][eVehicleFaction] != id)
+		if(VehFacInfo[v][VehFacFaction] != id)
 			continue;
 
 		if(IsVehicleOccupied(v))
 			continue;
 
 		SetVehicleToRespawn(v);
-		LinkVehicleToInterior(v, VehicleInfo[v][eVehicleParkInterior]);
-		SetVehicleVirtualWorld(v, VehicleInfo[v][eVehicleParkWorld]);
+		SetVehicleVirtualWorld(v, VehFacInfo[v][VehFacFaction]);
 		SetVehicleNumberPlate(v, FactionInfo[id][eFactionAbbrev]);
 		SetVehicleHp(v);
 	}

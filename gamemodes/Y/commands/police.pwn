@@ -611,27 +611,27 @@ stock Arrest_Jail(playerid, tagetid, reason[], time, room)
 	{
 		case 1:
 		{
-			SetPlayerPos(playerid, 227.1921,108.9945,999.0156);
-			SetPlayerVirtualWorld(playerid, 10001);
-			SetPlayerInterior(playerid, 10);
+			SetPlayerPos(tagetid, 227.1921,108.9945,999.0156);
+			SetPlayerVirtualWorld(tagetid, 10001);
+			SetPlayerInterior(tagetid, 10);
 		}
 		case 2:
 		{
-			SetPlayerPos(playerid, 223.4052,109.4984,999.0156);
-			SetPlayerVirtualWorld(playerid, 10001);
-			SetPlayerInterior(playerid, 10);
+			SetPlayerPos(tagetid, 223.4052,109.4984,999.0156);
+			SetPlayerVirtualWorld(tagetid, 10001);
+			SetPlayerInterior(tagetid, 10);
 		}
 		case 3:
 		{
-			SetPlayerPos(playerid,219.6822,110.2353,999.0156);
-			SetPlayerVirtualWorld(playerid, 10001);
-			SetPlayerInterior(playerid, 10);
+			SetPlayerPos(tagetid,219.6822,110.2353,999.0156);
+			SetPlayerVirtualWorld(tagetid, 10001);
+			SetPlayerInterior(tagetid, 10);
 		}
 		case 4:
 		{
-			SetPlayerPos(playerid,215.4856,109.6158,999.0156);
-			SetPlayerVirtualWorld(playerid, 10001);
-			SetPlayerInterior(playerid, 10);
+			SetPlayerPos(tagetid,215.4856,109.6158,999.0156);
+			SetPlayerVirtualWorld(tagetid, 10001);
+			SetPlayerInterior(tagetid, 10);
 		}
 	}
 	CharacterSave(tagetid);

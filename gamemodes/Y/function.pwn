@@ -429,7 +429,7 @@ stock ShowCharacterStats(playerid, playerb)
 	SendClientMessageEx(playerb, COLOR_GRAD2, "การเงิน: เงินในตัว:[$%s] เงินในธนาคาร:[$%s] เงินรายชัวโมง:[$%s] Bitsamp:[%.5f]", MoneyFormat(PlayerInfo[playerid][pCash]), MoneyFormat(PlayerInfo[playerid][pBank]), MoneyFormat(PlayerInfo[playerid][pPaycheck]), PlayerInfo[playerid][pBTC]);
 	SendClientMessageEx(playerb, COLOR_GRAD1, "อื่นๆ: กุญแจรถ:[%s] กุญแจสำรอง:[%s] กุณแจธุรกิจ:[%s]", vehicle_key, duplicate_key, business_key);	
 
-	if(PlayerInfo[playerb][pJob] == 4)
+	if(PlayerInfo[playerid][pJob] == 4)
 	{
 		SendClientMessageEx(playerb, COLOR_GRAD1, "แร่: Unprocessed Ores:[%d] Coal Ore:[%d] Iron Ore:[%d] Copper Ore:[%d] Potassium Nitrate:[%d]", PlayerInfo[playerid][pOre], PlayerInfo[playerid][pCoal],PlayerInfo[playerid][pIron], PlayerInfo[playerid][pCopper], PlayerInfo[playerid][pKNO3]);
 	}

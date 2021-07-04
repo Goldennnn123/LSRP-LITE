@@ -270,6 +270,12 @@ public OnPlayerConnect(playerid) {
     PlayerInfo[playerid][pAdmin] = 0;
     PlayerInfo[playerid][pTester] = 0;
 
+    PlayerInfo[playerid][pAdminDuty] = false;
+    PlayerInfo[playerid][pTesterDuty] = false;
+    PlayerInfo[playerid][pPoliceDuty] = false;
+    PlayerInfo[playerid][pSheriffDuty] = false;
+    PlayerInfo[playerid][pMedicDuty] = false;
+    PlayerInfo[playerid][pSADCRDuty] = false;
 
     PlayerInfo[playerid][pJob] = 0;
     PlayerInfo[playerid][pSideJob] = 0;

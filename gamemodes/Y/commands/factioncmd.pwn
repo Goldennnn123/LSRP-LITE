@@ -753,7 +753,7 @@ CMD:towcars(playerid, params[])
 	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[id][eFactionAlterRank])
 		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
 
-	for(new v = 1; v< MAX_VEHICLES; v++)
+	for(new v = 1; v< MAX_FACTION_VEHICLE; v++)
 	{
 		if(!VehFacInfo[v][VehFacFaction])
 			continue;

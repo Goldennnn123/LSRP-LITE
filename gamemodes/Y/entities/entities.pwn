@@ -4,7 +4,7 @@
 #define MAX_BUSINESS				(150)
 #define MAX_PHONEBOOK				(700)
 #define MAX_ENTRANCE				(700)
-#define MAX_FACTION_VEHICLE			(60)
+#define MAX_FACTION_VEHICLE			(200)
 
 enum E_PLAYER_DATA
 {

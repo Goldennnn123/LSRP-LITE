@@ -802,7 +802,7 @@ CMD:acceptdeath(playerid, params[])
 CMD:respawnme(playerid, params[])
 {
 	
-	if(GetPlayerTeam(playerid) != PLAYER_STATE_WOUNDED)
+	if(GetPlayerTeam(playerid) != PLAYER_STATE_DEAD)
 		return SendErrorMessage(playerid, "คุณยังไม่ได้รับบาดเจ็บ");
 
 	if(gettime() - PlayerInfo[playerid][pRespawnTime] < 60)
@@ -1498,34 +1498,27 @@ CMD:quit(playerid, params[])
 
 CMD:fines(playerid, params[])
 {
-	new str[255], fineid, longstr[255];
-
-	format(str, sizeof(str), "สาเหตุ:\tค่าปรับ:\t วันที่:\n");
-	strcat(longstr, str);
-
-	for(new i = 1; i < MAX_FINES; i++)
+	new factionid = PlayerInfo[playerid][pFaction];
+	
+	new tagerid;
+	if(factionid != 0)
 	{
-		if(!FineInfo[i][FineDBID])
-			continue;
+		if(FactionInfo[factionid][eFactionJob] != POLICE || FactionInfo[factionid][eFactionJob] != SHERIFF)
+			return ShowFines(playerid, playerid);
 
-		if(FineInfo[i][FineOwner] != PlayerInfo[playerid][pDBID])
-			continue;
+		if(sscanf(params, "i(-1)", tagerid))
+			return ShowFines(playerid, playerid);
+		
+		if(!IsPlayerConnected(tagerid))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซิร์ฟเวอร์");
 
-		format(str, sizeof(str), "%s\t$%s\t%s\n", FineInfo[i][FineReson], MoneyFormat(FineInfo[i][FinePrice]), FineInfo[i][FineDate]);
-		strcat(longstr, str);
+		if(IsPlayerLogin(tagerid))
+			return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-		format(str, sizeof(str), "%d",fineid);
-		SetPVarInt(playerid, str, i);
-		fineid++;
-	}
-
-	if(!fineid)
-	{
-		Dialog_Show(playerid, DIALOG_FINES_LIST_NONE, DIALOG_STYLE_LIST, "ใบสั่ง", "คุณไม่มีใบสั่ง...", "ยืนยัน", "ยกเลิก");
+		ShowFines(playerid, tagerid);
 		return 1;
 	}
-
-	Dialog_Show(playerid, DIALOG_FINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "ใบสั่ง", longstr, "ยืนยัน", "ยกเลิก");
+	else ShowFines(playerid, playerid);
 	return 1;
 }
 

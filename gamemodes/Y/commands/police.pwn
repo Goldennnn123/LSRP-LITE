@@ -398,6 +398,9 @@ CMD:fine(playerid, params[])
 	FineInfo[idx][FineReson] = reason;
 	FineInfo[idx][FinePrice] = price;
 	format(FineInfo[idx][FineDate], FineInfo[idx][FineDate], "%s", ReturnDate());
+
+	SendClientMessageEx(playerid, COLOR_PURPLE, "[ ! ] คุณถูกปรับโดย %s เนื่องจาก '%s' ดูได้ที่ /fines", ReturnName(playerid,0), reason);
+	SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s เขียนค่าปรับ %s ให้กับ %s เนื่องจาก '%s'", ReturnName(playerid, 0), MoneyFormat(price), ReturnName(tagetid, 0), reason);
 	return 1;
 }
 
@@ -675,5 +678,38 @@ stock ArrestConecterJail(playerid, time, room)
 			SetTimerEx("Freeze2Sec", 2000, false, "d", playerid);
 		}
 	}
+	return 1;
+}
+
+
+stock ShowFines(playerid, tagerid)
+{
+	new str[255], fineid, longstr[255];
+	format(str, sizeof(str), "สาเหตุ:\tค่าปรับ:\t วันที่:\n");
+	strcat(longstr, str);
+
+	for(new i = 1; i < MAX_FINES; i++)
+	{
+		if(!FineInfo[i][FineDBID])
+			continue;
+
+		if(FineInfo[i][FineOwner] != PlayerInfo[tagerid][pDBID])
+			continue;
+
+		format(str, sizeof(str), "%s\t$%s\t%s\n", FineInfo[i][FineReson], MoneyFormat(FineInfo[i][FinePrice]), FineInfo[i][FineDate]);
+		strcat(longstr, str);
+
+		format(str, sizeof(str), "%d",fineid);
+		SetPVarInt(playerid, str, i);
+		fineid++;
+	}
+
+	if(!fineid)
+	{
+		Dialog_Show(playerid, DIALOG_FINES_LIST_NONE, DIALOG_STYLE_LIST, "ใบสั่ง", "ไม่มีใบสั่ง...", "ยืนยัน", "ยกเลิก");
+		return 1;
+	}
+
+	Dialog_Show(playerid, DIALOG_FINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "ใบสั่ง", longstr, "ยืนยัน", "ยกเลิก");
 	return 1;
 }

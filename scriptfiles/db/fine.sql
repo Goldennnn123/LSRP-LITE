@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `fine` (
     FOREIGN KEY
         (FineOwner)
     REFERENCES
-        masters(acc_dbid)
+        characters(char_dbid)
     ON DELETE
         CASCADE
     ON UPDATE

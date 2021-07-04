@@ -247,6 +247,11 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 						SetPlayerArmour(playerid, armor - amount_armour);
 						SetPlayerHealth(playerid, health - amount);
 					}
+					else if(bodypart == BODY_PART_HEAD)
+					{
+						amount = 100;
+						SetPlayerHealth(playerid, health - amount);
+					}
 					else
 					{
 						amount = 50;
@@ -260,6 +265,11 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 						amount_armour = 25;
 						amount = 15;
 						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else if(bodypart == BODY_PART_HEAD)
+					{
+						amount = 100;
 						SetPlayerHealth(playerid, health - amount);
 					}
 					else
@@ -278,6 +288,11 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 						amount_armour = 45;
 						amount = 15;
 						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else if(bodypart == BODY_PART_HEAD)
+					{
+						amount = 50;
 						SetPlayerHealth(playerid, health - amount);
 					}
 					else
@@ -311,6 +326,11 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 						amount_armour = 100;
 						amount = 50;
 						SetPlayerArmour(playerid, armor - amount_armour);
+						SetPlayerHealth(playerid, health - amount);
+					}
+					else if(bodypart == BODY_PART_HEAD)
+					{
+						amount = 100;
 						SetPlayerHealth(playerid, health - amount);
 					}
 					else
@@ -804,6 +824,22 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			SetPlayerHealth(playerid, health);
 			return 0;
 		}
+	}
+	return 1;
+}
+
+public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+{
+	if(hittype == BULLET_HIT_TYPE_PLAYER) //Death system; 
+	{	
+		if(GetPlayerTeam(hitid) == PLAYER_STATE_WOUNDED && !PlayerInfo[hitid][pDeathFix])
+		{	
+			CallLocalFunction("OnPlayerDead", "iii", hitid, playerid, weaponid);
+			return 0;
+		} 
+		else if(GetPlayerTeam(hitid) != PLAYER_STATE_ALIVE)
+			return 0; 
+			
 	}
 	return 1;
 }

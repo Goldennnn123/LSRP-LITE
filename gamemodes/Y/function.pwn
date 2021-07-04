@@ -44,7 +44,9 @@ ptask @2PlayerTimer[1000](playerid)
 
 stock PlayerSpec(playerid, playerb)
 {
-	
+	if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pMedicDuty] || PlayerInfo[playerid][pSADCRDuty])
+		return SendErrorMessage(playerid, "คุณต้องไม่ Duty ก่อน");
+
 	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER || GetPlayerState(playerb) == PLAYER_STATE_PASSENGER)
 	{
 		new vehicleid = GetPlayerVehicleID(playerb);

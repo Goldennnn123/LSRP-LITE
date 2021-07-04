@@ -78,6 +78,7 @@ new globalWeather = 2;
 #include "Y/entities/vehicle_faction.pwn"
 #include "Y/entities/global.pwn"
 #include "Y/entities/boombox.pwn"
+#include "Y/entities/clothing.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -105,6 +106,9 @@ new globalWeather = 2;
 #include "Y/systems/fine.pwn"
 #include "Y/systems/gps.pwn"
 #include "Y/systems/global.pwn"
+#include "Y/systems/clothing.pwn"
+#include "Y/systems/business/clothing.pwn"
+
 
 #include "Y/jobs/farmer.pwn"
 #include "Y/jobs/fisher.pwn"
@@ -122,6 +126,7 @@ new globalWeather = 2;
 #include "Y/mysql/SaveMc_Garage.pwn"
 #include "Y/mysql/SaveComputer.pwn"
 #include "Y/mysql/SaveGps.pwn"
+#include "Y/mysql/SaveClothing.pwn"
 
 #include "Y/registration/login.pwn"
 #include "Y/character/character.pwn"
@@ -412,6 +417,12 @@ public OnPlayerConnect(playerid) {
 
     KillTimer(playerTowTimer[playerid]);
     playerTowingVehicle[playerid] = false;
+
+
+    for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
+    {
+        PlayerInfo[playerid][pClothing][i-1] = 0;
+    }
 
 	new query[90];
     new musicrandom = random(3);

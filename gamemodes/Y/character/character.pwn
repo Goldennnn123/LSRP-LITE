@@ -414,6 +414,13 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pInsideProperty",PlayerInfo[playerid][pInsideProperty]);
 
 	cache_get_value_name_int(0, "pBoomBox",PlayerInfo[playerid][pBoomBox]);
+
+	for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
+	{
+		format(str, sizeof(str), "pClothing%d", i);
+		cache_get_value_name_int(0, str, PlayerInfo[playerid][pClothing][i-1]);
+	}
+
 	return LoadCharacter(playerid);
 }
 
@@ -484,7 +491,7 @@ public LoadCharacter(playerid)
 	{
 		RemovePlayerAttachedObject(playerid, i);
 	}
-
+	
 	if(IsPlayerAndroid(playerid) == true)
 	{
 		SendClientMessage(playerid, -1, "คุณเข้าสู่ระบบด้วยอุปกรณ์ Android");

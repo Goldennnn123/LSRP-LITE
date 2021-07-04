@@ -765,7 +765,7 @@ CMD:towcars(playerid, params[])
 			continue;
 
 		SetVehicleToRespawn(v);
-		SetVehicleVirtualWorld(v, VehFacInfo[v][VehFacFaction]);
+		SetVehicleVirtualWorld(v, VehFacInfo[v][VehFacPosWorld]);
 		SetVehicleNumberPlate(v, FactionInfo[id][eFactionAbbrev]);
 		SetVehicleHp(v);
 	}

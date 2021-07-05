@@ -469,9 +469,9 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
             PlayerSeClo[playerid] = 0;
             return 1;
         }
-        if(PlayerSeCloBuySect[playerid])
+        if(PlayerSeCloBuy[playerid])
         {
-            new idx = 0, id = PlayerSeCloBuySect[playerid];
+            new idx = 0;
 
             for(new i = 1; i < MAX_CLOTHING; i++)
             {
@@ -483,33 +483,11 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
             }
 
             if(idx == 0) return SendErrorMessage(playerid, "ของแต่ตัวเต็มเซิร์ฟเวอร์แล้ว");
-            printf("%d",idx);
-            
-            PlayerInfo[playerid][pClothing][id] = idx;
-            ClothingInfo[idx][ClothingDBID] = idx;
-            ClothingInfo[idx][ClothingOwnerDBID] = PlayerInfo[playerid][pDBID];
-            ClothingInfo[idx][ClothingModel] = PlayerSeCloBuy[playerid];
-            ClothingInfo[id][ClothingSpawn] = false;
-
-            ClothingInfo[id][ClothingOffPos][0] = fOffsetX;
-            ClothingInfo[id][ClothingOffPos][2] = fOffsetY;
-            ClothingInfo[id][ClothingOffPos][2] = fOffsetZ;
-
-            ClothingInfo[id][ClothingOffPosR][0] = fRotX;
-            ClothingInfo[id][ClothingOffPosR][1] = fRotY;
-            ClothingInfo[id][ClothingOffPosR][2] = fRotZ;
-
-            ClothingInfo[id][ClothingOffPosSacal][0] = fScaleX;
-            ClothingInfo[id][ClothingOffPosSacal][1] = fScaleY;
-            ClothingInfo[id][ClothingOffPosSacal][2] = fScaleZ;
-
-            RemovePlayerAttachedObject(playerid, index);
-            CharacterSave(playerid);
-            
+        
             new query[1000];
             mysql_format(dbCon, query, sizeof(query), "INSERT INTO `clothing` (`ClothingOwnerDBID`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ`) VALUE ('%d','%d','%d','%d', '%f','%f','%f','%f','%f','%f','%f','%f','%f')",
-            ClothingInfo[idx][ClothingOwnerDBID],
-            ClothingInfo[idx][ClothingModel],
+            PlayerInfo[playerid][pDBID],
+            modelid,
             index,
             boneid,
             fOffsetX,
@@ -521,9 +499,8 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
             fScaleX,
             fScaleY,
             fScaleZ);
-            mysql_tquery(dbCon, query);
-
-            PlayerSeCloBuy[playerid] = 0;
+            mysql_tquery(dbCon, query, "Query_InsertClothing", "dddddfffffffff",playerid, idx, modelid, index, boneid, fOffsetX, fOffsetY,fOffsetZ,fRotX, fRotY, fRotZ,fScaleX, fScaleY, fScaleZ);
+            
             return 1;
         }
         return 1;
@@ -545,5 +522,36 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
             return 1;
         }
     }
+    return 1;
+}
+
+forward Query_InsertClothing(playerid, newid, modelid, index, boneid, Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ, Float:fRotX, Float:fRotY, Float:fRotZ, Float:fScaleX, Float:fScaleY, Float:fScaleZ);
+public Query_InsertClothing(playerid, newid, modelid, index, boneid, Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ, Float:fRotX, Float:fRotY, Float:fRotZ, Float:fScaleX, Float:fScaleY, Float:fScaleZ)
+{
+
+    new id = PlayerSeCloBuySect[playerid];
+
+    PlayerInfo[playerid][pClothing][id] = cache_insert_id();
+    ClothingInfo[newid][ClothingDBID] = cache_insert_id();
+    ClothingInfo[newid][ClothingOwnerDBID] = PlayerInfo[playerid][pDBID];
+    ClothingInfo[newid][ClothingModel] = PlayerSeCloBuy[playerid];
+    ClothingInfo[newid][ClothingSpawn] = false;
+
+    ClothingInfo[newid][ClothingOffPos][0] = fOffsetX;
+    ClothingInfo[newid][ClothingOffPos][2] = fOffsetY;
+    ClothingInfo[newid][ClothingOffPos][2] = fOffsetZ;
+
+    ClothingInfo[newid][ClothingOffPosR][0] = fRotX;
+    ClothingInfo[newid][ClothingOffPosR][1] = fRotY;
+    ClothingInfo[newid][ClothingOffPosR][2] = fRotZ;
+
+    ClothingInfo[newid][ClothingOffPosSacal][0] = fScaleX;
+    ClothingInfo[newid][ClothingOffPosSacal][1] = fScaleY;
+    ClothingInfo[newid][ClothingOffPosSacal][2] = fScaleZ;
+
+    SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้ทำการซื้อ %d สำเร็จแล้ว",PlayerSeCloBuy[playerid]);
+    PlayerSeCloBuy[playerid] = 0;
+    RemovePlayerAttachedObject(playerid, index);
+    CharacterSave(playerid);
     return 1;
 }

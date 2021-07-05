@@ -572,7 +572,7 @@ public CallPaycheck()
 			total_paycheck+= 1500; 
 
 		else if(PlayerInfo[i][pJob] == 3)
-			total_paycheck+= 1000;
+			total_paycheck+= 450;
 			
 		//Add an auto-level up on paycheck for level 1 and 2 to prevent paycheck farming.
 		if(!PlayerInfo[i][pSaving])
@@ -613,7 +613,7 @@ public CallPaycheck()
 			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $1,500 จากการเป็นเลเวล 2. ))");
 
 		else if(PlayerInfo[i][pJob] == 3)
-			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $1,000 จากการเป็นอาชีพช่างยนต์ ))");
+			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $450 จากการเป็นอาชีพช่างยนต์ ))");
 		
 		format(str, sizeof(str), "~y~Payday~n~~w~Paycheck~n~~g~$%d", total_paycheck);
 		GameTextForPlayer(i, str, 3000, 1); 

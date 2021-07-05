@@ -124,7 +124,7 @@ CMD:helpmes(playerid, params[])
             {
                 if(HelpmeData[i][hHelpmeExit] == true)
                 {
-                    SendClientMessageEx(playerid, -1, "[ACTIVE] (%d) %s: รายงานเรื่อง: %s",HelpmeData[i][hHelpmeDBID], ReturnRealName(HelpmeData[i][hHelpmeBy]), HelpmeData[i][hHelpmeDetel]);
+                    SendClientMessageEx(playerid, -1, "[ACTIVE] (%d) %s (%d): รายงานเรื่อง: %s",HelpmeData[i][hHelpmeDBID], ReturnRealName(HelpmeData[i][hHelpmeBy]), HelpmeData[i][hHelpmeBy], HelpmeData[i][hHelpmeDetel]);
                     Helpmecout++;
                 }
             }

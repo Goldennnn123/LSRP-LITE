@@ -93,8 +93,8 @@ new const VehicleData[][c_data] =
 	{700.0}, //Vehicle ID 461
 	{700.0}, //Vehicle ID 462
 	{700.0}, //Vehicle ID 463
-	{0.0}, //Vehicle ID 464
-	{0.0}, //Vehicle ID 465
+	{700.0}, //Vehicle ID 464
+	{700.0}, //Vehicle ID 465
 	{1000.0}, //Vehicle ID 466
 	{1000.0}, //Vehicle ID 467
 	{700.0}, //Vehicle ID 468

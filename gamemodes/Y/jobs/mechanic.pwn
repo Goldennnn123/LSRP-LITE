@@ -203,7 +203,7 @@ CMD:service(playerid, params[])
 	if(!BitFlag_Get(gPlayerBitFlag[tagetid], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-    if(!IsPlayerNearPlayer(playerid, tagetid, 5.0))
+    if(!IsPlayerNearPlayer(playerid, tagetid, 15.0))
         return SendErrorMessage(playerid, "ผู้เล่นไมได้อยู่ใกล้คุณ");
 
 
@@ -460,13 +460,15 @@ CMD:fixcar(playerid, params[])
     new vehicleid = vToAccept[playerid];
 
     if(GetNearestVehicle(playerid) != vehicleid)
+    {
+        printf("GetNearestVehicle: %d != vehicleid: %d", GetNearestVehicle(playerid), vehicleid);
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้รถที่จะซ่อม");
+    }
 
 
     RepairTimer[pToAccept[playerid]] = SetTimerEx("OnRepairVehicle", 1000 * ServiceComp[playerid], false, "ddd",playerid, vToAccept[playerid], ServiceCall[playerid]);
     ApplyAnimation(playerid, "CAR", "FIXN_CAR_LOOP", 4.1, 0, 0, 0, 1, 0, 0);
     SendClientMessage(playerid, COLOR_YELLOWEX, "คุณกำลังซ่อมยานพาหนะ.....");
-    printf("%d",vToAccept[playerid]);
     return 1;
 }
 

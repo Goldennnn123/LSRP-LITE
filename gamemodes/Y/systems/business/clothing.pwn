@@ -148,10 +148,12 @@ CMD:clothing(playerid, params[])
 
         PlayerInfo[tagetid][pClothing][idx] = PlayerInfo[playerid][pClothing][id-1];
         ClothingInfo[PlayerInfo[playerid][pClothing][id]][ClothingOwnerDBID] = PlayerInfo[tagetid][pDBID];
-        PlayerInfo[playerid][pClothing][id-1] = 0;
         SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบสิ่งของให้กับ %s",ReturnName(tagetid,0));
         SendClientMessageEx(tagetid, COLOR_GREY, "คุณได้รับสิ่งของจาก %s",ReturnName(playerid,0));
-        CharacterSave(playerid); CharacterSave(tagetid); SaveClothing(PlayerInfo[playerid][pClothing][idx],0);
+        SaveClothing(PlayerInfo[playerid][pClothing][id],0);
+        PlayerInfo[playerid][pClothing][id-1] = 0;
+        CharacterSave(playerid); 
+        CharacterSave(tagetid);
         return 1;
     }
     else SendErrorMessage(playerid, "กรุณาพิพม์ให้ถูกต้อง");

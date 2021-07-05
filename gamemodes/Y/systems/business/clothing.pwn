@@ -77,7 +77,7 @@ CMD:buyclothing(playerid, params[])
 }
 
 
-CMD:clothing(playerid, params[])
+/*CMD:clothing(playerid, params[])
 {
     new type[20], str_2[20];
 
@@ -90,12 +90,15 @@ CMD:clothing(playerid, params[])
     
     if(!strcmp(type, "list", true))
     {
-        new str[120], longstr[120], clogid, str_c[9];
+        new str[120], longstr[120], clogid, str_c[9], id = 0;
 
         for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
-        {
-            format(str, sizeof(str), "CLOTHING: %d index: %d\n",PlayerInfo[playerid][pClothing][i-1], ClothingInfo[PlayerInfo[playerid][pClothing][i-1]][ClothingIndex]);
+        {   
+            id = PlayerInfo[playerid][pClothing][i-1];
+
+            format(str, sizeof(str), "CLOTHING: %d index: %d\n",i, ClothingInfo[id][ClothingIndex]);
             strcat(longstr, str);
+            printf("%d",id);
             
             format(str_c, sizeof(str_c), "%d",clogid);
             SetPVarInt(playerid, str_c, i);
@@ -147,10 +150,12 @@ CMD:clothing(playerid, params[])
         }
 
         PlayerInfo[tagetid][pClothing][idx] = PlayerInfo[playerid][pClothing][id-1];
-        ClothingInfo[PlayerInfo[playerid][pClothing][id]][ClothingOwnerDBID] = PlayerInfo[tagetid][pDBID];
+
+        ClothingInfo[id][ClothingOwnerDBID] = PlayerInfo[tagetid][pDBID];
+        SaveClothing(id);
+
         SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบสิ่งของให้กับ %s",ReturnName(tagetid,0));
         SendClientMessageEx(tagetid, COLOR_GREY, "คุณได้รับสิ่งของจาก %s",ReturnName(playerid,0));
-        SaveClothing(PlayerInfo[playerid][pClothing][id],0);
         PlayerInfo[playerid][pClothing][id-1] = 0;
         CharacterSave(playerid); 
         CharacterSave(tagetid);
@@ -158,7 +163,7 @@ CMD:clothing(playerid, params[])
     }
     else SendErrorMessage(playerid, "กรุณาพิพม์ให้ถูกต้อง");
     return 1;
-}
+}*/
 
 Dialog:D_CLOTHING_BUY(playerid, response, listitem, inputtext[])
 {
@@ -263,25 +268,36 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
     new str_c[9], str[MAX_STRING], longstr[MAX_STRING];
     format(str_c, sizeof(str_c), "%d",listitem);
 
-    new id = GetPVarInt(playerid, str_c);
+    new id = GetPVarInt(playerid, str_c); new idx = 0;
+    printf("ID: %d", id);
+    
     PlayerSeClo[playerid] = id;
 
-    if(!ClothingInfo[id][ClothingDBID])
+    for(new i = 1; i < MAX_CLOTHING; i++)
+    {
+        if(id == ClothingInfo[i][ClothingDBID])
+        {
+            idx = i;
+            break;
+        }
+    }
+    
+    if(!ClothingInfo[idx][ClothingDBID])
         return SendErrorMessage(playerid, "ไม่มี ไอดีโมเดล");
 
-    format(str, sizeof(str), "ID: %d\n",ClothingInfo[id][ClothingDBID]);
+    format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
     strcat(longstr, str);
-    format(str, sizeof(str), "Model: %d\n",ClothingInfo[id][ClothingModel]);
+    format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
     strcat(longstr, str);
-    format(str, sizeof(str), "Index: %d\n",ClothingInfo[id][ClothingIndex]);
+    format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
     strcat(longstr, str);
-    format(str, sizeof(str), "Bone: %d\n",ClothingInfo[id][ClothingBone]);
+    format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
     strcat(longstr, str);
 
     format(str, sizeof(str), "Pos\n");
     strcat(longstr, str);
 
-    if(ClothingInfo[id][ClothingSpawn])
+    if(ClothingInfo[idx][ClothingSpawn])
     {
         format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
         strcat(longstr, str);

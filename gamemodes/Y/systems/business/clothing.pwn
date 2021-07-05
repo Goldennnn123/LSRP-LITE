@@ -12,6 +12,14 @@ hook OnPlayerConnect(playerid)
 
 CMD:buyclothing(playerid, params[])
 {
+    if(IsPlayerInAnyVehicle(playerid))
+        return SendErrorMessage(playerid, "คุณต้องลงจากยานพาหนะ");
+
+
+    if(PlayerInfo[playerid][pCash] < 700)
+        return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ (700)");
+
+    
     new str[255], longstr[255], idx = -1;
 
     for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)

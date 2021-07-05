@@ -843,6 +843,7 @@ CMD:vehicle(playerid, params[])
 
 		mysql_format(dbCon, threadLoad, sizeof(threadLoad), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][slotid]);
 		mysql_tquery(dbCon, threadLoad, "Query_LoadPrivateVehicle", "i", playerid);
+		return 1;
 	}
 	else if(!strcmp(oneString, "park"))
 	{
@@ -911,6 +912,7 @@ CMD:vehicle(playerid, params[])
 		ResetVehicleVars(vehicleid);
 		DestroyVehicle(vehicleid); 
 		TogglePlayerControllable(playerid, 1);
+		return 1;
 	}
 	else if(!strcmp(oneString, "buypark"))
 	{
@@ -938,10 +940,12 @@ CMD:vehicle(playerid, params[])
 		SendServerMessage(playerid, "คุณได้ซื้อพื้นที่จอดรถใหม่ในราคา $2,500.");
 		GiveMoney(playerid, -2500);
 		SaveVehicle(vehicleid);
+		return 1;
 	}
 	else if(!strcmp(oneString, "list"))
 	{
 		ShowVehicleList(playerid);
+		return 1;
 	}
 	else if(!strcmp(oneString, "buy"))
 	{
@@ -972,6 +976,7 @@ CMD:vehicle(playerid, params[])
 		ShowVehicleBuy(playerid);
 		SelectTextDraw(playerid, 0xFFFFFF95);
 		PlayerInfo[playerid][pGUI] = 2;
+		return 1;
 	}
 	else if(!strcmp(oneString, "sell"))
 	{
@@ -1191,6 +1196,7 @@ CMD:vehicle(playerid, params[])
 		GiveMoney(playerid, -500);
 		SendServerMessage(playerid, "คุณได้ให้ชุดกุญแจสำรองกับ %s  และเสียเงิน $500", ReturnName(playerb, 0));
 		PlayerInfo[playerb][pDuplicateKey] = vehicleid;
+		return 1;
 	}
 	else if(!strcmp(oneString, "scrap"))
 	{
@@ -1234,6 +1240,7 @@ CMD:vehicle(playerid, params[])
 		playerTowTimer[playerid] = SetTimerEx("OnVehicleTow", 5000, true, "i", playerid);
 		
 		SendServerMessage(playerid, "คุณได้ส่งคำขอให้ประกันนำรถ %s มาไว้ที่จุดเกิดแล้ว", ReturnVehicleName(PlayerInfo[playerid][pVehicleSpawnedID]));
+		return 1;
 	}
 	else if(!strcmp(oneString, "find"))
 	{
@@ -1248,13 +1255,19 @@ CMD:vehicle(playerid, params[])
 		
 		GetVehiclePos(PlayerInfo[playerid][pVehicleSpawnedID], fetchPos[0], fetchPos[1], fetchPos[2]);
 		SetPlayerCheckpoint(playerid, fetchPos[0], fetchPos[1], fetchPos[2], 3.0);
+		return 1;
 	}
 	else if(!strcmp(oneString, "stats"))
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 		
+		if(!IsPlayerInAnyVehicle(playerid))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในรถ");
+
 		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdmin])
 			return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของรถ");
+
+		
 		
 		if(PlayerInfo[playerid][pAdmin])
 		{
@@ -1304,8 +1317,10 @@ CMD:vehicle(playerid, params[])
 				VehicleInfo[vehicleid][eVehicleLocked] = true;
 			}
 			GameTextForPlayer(playerid, statusString, 3000, 3);
+			return 1;
 		}
 	}
+	else SendErrorMessage(playerid, "พิพม์ให้ถูกต้อง");
 	return 1;
 }
 

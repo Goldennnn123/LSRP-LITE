@@ -897,7 +897,6 @@ CMD:online(playerid, params[])
 		}
 		else PC++;
 	}
-
 	SendClientMessageEx(playerid, COLOR_GREY, "Android: %d คน PC: %d คน",Android, PC);
 	return 1;
 }

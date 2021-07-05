@@ -323,6 +323,7 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
             strcat(longstr, str);
 
             Dialog_Show(playerid, D_CLOTHING_INDEX, DIALOG_STYLE_LIST, "เปลี่ยนสล็อต", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
         }
         case 3:
         {
@@ -366,6 +367,7 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
             strcat(longstr, str);
 
             Dialog_Show(playerid, D_CLOTHING_BONE, DIALOG_STYLE_LIST, "เปลี่ยนจุด", longstr, "ยืนยัน", "ยกเลิก");
+            return 1;
         }
         case 4:
         {
@@ -378,6 +380,7 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
                 SetPlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex], ClothingInfo[id][ClothingModel], ClothingInfo[id][ClothingBone], ClothingInfo[id][ClothingOffPos][0], ClothingInfo[id][ClothingOffPos][1], ClothingInfo[id][ClothingOffPos][2], ClothingInfo[id][ClothingOffPosR][0], ClothingInfo[id][ClothingOffPosR][1], ClothingInfo[id][ClothingOffPosR][2], ClothingInfo[id][ClothingOffPosSacal][0], ClothingInfo[id][ClothingOffPosSacal][1], ClothingInfo[id][ClothingOffPosSacal][2],0);
                 EditAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
             }
+            return 1;
         }
         case 5:
         {
@@ -417,6 +420,7 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
             ClothingInfo[id][ClothingSpawn] = false;
             ClothingInfo[id][ClothingModel] = 0;
             CharacterSave(playerid);
+            return 1;
         }
     }
     return 1;

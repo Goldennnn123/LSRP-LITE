@@ -176,6 +176,14 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_int(query, "pVehicleSpawnedID",PlayerInfo[playerid][pVehicleSpawnedID]);
 
         mysql_int(query, "pBoomBox",PlayerInfo[playerid][pBoomBox]);
+
+        
+        for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
+        {
+            format(str, sizeof(str), "pClothing%d",i);
+            mysql_int(query, str,PlayerInfo[playerid][pClothing][i-1]);
+        }
+
 		mysql_finish(query);
         
         SaveUCP(playerid);

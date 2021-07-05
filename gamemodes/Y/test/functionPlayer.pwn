@@ -7,13 +7,13 @@ ptask CheckPlayer[1000](playerid)
 	{	
 			GetPlayerWeaponData(playerid, i, weapons[i][0], weapons[i][1]);
 			
-			if(PlayerInfo[playerid][pWeapons][i])
+			if(PlayerInfo[playerid][pWeapons][i] == weapons[i][0])
 				continue;
 
 			if(weapons[i][0] == WEAPON_CAMERA)
 				continue;
 
-			if(PlayerInfo[playerid][pWeapons][i] == WEAPON_CAMERA)
+			if(PlayerInfo[playerid][pWeapons][i] == WEAPON_CAMERA && PlayerInfo[playerid][pWeapons][i] == WEAPON_FLOWER)
 				continue;
 			
 			if(PlayerInfo[playerid][pWeaponsAmmo][i] == weapons[i][1])

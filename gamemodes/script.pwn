@@ -32,6 +32,7 @@
 #include <cec>
 #include <MenuStore>
 #include <compat>
+//#include <H-AC>
 //#include <io>
 
 /*======================================================================================================
@@ -496,6 +497,17 @@ public OnPlayerSpawn(playerid) {
 
         SetPlayerArmedWeapon(playerid, 0);
         PlayerInfo[playerid][pWeaponsSpawned] = true;
+    }
+
+    for(new i = 0; i < MAX_PLAYER_CLOTHING; i++)
+    {
+        if(PlayerInfo[playerid][pClothing][i])
+        {
+            if(ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingSpawn])
+            {
+                SetPlayerAttachedObject(playerid, ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingIndex],  ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingModel], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingBone],  ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPos][0], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPos][1], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPos][2], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosR][0], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosR][1], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosR][2], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosSacal][0], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosSacal][1], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosSacal][2],0,0);
+            }
+        }
     }
 
     SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);

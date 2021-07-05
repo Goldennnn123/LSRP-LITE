@@ -24,5 +24,6 @@ stock SaveClothing(id, thread = MYSQL_TYPE_THREAD)
     mysql_flo(query, "ClothingOffPosSacalZ", ClothingInfo[id][ClothingOffPosSacal][2]);
     
     mysql_finish(query);
+    printf("%s",query);
     return 1;
 }

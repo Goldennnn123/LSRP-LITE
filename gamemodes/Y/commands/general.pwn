@@ -885,6 +885,23 @@ CMD:admins(playerid, params[])
 	return 1;
 }
 
+CMD:online(playerid, params[])
+{
+	new Android = 0, PC = 0;
+
+	foreach(new i : Player)
+	{
+		if(IsPlayerAndroid(i) == true)
+		{
+			Android++;
+		}
+		else PC++;
+	}
+
+	SendClientMessageEx(playerid, COLOR_GREY, "Android: %d คน PC: %d คน",Android, PC);
+	return 1;
+}
+
 
 CMD:testers(playerid, params[])
 {

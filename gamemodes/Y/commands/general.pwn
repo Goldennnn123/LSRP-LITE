@@ -1503,7 +1503,7 @@ CMD:fines(playerid, params[])
 	new tagerid;
 	if(factionid != 0)
 	{
-		if(FactionInfo[factionid][eFactionJob] != POLICE || FactionInfo[factionid][eFactionJob] != SHERIFF)
+		if(FactionInfo[factionid][eFactionJob] != POLICE && FactionInfo[factionid][eFactionJob] != SHERIFF)
 			return ShowFines(playerid, playerid);
 
 		if(sscanf(params, "i(-1)", tagerid))

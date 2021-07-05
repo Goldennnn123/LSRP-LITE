@@ -501,9 +501,11 @@ Dialog:DIALOG_FINES_LIST(playerid, response, listitem, inputtext[])
     new id = GetPVarInt(playerid, str);
 	
 	GiveMoney(playerid, -FineInfo[id][FinePrice]);
+	GlobalInfo[G_GovCash]+= FineInfo[id][FinePrice];
 
 	mysql_format(dbCon, query, sizeof(query),"DELETE FROM `fine` WHERE `FineDBID` = '%d'",FineInfo[id][FineDBID]);
 	mysql_tquery(dbCon, query);
+
 
 	FineInfo[id][FineDBID] = 0;
 	FineInfo[id][FineOwner] = 0;

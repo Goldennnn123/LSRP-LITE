@@ -128,6 +128,7 @@ new globalWeather = 2;
 #include "Y/mysql/SaveComputer.pwn"
 #include "Y/mysql/SaveGps.pwn"
 #include "Y/mysql/SaveClothing.pwn"
+#include "Y/mysql/SaveGlobal.pwn"
 
 #include "Y/registration/login.pwn"
 #include "Y/character/character.pwn"

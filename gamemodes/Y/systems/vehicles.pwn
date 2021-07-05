@@ -20,7 +20,7 @@ new PlayerSellVehicleID[MAX_PLAYERS];
 new PlayerSellVehiclePrice[MAX_PLAYERS];
 new bool:PlayerSellVehicleAccept[MAX_PLAYERS];
 
-new rental_vehicles[10];
+new rental_vehicles[15];
 new RentCarKey[MAX_PLAYERS];
 
 
@@ -2422,6 +2422,16 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 			return 1;
 
+		}
+		if(RELEASED(KEY_NO))
+		{
+			if(PlayerInfo[playerid][pAdmin])
+			{
+				new str[2];
+				format(str, sizeof(str), "");
+				callcmd::engine(playerid, str);
+				return 1;
+			}
 		}
 	}
 	return 1;

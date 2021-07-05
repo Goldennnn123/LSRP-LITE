@@ -16,6 +16,13 @@ hook OnGameModeInit()
 	rental_vehicles[8] = AddStaticVehicleEx(492,1560.5928,-2328.5264,13.3775,269.5466,223,0, -1);
 	rental_vehicles[9] = AddStaticVehicleEx(492,1560.5668,-2331.8062,13.3845,269.5466,223,0, -1);
 
+
+	rental_vehicles[10] = AddStaticVehicleEx(462,1565.0138,-2343.3386,13.1463,90.7493,223,219, -1);
+	rental_vehicles[11] = AddStaticVehicleEx(462,1565.1428,-2344.2258,13.1456,88.5780,223,117, -1);
+	rental_vehicles[12] = AddStaticVehicleEx(462,1565.0927,-2345.1797,13.1466,95.9593,223,87, -1);
+	rental_vehicles[13] = AddStaticVehicleEx(462,1565.0872,-2346.0618,13.1450,93.8681,223,228, -1);
+	rental_vehicles[14] = AddStaticVehicleEx(462,1565.2903,-2347.0344,13.1454,90.4499,223,156, -1);
+
 	for(new c = 0; c < sizeof rental_vehicles; c++) {
     	SetVehicleNumberPlate(rental_vehicles[c], "RENTAL");
 		ResetVehicleVars(rental_vehicles[c]);
@@ -65,6 +72,7 @@ stock VehicleRentalPrice(model)
 {
 	switch(model)
 	{
+		case 462: return 350;
 	    case 492: return 1500;
 	    case 422: return 2000;
 	}

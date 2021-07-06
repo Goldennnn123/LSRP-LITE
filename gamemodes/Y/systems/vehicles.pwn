@@ -1000,7 +1000,7 @@ CMD:vehicle(playerid, params[])
 		if(!IsPlayerNearPlayer(playerid, tagetid, 5.0))
 			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
 
-		if(PlayerInfo[tagetid][pVehicleSpawnedID])
+		if(PlayerInfo[tagetid][pVehicleSpawnedID] == INVALID_VEHICLE_ID)
 			return SendErrorMessage(playerid, "ไม่สามารถให้ยานพาหนะกับผู้เล่นได้ เนื่องจาก ผู้เล่นยังไม่ได้เก็บยานพหานะคันเดิม");
 
 		new idx = 0;

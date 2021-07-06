@@ -57,10 +57,11 @@ stock PlayerSpec(playerid, playerb)
 			
 			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
 			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
-			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
+			//SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
 		}
 		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
 		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
+
 		
 		TogglePlayerSpectating(playerid, true); 
 		PlayerSpectateVehicle(playerid, vehicleid);
@@ -76,7 +77,7 @@ stock PlayerSpec(playerid, playerb)
 			
 			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
 			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
-			SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
+			//SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
 		}
 		
 		SetPlayerInterior(playerid, GetPlayerInterior(playerb));

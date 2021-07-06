@@ -1614,7 +1614,7 @@ CMD:smoke(playerid, params[])
 		}
 		case 2: 
 		{
-			ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 0, 1, 1, 1, 1, 1);
+			ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 1, 1, 1, 1, 1, 1);
 			PlayerInfo[playerid][pCigare]--;
 			SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "* %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
 		}

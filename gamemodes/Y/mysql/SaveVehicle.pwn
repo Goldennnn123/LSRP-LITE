@@ -47,6 +47,5 @@ stock SaveVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 
 	mysql_int(query, "VehicleComp",VehicleInfo[vehicleid][eVehicleComp]);
 	mysql_finish(query);
-	printf("%s",query);
 	return 1;
 }

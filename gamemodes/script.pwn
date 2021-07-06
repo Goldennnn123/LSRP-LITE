@@ -504,9 +504,15 @@ public OnPlayerSpawn(playerid) {
     {
         if(PlayerInfo[playerid][pClothing][i])
         {
-            if(ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingSpawn])
+            for(new id = 1; id < MAX_CLOTHING; id++)
             {
-                SetPlayerAttachedObject(playerid, ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingIndex],  ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingModel], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingBone],  ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPos][0], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPos][1], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPos][2], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosR][0], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosR][1], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosR][2], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosSacal][0], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosSacal][1], ClothingInfo[PlayerInfo[playerid][pClothing][i]][ClothingOffPosSacal][2],0,0);
+                if(PlayerInfo[playerid][pClothing][i] == ClothingInfo[id][ClothingDBID])
+                {
+                    if(ClothingInfo[id][ClothingSpawn])
+                    {
+                        SetPlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex], ClothingInfo[id][ClothingModel], ClothingInfo[id][ClothingBone], ClothingInfo[id][ClothingOffPos][0], ClothingInfo[id][ClothingOffPos][1], ClothingInfo[id][ClothingOffPos][2], ClothingInfo[id][ClothingOffPosR][0], ClothingInfo[id][ClothingOffPosR][1], ClothingInfo[id][ClothingOffPosR][2], ClothingInfo[id][ClothingOffPosSacal][0], ClothingInfo[id][ClothingOffPosSacal][1], ClothingInfo[id][ClothingOffPosSacal][2],0);
+                    }
+                }
             }
         }
     }

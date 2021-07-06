@@ -91,6 +91,7 @@ CMD:clothing(playerid, params[])
     if(!strcmp(type, "list", true))
     {
         ShowClothing(playerid);
+        PlayerCloID[playerid] = 0;
         return 1;
     }
     else if(!strcmp(type, "give", true))
@@ -258,26 +259,102 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][0];
+            new id = PlayerInfo[playerid][pClothing][0], idx = 0;
 
-            new query[400];
+            for(new i = 1; i < MAX_CLOTHING; i++)
+            {
+                if(id == ClothingInfo[i][ClothingDBID])
+                {
+                    idx = i;
+                }
+            }
+            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+            
+            PlayerCloID[playerid] = idx;
 
-            mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `clothing` WHERE `ClothingDBID` = '%d'", id);
-            mysql_tquery(dbCon, query, "SelectClothingID", "d", playerid);
+            new str[120], longstr[120];
+
+            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            strcat(longstr, str);
+
+            format(str, sizeof(str), "Pos\n");
+            strcat(longstr, str);
+
+
+            if(ClothingInfo[idx][ClothingSpawn])
+            {
+                format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
+                strcat(longstr, str);
+            }
+            else
+            {
+                format(str, sizeof(str), ""EMBED_LIGHTRED"Take On\n");
+                strcat(longstr, str);
+            }
+
+            format(str, sizeof(str), ""EMBED_LIGHTRED"Delete\n");
+            strcat(longstr, str);
+
+            
+            Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
         case 1:
         {
-            if(!PlayerInfo[playerid][pClothing][1])
+            if(!PlayerInfo[playerid][pClothing][4])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][1];
+            new id = PlayerInfo[playerid][pClothing][1], idx = 0;
 
-            new query[400];
+            for(new i = 1; i < MAX_CLOTHING; i++)
+            {
+                if(id == ClothingInfo[i][ClothingDBID])
+                {
+                    idx = i;
+                }
+            }
+            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+            
+            PlayerCloID[playerid] = idx;
 
-            mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `clothing` WHERE `ClothingDBID` = '%d'", id);
-            mysql_tquery(dbCon, query, "SelectClothingID", "d", playerid);
+            new str[120], longstr[120];
+
+            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            strcat(longstr, str);
+
+            format(str, sizeof(str), "Pos\n");
+            strcat(longstr, str);
+
+
+            if(ClothingInfo[idx][ClothingSpawn])
+            {
+                format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
+                strcat(longstr, str);
+            }
+            else
+            {
+                format(str, sizeof(str), ""EMBED_LIGHTRED"Take On\n");
+                strcat(longstr, str);
+            }
+
+            format(str, sizeof(str), ""EMBED_LIGHTRED"Delete\n");
+            strcat(longstr, str);
+
+            
+            Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
         case 2:
@@ -286,12 +363,50 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][2];
+            new id = PlayerInfo[playerid][pClothing][2], idx = 0;
 
-            new query[400];
+            for(new i = 1; i < MAX_CLOTHING; i++)
+            {
+                if(id == ClothingInfo[i][ClothingDBID])
+                {
+                    idx = i;
+                }
+            }
+            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+            
+            PlayerCloID[playerid] = idx;
 
-            mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `clothing` WHERE `ClothingDBID` = '%d'", id);
-            mysql_tquery(dbCon, query, "SelectClothingID", "d", playerid);
+            new str[120], longstr[120];
+
+            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            strcat(longstr, str);
+
+            format(str, sizeof(str), "Pos\n");
+            strcat(longstr, str);
+
+
+            if(ClothingInfo[idx][ClothingSpawn])
+            {
+                format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
+                strcat(longstr, str);
+            }
+            else
+            {
+                format(str, sizeof(str), ""EMBED_LIGHTRED"Take On\n");
+                strcat(longstr, str);
+            }
+
+            format(str, sizeof(str), ""EMBED_LIGHTRED"Delete\n");
+            strcat(longstr, str);
+
+            
+            Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
         case 3:
@@ -300,12 +415,50 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][3];
+            new id = PlayerInfo[playerid][pClothing][3], idx = 0;
 
-            new query[400];
+            for(new i = 1; i < MAX_CLOTHING; i++)
+            {
+                if(id == ClothingInfo[i][ClothingDBID])
+                {
+                    idx = i;
+                }
+            }
+            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+            
+            PlayerCloID[playerid] = idx;
 
-            mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `clothing` WHERE `ClothingDBID` = '%d'", id);
-            mysql_tquery(dbCon, query, "SelectClothingID", "d", playerid);
+            new str[120], longstr[120];
+
+            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            strcat(longstr, str);
+
+            format(str, sizeof(str), "Pos\n");
+            strcat(longstr, str);
+
+
+            if(ClothingInfo[idx][ClothingSpawn])
+            {
+                format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
+                strcat(longstr, str);
+            }
+            else
+            {
+                format(str, sizeof(str), ""EMBED_LIGHTRED"Take On\n");
+                strcat(longstr, str);
+            }
+
+            format(str, sizeof(str), ""EMBED_LIGHTRED"Delete\n");
+            strcat(longstr, str);
+
+            
+            Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
         case 4:
@@ -314,12 +467,50 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][4];
+            new id = PlayerInfo[playerid][pClothing][4], idx = 0;
 
-            new query[400];
+            for(new i = 1; i < MAX_CLOTHING; i++)
+            {
+                if(id == ClothingInfo[i][ClothingDBID])
+                {
+                    idx = i;
+                }
+            }
+            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+            
+            PlayerCloID[playerid] = idx;
 
-            mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `clothing` WHERE `ClothingDBID` = '%d'", id);
-            mysql_tquery(dbCon, query, "SelectClothingID", "d", playerid);
+            new str[120], longstr[120];
+
+            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            strcat(longstr, str);
+            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            strcat(longstr, str);
+
+            format(str, sizeof(str), "Pos\n");
+            strcat(longstr, str);
+
+
+            if(ClothingInfo[idx][ClothingSpawn])
+            {
+                format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
+                strcat(longstr, str);
+            }
+            else
+            {
+                format(str, sizeof(str), ""EMBED_LIGHTRED"Take On\n");
+                strcat(longstr, str);
+            }
+
+            format(str, sizeof(str), ""EMBED_LIGHTRED"Delete\n");
+            strcat(longstr, str);
+
+            
+            Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
     }
@@ -462,7 +653,7 @@ Dialog:D_CLOTHING_BONE(playerid, response, listitem, inputtext[])
     if(!response)
         return 1;
 
-    new id = PlayerSeClo[playerid];
+    new id = PlayerCloID[playerid];
     ClothingInfo[id][ClothingBone] = listitem+1;
 
     SendClientMessageEx(playerid, -1, "คุณได้เปลี่ยนต่ำแหน่ง Bone ไปที่ %d",listitem+1);
@@ -475,7 +666,7 @@ Dialog:D_CLOTHING_INDEX(playerid, response, listitem, inputtext[])
     if(!response)
         return 1;
 
-    new id = PlayerSeClo[playerid];
+    new id = PlayerCloID[playerid];
     ClothingInfo[id][ClothingIndex] = listitem+1;
 
     SendClientMessageEx(playerid, -1, "คุณได้เปลี่ยนต่ำแหน่ง Index ไปที่ %d",listitem+1);
@@ -495,7 +686,7 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
                 RemovePlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
 
             ClothingInfo[id][ClothingOffPos][0] = fOffsetX;
-            ClothingInfo[id][ClothingOffPos][2] = fOffsetY;
+            ClothingInfo[id][ClothingOffPos][1] = fOffsetY;
             ClothingInfo[id][ClothingOffPos][2] = fOffsetZ;
 
             ClothingInfo[id][ClothingOffPosR][0] = fRotX;
@@ -592,7 +783,7 @@ public Query_InsertClothing(playerid, newid, modelid, index, boneid, Float:fOffs
     ClothingInfo[newid][ClothingOffPosSacal][1] = fScaleY;
     ClothingInfo[newid][ClothingOffPosSacal][2] = fScaleZ;
 
-    SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้ทำการซื้อ %d สำเร็จแล้ว",PlayerSeCloBuy[playerid]);
+    SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้ทำการซื้อ %d สำเร็จแล้ว %d",PlayerSeCloBuy[playerid], newid);
     PlayerSeCloBuy[playerid] = 0;
     RemovePlayerAttachedObject(playerid, index);
     CharacterSave(playerid);
@@ -610,70 +801,5 @@ stock ShowClothing(playerid)
     }
 
     Dialog_Show(playerid, D_CLOTHING_LIST, DIALOG_STYLE_LIST, "ของแต่งตัว:", longstr, "เลือก", "ยกเลิก");
-    return 1;
-}
-
-
-forward SelectClothingID(playerid);
-public SelectClothingID(playerid)
-{
-    if(!cache_num_rows())
-		return SendErrorMessage(playerid, "ไม่มีรถอยู่ในสล็อตนี้"); 
-    
-    new rows; cache_get_row_count(rows); 
-
-    new C_ID, C_Model, C_Index, C_Bone, bool:C_Spawn;
-
-    for (new i = 0; i < rows && i < MAX_CLOTHING; i++)
-    {
-        cache_get_value_name_int(i, "ClothingDBID", C_ID);
-        cache_get_value_name_int(i, "ClothingModel", C_Model);
-        cache_get_value_name_int(i, "ClothingIndex", C_Index);
-        cache_get_value_name_int(i, "ClothingBone", C_Bone);
-        cache_get_value_name_int(i, "ClothingSpawn", C_Spawn);
-    }
-
-    new idx = 0;
-    for(new i = 1; i < MAX_CLOTHING; i++)
-    {
-        if(ClothingInfo[i][ClothingDBID] == C_ID)
-        {
-            idx = i;
-        }
-    }
-    
-    PlayerCloID[playerid] = idx;
-
-    new str[120], longstr[120];
-
-    format(str, sizeof(str), "ID: %d\n",C_ID);
-    strcat(longstr, str);
-    format(str, sizeof(str), "Model: %d\n",C_Model);
-    strcat(longstr, str);
-    format(str, sizeof(str), "Index: %d\n",C_Index);
-    strcat(longstr, str);
-    format(str, sizeof(str), "Bone: %d\n",C_Bone);
-    strcat(longstr, str);
-
-    format(str, sizeof(str), "Pos\n");
-    strcat(longstr, str);
-
-
-    if(C_Spawn)
-    {
-        format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
-        strcat(longstr, str);
-    }
-    else
-    {
-        format(str, sizeof(str), ""EMBED_LIGHTRED"Take On\n");
-        strcat(longstr, str);
-    }
-
-    format(str, sizeof(str), ""EMBED_LIGHTRED"Delete\n");
-    strcat(longstr, str);
-
-    
-    Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
     return 1;
 }

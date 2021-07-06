@@ -10,13 +10,10 @@ ptask CheckPlayer[1000](playerid)
 			if(PlayerInfo[playerid][pWeapons][i] == weapons[i][0])
 				continue;
 
-			if(weapons[i][0] == WEAPON_CAMERA)
+			if(PlayerInfo[playerid][pWeaponsAmmo][i] == weapons[i][1])
 				continue;
 
 			if(PlayerInfo[playerid][pWeapons][i] == WEAPON_CAMERA && PlayerInfo[playerid][pWeapons][i] == WEAPON_FLOWER)
-				continue;
-			
-			if(PlayerInfo[playerid][pWeaponsAmmo][i] == weapons[i][1])
 				continue;
 
 
@@ -30,9 +27,9 @@ ptask CheckPlayer[1000](playerid)
 			if(PlayerInfo[playerid][pPoliceDuty])
 				continue;
 
-            if(weapons[i][1] > 400 || weapons[i][0] != WEAPON_CAMERA)
+            if(weapons[i][1] > 400 && weapons[i][0] != WEAPON_CAMERA && weapons[i][0] != WEAPON_FLOWER)
             {
-                SendAdminMessageEx(COLOR_LIGHTRED, 1, "%s ผู้ต้องสงสัยในการเสกอาวุธ",ReturnName(playerid,0));
+                SendAdminMessageEx(COLOR_LIGHTRED, 1, "[WEAPONS-HECK] %s ผู้ต้องสงสัยในการเสกอาวุธ",ReturnName(playerid,0));
             }
 	}
     return 1;

@@ -14,11 +14,13 @@ new PlayerOwnerDBID[MAX_PLAYERS];
 new bool:playerTowingVehicle[MAX_PLAYERS] = false;
 new	playerTowTimer[MAX_PLAYERS] = 0;
 
-new PlayerSellVehicle[MAX_PLAYERS];
-new PlayerSellVehicleBy[MAX_PLAYERS];
-new PlayerSellVehicleID[MAX_PLAYERS];
-new PlayerSellVehiclePrice[MAX_PLAYERS];
-new bool:PlayerSellVehicleAccept[MAX_PLAYERS];
+enum S_SELLVEH_DATA
+{
+	S_BY,
+	S_ID,
+	S_VID
+}
+new SellVehData[MAX_PLAYERS][S_SELLVEH_DATA];
 
 new rental_vehicles[15];
 new RentCarKey[MAX_PLAYERS];
@@ -250,11 +252,9 @@ hook OnPlayerConnect(playerid)
 	playerTowingVehicle[playerid] = false;
 	playerTowTimer[playerid] = 0;
 
-	PlayerSellVehicle[playerid] = 0;
-	PlayerSellVehicleBy[playerid] = INVALID_PLAYER_ID;
-	PlayerSellVehicleID[playerid] = INVALID_VEHICLE_ID;
-	PlayerSellVehiclePrice[playerid] = 0;
-	PlayerSellVehicleAccept[playerid] = false;
+	SellVehData[playerid][S_ID] = INVALID_PLAYER_ID;
+	SellVehData[playerid][S_BY] = INVALID_PLAYER_ID;
+	SellVehData[playerid][S_VID] = INVALID_VEHICLE_ID;
 	return 1;
 }
 
@@ -267,6 +267,26 @@ hook OnPlayerDisconnect(playerid, reason)
 		playerTowingVehicle[playerid] = false;
 		Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleTowDisplay]);
 		VehicleInfo[vehicleid][eVehicleTowCount] = 0;
+	}
+
+	if(SellVehData[playerid][S_ID] != INVALID_PLAYER_ID)
+	{
+		new tagetid = SellVehData[playerid][S_ID];
+		
+		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "%s ได้ออกจากเกมจึงทำให้ข้อเสนอถูกลบออก", ReturnName(playerid,0));
+		SellVehData[tagetid][S_ID] = INVALID_PLAYER_ID;
+		SellVehData[tagetid][S_BY] = INVALID_PLAYER_ID;
+		SellVehData[tagetid][S_VID] = INVALID_VEHICLE_ID;
+	}
+
+	if(SellVehData[playerid][S_BY] != INVALID_PLAYER_ID)
+	{
+		new tagetid = SellVehData[playerid][S_BY];
+
+		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "%s ได้ออกจากเกมจึงทำให้ข้อเสนอถูกลบออก", ReturnName(playerid,0));
+		SellVehData[tagetid][S_ID] = INVALID_PLAYER_ID;
+		SellVehData[tagetid][S_BY] = INVALID_PLAYER_ID;
+		SellVehData[tagetid][S_VID] = INVALID_VEHICLE_ID;
 	}
 	return 1;
 }
@@ -806,9 +826,9 @@ CMD:vehicle(playerid, params[])
 	if(sscanf(params, "s[30]S()[90]", oneString, secString))
 	{
  	    SendClientMessage(playerid, COLOR_YELLOWEX, "___________________________________________________________");
-	 	SendClientMessage(playerid, COLOR_YELLOWEX, "USAGE: /(v)ehicle [action]");
-	    SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] get, park, sell,buy, upgrade, list, lock");
-        SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] stats, tow, duplicatekey, find, buypark($5,000)");
+	 	SendClientMessage(playerid, COLOR_YELLOWEX, "USAGE: /(v)ehicle <action>");
+	    SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] get, park, sell, buy, upgrade, list, lock");
+        SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] stats, tow, duplicatekey, find, buypark($2,500)");
         SendClientMessage(playerid, COLOR_YELLOWEX, "[Delete] scrap (ตำเตือน: หากใช้คำสั่งนี้จะทำการขายรถทิ้งในทันที.)");
         SendClientMessage(playerid, COLOR_YELLOWEX, "[Hint] หากพบบัคหรือสิ่งผิดปกติให้ทำการแจ้งผู้ดูแลในทันที");
 		SendClientMessage(playerid, COLOR_YELLOWEX, "___________________________________________________________");
@@ -864,17 +884,7 @@ CMD:vehicle(playerid, params[])
 			{
 				PlayerInfo[playerid][pVehicleSpawned] = false; 
 				PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
-
-				if(PlayerSellVehicleAccept[playerid])
-				{
-					new tagetid = PlayerSellVehicleBy[playerid];
-					PlayerSellVehicle[tagetid] = 0;
-					PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
-					PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
-					PlayerSellVehiclePrice[tagetid] = 0;
-					PlayerSellVehicleAccept[tagetid] = false;
-				}
-				
+			
 				SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้จัดเก็บรถ %s เรียบร้อย", ReturnVehicleName(vehicleid));
 				
 				SaveVehicle(vehicleid);
@@ -894,16 +904,6 @@ CMD:vehicle(playerid, params[])
 		
 		PlayerInfo[playerid][pVehicleSpawned] = false; 
 		PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
-
-		if(PlayerSellVehicleAccept[playerid])
-		{
-			new tagetid = PlayerSellVehicleBy[playerid];
-			PlayerSellVehicle[tagetid] = 0;
-			PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
-			PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
-			PlayerSellVehiclePrice[tagetid] = 0;
-			PlayerSellVehicleAccept[tagetid] = false;
-		}
 		
 		SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้จัดเก็บรถ %s เรียบร้อย", ReturnVehicleName(vehicleid));
 		
@@ -980,95 +980,34 @@ CMD:vehicle(playerid, params[])
 	}
 	else if(!strcmp(oneString, "sell"))
 	{
-		/*if(PlayerSellVehicleAccept[playerid])
-			return SendErrorMessage(playerid, "ตอนนี้คุณอยู่ในการตกลงกันระหว่างการซื้อขายยานพาหนะอยู่ กับ %s", ReturnName(PlayerSellVehicleBy[playerid], 0));
+		if(SellVehData[playerid][S_ID] != INVALID_PLAYER_ID)
+			return SendErrorMessage(playerid, "คุณได้มีข้อตกลงการซื้อขายกับผู้เล่นคนอืนอยู่");
 
-		if(!IsPlayerInAnyVehicle(playerid))
-			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภภายในรถ");
-			
-		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับรถ");
-			
-		if(PlayerInfo[playerid][pVehicleSpawned] == false) return SendErrorMessage(playerid, "รถของคุณยังไม่ได้ถูกนำออกมา");
+		new tagetid;
+		if(sscanf(secString, "u", tagetid))
+			return SendUsageMessage(playerid, "/vehicle sell <ชื่อบางส่วน/ไอดี>");
 
-		new 
-			vehicleid = GetPlayerVehicleID(playerid)
-		;
-
-		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
-			return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของรถ");
-
-		new
-			tagetid,
-			price
-		;
-
-		if(sscanf(secString, "ud", tagetid, price))
-			return SendUsageMessage(playerid, "/vehicle sell <ชื่อบางส่วน/ไอดี> <ราคา>");
 
 		if(playerid == tagetid)
-			return SendErrorMessage(playerid, "ไม่สามารถขายยานพาหนะให้ตนเองได้"); 
-		
-		if (!IsPlayerConnected(tagetid))
-			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์"); 
-		
-		if(!BitFlag_Get(gPlayerBitFlag[tagetid], IS_LOGGED))
+			return SendErrorMessage(playerid, "คุณไม่สามารถยื่นข้อเสนอนี้ได้");
+
+		if(!IsPlayerConnected(tagetid))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยูภายในเซิร์ฟเวอร์");
+
+		if(IsPlayerLogin(playerid))
 			return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-		if(PlayerInfo[tagetid][pVehicleSpawned] == true && PlayerInfo[tagetid][pVehicleSpawnedID] != INVALID_VEHICLE_ID)
-			return SendErrorMessage(playerid, "ผู้เล่นฝ่ายตรงข้ามมียานพาหนะอยู่");
+		if(!IsPlayerNearPlayer(playerid, tagetid, 5.0))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
 
+		if(PlayerInfo[tagetid][pVehicleSpawnedID])
+			return SendErrorMessage(playerid, "ไม่สามารถให้ยานพาหนะกับผู้เล่นได้ เนื่องจาก ผู้เล่นยังไม่ได้เก็บยานพหานะคันเดิม");
 
-		if(PlayerSellVehicleAccept[tagetid] == true)
-			return SendErrorMessage(playerid, "ผู้เล่นกำลังทำการซื้อขายกับคนอื่นอยู่");
-
-		if(price > 5000000 || price < 1)
-			return SendErrorMessage(playerid, "กรุณาใส่ราคาที่กำหนด <1-5,000,000>");
-
-
-		PlayerSellVehicle[playerid] = playerid;
-		PlayerSellVehicleBy[playerid] = tagetid;
-		PlayerSellVehicleID[playerid] = vehicleid;
-		PlayerSellVehiclePrice[playerid] = price;
-		PlayerSellVehicleAccept[playerid] = true;
-
-		PlayerSellVehicle[tagetid] = tagetid;
-		PlayerSellVehicleBy[tagetid] = playerid;
-		PlayerSellVehicleID[tagetid] = vehicleid;
-		PlayerSellVehiclePrice[tagetid] = price;
-		PlayerSellVehicleAccept[tagetid] = true;
-
-		SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ส่งข้อเสนอราคาให้กับ %s ในการขายยานพนะ %s ในราคา $%s",ReturnName(tagetid, 0), ReturnVehicleName(vehicleid), MoneyFormat(price));
-		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "คุณได้รับข้อเสนอราคาจาก %s ในการขายยานพนะ %s ในราคา $%s พิมพ์ /v accept เพื่อยืนยันข้อเสนอ",ReturnName(playerid, 0), ReturnVehicleName(vehicleid), MoneyFormat(price));
-		*/
-		SendClientMessage(playerid, COLOR_LIGHTRED, "ขออถัยในความไม่สดวกเนื่องจากเราพบบัคในการขายรถอยู่เราขออนุญาตทำการปิดคำสั่งนี้ชั่วคราวก่อน");
-		return 1;
-	}
-	else if(!strcmp(oneString, "accept"))
-	{
-		new 
-			tagetid = PlayerSellVehicleBy[playerid],
-			vehicleid = PlayerSellVehicleID[playerid],
-			price = PlayerSellVehiclePrice[playerid]
-		;
-
-		if(!PlayerSellVehicleAccept[playerid] && playerid != tagetid)
-			return SendErrorMessage(playerid, "ไม่มีใครมาทำการซื้อขายยานพาหนะกับคุณตอนนี้");
-		
-		if(PlayerInfo[playerid][pVehicleSpawned] == true || PlayerInfo[playerid][pVehicleSpawnedID])
-		{
-			return SendErrorMessage(playerid, "ยานพาหนะของคุณไปเก็บยังจุด park ก่อนที่จะทำการซื้อขายยานพาหนะ");
-		}
-
-		if(PlayerInfo[tagetid][pVehicleSpawned] == false || PlayerInfo[tagetid][pVehicleSpawnedID] == INVALID_VEHICLE_ID)
-			return SendErrorMessage(playerid, "ผู้เล่นได้ทำการเก็บยานพาหนะไปแล้ว");
-
-		if(PlayerInfo[playerid][pCash] < price)
-			return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ (ขาดอีก %s)", MoneyFormat(price));
-		
 		new idx = 0;
+
 		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
 		{
-			if(!PlayerInfo[playerid][pOwnedVehicles][i])
+			if(!PlayerInfo[tagetid][pOwnedVehicles][i])
 			{
 				idx = i;
 				break;
@@ -1076,91 +1015,23 @@ CMD:vehicle(playerid, params[])
 		}
 
 		if(idx == 0)
-		{
-			PlayerSellVehicle[playerid] = 0;
-			PlayerSellVehicleBy[playerid] = INVALID_PLAYER_ID;
-			PlayerSellVehicleID[playerid] = INVALID_VEHICLE_ID;
-			PlayerSellVehiclePrice[playerid] = 0;
-			PlayerSellVehicleAccept[playerid] = false;
+			return SendErrorMessage(playerid,"ผู้เล่นมียานพาหนะเต็มแล้ว");
 
-			PlayerSellVehicle[tagetid] = 0;
-			PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
-			PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
-			PlayerSellVehiclePrice[tagetid] = 0;
-			PlayerSellVehicleAccept[tagetid] = false;
+		new vehicleid = PlayerInfo[playerid][pVehicleSpawnedID];
 
-			return SendErrorMessage(playerid,"คุณมีรถเต็มตัวแล้ว");
-		}
+		if(vehicleid == 0)
+			return SendErrorMessage(playerid, "คุณยังไม่ได้นำยานพาหนะออกมา");
 
 		
-		PlayerOwnerDBID[playerid] = idx;
+		SellVehData[playerid][S_ID] = tagetid;
 
-		//new sql_chang[500];
+		SellVehData[tagetid][S_BY] = playerid;
+		SellVehData[tagetid][S_VID] = vehicleid;
+		PlayerOwnerDBID[tagetid] = idx;
 
-		new dbid = VehicleInfo[vehicleid][eVehicleDBID];
-
-		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
-		{
-			if(PlayerInfo[tagetid][pOwnedVehicles][i] == dbid)
-			{
-				PlayerInfo[tagetid][pOwnedVehicles][i] = 0;
-			}
-		}
-
-		PlayerInfo[playerid][pOwnedVehicles][idx] = dbid;
-		VehicleInfo[vehicleid][eVehicleOwnerDBID] = PlayerInfo[playerid][pDBID];
-		PlayerInfo[playerid][pVehicleSpawned] = true; 
-		PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
-
-		GiveMoney(playerid, -price);
-		GiveMoney(tagetid, price);
-		SendClientMessageEx(playerid, COLOR_GREEN, "ทำการซื้อขายยานพาหนะสำเร็จ คุณจ่ายเงินไปจำนวน %s", MoneyFormat(price));
-		SendClientMessageEx(tagetid, COLOR_GREEN, "ทำการซื้อขายยานพาหนะสำเร็จ คุณได้รับเงินจำนวน %s", MoneyFormat(price));
-		SaveVehicle(vehicleid);
-		CharacterSave(playerid);
-
-		PlayerSellVehicle[tagetid] = 0;
-		PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
-		PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
-		PlayerSellVehiclePrice[tagetid] = 0;
-		PlayerSellVehicleAccept[tagetid] = false;
-		PlayerInfo[tagetid][pVehicleSpawned] = false; 
-		PlayerInfo[tagetid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
-
-		PlayerSellVehicle[playerid] = 0;
-		PlayerSellVehicleBy[playerid] = INVALID_PLAYER_ID;
-		PlayerSellVehicleID[playerid] = INVALID_VEHICLE_ID;
-		PlayerSellVehiclePrice[playerid] = 0;
-		PlayerSellVehicleAccept[playerid] = false;
-
-		CharacterSave(tagetid);
-		return 1;
-	}
-	else if(!strcmp(oneString, "Denied"))
-	{	
-		if(!PlayerSellVehicleAccept[playerid])
-			return SendErrorMessage(playerid, "ไม่มีใครมาทำการซื้อขายยานพาหนะกับคุณตอนนี้");
-
-
-		new 
-			tagetid = PlayerSellVehicleBy[playerid]
-		;
-
-		SendClientMessageEx(tagetid, COLOR_LIGHTRED, "%s :ได้ปฎิเสทข้อเสนอของคุณ",ReturnName(playerid, 0));
-		SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปฎิเสทข้อเสนอของ %s",ReturnName(tagetid, 0));
-
-		PlayerSellVehicle[tagetid] = 0;
-		PlayerSellVehicleBy[tagetid] = INVALID_PLAYER_ID;
-		PlayerSellVehicleID[tagetid] = INVALID_VEHICLE_ID;
-		PlayerSellVehiclePrice[tagetid] = 0;
-		PlayerSellVehicleAccept[tagetid] = false;
-
-		PlayerSellVehicle[playerid] = 0;
-		PlayerSellVehicleBy[playerid] = INVALID_PLAYER_ID;
-		PlayerSellVehicleID[playerid] = INVALID_VEHICLE_ID;
-		PlayerSellVehiclePrice[playerid] = 0;
-		PlayerSellVehicleAccept[playerid] = false;
-
+		SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ยื่นข้อเสนอการให้ยานพาหนะ %s กับ %s",ReturnVehicleName(vehicleid), ReturnName(tagetid,0));
+		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "%s ได้ยื่นข้อเสนอการให้ยานพาหนะ %s กับคุณ",ReturnName(playerid,0), ReturnVehicleName(vehicleid));
+		SendClientMessage(tagetid, -1, "ข้อเสนอ: หากคุณยอมรับให้กด Y หากไม่ให้กด N");
 		return 1;
 	}
 	else if(!strcmp(oneString, "duplicatekey"))
@@ -2449,6 +2320,59 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
+	
+	if(SellVehData[playerid][S_BY] != INVALID_PLAYER_ID)
+	{
+		if(RELEASED(KEY_YES))
+		{
+			new id = PlayerOwnerDBID[playerid];
+			new vehicleid_ID = SellVehData[playerid][S_VID];
+			new tagetid = SellVehData[playerid][S_BY];
+
+			PlayerInfo[playerid][pOwnedVehicles][id] = VehicleInfo[vehicleid_ID][eVehicleDBID];
+			PlayerInfo[playerid][pVehicleSpawned] = true;
+			PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid_ID;
+
+			VehicleInfo[vehicleid_ID][eVehicleOwnerDBID] = PlayerInfo[playerid][pDBID];
+
+			for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+			{
+				if(PlayerInfo[tagetid][pOwnedVehicles][i] == VehicleInfo[vehicleid_ID][eVehicleDBID])
+				{
+					PlayerInfo[tagetid][pOwnedVehicles][i] = 0;
+					break;
+				}
+			}
+			PlayerInfo[tagetid][pVehicleSpawned] = false;
+			PlayerInfo[tagetid][pVehicleSpawnedID] = 0;
+
+			SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้ยอมรับข้อเสนอการให้ยานพาหนะจาก %s",ReturnName(tagetid,0));
+			SendClientMessageEx(tagetid, COLOR_HELPME, "%s ได้ยอมรับข้อเสนอการให้ยานพาหนะจากคุณแล้ว",  ReturnName(playerid,0));
+			SaveVehicle(vehicleid_ID); CharacterSave(playerid); CharacterSave(tagetid);
+
+			SellVehData[tagetid][S_ID] = INVALID_PLAYER_ID;
+			PlayerOwnerDBID[playerid] = 0;
+
+			SellVehData[playerid][S_VID] = INVALID_VEHICLE_ID;
+			SellVehData[playerid][S_BY] = INVALID_PLAYER_ID;
+			return 1;
+		}
+		if(RELEASED(KEY_NO))
+		{	
+			new vehicleid_ID = SellVehData[playerid][S_VID];
+			new tagetid = SellVehData[playerid][S_BY];
+
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณปฏิเสธข้อเสนอของ %s สำหรับการให้ยานพาหนะ %s",ReturnName(tagetid,0), ReturnVehicleName(vehicleid_ID));
+			SendClientMessageEx(tagetid, COLOR_GREY, "%s ปฏิเสธข้อเสนอการให้ยานพาหนะ %s",ReturnName(playerid,0), ReturnVehicleName(vehicleid_ID));
+			
+			SellVehData[tagetid][S_ID] = INVALID_PLAYER_ID;
+			PlayerOwnerDBID[playerid] = 0;
+
+			SellVehData[playerid][S_VID] = INVALID_VEHICLE_ID;
+			SellVehData[playerid][S_BY] = INVALID_PLAYER_ID;
+			return 1;
+		}
+	}
 	return 1;
 }
 
@@ -2496,3 +2420,4 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	}
 	return 1;
 }
+

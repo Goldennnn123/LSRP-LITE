@@ -220,7 +220,9 @@ CMD:buyticket(playerid, params[])
     format(PlayerInfo[playerid][pTicket], PlayerInfo[playerid][pTicket], "%s", params);
 
     SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ซื้อล็อตตารี่ เลข %s เรียบร้อยแล้ว โปรดรอล็อตตารี่ออก",params);
-    BusinessInfo[id][BusinessCash] += 1000;
+    BusinessInfo[id][BusinessCash] += 500;
+    GlobalInfo[G_GovCash] += 500;
+    Saveglobal();
     return 1;
 }
 
@@ -406,8 +408,8 @@ CMD:advertisements(playerid, params[])
     if(isnull(params)) 
         return SendUsageMessage(playerid, "/advertisements [ข้อความ]");
 
-    if(PlayerInfo[playerid][pCash] < 1000)
-        return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ (จำเป็นต้องมี $1,000)");
+    if(PlayerInfo[playerid][pCash] < 200)
+        return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ (จำเป็นต้องมี $200)");
 
     
     if(strlen(params) > 50)
@@ -420,7 +422,7 @@ CMD:advertisements(playerid, params[])
         SendClientMessageToAllEx(COLOR_LIGHTGREEN, "[Advertisements] %s",params);
     }
 
-    GiveMoney(playerid, -1000);
+    GiveMoney(playerid, -200);
 
     return 1;
 }

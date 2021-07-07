@@ -66,6 +66,7 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
 
     BusinessInfo[id][BusinessCash] += price - floatround(result_price, floatround_round);
     GlobalInfo[G_GovCash]+= floatround(result_price, floatround_round);
+    Saveglobal();
     SaveBusiness(id);
     CharacterSave(playerid);
     return true;

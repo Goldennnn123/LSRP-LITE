@@ -270,6 +270,7 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pPaycheck", PlayerInfo[playerid][pPaycheck]);
 	cache_get_value_name_int(0, "pCash", PlayerInfo[playerid][pCash]);
 	cache_get_value_name_int(0, "pBank", PlayerInfo[playerid][pBank]);
+	cache_get_value_name(0, "pTicket",PlayerInfo[playerid][pTicket]);
 
 	cache_get_value_name_int(0, "pAdmin", PlayerInfo[playerid][pAdmin]);
 	cache_get_value_name_int(0, "pTester", PlayerInfo[playerid][pTester]);

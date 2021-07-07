@@ -177,6 +177,8 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 
         mysql_int(query, "pBoomBox",PlayerInfo[playerid][pBoomBox]);
 
+        mysql_str(query, "pTicket",PlayerInfo[playerid][pTicket]);
+
         
         for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
         {

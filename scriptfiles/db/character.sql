@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `pClothing3` int(11) NOT NULL,
   `pClothing4` int(11) NOT NULL,
   `pClothing5` int(11) NOT NULL,
+  `pTicket` varchar(6) NOT NULL,
   `pWeapon0` int(11) NOT NULL,
   `pWeapon1` int(11) NOT NULL,
   `pWeapon2` int(11) NOT NULL,

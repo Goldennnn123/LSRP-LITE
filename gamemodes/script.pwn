@@ -413,6 +413,8 @@ public OnPlayerConnect(playerid) {
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;
 
+    format(PlayerInfo[playerid][pTicket], PlayerInfo[playerid][pTicket], "");
+
     SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
 
     tToAccept[playerid] = INVALID_PLAYER_ID;

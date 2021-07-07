@@ -634,7 +634,7 @@ Dialog:DIALOG_SELL_BU(playerid, response, listitem, inputtext[])
 
 stock ShowPlayerBusiness(playerid, id)
 {
-    new str[MAX_STRING];
+    new str[MAX_STRING],  longstr[MAX_STRING];
         
     format(str, sizeof(str), "ชื่อกิจการ: %s\n\
                               ค่าทางเข้ากิจการ: %s\n\
@@ -648,9 +648,26 @@ stock ShowPlayerBusiness(playerid, id)
                               BusinessInfo[id][BusinessS_Cemara],
                               BusinessInfo[id][BusinessS_Mask],
                               BusinessInfo[id][BusinessS_Flower]);
-    
+
+    format(str, sizeof(str), "ชื่อกิจการ: %s", BusinessInfo[id][BusinessName]);
+    strcat(longstr,  str);
+    format(str, sizeof(str), "ค่าทางเข้ากิจการ: %s", MoneyFormat(BusinessInfo[id][BusinessEntrancePrice]));
+    strcat(longstr,  str);
+    format(str, sizeof(str), "เงินในกิจการ: %s", MoneyFormat(BusinessInfo[id][BusinessCash]));
+    strcat(longstr,  str);
+
+    if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_STORE)
+    {
+        format(str, sizeof(str), "กล้อง: %d", BusinessInfo[id][BusinessS_Cemara]);
+        strcat(longstr,  str);
+        format(str, sizeof(str), " OOC Mask: %d", BusinessInfo[id][BusinessS_Mask]);
+        strcat(longstr,  str);
+        format(str, sizeof(str), " Flower: %d", BusinessInfo[id][BusinessS_Flower]);
+        strcat(longstr,  str);
+    }
+
     PlayerSelectBusiness[playerid] = id;
-    Dialog_Show(playerid, DIALOG_BU_EDIT, DIALOG_STYLE_LIST, "Business Managment", str, "ยืนยัน", "ยกเลิก");
+    Dialog_Show(playerid, DIALOG_BU_EDIT, DIALOG_STYLE_LIST, "Business Managment", longstr, "ยืนยัน", "ยกเลิก");
     return 1;
 }
 
@@ -880,7 +897,7 @@ stock SendBusinessType(playerid, id)
 		case BUSINESS_TYPE_STORE:
 		{
 			SendClientMessageEx(playerid, COLOR_DARKGREEN, "ยินดีตอยรับเข้าสู่ร้าน %s", BusinessInfo[id][BusinessName]);
-			SendClientMessage(playerid, COLOR_WHITE, "Available commands: /buy, /withdraw, /balance. /checkbill"); 
+			SendClientMessage(playerid, COLOR_WHITE, "Available commands: /buy, /withdraw, /balance, /checkbil, /buyticket"); 
 		}
 		case BUSINESS_TYPE_CLUB:
 		{

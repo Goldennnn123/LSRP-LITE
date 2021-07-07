@@ -161,6 +161,8 @@ enum E_PLAYER_DATA
 	pCopper,
 	pKNO3,
 
+	pTicket[6],
+
 	pClothing[9]
 };
 

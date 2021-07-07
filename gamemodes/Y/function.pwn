@@ -508,6 +508,9 @@ public FunctionPaychecks()
 	return 1;
 }
 
+new Ticketnumber[][] = 
+	{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+
 forward CallPaycheck();
 public CallPaycheck()
 {
@@ -618,7 +621,26 @@ public CallPaycheck()
 		
 		format(str, sizeof(str), "~y~Payday~n~~w~Paycheck~n~~g~$%d", total_paycheck);
 		GameTextForPlayer(i, str, 3000, 1); 
-	
+
+		new randset[6];
+
+		randset[0] = random(sizeof(Ticketnumber)); 
+		randset[1] = random(sizeof(Ticketnumber)); 
+		randset[2] = random(sizeof(Ticketnumber)); 
+		randset[3] = random(sizeof(Ticketnumber)); 
+		randset[4] = random(sizeof(Ticketnumber)); 
+		randset[5] = random(sizeof(Ticketnumber)); 
+
+		format(GlobalInfo[G_Ticket], 32,  "%s%s%s%s%s%s", Ticketnumber[randset[0]], Ticketnumber[randset[1]], Ticketnumber[randset[2]], Ticketnumber[randset[3]], Ticketnumber[randset[4]], Ticketnumber[randset[5]]);
+
+
+		if(PlayerInfo[i][pTicket] == GlobalInfo[G_Ticket])
+		{
+			SendClientMessageEx(i, COLOR_GENANNOUNCE, "คุณถูกรางวัลจากการซื้อ ล็อตตารี่ %d ได้รับเงิน $2,000",GlobalInfo[G_Ticket]);
+			GiveMoney(i, 2000);
+			format(PlayerInfo[i][pTicket], PlayerInfo[i][pTicket],"");
+		}
+		SendClientMessageEx(i, COLOR_GREY, "เลขล็อตตารี่ออก คือ: %s",  GlobalInfo[G_Ticket]);
 		CharacterSave(i); 
 	}
 	return 1;

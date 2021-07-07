@@ -13,6 +13,17 @@ new
     bool:ServiceConfirm[MAX_PLAYERS]
 ;
 
+
+enum S_SERVEICE_DATA
+{
+	S_SER_ID,
+	S_SER_BY,
+    S_SER_VID[2],
+	S_SER_CALL,
+	S_SER_COMP,
+}
+new ServiceCalls[MAX_PLAYERS][S_SERVEICE_DATA];
+
 new Float:oldhp;
 
 enum M_MCGARAGE_DATA
@@ -102,6 +113,13 @@ hook OnPlayerConnect@12(playerid)
     ServiceComp[playerid] = 0;
     ServiceCall[playerid] = 0;
     ServiceConfirm[playerid] = true;
+
+    ServiceCalls[playerid][S_SER_ID] = INVALID_PLAYER_ID;
+    ServiceCalls[playerid][S_SER_BY] = INVALID_PLAYER_ID;
+    ServiceCalls[playerid][S_SER_CALL] = 0;
+    ServiceCalls[playerid][S_SER_COMP] = 0;
+    ServiceCalls[playerid][S_SER_VID][0] = INVALID_VEHICLE_ID;
+    ServiceCalls[playerid][S_SER_VID][1] = INVALID_VEHICLE_ID;
     return 1;
 }
 
@@ -241,14 +259,14 @@ CMD:service(playerid, params[])
                         return SendErrorMessage(playerid, "อะไหล่ของคุณไม่เพียงพอ");
                 
                     SendClientMessage(playerid, COLOR_YELLOW, "SERVER: ข้อเสนอถูกส่ง");
-                    
-                    pToAccept[playerid] = tagetid;
-                    pToAccept[tagetid] = playerid;
-                    vToAccept[playerid] = vehicleid;
-                    pvToAccept[playerid] = GetPlayerVehicleID(playerid);
-                    ServiceComp[playerid] = comp;
-                    ServiceCall[playerid] = option;
-                    ServiceConfirm[tagetid] = false;
+                
+                    ServiceCalls[playerid][S_SER_ID] = tagetid;
+                    ServiceCalls[playerid][S_SER_VID][0] = GetPlayerVehicleID(playerid);
+                    ServiceCalls[playerid][S_SER_VID][1] = vehicleid;
+                    ServiceCalls[playerid][S_SER_COMP] = comp;
+                    ServiceCalls[playerid][S_SER_CALL] = option;
+
+                    ServiceCalls[tagetid][S_SER_BY] = playerid;
                     SendClientMessageEx(tagetid, -1, "%s ได้ยืนข้อเสนอสำหรับการซ่อมยานพาหนะ %s ของคุณ "EMBED_LIGHTRED"- กด Y ย้ำๆ(1-5 ครั้ง) เพื่อยอมรับข้อเสนอนี้", ReturnName(playerid, 0), ReturnVehicleName(vehicleid));
                     return 1;
                 }
@@ -288,7 +306,15 @@ CMD:service(playerid, params[])
                     ServiceComp[playerid] = comp;
                     ServiceCall[playerid] = option;
                     ServiceConfirm[tagetid] = false;
-                    SendClientMessageEx(tagetid, -1, "%s ได้ยืนข้อเสนอสำหรับการซ่อมยานพาหนะ %s ของคุณ "EMBED_LIGHTRED"- กด Y ย้ำๆ(1-5 ครั้ง) เพื่อยอมรับข้อเสนอนี้", ReturnName(playerid, 0), ReturnVehicleName(vehicleid));
+
+                    ServiceCalls[playerid][S_SER_ID] = tagetid;
+                    ServiceCalls[playerid][S_SER_VID][0] = GetPlayerVehicleID(playerid);
+                    ServiceCalls[playerid][S_SER_VID][1] = vehicleid;
+                    ServiceCalls[playerid][S_SER_COMP] = comp;
+                    ServiceCalls[playerid][S_SER_CALL] = option;
+
+                    ServiceCalls[tagetid][S_SER_BY] = playerid;
+                    SendClientMessageEx(tagetid, -1, "%s ได้ยืนข้อเสนอสำหรับการซ่อมยานพาหนะ %s ของคุณ "EMBED_LIGHTRED"- กด Y เพื่อยอมรับข้อเสนอนี้", ReturnName(playerid, 0), ReturnVehicleName(vehicleid));
                     return 1;
                 }
                 else
@@ -323,7 +349,7 @@ CMD:service(playerid, params[])
                     ServiceComp[playerid] = comp;
                     ServiceCall[playerid] = option;
                     ServiceConfirm[tagetid] = false;
-                    SendClientMessageEx(tagetid, -1, "%s ได้ยืนข้อเสนอสำหรับการซ่อมยานพาหนะ %s ของคุณ "EMBED_LIGHTRED"- กด Y ย้ำๆ(1-5 ครั้ง) เพื่อยอมรับข้อเสนอนี้", ReturnName(playerid, 0), ReturnVehicleName(vehicleid));
+                    SendClientMessageEx(tagetid, -1, "%s ได้ยืนข้อเสนอสำหรับการซ่อมยานพาหนะ %s ของคุณ "EMBED_LIGHTRED"- กด Y เพื่อยอมรับข้อเสนอนี้", ReturnName(playerid, 0), ReturnVehicleName(vehicleid));
                     return 1;
                 }
                 else
@@ -426,22 +452,27 @@ CMD:addcomp(playerid, params[])
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-    if(RELEASED(KEY_YES))
-	{
-        if(ServiceConfirm[playerid])
+    if(ServiceCalls[playerid][S_SER_BY] != INVALID_PLAYER_ID)
+    {
+        if(RELEASED(KEY_YES))
+        {
+            SendClientMessageEx(ServiceCalls[playerid][S_SER_BY], -1, "%s ได้ยินยันข้อเสนอของคุณแล้ว ขั้นตอนต่อไปจะเริ่มทำการซ่อมรถ "EMBED_LIGHTBLUE"- พิมพ์คำสั่ง /fixcar ใกล้ๆรถที่จะซ่อม", ReturnName(playerid,0));
+            SendClientMessage(playerid, -1, "คุณได้รับข้อเสนอแล้ว");
+            ServiceCalls[playerid][S_SER_BY] = INVALID_PLAYER_ID;
             return 1;
+        }
+        if(RELEASED(KEY_NO))
+        {
+            new tagetid = ServiceCalls[playerid][S_SER_BY];
 
-        if(pToAccept[playerid] == INVALID_PLAYER_ID)
+            SendClientMessageEx(tagetid, COLOR_GREY, "%s ไม่ยอมรับข้อเสนอของคุณ", ReturnName(playerid,0));
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณไม่ยอมรับข้อเสนอของ %s", ReturnName(tagetid,0));
+
+            ResetService(ServiceCalls[playerid][S_SER_BY]);
+            ResetService(playerid);
             return 1;
-            
-        SendClientMessageEx(pToAccept[playerid], -1, "%s ได้ยินยันข้อเสนอของคุณแล้ว ขั้นตอนต่อไปจะเริ่มทำการซ่อมรถ "EMBED_LIGHTBLUE"- พิมพ์คำสั่ง /fixcar ใกล้ๆรถที่จะซ่อม", ReturnName(pToAccept[playerid],0));
-        SendClientMessage(playerid, -1, "คุณได้รับข้อเสนอแล้ว");
-
-        new tagetid = pToAccept[playerid];
-        tToAccept[tagetid] = playerid;
-        ServiceConfirm[playerid] = true;
-        return 1;
-	}
+        }
+    }
     return 1;
 }
 
@@ -450,25 +481,25 @@ CMD:fixcar(playerid, params[])
     if(PlayerInfo[playerid][pJob] != JOB_MECHANIC)
         return SendErrorMessage(playerid, "คุณไม่ใช่อาชีพช่างยนต์");
     
-    if(tToAccept[playerid] == INVALID_PLAYER_ID)
+    if(ServiceCalls[playerid][S_SER_ID] == INVALID_PLAYER_ID)
         return SendErrorMessage(playerid, "คุณยังไมได้ยื่นข้อเสนอกับใคร");
 
 
     if(IsPlayerInAnyVehicle(playerid))
         return SendErrorMessage(playerid, "ลงมาจากรถเพื่อทำการซ่อมรถ");
 
-    new vehicleid = vToAccept[playerid];
+    new vehicleid = ServiceCalls[playerid][S_SER_VID][1];
 
     if(GetNearestVehicle(playerid) != vehicleid)
     {
-        printf("GetNearestVehicle: %d != vehicleid: %d", GetNearestVehicle(playerid), vehicleid);
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้รถที่จะซ่อม");
     }
 
 
-    RepairTimer[pToAccept[playerid]] = SetTimerEx("OnRepairVehicle", 1000 * ServiceComp[playerid], false, "ddd",playerid, vToAccept[playerid], ServiceCall[playerid]);
+    SetTimerEx("OnRepairVehicle", 1000 * ServiceCalls[playerid][S_SER_COMP], false, "ddd",playerid, ServiceCalls[playerid][S_SER_VID][1], ServiceCalls[playerid][S_SER_CALL]);
     ApplyAnimation(playerid, "CAR", "FIXN_CAR_LOOP", 4.1, 0, 0, 0, 1, 0, 0);
     SendClientMessage(playerid, COLOR_YELLOWEX, "คุณกำลังซ่อมยานพาหนะ.....");
+
     return 1;
 }
 
@@ -479,29 +510,32 @@ public OnRepairVehicle(playerid, vehicleid, option)
     {
         case 1:
         {
-            VehicleInfo[pvToAccept[playerid]][eVehicleComp] -= ServiceComp[playerid];
+            VehicleInfo[ServiceCalls[playerid][S_SER_VID][0]][eVehicleComp] -= ServiceCalls[playerid][S_SER_COMP];
             RepairVehicle(vehicleid);
             SetVehicleHealth(vehicleid, oldhp);
 
             TogglePlayerControllable(playerid, 1);
             ApplyAnimation(playerid, "CARRY", "crry_prtial", 1.0, 0, 0, 0, 0, 0);
             ClearAnimations(playerid);
+
             SendClientMessageEx(playerid, -1, "คุณได้ซ่อมรถ %s สำเร็จแล้วใช้อะไหล่ไป %d ชิ้น", ReturnVehicleName(vehicleid), ServiceComp[playerid]);
-            ResetService(tToAccept[playerid]);
+            ResetService(ServiceCalls[playerid][S_SER_ID]);
             ResetService(playerid);
             return 1;
         }
         case 2:
         {
             new modelid = GetVehicleModel(vehicleid);
+            
             SendClientMessageEx(playerid, -1, "คุณได้ซ่อมรถ %s สำเร็จแล้วใช้อะไหล่ไป %d ชิ้น", ReturnVehicleName(vehicleid), ServiceComp[playerid]);
-            VehicleInfo[pvToAccept[playerid]][eVehicleComp] -= ServiceComp[playerid];
-            RepairVehicle(vehicleid);
+            
+            VehicleInfo[ServiceCalls[playerid][S_SER_VID][0]][eVehicleComp] -= ServiceCalls[playerid][S_SER_COMP];
             SetVehicleHealth(vehicleid, VehicleData[modelid - 400][c_maxhp]);
+            
             TogglePlayerControllable(playerid, 1);
             ApplyAnimation(playerid, "CARRY", "crry_prtial", 1.0, 0, 0, 0, 0, 0);
             ClearAnimations(playerid);
-            ResetService(tToAccept[playerid]);
+            ResetService(ServiceCalls[playerid][S_SER_ID]);
             ResetService(playerid);
             return 1;
         }
@@ -509,11 +543,11 @@ public OnRepairVehicle(playerid, vehicleid, option)
         {
             VehicleInfo[vehicleid][eVehicleEngine] = 100;
             SendClientMessageEx(playerid, -1, "คุณได้เติมแบตตารี่ %s สำเร็จแล้วใช้อะไหล่ไป %d ชิ้น", ReturnVehicleName(vehicleid), ServiceComp[playerid]);
-            VehicleInfo[pvToAccept[playerid]][eVehicleComp] -= ServiceComp[playerid];
+            VehicleInfo[ServiceCalls[playerid][S_SER_VID][0]][eVehicleComp] -= ServiceCalls[playerid][S_SER_COMP];
             TogglePlayerControllable(playerid, 1);
             ApplyAnimation(playerid, "CARRY", "crry_prtial", 1.0, 0, 0, 0, 0, 0);
             ClearAnimations(playerid);
-            ResetService(tToAccept[playerid]);
+            ResetService(ServiceCalls[playerid][S_SER_ID]);
             ResetService(playerid);
             return 1;
         }
@@ -523,13 +557,12 @@ public OnRepairVehicle(playerid, vehicleid, option)
 
 stock ResetService(playerid)
 {
-    pToAccept[playerid] = INVALID_PLAYER_ID;
-	vToAccept[playerid] = INVALID_VEHICLE_ID;
-	tToAccept[playerid] = INVALID_PLAYER_ID;
-    pvToAccept[playerid] = INVALID_VEHICLE_ID;
-    KillTimer(RepairTimer[playerid]);
-    ServiceComp[playerid] = 0;
-    ServiceCall[playerid] = 0;
+    ServiceCalls[playerid][S_SER_ID] = INVALID_PLAYER_ID;
+    ServiceCalls[playerid][S_SER_BY] = INVALID_PLAYER_ID;
+    ServiceCalls[playerid][S_SER_CALL] = 0;
+    ServiceCalls[playerid][S_SER_COMP] = 0;
+    ServiceCalls[playerid][S_SER_VID][0] = INVALID_VEHICLE_ID;
+    ServiceCalls[playerid][S_SER_VID][1] = INVALID_VEHICLE_ID;
     return 1;
 }
 

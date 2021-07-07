@@ -46,12 +46,8 @@ new
 	playerWeaponsSpecSave[MAX_PLAYERS][13][13],
 	playerWeaponsSpecSaveData[MAX_PLAYERS][13][13];
 
-/*stock PlayerSpec(playerid, playerb)
+stock PlayerSpec(playerid, playerb)
 {
-	if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pMedicDuty] || PlayerInfo[playerid][pSADCRDuty])
-		return SendErrorMessage(playerid, "คุณต้องไม่ Duty ก่อน");
-
-
 	new weapon[13][2];
 
 	for(new i = 0; i < 13; i++)
@@ -59,6 +55,8 @@ new
 		if(PlayerInfo[playerid][pWeapons][i])
 			playerWeaponsSpecSaveData[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
 	
+		if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pMedicDuty] || PlayerInfo[playerid][pSADCRDuty])
+			playerWeaponsSpecSave[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
 	}
 
 	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER || GetPlayerState(playerb) == PLAYER_STATE_PASSENGER)
@@ -103,7 +101,7 @@ new
 		PlayerInfo[playerid][pSpectating] = playerb; 
 		return 1;
 	}
-}*/
+}
 
 
 stock GivePlayerExp(playerid, amount = 1) {

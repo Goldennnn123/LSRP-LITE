@@ -1946,30 +1946,6 @@ CMD:setstats(playerid, params[])
 	return 1;
 }
 
-CMD:givemoney(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 3)
-		return SendUnauthMessage(playerid);
-		
-	new playerb, value, str[128];
-	
-	if(sscanf(params, "ui", playerb, value))
-		return SendUsageMessage(playerid, "/givemoney [ชื่อบางส่วน/ไอดี] [จำนวน]");
-		
-	if(!IsPlayerConnected(playerb))
-		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
-		
-	if(IsPlayerLogin(playerb))
-		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
-		
-	GiveMoney(playerb, value);
-	SendServerMessage(playerb, "คุณได้รับเงินจำนวน $%s จาก ผู้ดูแลระบบ %s", MoneyFormat(value), ReturnName(playerid));
-
-	format(str, sizeof(str), "%s เสกเงินจำนวน $%s ให้กับ %s", ReturnName(playerid), MoneyFormat(value), ReturnName(playerb));
-	SendAdminMessage(3, str);
-	return 1;
-}
-
 CMD:setmoney(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 3)
@@ -2924,6 +2900,30 @@ CMD:restart(playerid, params[])
 // Admin Level: 1338;
 
 // Admin Level: 1339:
+CMD:givemoney(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1339)
+		return SendUnauthMessage(playerid);
+		
+	new playerb, value, str[128];
+	
+	if(sscanf(params, "ui", playerb, value))
+		return SendUsageMessage(playerid, "/givemoney [ชื่อบางส่วน/ไอดี] [จำนวน]");
+		
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+		
+	if(IsPlayerLogin(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+		
+	GiveMoney(playerb, value);
+	SendServerMessage(playerb, "คุณได้รับเงินจำนวน $%s จาก ผู้ดูแลระบบ %s", MoneyFormat(value), ReturnName(playerid));
+
+	format(str, sizeof(str), "%s เสกเงินจำนวน $%s ให้กับ %s", ReturnName(playerid), MoneyFormat(value), ReturnName(playerb));
+	SendAdminMessage(3, str);
+	return 1;
+}
+
 CMD:callpaycheck(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1339)

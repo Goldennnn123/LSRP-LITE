@@ -17,7 +17,8 @@
 		"samp-incognito/samp-streamer-plugin",
 		"Coystark/MenuStore",
 		"katursis/Pawn.RakNet",
-		"AGraber/samp-compat"
+		"AGraber/samp-compat",
+		"infin1tyy/customplayernametags"
 	],
 	"local": true,
 	"runtime": {

@@ -32,6 +32,7 @@
 #include <cec>
 #include <MenuStore>
 #include <compat>
+#include <cpn>
 //#include <H-AC>
 //#include <io>
 
@@ -211,6 +212,7 @@ public OnGameModeInit() {
 
 
     ShowPlayerMarkers(0);
+    ShowNameTags(0);
     //Timer:
     SetTimer("OnPlayerNereHouseTime", 1000, true);
     SetTimer("OnPlayerNereBusinessTime", 3000, true);

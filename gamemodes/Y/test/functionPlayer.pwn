@@ -2,7 +2,7 @@
 
 ptask CheckPlayer[1000](playerid) 
 {
-    new weapons[13][2];
+    new weapons[13][3];
 	for (new i = 0; i <= 12; i++)
 	{	
 			GetPlayerWeaponData(playerid, i, weapons[i][0], weapons[i][1]);

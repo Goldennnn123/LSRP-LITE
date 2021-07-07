@@ -1,6 +1,5 @@
 #include <YSI_Coding\y_hooks>
 
-
 new 
 	playerWeaponsSave[MAX_PLAYERS][4], 
 	playerWeaponsAmmoSave[MAX_PLAYERS][4]; 
@@ -1105,4 +1104,61 @@ stock SendDOCMessage(color, const str[], {Float,_}:...)
 		}
 	}
 	return 1;
+}
+
+stock PlayerSpec(playerid, playerb)
+{
+	new weapon[13][2];
+
+	for(new i = 0; i < 13; i++)
+	{
+		if(PlayerInfo[playerid][pWeapons][i])
+			playerWeaponsSpecSaveData[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
+	
+		if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pMedicDuty] || PlayerInfo[playerid][pSADCRDuty])
+			playerWeaponsSpecSave[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
+	}
+
+	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER || GetPlayerState(playerb) == PLAYER_STATE_PASSENGER)
+	{
+		new vehicleid = GetPlayerVehicleID(playerb);
+
+		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+		{
+			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			
+			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
+			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+			//SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
+		}
+		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
+		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
+
+		
+		TogglePlayerSpectating(playerid, true); 
+		PlayerSpectateVehicle(playerid, vehicleid);
+			
+		PlayerInfo[playerid][pSpectating] = playerb; 
+		return 1;
+	}
+	else
+	{	
+		if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+		{
+			GetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+			
+			PlayerInfo[playerid][pLastInterior] = GetPlayerInterior(playerid);
+			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
+			//SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
+		}
+		
+		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
+		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
+		
+		TogglePlayerSpectating(playerid, true); 
+		PlayerSpectatePlayer(playerid, playerb);
+			
+		PlayerInfo[playerid][pSpectating] = playerb; 
+		return 1;
+	}
 }

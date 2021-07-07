@@ -122,6 +122,7 @@ CMD:buy(playerid, params[])
     MenuStore_AddItem(playerid, 4, 325, "Flower", 300, "Flower", 200);
     MenuStore_AddItem(playerid, 5, 19897, "Cigarette", 150, "Flower", 200);
     MenuStore_AddItem(playerid, 6, 2226, "BoomBox", 10000, "BoomBox use music staion", 200);
+    MenuStore_AddItem(playerid, 7, 336, "Baseball Bat", 1500, "Weapon Baseball Bat", 200);
     MenuStore_Show(playerid, Shop, "SHOP");
     return 1;
 }

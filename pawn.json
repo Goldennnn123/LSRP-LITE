@@ -18,7 +18,8 @@
 		"Coystark/MenuStore",
 		"katursis/Pawn.RakNet",
 		"AGraber/samp-compat",
-		"infin1tyy/customplayernametags"
+		"infin1tyy/customplayernametags",
+		"maddinat0r/samp-discord-connector"
 	],
 	"local": true,
 	"runtime": {

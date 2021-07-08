@@ -55,6 +55,9 @@ new
 new
     Logger:DeathLog;
 
+new
+    Logger:chatlog;
+
 new globalWeather = 2;
 
 /*======================================================================================================
@@ -177,6 +180,7 @@ new globalWeather = 2;
 
 #include "Y/systems/car_rental.pwn"
 #include "Y/systems/dmv.pwn"
+#include "Y/systems/discord/discord.pwn"
 
 #include "Y/test/functionPlayer.pwn"
 
@@ -204,6 +208,11 @@ public OnGameModeInit() {
     mysql_tquery(dbCon, "SELECT * FROM entrance ORDER BY EntranceDBID", "LoadEntrance");
     mysql_tquery(dbCon, "SELECT * FROM vehicle_faction ORDER BY VehicleDBID", "LoadFactionVehicle");
     mysql_tquery(dbCon, "SELECT * FROM global ORDER BY ID", "LoadGlobal");
+
+    new str[120];
+    format(str, sizeof(str), "[SERVIER RUN] เซิร์ฟเวอร์ Los Santos  RolePlay เปิดแล้ว!!!");
+    g_ServerOpen = DCC_FindChannelById("848148148714209311");
+	DCC_SendChannelMessage(g_ServerOpen, str);
 	
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();
@@ -224,7 +233,7 @@ public OnGameModeInit() {
     adminactionlog = CreateLog("server/admin_action");
     allcmdlog = CreateLog("server/allcmdlog");
     DeathLog = CreateLog("server/deathlog");
-
+    chatlog = CreateLog("server/chatlog");
 
 
 
@@ -273,6 +282,7 @@ public OnPlayerConnect(playerid) {
 
     // เคลียร์ตัวแปรผู้เล่น
     gPlayerBitFlag[playerid] = PlayerFlags:0;
+    e_pAccountData[playerid][mDBID] = 0;
     format(e_pAccountData[playerid][mForumName], e_pAccountData[playerid][mForumName], "");
 
     PlayerInfo[playerid][pCMDPermission] = CMD_PLAYER;

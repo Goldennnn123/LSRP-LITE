@@ -2418,6 +2418,13 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		StopAudioStreamForPlayer(playerid);
 		PlayAudioStreamForPlayer(playerid, VehicleInfo[vehicleid][eVehicleMusicLink]);
 	}
+	if(!ispassenger && VehFacInfo[vehicleid][VehFacFaction] && PlayerInfo[playerid][pFaction] != VehFacInfo[vehicleid][VehFacFaction])
+	{
+		SendErrorMessage(playerid, "คุณไม่สามารถขึ้นรถของแฟคชั่น");		
+		return ClearAnimations(playerid);
+	}
 	return 1;
 }
+
+
 

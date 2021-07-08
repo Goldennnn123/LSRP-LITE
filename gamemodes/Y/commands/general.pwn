@@ -867,7 +867,7 @@ CMD:admins(playerid, params[])
 		
 		foreach(new i : Player)
 		{
-			if(PlayerInfo[i][pAdmin] > 1 && PlayerInfo[i][pAdmin] < 5)
+			if(PlayerInfo[i][pAdmin] && PlayerInfo[i][pAdmin] < 5)
 			{
 				if(PlayerInfo[i][pAdminDuty])
 				{
@@ -1426,6 +1426,7 @@ CMD:b(playerid, params[])
 			SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {FF9900}%s{AFAFAF}: ...%s ))", playerid, ReturnName(playerid), params[84]);
 		}
 		else SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {FF9900}%s{AFAFAF}: %s ))", playerid, ReturnName(playerid), params);
+		Log(chatlog, WARNING, "(( [%d] %s: %.84s ))", playerid, ReturnName(playerid), params);
 	}
 	else if(PlayerInfo[playerid][pTesterDuty] == true)
 	{
@@ -1435,6 +1436,7 @@ CMD:b(playerid, params[])
 			SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {229954}%s{AFAFAF}: ...%s ))", playerid, ReturnName(playerid), params[84]);
 		}
 		else SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] {229954}%s{AFAFAF}: %s ))", playerid, ReturnName(playerid), params);
+		Log(chatlog, WARNING, "(( [%d] %s: %.84s ))", playerid, ReturnName(playerid), params);
 	}
 	else
 	{
@@ -1444,6 +1446,7 @@ CMD:b(playerid, params[])
 			SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] %s: ...%s ))", playerid, ReturnName(playerid), params[84]); 
 		}
 		else SendNearbyMessage(playerid, 20.0, COLOR_GREY, "(( [%d] %s: %s ))", playerid, ReturnName(playerid), params);
+		Log(chatlog, WARNING, "(( [%d] %s: %.84s ))", playerid, ReturnName(playerid), params);
 	}	
 	return 1;
 }
@@ -1464,37 +1467,47 @@ CMD:pm(playerid, params[])
 	if(PlayerInfo[playerid][pAdminDuty])
 	{
 		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {FF9900}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
-		
+		Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+
 		if(!PlayerInfo[playerb][pAdminDuty])
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 			
 		else SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+		Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 	}
 	else if(PlayerInfo[playerid][pTesterDuty])
 	{
 		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {229954}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
-		
+		Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+
 		if(!PlayerInfo[playerb][pTesterDuty])
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 			
 		else SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+		Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 	}
 	else
 	{
 		if(PlayerInfo[playerb][pAdminDuty])
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
+			Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+			Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 		}
 		else if(PlayerInfo[playerb][pTesterDuty])
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
+			Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+			Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 		}
 		else
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
-			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+			Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
+			Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		}
 	}
 	return 1;

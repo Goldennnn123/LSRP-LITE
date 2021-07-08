@@ -1617,7 +1617,7 @@ CMD:repair(playerid, params[])
 		SendAdminMessage(1, str);
 
 		RepairVehicle(veh);
-		SetVehicleHealth(veh, 900);
+		SetVehicleHealth(veh, VehicleData[GetVehicleModel(veh) - 400][c_maxhp]);
 
 		GetVehicleZAngle(veh, angle);
 		SetVehicleZAngle(veh, angle);

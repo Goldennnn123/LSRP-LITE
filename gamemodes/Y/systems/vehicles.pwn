@@ -838,6 +838,7 @@ CMD:vehicle(playerid, params[])
 		SendClientMessage(playerid, COLOR_YELLOWEX, "___________________________________________________________");
 		return 1;
 	}
+
 	if(!strcmp(oneString, "get"))
 	{
 		new
@@ -869,12 +870,12 @@ CMD:vehicle(playerid, params[])
 		mysql_tquery(dbCon, threadLoad, "Query_LoadPrivateVehicle", "i", playerid);
 		return 1;
 	}
-	else if(!strcmp(oneString, "park"))
+	if(!strcmp(oneString, "park"))
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในรถ");
 			
-		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับรถ");
+		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับรถ");
 
 		new 
 			vehicleid = GetPlayerVehicleID(playerid);
@@ -902,7 +903,6 @@ CMD:vehicle(playerid, params[])
 		
 			SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], 5.0);
 			PlayerCheckpoint[playerid] = 3;
-
 			return 1;
 		}
 		
@@ -918,7 +918,7 @@ CMD:vehicle(playerid, params[])
 		TogglePlayerControllable(playerid, 1);
 		return 1;
 	}
-	else if(!strcmp(oneString, "buypark"))
+	if(!strcmp(oneString, "buypark"))
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
@@ -946,12 +946,12 @@ CMD:vehicle(playerid, params[])
 		SaveVehicle(vehicleid);
 		return 1;
 	}
-	else if(!strcmp(oneString, "list"))
+	if(!strcmp(oneString, "list"))
 	{
 		ShowVehicleList(playerid);
 		return 1;
 	}
-	else if(!strcmp(oneString, "buy"))
+	if(!strcmp(oneString, "buy"))
 	{
 		new id = IsPlayerNearBusiness(playerid);
 		new idx = 0;
@@ -982,7 +982,7 @@ CMD:vehicle(playerid, params[])
 		PlayerInfo[playerid][pGUI] = 2;
 		return 1;
 	}
-	else if(!strcmp(oneString, "sell"))
+	if(!strcmp(oneString, "sell"))
 	{
 		if(SellVehData[playerid][S_ID] != INVALID_PLAYER_ID)
 			return SendErrorMessage(playerid, "คุณได้มีข้อตกลงการซื้อขายกับผู้เล่นคนอืนอยู่");
@@ -1038,7 +1038,7 @@ CMD:vehicle(playerid, params[])
 		SendClientMessage(tagetid, -1, "ข้อเสนอ: หากคุณยอมรับให้กด Y หากไม่ให้กด N");
 		return 1;
 	}
-	else if(!strcmp(oneString, "duplicatekey"))
+	if(!strcmp(oneString, "duplicatekey"))
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
@@ -1073,7 +1073,7 @@ CMD:vehicle(playerid, params[])
 		PlayerInfo[playerb][pDuplicateKey] = vehicleid;
 		return 1;
 	}
-	else if(!strcmp(oneString, "scrap"))
+	if(!strcmp(oneString, "scrap"))
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภภายในรถ");
@@ -1095,7 +1095,7 @@ CMD:vehicle(playerid, params[])
 		format(str, sizeof(str), "คุณมั่นใจใช่ไหมที่จะขายรถของคุณทิ้ง ถ้าคุณขายรถของคุณคุณจะได้รับเงิน $%s ซึ่งเป็นเงินหาร 2 ของราคาเต็มของรถ\nแล้วโปรดจงจำไว้ว่ารถของคุณจะไม่สามารถนำกลับมาได้อีกได้อีก",MoneyFormat(VehicleInfo[vehicleid][eVehiclePrice] / 2));
 		Dialog_Show(playerid, DIALOG_VEH_SELL, DIALOG_STYLE_MSGBOX, "คุณแน่ในใช่ไหม?", str, "ยืนยัน", "ยกเลิก");
 	}
-	else if(!strcmp(oneString, "tow"))
+	if(!strcmp(oneString, "tow"))
 	{
 		if(PlayerInfo[playerid][pVehicleSpawned] == false) 
 			return SendErrorMessage(playerid, "คุณไม่ได้นำรถออกมา");
@@ -1117,7 +1117,7 @@ CMD:vehicle(playerid, params[])
 		SendServerMessage(playerid, "คุณได้ส่งคำขอให้ประกันนำรถ %s มาไว้ที่จุดเกิดแล้ว", ReturnVehicleName(PlayerInfo[playerid][pVehicleSpawnedID]));
 		return 1;
 	}
-	else if(!strcmp(oneString, "find"))
+	if(!strcmp(oneString, "find"))
 	{
 		if(PlayerInfo[playerid][pVehicleSpawned] == false) 
 			return SendErrorMessage(playerid, "คุณไม่ได้นำรถออกมา");
@@ -1132,7 +1132,7 @@ CMD:vehicle(playerid, params[])
 		SetPlayerCheckpoint(playerid, fetchPos[0], fetchPos[1], fetchPos[2], 3.0);
 		return 1;
 	}
-	else if(!strcmp(oneString, "stats"))
+	if(!strcmp(oneString, "stats"))
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 		
@@ -1153,7 +1153,7 @@ CMD:vehicle(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_WHITE, "Security: Lock Level[%i], Alarm Level[%i], Immobilizer[%i]", VehicleInfo[vehicleid][eVehicleLockLevel], VehicleInfo[vehicleid][eVehicleAlarmLevel], VehicleInfo[vehicleid][eVehicleImmobLevel]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "Misc: Primary Color[%d], Secondary Color[%d], License Plate[%s]",VehicleInfo[vehicleid][eVehicleColor1],VehicleInfo[vehicleid][eVehicleColor2], VehicleInfo[vehicleid][eVehiclePlates]);
 	}
-	else if(!strcmp(oneString, "lock"))
+	if(!strcmp(oneString, "lock"))
 	{
 		new bool:foundCar = false, vehicleid, Float:fetchPos[3];
 		

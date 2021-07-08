@@ -645,10 +645,14 @@ CMD:engine(playerid, params[])
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คุณไม่ได้อยู่ในที่นั่งคนขับของยานพาหนะ"); 
 		
-	new vehicleid = GetPlayerVehicleID(playerid);
+	new vehicleid = GetPlayerVehicleID(playerid),  Float:health;
 	
 	if(HasNoEngine(vehicleid))
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะคันนี้ไม่มีเครื่องยนต์"); 
+
+	GetVehicleHealth(vehicleid, health);
+	if(health <= 300)
+		return SendErrorMessage(playerid, "ยานพหานะของคุณมีความเสียหายอย่างหนักจึงไม่สามารถ สตาร์ทเครื่องยนต์ได้");
 
 	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid) && !VehicleInfo[vehicleid][eVehicleFaction] && !VehFacInfo[vehicleid][VehFacDBID])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้สามารถใช้ได้เฉพาะยานพาหนะส่วนตัว แต่คุณอยู่ในยานพาหนะสาธารณะ (Static)");
@@ -1872,6 +1876,8 @@ public Query_LoadPrivateVehicle(playerid)
 				format(str, sizeof(str), "VehicleWeaponsAmmo%d", j);
 				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][j]);
 			}
+
+			//AddVehicleComponent(vehicleid, componentid);
 			
 			
 			if(VehicleInfo[vehicleid][eVehicleParkInterior] != 0)
@@ -2396,6 +2402,12 @@ public OnVehicleUpdate()
 		{
 			SetVehicleHealth(vehicleid, 300.0);
 			ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+
+			if(VehicleInfo[vehicleid][eVehicleDBID])
+			{
+				VehicleInfo[vehicleid][eVehicleBattery]--;
+				SendClientMessageEx(playerid, -1, "ยานพาหนะมีความเสียหาย ทำให้แบตตารี่ ลดลง เหลือ %f", VehicleInfo[vehicleid][eVehicleBattery]);
+			}
 			SendClientMessage(playerid, -1, "รถดับ");
 		}
 	}

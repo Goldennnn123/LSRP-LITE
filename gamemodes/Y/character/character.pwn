@@ -499,6 +499,10 @@ public LoadCharacter(playerid)
 	}
 	else SendClientMessage(playerid, -1, "คุณเข้าสู่ระบบด้วยอุปกรณ์ PC");
 
+
+	new str[120];
+    format(str, sizeof(str), "[%s] %s : Connected to the Server", ReturnDate(),ReturnName(playerid,0));
+    SendDiscordMessage(1, str);
 	return 1;
 }
 
@@ -720,7 +724,6 @@ stock ResetPlayerCharacter(playerid)
 
     SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
 
-    tToAccept[playerid] = INVALID_PLAYER_ID;
 	return 1;
 }
 

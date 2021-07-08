@@ -23,10 +23,7 @@ CMD:buyclothing(playerid, params[])
     new str[255], longstr[255], idx = -1;
 
     for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
-    {
-        if(PlayerInfo[playerid][pClothing][i-1])
-            continue;
-        
+    {        
         if(!PlayerInfo[playerid][pClothing][i-1])
         {
             idx = i-1;
@@ -34,9 +31,7 @@ CMD:buyclothing(playerid, params[])
         }
     }
     if(idx == -1) return SendErrorMessage(playerid, "คุณมีการซื้อเต็มแล้ว");
-
-
-
+    
     PlayerSeCloBuySect[playerid] = idx;
 
     if(IsPlayerInRangeOfPoint(playerid, 3.5, 1103.0127,-1440.1101,15.7969))

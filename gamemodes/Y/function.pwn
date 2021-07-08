@@ -231,21 +231,21 @@ stock ReturnDate()
 	getdate(year, month, day);
 	switch(month)
 	{
-	    case 1:  MonthStr = "มกราคม";
-	    case 2:  MonthStr = "กุมภาพันธ์";
-	    case 3:  MonthStr = "มีนาคม";
-	    case 4:  MonthStr = "เมษายน";
-	    case 5:  MonthStr = "พฤษภาคม";
-	    case 6:  MonthStr = "มิถุนายน";
-	    case 7:  MonthStr = "กรกฎาคม";
-	    case 8:  MonthStr = "สิงหาคม";
-	    case 9:  MonthStr = "กันยายน";
-	    case 10: MonthStr = "ตุลาคม";
-	    case 11: MonthStr = "พฤศจิกายน";
-	    case 12: MonthStr = "ธันวาคม";
+	    case 1:  MonthStr = "January";
+	    case 2:  MonthStr = "February";
+	    case 3:  MonthStr = "March";
+	    case 4:  MonthStr = "April";
+	    case 5:  MonthStr = "May";
+	    case 6:  MonthStr = "June";
+	    case 7:  MonthStr = "July";
+	    case 8:  MonthStr = "August";
+	    case 9:  MonthStr = "September";
+	    case 10: MonthStr = "October";
+	    case 11: MonthStr = "November";
+	    case 12: MonthStr = "December";
 	}
 	
-	format(sendString, 90, "%d %s %d %02d:%02d:%02d", day,MonthStr, year + 543, hour, minute, second);
+	format(sendString, 90, "%d %s %d %02d:%02d:%02d", day,MonthStr, year, hour, minute, second);
 	return sendString;
 }
 

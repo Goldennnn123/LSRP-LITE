@@ -194,7 +194,7 @@ CMD:giverank(playerid, params[])
 	if(!PlayerInfo[playerid][pFaction])
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
 		
-	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank])
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
 
     if(sscanf(params, "ui", playerb, rank))
@@ -204,7 +204,7 @@ CMD:giverank(playerid, params[])
 			if(!strcmp(FactionRanks[PlayerInfo[playerid][pFaction]][i], "NotSet"))
 				continue;
 				
-			SendClientMessageEx(playerid, COLOR_YELLOWEX, "-> Rank %i: %s", i, FactionRanks[PlayerInfo[playerid][pFaction]][i]); 
+			SendClientMessageEx(playerid, COLOR_HELPME, "-> Rank %i: %s", i, FactionRanks[PlayerInfo[playerid][pFaction]][i]); 
 		}
 	
 		SendUsageMessage(playerid, "/giverank [ชื่อบางส่วน/ไอดี] [ต่ำแหน่ง/ยศ]");
@@ -228,16 +228,16 @@ CMD:giverank(playerid, params[])
 
     if(rank > PlayerInfo[playerb][pFactionRank])
     {
-        SendClientMessageEx(playerb, COLOR_YELLOW, "คุณถูกลดต่ำแหน่งของคุณ เป็น %s โดย %s", FactionRanks[PlayerInfo[playerb][pFaction]][rank], ReturnRealName(playerid, 0)); 
-        SendClientMessageEx(playerid, COLOR_YELLOW, "คุณได้ลดต่ำแหน่งของ %s จาก %s เป็น %s!", ReturnRealName(playerb, 0), FactionRanks[PlayerInfo[playerb][pFaction]][PlayerInfo[playerb][pFactionRank]], FactionRanks[PlayerInfo[playerb][pFaction]][rank]);
+        SendClientMessageEx(playerb, COLOR_HELPME, "คุณถูกลดต่ำแหน่งของคุณ เป็น %s โดย %s", FactionRanks[PlayerInfo[playerb][pFaction]][rank], ReturnRealName(playerid, 0)); 
+        SendClientMessageEx(playerid, COLOR_YELLOW, "คุณได้ลดต่ำแหน่งของ %s จาก %s เป็น %s", ReturnRealName(playerb, 0), FactionRanks[PlayerInfo[playerb][pFaction]][PlayerInfo[playerb][pFactionRank]], FactionRanks[PlayerInfo[playerb][pFaction]][rank]);
             
         PlayerInfo[playerb][pFactionRank] = rank; 
         CharacterSave(playerb);
     }
     else
     {
-        SendClientMessageEx(playerb, COLOR_YELLOW, "คุณได้ถูกเพื่มต่ำแหน่งของคุณ เป็น %s", FactionRanks[PlayerInfo[playerb][pFaction]][rank], ReturnRealName(playerid, 0)); 
-        SendClientMessageEx(playerid, COLOR_YELLOW, "คุณได้อัปเกรด ยศ/ต่ำแหน่งของ %s จาก %s เป็น %s!", ReturnRealName(playerb, 0), FactionRanks[PlayerInfo[playerb][pFaction]][PlayerInfo[playerb][pFactionRank]], FactionRanks[PlayerInfo[playerb][pFaction]][rank]);
+        SendClientMessageEx(playerb, COLOR_HELPME, "คุณได้ถูกเพื่มต่ำแหน่งของคุณ เป็น %s", FactionRanks[PlayerInfo[playerb][pFaction]][rank], ReturnRealName(playerid, 0)); 
+        SendClientMessageEx(playerid, COLOR_YELLOW, "คุณได้อัปเกรด ยศ/ต่ำแหน่งของ %s จาก %s เป็น %s", ReturnRealName(playerb, 0), FactionRanks[PlayerInfo[playerb][pFaction]][PlayerInfo[playerb][pFactionRank]], FactionRanks[PlayerInfo[playerb][pFaction]][rank]);
             
         PlayerInfo[playerb][pFactionRank] = rank; 
         CharacterSave(playerb);
@@ -749,7 +749,7 @@ CMD:towcars(playerid, params[])
 	if(FactionInfo[id][eFactionType] != GOVERMENT)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
 
-	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[id][eFactionAlterRank])
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[id][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
 
 	for(new v = 1; v< MAX_FACTION_VEHICLE; v++)

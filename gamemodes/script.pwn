@@ -152,6 +152,7 @@ new globalWeather = 2;
 #include "Y/Interior/House2.pwn"
 #include "Y/Interior/pizza.pwn"
 #include "Y/Interior/bar2.pwn"
+#include "Y/Interior/House3.pwn"
 
 
 #include "Y/Map/LSPDHQ.pwn"
@@ -209,11 +210,7 @@ public OnGameModeInit() {
     mysql_tquery(dbCon, "SELECT * FROM vehicle_faction ORDER BY VehicleDBID", "LoadFactionVehicle");
     mysql_tquery(dbCon, "SELECT * FROM global ORDER BY ID", "LoadGlobal");
 
-    new str[120];
-    format(str, sizeof(str), "[SERVIER RUN] เซิร์ฟเวอร์ Los Santos  RolePlay เปิดแล้ว!!!");
-    g_ServerOpen = DCC_FindChannelById("848148148714209311");
-	DCC_SendChannelMessage(g_ServerOpen, str);
-	
+    SendDiscordMessage(0, "[SERVER] Server run");
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();
 	DisableInteriorEnterExits();
@@ -429,8 +426,6 @@ public OnPlayerConnect(playerid) {
 
     SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
 
-    tToAccept[playerid] = INVALID_PLAYER_ID;
-
     KillTimer(playerTowTimer[playerid]);
     playerTowingVehicle[playerid] = false;
 
@@ -473,7 +468,10 @@ hook OnPlayerDisconnect(playerid, reason) {
     static const szDisconnectReason[3][] = {"หลุด","ออกจากเกมส์","ถูกเตะ"};
     ProxDetector(playerid, 20.0, sprintf("*** %s ออกจากเซิร์ฟเวอร์ (%s)", ReturnPlayerName(playerid), szDisconnectReason[reason]));
 
-    
+    new str[120];
+    format(str, sizeof(str), "[%s] %s : Disconnect", ReturnDate(),ReturnName(playerid,0));
+    SendDiscordMessage(1, str);
+
     // บันทึกว่าหลุด
 	if(reason == 0) {
 		PlayerInfo[playerid][pTimeout] = gettime();

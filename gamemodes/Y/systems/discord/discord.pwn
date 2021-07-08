@@ -2,7 +2,9 @@
 
 #if defined USING_DISCORD
 new 
-    DCC_Channel:g_ServerOpen;
+    DCC_Channel:g_ServerOpen,
+	DCC_Channel:ConnactLog,
+	DCC_Channel:DeathLogs;
 #endif
 
 stock SendDiscordMessage(channel, const message[])
@@ -14,6 +16,18 @@ stock SendDiscordMessage(channel, const message[])
 			g_ServerOpen = DCC_FindChannelById("853624525354041375");
 			DCC_SendChannelMessage(g_ServerOpen, message);
             return 1;
+		}
+		case 1:
+		{
+			ConnactLog = DCC_FindChannelById("862580236524191744");
+			DCC_SendChannelMessage(ConnactLog, message);
+			return 1;
+		}
+		case 3:
+		{
+			DeathLogs = DCC_FindChannelById("862580926134878248");
+			DCC_SendChannelMessage(DeathLogs, message);
+			return 1;
 		}
 	}
 	return 1;

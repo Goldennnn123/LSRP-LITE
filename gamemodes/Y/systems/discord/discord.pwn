@@ -4,7 +4,8 @@
 new 
     DCC_Channel:g_ServerOpen,
 	DCC_Channel:ConnactLog,
-	DCC_Channel:DeathLogs;
+	DCC_Channel:DeathLogs,
+	DCC_Channel:HackerLog;
 #endif
 
 stock SendDiscordMessage(channel, const message[])
@@ -27,6 +28,12 @@ stock SendDiscordMessage(channel, const message[])
 		{
 			DeathLogs = DCC_FindChannelById("862580926134878248");
 			DCC_SendChannelMessage(DeathLogs, message);
+			return 1;
+		}
+		case 4:
+		{
+			HackerLog = DCC_FindChannelById("863094920281325608");
+			DCC_SendChannelMessage(HackerLog, message);
 			return 1;
 		}
 	}

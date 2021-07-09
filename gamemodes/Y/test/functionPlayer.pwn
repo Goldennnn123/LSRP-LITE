@@ -30,7 +30,11 @@ ptask CheckPlayer[1000](playerid)
             if(weapons[i][1] > 400 && weapons[i][0] != WEAPON_CAMERA && weapons[i][0] != WEAPON_FLOWER)
             {
                 SendAdminMessageEx(COLOR_LIGHTRED, 1, "[WEAPONS-HECK] %s ผู้ต้องสงสัยในการเสกอาวุธ",ReturnName(playerid,0));
-            }
+				
+				new str[120];
+				format(str, sizeof(str), "[WEAPONS-HECK] %s The suspect is suspected of conjuring a weapon.",ReturnName(playerid,0));
+				SendDiscordMessage(4, str);
+			}
 	}
     return 1;
 }

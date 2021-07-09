@@ -516,6 +516,19 @@ CMD:setworld(playerid, params[])
 	return 1;
 }
 
+CMD:settime(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid); 
+
+	new hour;
+	if(sscanf(params, "d", hour))
+		return SendUsageMessage(playerid, "/settime <เวลา 0-23>");
+
+	SetWorldTime(hour);
+	SendClientMessageToAll(COLOR_GREY, "ผู้ดูแลระบบ ปรับเวลา");
+	return 1;
+}
 
 CMD:setskin(playerid, params[])
 {
@@ -687,9 +700,6 @@ CMD:slap(playerid, params[])
 	
 	SetPlayerPos(playerb, PlayerInfo[playerb][pLastPosX], PlayerInfo[playerb][pLastPosY], PlayerInfo[playerb][pLastPosZ] + 5); 
 	PlayNearbySound(playerb, 1130); //Slap sound;
-	
-	SendServerMessage(playerid, "%s slapped %s", ReturnName(playerid), ReturnName(playerb));
-	if(playerb != playerid) SendServerMessage(playerb, "%s slapped %s", ReturnName(playerid), ReturnName(playerb));
 	return 1;
 }
 

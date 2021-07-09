@@ -583,11 +583,11 @@ public CheckArrest(playerid)
 
 	for (new i = 0; i < rows && i < MAX_PLAYERS; i ++)
 	{
-		cache_get_value_name_int(0,"ArrestOwnerDBID",Name);
-		cache_get_value_name_int(0,"ArrestByDBID",By);
-		cache_get_value_name(0,"ArrestReason",reason,255);
-		cache_get_value_name_int(0,"ArrestTime",time);
-		cache_get_value_name(0,"ArrestDate",date,60);
+		cache_get_value_name_int(i,"ArrestOwnerDBID",Name);
+		cache_get_value_name_int(i,"ArrestByDBID",By);
+		cache_get_value_name(i,"ArrestReason",reason,255);
+		cache_get_value_name_int(i,"ArrestTime",time);
+		cache_get_value_name(i,"ArrestDate",date,60);
 
 		format(str, sizeof(str), "%s\t%s\t%d นาที\t%s\t%s\n",ReturnDBIDName(Name), reason, time, ReturnDBIDName(By), date);
 		strcat(longstr, str);

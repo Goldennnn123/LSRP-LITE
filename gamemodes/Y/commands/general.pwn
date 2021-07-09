@@ -1995,4 +1995,19 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 	return 1;
-}	
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	for(new i = 1; i < sizeof(HelpmeData); i++)
+    {
+        if(HelpmeData[i][hHelpmeExit] == true)
+        {
+			if(HelpmeData[i][hHelpmeBy] == playerid)
+			{
+				ClearHelpme(i);
+			}
+        }
+    }
+	return 1;
+}

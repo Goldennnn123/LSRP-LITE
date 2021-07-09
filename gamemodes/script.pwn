@@ -92,7 +92,8 @@ new globalWeather = 2;
 #include "Y/function.pwn"
 #include "Y/mysql/database.pwn"
 
-#include "Y/systems/vehicles.pwn"
+#include "Y/systems/vehicle/vehicles.pwn"
+#include "Y/systems/vehicle/trune.pwn"
 #include "Y/systems/cooldown.pwn"
 #include "Y/systems/job.pwn"
 #include "Y/systems/report.pwn"
@@ -246,7 +247,6 @@ public OnGameModeInit() {
 
 public OnGameModeExit() {
     DestroyLog(adminactionlog);
-    DestroyLog(allcmdlog);
 
     foreach(new i : Player)
     {
@@ -677,7 +677,7 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 		}
 	}   
 
-    Log(allcmdlog, INFO, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
+    Log(allcmdlog, WARNING, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
     return 1;
 }
 

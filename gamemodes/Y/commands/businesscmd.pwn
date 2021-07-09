@@ -122,7 +122,6 @@ CMD:buy(playerid, params[])
     MenuStore_AddItem(playerid, 4, 325, "Flower", 300, "Flower", 200);
     MenuStore_AddItem(playerid, 5, 19897, "Cigarette", 150, "Flower", 200);
     MenuStore_AddItem(playerid, 6, 2226, "BoomBox", 10000, "BoomBox use music staion", 200);
-    MenuStore_AddItem(playerid, 7, 336, "Baseball Bat", 1500, "Weapon Baseball Bat", 200);
     MenuStore_Show(playerid, Shop, "SHOP");
     return 1;
 }
@@ -413,10 +412,10 @@ CMD:advertisements(playerid, params[])
         return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ (จำเป็นต้องมี $200)");
 
     
-    if(strlen(params) > 50)
+    if(strlen(params) > 100)
     {
 		SendClientMessageToAllEx(COLOR_LIGHTGREEN, "[Advertisements] %.89s", params);
-        SendClientMessageToAllEx(COLOR_LIGHTGREEN, "... %s",params[50]);
+        SendClientMessageToAllEx(COLOR_LIGHTGREEN, "... %s",params[100]);
     }
     else 
     {

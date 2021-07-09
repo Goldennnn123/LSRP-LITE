@@ -51,13 +51,13 @@ CMD:gofishing(playerid, params[]) {
     if (place == 1) {
 
         new vehicleid = GetPlayerVehicleID(playerid);
-        if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !VehicleInfo[vehicleid][eVehicleDBID] || VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
+        if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid)) {
             SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องอยู่ ใน/ใกล้ เรือของคุณเพื่อใช้งาน");
             return 1;
         }
         else {
             vehicleid = GetNearestVehicle(playerid);
-            if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !VehicleInfo[vehicleid][eVehicleDBID] || VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
+            if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid)) {
                 SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องอยู่ ใน/ใกล้ เรือของคุณเพื่อใช้งาน");
                 return 1;
             }
@@ -200,13 +200,13 @@ CMD:fish(playerid, params[]) {
                     if (IsPlayerInRangeOfPoint(playerid, 30.0, GoFishingPlace[rand][0],GoFishingPlace[rand][1],GoFishingPlace[rand][2])) {
                           
                         new vehicleid = GetPlayerVehicleID(playerid);
-                        if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !VehicleInfo[vehicleid][eVehicleDBID] || VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
+                        if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid)) {
                             SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องอยู่ ใน/ใกล้ เรือของคุณเพื่อใช้งาน");
                             return 1;
                         }
                         else {
                             vehicleid = GetNearestVehicle(playerid);
-                            if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid) || !VehicleInfo[vehicleid][eVehicleDBID] || VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID]) {
+                            if (vehicleid == INVALID_VEHICLE_ID || !IsABoat(vehicleid)) {
                                 SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องอยู่ ใน/ใกล้ เรือของคุณเพื่อใช้งาน");
                                 return 1;
                             }
@@ -287,8 +287,10 @@ CMD:fish(playerid, params[]) {
 	return 1;
 }
 
-static IsABoat(model)
+static IsABoat(vehicleid)
 {
+    new model = GetVehicleModel(vehicleid);
+
 	switch (model) {
 		case 430, 446, 452, 453, 454, 472, 473, 484, 493, 595: return 1;
 	}

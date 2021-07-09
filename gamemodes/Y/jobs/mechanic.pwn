@@ -9,6 +9,10 @@ enum S_SERVEICE_DATA
     S_SER_VID[2],
 	S_SER_CALL,
 	S_SER_COMP,
+    
+
+    S_SER_COLOR[2],
+    S_SER_PAINT,
 }
 new ServiceCalls[MAX_PLAYERS][S_SERVEICE_DATA];
 
@@ -93,12 +97,7 @@ hook OP_EnterCheckpoint@12(playerid)
 
 hook OnPlayerConnect@12(playerid)
 {
-    ServiceCalls[playerid][S_SER_ID] = INVALID_PLAYER_ID;
-    ServiceCalls[playerid][S_SER_BY] = INVALID_PLAYER_ID;
-    ServiceCalls[playerid][S_SER_CALL] = 0;
-    ServiceCalls[playerid][S_SER_COMP] = 0;
-    ServiceCalls[playerid][S_SER_VID][0] = INVALID_VEHICLE_ID;
-    ServiceCalls[playerid][S_SER_VID][1] = INVALID_VEHICLE_ID;
+    ResetService(playerid);
     return 1;
 }
 
@@ -536,6 +535,10 @@ stock ResetService(playerid)
     ServiceCalls[playerid][S_SER_COMP] = 0;
     ServiceCalls[playerid][S_SER_VID][0] = INVALID_VEHICLE_ID;
     ServiceCalls[playerid][S_SER_VID][1] = INVALID_VEHICLE_ID;
+
+    ServiceCalls[playerid][S_SER_COLOR][0] = 0;
+    ServiceCalls[playerid][S_SER_COLOR][1] = 0;
+    ServiceCalls[playerid][S_SER_PAINT] = -1;
     return 1;
 }
 

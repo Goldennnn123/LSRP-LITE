@@ -463,7 +463,7 @@ public OnPlayerConnect(playerid) {
     return 1;
 }
 
-hook OnPlayerDisconnect(playerid, reason) {
+public OnPlayerDisconnect(playerid, reason) {
 
     static const szDisconnectReason[3][] = {"หลุด","ออกจากเกมส์","ถูกเตะ"};
     ProxDetector(playerid, 20.0, sprintf("*** %s ออกจากเซิร์ฟเวอร์ (%s)", ReturnPlayerName(playerid), szDisconnectReason[reason]));
@@ -477,6 +477,21 @@ hook OnPlayerDisconnect(playerid, reason) {
 		PlayerInfo[playerid][pTimeout] = gettime();
     }
 
+    if(PlayerInfo[playerid][pVehicleSpawned])
+    {
+        new vehicleid = PlayerInfo[playerid][pVehicleSpawnedID];
+
+        if(IsVehicleOccupied(vehicleid))
+            return 1;
+
+        SaveVehicle(vehicleid);
+        ResetVehicleVars(vehicleid);
+        DestroyVehicle(vehicleid);
+
+        PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+        PlayerInfo[playerid][pVehicleSpawned] = false;
+    }
+
 
     new playerTime = NetStats_GetConnectedTime(playerid);
 	new secondsConnection = (playerTime % (1000*60*60)) / (1000*60);
@@ -484,6 +499,8 @@ hook OnPlayerDisconnect(playerid, reason) {
 	PlayerInfo[playerid][pLastOnlineTime] = secondsConnection;
     CharacterSave(playerid);
     ResetPlayerCharacter(playerid);
+
+    return 1;
 }
 
 public OnPlayerRequestClass(playerid, classid) {

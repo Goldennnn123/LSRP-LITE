@@ -650,6 +650,7 @@ public CallPaycheck()
 			format(PlayerInfo[i][pTicket], PlayerInfo[i][pTicket],"");
 		}
 		SendClientMessageEx(i, COLOR_GREY, "เลขล็อตตารี่ออก คือ: %s",  GlobalInfo[G_Ticket]);
+
 		CharacterSave(i); 
 		Saveglobal();
 	}

@@ -288,16 +288,6 @@ hook OnPlayerDisconnect(playerid, reason)
 		SellVehData[tagetid][S_BY] = INVALID_PLAYER_ID;
 		SellVehData[tagetid][S_VID] = INVALID_VEHICLE_ID;
 	}
-
-
-	if(PlayerInfo[playerid][pVehicleSpawnedID])
-	{
-		SaveVehicle(PlayerInfo[playerid][pVehicleSpawnedID]);
-		ResetVehicleVars(PlayerInfo[playerid][pVehicleSpawnedID]);
-		DestroyVehicle(PlayerInfo[playerid][pVehicleSpawnedID]);
-		PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
-		PlayerInfo[playerid][pVehicleSpawned] = false;
-	}
 	return 1;
 }
 
@@ -1014,7 +1004,7 @@ CMD:vehicle(playerid, params[])
 		if(!IsPlayerNearPlayer(playerid, tagetid, 5.0))
 			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
 
-		if(PlayerInfo[tagetid][pVehicleSpawnedID] != INVALID_VEHICLE_ID)
+		if(PlayerInfo[tagetid][pVehicleSpawned] == true)
 			return SendErrorMessage(playerid, "ไม่สามารถให้ยานพาหนะกับผู้เล่นได้ เนื่องจาก ผู้เล่นยังไม่ได้เก็บยานพหานะคันเดิม");
 
 		new idx = 0;

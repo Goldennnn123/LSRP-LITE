@@ -623,9 +623,8 @@ public OnPlayerSpawn(playerid) {
         }
         case SPAWN_AT_LASTPOS: 
         {
-            SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-            SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld]);
-            SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInterior]);
+            PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_DEFAULT;
+            SpawnPlayer(playerid);
         }
 
     }

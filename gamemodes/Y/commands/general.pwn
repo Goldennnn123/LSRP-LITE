@@ -1146,7 +1146,7 @@ CMD:setspawn(playerid, params[])
 		return 1;
 	}
 
-	if(id > 4 || id < 1)
+	if(id > 3 || id < 1)
 		return SendErrorMessage(playerid, "äÍé´ÕÊ»ÒÇ ÁÕà¾ÕÂ§ (1-4)");
 
 	switch(id)
@@ -1200,11 +1200,6 @@ CMD:setspawn(playerid, params[])
 
 			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_FACTION;
 			SendServerMessage(playerid, "¤Ø³ä´é·Ó¡ÒÃà«çµ¨Ø´à¡Ô´¢Í§¤Ø³à»ç¹ à¿¤ªÑè¹");
-		}
-		case 4:
-		{
-			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_LASTPOS;
-			SendServerMessage(playerid, "¤Ø³ä´éàÅ×Í¡¨Ø´à¡Ô´ä»¨Ø´»Ñ¨¨ØºÑ¹¢Í§¤Ø³");
 		}
 	}
 	return 1;

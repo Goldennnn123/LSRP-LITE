@@ -42,6 +42,8 @@ Dialog:V_VEH_LANDSTALKER(playerid, response, listitem, inputtext[])
         {
             AddVehicleComponent(vehicleid, 1008);
             SendClientMessage(playerid, COLOR_DARKGREEN, "คุณได้ทำการแต่งยานพาหนะเรียบร้อยแล้ว");
+
+            //GetVehicleComponentInSlot(vehicleid, slot);
         }
     }
     return 1;

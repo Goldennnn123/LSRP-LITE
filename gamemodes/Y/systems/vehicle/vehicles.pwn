@@ -295,6 +295,8 @@ hook OnPlayerDisconnect(playerid, reason)
 		SaveVehicle(PlayerInfo[playerid][pVehicleSpawnedID]);
 		ResetVehicleVars(PlayerInfo[playerid][pVehicleSpawnedID]);
 		DestroyVehicle(PlayerInfo[playerid][pVehicleSpawnedID]);
+		PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+		PlayerInfo[playerid][pVehicleSpawned] = false;
 	}
 	return 1;
 }

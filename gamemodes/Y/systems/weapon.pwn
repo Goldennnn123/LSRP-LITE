@@ -176,7 +176,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		GetPlayerArmour(playerid, armor);
 		
 		if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE && PlayerInfo[playerid][pDeathFix])
-			SetPlayerHealth(playerid, health); 
+			SetPlayerHealth(playerid, 500); 
 		
 		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE)
 		{
@@ -1005,7 +1005,7 @@ public OnPlayerWounded(playerid, killerid, reason)
 	SetPlayerHealth(playerid, 26); 
 	//SetPlayerWeather(playerid, 250); 
 	
-	GiveMoney(playerid, -200); 
+	//GiveMoney(playerid, -200); 
 	SetPlayerTeam(playerid, PLAYER_STATE_WOUNDED); 
 
 
@@ -1041,6 +1041,7 @@ public OnPlayerDead(playerid, killerid, reason, executed)
 	
 	TogglePlayerControllable(playerid, 0);
 	SetPlayerWeather(playerid, globalWeather); 
+	CharacterSave(playerid);
 	return 1;
 }
 

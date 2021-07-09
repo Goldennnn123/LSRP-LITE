@@ -83,7 +83,7 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 
 		
         
-        mysql_int(query, "pAdminjailed",PlayerInfo[playerid][pAdminjailed]);
+        mysql_bool(query, "pAdminjailed",PlayerInfo[playerid][pAdminjailed]);
         mysql_int(query, "pAdminjailTime",PlayerInfo[playerid][pAdminjailed]);
 
         mysql_str(query, "pLastOnline",PlayerInfo[playerid][pLastOnline]);

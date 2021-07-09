@@ -813,6 +813,7 @@ CMD:respawnme(playerid, params[])
 	SetPlayerTeam(playerid, PLAYER_STATE_ALIVE); 
 			
 	TogglePlayerControllable(playerid, 1);
+	GiveMoney(playerid, -2000);
 	SetPlayerHealth(playerid, 100);
 	ClearDamages(playerid);
 	SpawnPlayer(playerid);	

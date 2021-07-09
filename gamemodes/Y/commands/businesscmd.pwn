@@ -207,10 +207,10 @@ CMD:buyticket(playerid, params[])
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านสดวกซื้อ");
     
     if(isnull(params))
-        return SendUsageMessage(playerid, "/buyticket <ใส่เลขที่คุณต้องการไป 6 <หลัก>");
+        return SendUsageMessage(playerid, "/buyticket <ใส่เลขที่คุณต้องการไป 2 <หลัก>");
 
-    if(strlen(params) < 6 || strlen(params) > 6)
-        return SendErrorMessage(playerid, "ใส่เลข 6 หลักให้ถูกต้องด้วย");
+    if(strlen(params) < 1 || strlen(params) > 2)
+        return SendErrorMessage(playerid, "ใส่เลข 2 หลักให้ถูกต้องด้วย");
 
     if(PlayerInfo[playerid][pCash] < 1000)
         return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอต่อการซื้อล็อตตารี่");

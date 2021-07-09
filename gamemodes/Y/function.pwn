@@ -593,18 +593,18 @@ public CallPaycheck()
 		//Add an auto-level up on paycheck for level 1 and 2 to prevent paycheck farming.
 		if(!PlayerInfo[i][pSaving])
 		{
-			interest_saving = 0.2;
+			interest_saving = 0.5;
 			interest = (PlayerInfo[i][pBank] / 100) * interest_saving;
 		}
 		else
 		{
-			interest_saving = 0.9;
+			interest_saving = 0.10;
 			interest = (PlayerInfo[i][pBank] / 100) * interest_saving; 
 		}
 
 		interest_convert = floatround(interest, floatround_round); 
 	
-		total_tax = floatround((PlayerInfo[i][pBank] * 0.002), floatround_round);
+		total_tax = floatround((PlayerInfo[i][pBank] * 0.004), floatround_round);
 		
 		SendClientMessageEx(i, COLOR_WHITE, "SERVER TIME:[ %s ]", ReturnHour()); 
 		
@@ -619,6 +619,7 @@ public CallPaycheck()
 		PlayerInfo[i][pBank]+= interest_convert;
 		//PlayerInfo[i][pBank]+= total_paycheck;
 		PlayerInfo[i][pBank]-= total_tax;
+		GlobalInfo[G_GovCash]+= total_tax;
 		
 		SendClientMessageEx(i, COLOR_WHITE, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank]));
 		
@@ -634,16 +635,12 @@ public CallPaycheck()
 		format(str, sizeof(str), "~y~Payday~n~~w~Paycheck~n~~g~$%d", total_paycheck);
 		GameTextForPlayer(i, str, 3000, 1); 
 
-		new randset[6];
+		new randset[2];
 
 		randset[0] = random(sizeof(Ticketnumber)); 
 		randset[1] = random(sizeof(Ticketnumber)); 
-		randset[2] = random(sizeof(Ticketnumber)); 
-		randset[3] = random(sizeof(Ticketnumber)); 
-		randset[4] = random(sizeof(Ticketnumber)); 
-		randset[5] = random(sizeof(Ticketnumber)); 
 
-		format(GlobalInfo[G_Ticket], 32,  "%s%s%s%s%s%s", Ticketnumber[randset[0]], Ticketnumber[randset[1]], Ticketnumber[randset[2]], Ticketnumber[randset[3]], Ticketnumber[randset[4]], Ticketnumber[randset[5]]);
+		format(GlobalInfo[G_Ticket], 32,  "%s%s", Ticketnumber[randset[0]],Ticketnumber[randset[1]]);
 
 
 		if(PlayerInfo[i][pTicket] == GlobalInfo[G_Ticket])
@@ -654,6 +651,7 @@ public CallPaycheck()
 		}
 		SendClientMessageEx(i, COLOR_GREY, "เลขล็อตตารี่ออก คือ: %s",  GlobalInfo[G_Ticket]);
 		CharacterSave(i); 
+		Saveglobal();
 	}
 	return 1;
 }

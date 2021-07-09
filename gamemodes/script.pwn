@@ -93,7 +93,7 @@ new globalWeather = 2;
 #include "Y/mysql/database.pwn"
 
 #include "Y/systems/vehicle/vehicles.pwn"
-#include "Y/systems/vehicle/trune.pwn"
+#include "Y/systems/vehicle/trun.pwn"
 #include "Y/systems/cooldown.pwn"
 #include "Y/systems/job.pwn"
 #include "Y/systems/report.pwn"

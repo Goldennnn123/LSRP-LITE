@@ -1,7 +1,7 @@
 #include <YSI_Coding\y_hooks>
 
 
-CMD:trune(playerid, params[])
+CMD:trun(playerid, params[])
 {
     if(!IsPlayerInAnyVehicle(playerid))
         return SendErrorMessage(playerid, "คุณไมได้อยู่บนยานพาหนะ");

@@ -360,12 +360,12 @@ CMD:ban(playerid, params[])
 	}
 	
 	mysql_format(dbCon, insertLog, sizeof(insertLog), "INSERT INTO bannedlist (`CharacterDBID`, `MasterDBID`, `CharacterName`, `Reason`, `Date`, `BannedBy`, `IpAddress`) VALUES(%i, %i, '%e', '%e', '%e', '%e', '%e')",
-		PlayerInfo[playerb][pDBID], e_pAccountData[playerid][mDBID], ReturnName(playerb), reason, ReturnDate(), ReturnName(playerid), ReturnIP(playerb));
+		PlayerInfo[playerb][pDBID], e_pAccountData[playerb][mDBID], ReturnName(playerb), reason, ReturnDate(), ReturnName(playerid), ReturnIP(playerb));
 	
 	mysql_tquery(dbCon, insertLog); 
 	
 	mysql_format(dbCon, insertLog, sizeof(insertLog), "INSERT INTO ban_logs (`CharacterDBID`, `MasterDBID`, `CharacterName`, `Reason`, `BannedBy`, `Date`) VALUES(%i, %i, '%e', '%e', '%e', '%e')",
-		PlayerInfo[playerb][pDBID], e_pAccountData[playerid][mDBID], ReturnName(playerb), reason, ReturnName(playerid), ReturnDate());
+		PlayerInfo[playerb][pDBID], e_pAccountData[playerb][mDBID], ReturnName(playerb), reason, ReturnName(playerid), ReturnDate());
 		
 	mysql_tquery(dbCon, insertLog); 
 	

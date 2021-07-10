@@ -245,7 +245,7 @@ CMD:swicth(playerid, params[])
             HouseInfo[id][HouseEle] -= HouseInfo[id][HouseEle] / 2;
         }
         
-        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 36000000, true, "i",id);//1800000
+        HouseInfo[id][HouseTimerEle] = SetTimerEx("HouseElectricitybill", 3600000, true, "i",id);//1800000
         format(str, sizeof(str), "‡ª‘¥ «‘∑´Ï‰ø¿“¬„π∫È“π");
         callcmd::me(playerid,str);
         return 1;

@@ -152,7 +152,7 @@ CMD:computerhelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
     SendClientMessage(playerid, COLOR_GRAD2, "/buycomputer (ซื่อคอม)");
-    SendClientMessage(playerid, COLOR_GRAD2, "/checkcom (วางคอม)");
+    SendClientMessage(playerid, COLOR_GRAD2, "/checkcom (ตรวจสอบคอมพิวเตอร์ในตัวคุณ)");
     SendClientMessage(playerid, COLOR_GRAD2, "/placecom (วางคอม)");
     SendClientMessage(playerid, COLOR_GRAD2, "/editcom (แก้ไข, pos, upgrade)");
     SendClientMessage(playerid, COLOR_GREEN,"_____________________________________");

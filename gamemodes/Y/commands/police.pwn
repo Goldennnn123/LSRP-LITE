@@ -485,11 +485,6 @@ CMD:checkarrest(playerid, params[])
 	mysql_tquery(dbCon, query, "CheckArrest", "d", playerid);
 	return 1;
 }
-
-
-
-
-
 Dialog:DIALOG_FINES_LIST(playerid, response, listitem, inputtext[])
 {
 	if(!response)
@@ -581,14 +576,13 @@ public CheckArrest(playerid)
 	format(str, sizeof(str), "ชื่อ\tข้อหา\tเวลา\tผู้กุมขัง\tวันที่\n");
 	strcat(longstr, str);
 
-	for (new i = 0; i < rows && i < MAX_PLAYERS; i ++)
+	for (new i = 1; i <= rows; i ++)
 	{
 		cache_get_value_name_int(i,"ArrestOwnerDBID",Name);
 		cache_get_value_name_int(i,"ArrestByDBID",By);
 		cache_get_value_name(i,"ArrestReason",reason,255);
 		cache_get_value_name_int(i,"ArrestTime",time);
 		cache_get_value_name(i,"ArrestDate",date,60);
-
 		format(str, sizeof(str), "%s\t%s\t%d นาที\t%s\t%s\n",ReturnDBIDName(Name), reason, time, ReturnDBIDName(By), date);
 		strcat(longstr, str);
 	}
@@ -596,6 +590,7 @@ public CheckArrest(playerid)
 	Dialog_Show(playerid, DIALOG_SHOW_ARREST_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Arrest Record", longstr, "ยืนยัน", "ออก");
 	return 1;
 }
+
 forward Freeze2Sec(playerid);
 public Freeze2Sec(playerid)
 {

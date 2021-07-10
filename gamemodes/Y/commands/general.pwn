@@ -2,16 +2,26 @@
 
 new bool:PlayerHelpUp[MAX_PLAYERS];
 
+enum F_FRISK_DATA
+{
+	Frisk_ID,
+	Frisk_BY
+}
+new FriskInfo[MAX_PLAYERS][F_FRISK_DATA];
+
 hook OnPlayerConnect(playerid)
 {
 	PlayerHelpUp[playerid] = false;
+
+	FriskInfo[playerid][Frisk_ID] = INVALID_PLAYER_ID;
+	FriskInfo[playerid][Frisk_BY] = INVALID_PLAYER_ID;
 	return 1;
 }
 
 CMD:help(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
-	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines");
+	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines /frisk");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstaion /boombox /clothing /buyclothing");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
@@ -1887,6 +1897,125 @@ CMD:setstaion(playerid, params[])
     return 1;
 }
 
+CMD:close(playerid, params[])
+{
+	if(PlayerInfo[playerid][pGUI] != 6)
+		return 1;
+
+	PlayerInfo[playerid][pGUI] = 6;
+	MenuStore_Close(playerid);
+	return 1;
+}
+
+
+CMD:frisk(playerid, params[])
+{
+	if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE)
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้ได้ในขณะที่คุณไม่ได้อยู่ในสถาณะปกติ");
+
+	new tagerid, option[20];
+	if(sscanf(params, "uS()[20]", tagerid, option))
+		return SendUsageMessage(playerid, "/frisk <ชื่อบางส่วน/ไอดี>");
+
+	if(GetPlayerTeam(tagerid) != PLAYER_STATE_ALIVE)
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้ได้หากผู้เล่นอีกฝ่ายไม่ได้อยู่ในสถาณะปกติ");
+
+	if(FriskInfo[playerid][Frisk_ID] != INVALID_PLAYER_ID)
+	{
+		if(!IsPlayerNearPlayer(playerid, FriskInfo[playerid][Frisk_ID], 3.5))
+		{
+			FriskInfo[playerid][Frisk_ID] = 0;
+
+			if(!IsPlayerConnected(tagerid))
+				return SendErrorMessage(playerid, "ผู้เล่นไม่อยู่ภายในเซิร์ฟเวอร์");
+
+			if(IsPlayerLogin(playerid))
+				return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+			if(!IsPlayerNearPlayer(playerid, tagerid, 3.5))
+				return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+
+			FriskInfo[playerid][Frisk_ID] = tagerid;
+			FriskInfo[tagerid][Frisk_BY] = playerid;
+			SendClientMessageEx(tagerid, COLOR_LIGHTRED, "%s ได้ขอค้นภายในตัวของคุณ /frisk %d หากคุณยอมรับ",playerid,ReturnName(playerid,0));
+			SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ขอค้นตัวของ %s",ReturnName(tagerid,0));
+			return 1;
+		}
+		else SendErrorMessage(playerid, "คุณยังมีคำขอค้นตัวอีกคนอยู่");
+	}
+	else
+	{
+		if(!IsPlayerConnected(tagerid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่อยู่ภายในเซิร์ฟเวอร์");
+
+		if(IsPlayerLogin(playerid))
+			return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+		if(!IsPlayerNearPlayer(playerid, tagerid, 3.5))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+
+		if(tagerid == FriskInfo[playerid][Frisk_BY])
+		{
+			if(!strcmp(option, "no", true))
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปฏิเสธ %s ในการค้นภายในตัวของคุณ",ReturnName(tagerid,0));
+				SendClientMessageEx(tagerid, COLOR_GREY, "%s ปฏิเสธในการค้นไปภายในตัว", ReturnName(playerid,0));
+
+
+				FriskInfo[playerid][Frisk_ID] = INVALID_PLAYER_ID;
+				FriskInfo[playerid][Frisk_BY] = INVALID_PLAYER_ID;
+				FriskInfo[tagerid][Frisk_ID] = INVALID_PLAYER_ID;
+				FriskInfo[tagerid][Frisk_BY] = INVALID_PLAYER_ID;
+				return 1;
+			}
+			else if(!strcmp(option, "yes", true))
+			{
+				SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ยอมรับให้ %s ค้นภายในตัวของคุณ",ReturnName(tagerid,0));
+				SendClientMessageEx(tagerid, COLOR_HELPME, "คุณได้เริ่มค้นไปภายในตัวของ %s", ReturnName(playerid,0));
+
+				ShowInvPlayer(tagerid, playerid);
+
+				FriskInfo[playerid][Frisk_ID] = INVALID_PLAYER_ID;
+				FriskInfo[playerid][Frisk_BY] = INVALID_PLAYER_ID;
+				FriskInfo[tagerid][Frisk_ID] = INVALID_PLAYER_ID;
+				FriskInfo[tagerid][Frisk_BY] = INVALID_PLAYER_ID;
+			}
+			else SendErrorMessage(playerid, "ใส่ให้ถูกต้อง (yes or no)");
+			return 1;
+		}
+
+		FriskInfo[playerid][Frisk_ID] = tagerid;
+		FriskInfo[tagerid][Frisk_BY] = playerid;
+		SendClientMessageEx(tagerid, COLOR_LIGHTRED, "%s ได้ขอค้นภายในตัวของคุณ /frisk %d หากคุณยอมรับ",ReturnName(playerid,0),playerid);
+		SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ขอค้นตัวของ %s",ReturnName(tagerid,0));
+	}
+	return 1;
+}
+
+stock ShowInvPlayer(tagerid, playerid)
+{
+	new weapon_id[2][13];
+
+	SendClientMessageEx(tagerid, -1, "FRISK : %s",ReturnName(playerid,0));
+
+	ReturnLicenses(playerid, tagerid);
+
+	SendClientMessageEx(tagerid, -1, "เงินภายในตัว: $%s",MoneyFormat(PlayerInfo[playerid][pCash]));
+
+	SendClientMessage(tagerid, COLOR_DARKGREEN, "______________WEAPONS_____________"); 
+	for(new i = 0; i < 13; i++)
+	{
+		GetPlayerWeaponData(playerid, i, weapon_id[0][i], weapon_id[1][i]); 
+		
+		if(!weapon_id[0][i])
+			continue;
+			
+		SendClientMessageEx(tagerid, COLOR_GRAD1, "%s [กระสุน: %d]", ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
+	}
+	SendClientMessage(tagerid, COLOR_DARKGREEN, "___________________________________"); 
+	return 1;
+}
+
 forward HelpUpPLayer(playerid, tagerid);
 public HelpUpPLayer(playerid, tagerid)
 {
@@ -1965,16 +2094,6 @@ stock ClearHelpme(reportid)
 	HelpmeData[reportid][hHelpmeDBID] = 0;
     HelpmeData[reportid][hHelpmeBy] = INVALID_PLAYER_ID;
     HelpmeData[reportid][hHelpmeDetel] = ' ';
-	return 1;
-}
-
-CMD:close(playerid, params[])
-{
-	if(PlayerInfo[playerid][pGUI] != 6)
-		return 1;
-
-	PlayerInfo[playerid][pGUI] = 6;
-	MenuStore_Close(playerid);
 	return 1;
 }
 

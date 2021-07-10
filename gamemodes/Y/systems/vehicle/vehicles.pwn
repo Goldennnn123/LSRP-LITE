@@ -2291,7 +2291,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	
 	if(vehicleid != 0)
 	{
-		if(RELEASED(KEY_CTRL_BACK) || RELEASED(KEY_SECONDARY_ATTACK))
+		if(RELEASED(KEY_SECONDARY_ATTACK))
 		{
 			if(!IsPlayerInAnyVehicle(playerid))
 				return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");

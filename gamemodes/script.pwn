@@ -114,6 +114,7 @@ new globalWeather = 2;
 #include "Y/systems/global.pwn"
 #include "Y/systems/clothing.pwn"
 #include "Y/systems/business/clothing.pwn"
+#include "Y/systems/drug/drug.pwn"
 
 
 #include "Y/jobs/farmer.pwn"

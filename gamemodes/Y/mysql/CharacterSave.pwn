@@ -148,7 +148,7 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_flo(query, "pBTC",PlayerInfo[playerid][pBTC]);
 
 
-        mysql_int(query, "pArrest",PlayerInfo[playerid][pArrest]);
+        mysql_bool(query, "pArrest",PlayerInfo[playerid][pArrest]);
         mysql_int(query, "pArrestBy",PlayerInfo[playerid][pArrestBy]);
         mysql_int(query, "pArrestTime",PlayerInfo[playerid][pArrestTime]);
         mysql_int(query, "pArrestRoom",PlayerInfo[playerid][pArrestRoom]);
@@ -185,6 +185,10 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
             format(str, sizeof(str), "pClothing%d",i);
             mysql_int(query, str,PlayerInfo[playerid][pClothing][i-1]);
         }
+
+        mysql_flo(query, "pDrug1",PlayerInfo[playerid][pDrug][0]);
+        mysql_flo(query, "pDrug2",PlayerInfo[playerid][pDrug][1]);
+        mysql_flo(query, "pDrug3",PlayerInfo[playerid][pDrug][2]);
 
 		mysql_finish(query);
         

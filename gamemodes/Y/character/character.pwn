@@ -297,6 +297,11 @@ public Query_LoadCharacter(playerid)
 		cache_get_value_name_int(0, "pLastInterior", PlayerInfo[playerid][pLastInterior]);
 		cache_get_value_name_int(0, "pLastWorld", PlayerInfo[playerid][pLastWorld]);
 
+		cache_get_value_name_int(0, "RentCarKey",RentCarKey[playerid]);
+
+		cache_get_value_name_int(0, "pInsideBusiness",PlayerInfo[playerid][pInsideBusiness]);
+		cache_get_value_name_int(0, "pInsideProperty",PlayerInfo[playerid][pInsideProperty]);
+
 	} else PlayerInfo[playerid][pTimeout] = 0;
 
 	if(PlayerInfo[playerid][pDonater])
@@ -409,11 +414,6 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pVehicleSpawned",PlayerInfo[playerid][pVehicleSpawned]);
 	cache_get_value_name_int(0, "pVehicleSpawnedID",PlayerInfo[playerid][pVehicleSpawnedID]);
 
-	cache_get_value_name_int(0, "RentCarKey",RentCarKey[playerid]);
-
-	cache_get_value_name_int(0, "pInsideBusiness",PlayerInfo[playerid][pInsideBusiness]);
-	cache_get_value_name_int(0, "pInsideProperty",PlayerInfo[playerid][pInsideProperty]);
-
 	cache_get_value_name_int(0, "pBoomBox",PlayerInfo[playerid][pBoomBox]);
 
 	for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
@@ -422,7 +422,15 @@ public Query_LoadCharacter(playerid)
 		cache_get_value_name_int(0, str, PlayerInfo[playerid][pClothing][i-1]);
 	}
 
-	return LoadCharacter(playerid);
+	cache_get_value_name_float(0, "pDrug1",PlayerInfo[playerid][pDrug][0]);
+	cache_get_value_name_float(0, "pDrug2",PlayerInfo[playerid][pDrug][1]);
+	cache_get_value_name_float(0, "pDrug3",PlayerInfo[playerid][pDrug][2]);
+
+	new CheckAccount[MAX_STRING];
+	mysql_format(dbCon, CheckAccount, sizeof(CheckAccount), "SELECT * FROM `bannedlist` WHERE `MasterDBID` = '%d'",e_pAccountData[playerid][mDBID]);
+	mysql_tquery(dbCon, CheckAccount, "CheckBanAccount", "d",playerid);
+
+	return 1;
 }
 
 forward LoadCharacter(playerid);
@@ -464,6 +472,7 @@ public LoadCharacter(playerid)
 		SendAdminMessageEx(COLOR_LIGHTRED, 1, "มีการใช้ UCP เดียวกันในการเข้าสองตัวละครในเวลาเดียวกัน (%d) %s กับ (%d) %s",playerid, ReturnName(playerid,0), i, ReturnName(i,0));
 	}
 
+
 	SetPlayerScore(playerid, PlayerInfo[playerid][pLevel]);
 	SetPlayerColor(playerid, 0xFFFFFFFF);
 	
@@ -499,11 +508,29 @@ public LoadCharacter(playerid)
 	}
 	else SendClientMessage(playerid, -1, "คุณเข้าสู่ระบบด้วยอุปกรณ์ PC");
 
-
 	new str[120];
     format(str, sizeof(str), "[%s] %s : Connected to the Server", ReturnDate(),ReturnName(playerid,0));
     SendDiscordMessage(1, str);
 	return 1;
+}
+
+forward CheckBanAccount(playerid);
+public CheckBanAccount(playerid)
+{
+	if(!cache_num_rows())
+		return LoadCharacter(playerid);
+
+	new rows;
+	cache_get_row_count(rows); 
+	if(rows)
+	{
+		SendClientMessage(playerid, COLOR_LIGHTRED, "ตัวละครของคุณถูกระงับการใช้งานอยู่ กรุณาติดต่อขอปลดแบนที่ผู้ดูแล");
+		SendAdminMessageEx(COLOR_LIGHTRED, 1, "บัญชี %s พยามเข้ามาภายในเซิร์ฟเวอร์ ซึ่งเป็นบัญชีที่ถูกระงับการใช้งานอยู่",e_pAccountData[playerid][mDBID]);
+		TogglePlayerSpectating(playerid, true);
+		KickEx(playerid);
+		return 1;
+	}
+	return 1;	
 }
 
 CreateNewCharacter(playerid) {

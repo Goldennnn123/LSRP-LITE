@@ -1910,15 +1910,15 @@ CMD:close(playerid, params[])
 
 CMD:frisk(playerid, params[])
 {
-	if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE)
-		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้ได้ในขณะที่คุณไม่ได้อยู่ในสถาณะปกติ");
+	/*if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE)
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้ได้ในขณะที่คุณไม่ได้อยู่ในสถาณะปกติ");*/
 
 	new tagerid, option[20];
 	if(sscanf(params, "uS()[20]", tagerid, option))
 		return SendUsageMessage(playerid, "/frisk <ชื่อบางส่วน/ไอดี>");
 
-	if(GetPlayerTeam(tagerid) != PLAYER_STATE_ALIVE)
-		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้ได้หากผู้เล่นอีกฝ่ายไม่ได้อยู่ในสถาณะปกติ");
+	/*if(GetPlayerTeam(tagerid) != PLAYER_STATE_ALIVE)
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้ได้หากผู้เล่นอีกฝ่ายไม่ได้อยู่ในสถาณะปกติ");*/
 
 	if(FriskInfo[playerid][Frisk_ID] != INVALID_PLAYER_ID)
 	{
@@ -2129,5 +2129,7 @@ hook OnPlayerDisconnect(playerid, reason)
 			}
         }
     }
+
+	
 	return 1;
 }

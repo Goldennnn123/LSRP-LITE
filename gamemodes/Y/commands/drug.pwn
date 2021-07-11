@@ -74,7 +74,7 @@ CMD:givedrug(playerid, params[])
     if(!IsPlayerConnected(tagetid))
         return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซิร์ฟเวอร์");
 
-    if(!IsPlayerLogin(tagetid))
+    if(IsPlayerLogin(tagetid))
         return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
     if(!IsPlayerNearPlayer(playerid, tagetid, 2.5))
@@ -252,7 +252,7 @@ CMD:setdrug(playerid, params[])
     if(!IsPlayerConnected(tagetid))
         return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซิร์ฟเวอร์");
 
-    if(!IsPlayerLogin(tagetid))
+    if(IsPlayerLogin(tagetid))
         return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
     if(!IsPlayerNearPlayer(playerid, tagetid, 2.5))
@@ -303,7 +303,7 @@ CMD:agivedrug(playerid, params[])
     if(!IsPlayerConnected(tagetid))
         return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซิร์ฟเวอร์");
 
-    if(!IsPlayerLogin(tagetid))
+    if(IsPlayerLogin(tagetid))
         return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
     if(!IsPlayerNearPlayer(playerid, tagetid, 2.5))

@@ -387,8 +387,11 @@ ptask FunctionPlayers[1000](playerid)
 			SendServerMessage(playerid, "คุณได้ถูกปล่อยตัวออกจากคุกแล้ว");
 
 			SendPoliceMessage(0x8D8DFFFF, "HQ-ARREST: %s ได้ถูกปล่อยตัวออกจากห้องกุมขังแล้ว.", ReturnName(playerid));
-			CharacterSave(playerid);
+
+			SetPlayerHealth(playerid, 100);
+			
 			SpawnPlayer(playerid);
+			CharacterSave(playerid);
 		}
 	}
 	return 1;

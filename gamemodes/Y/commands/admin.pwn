@@ -1664,13 +1664,18 @@ CMD:acceptwhitelist(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] < 2)
 		return SendUnauthMessage(playerid);
 
-	new id;
-	if(sscanf(params, "d", id))
-		return SendUsageMessage(playerid, "/acceptwhitelist <ID: ตัวละคร>");
+	new id, name[32];
+	if(sscanf(params, "ds[32]", id, name))
+		return SendUsageMessage(playerid, "/acceptwhitelist <เลข UCP> <ชื่อตัวละคร>");
+
 
 	new query[255];
-	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `characters` WHERE char_dbid = '%d'",id);
-	mysql_tquery(dbCon, query, "CheckChar", "dd",playerid, id);
+	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `masters` WHERE `acc_dbid` = '%d'",id);
+	mysql_tquery(dbCon, query, "CheckChar", "dds",playerid, id, name);
+
+	/*new query[255];
+	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `characters` WHERE  = '%d'",id);
+	mysql_tquery(dbCon, query, "CheckChar", "dd",playerid, id);*/
 	return 1;
 }
 
@@ -3174,32 +3179,36 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-forward CheckChar(playerid, id);
-public CheckChar(playerid, id)
+forward CheckChar(playerid, id, name[]);
+public CheckChar(playerid, id, name[])
 {
 	if(!cache_num_rows())
-		return SendErrorMessage(playerid, "ไม่มี ID Character ที่คุณค้นหา");
+		return SendErrorMessage(playerid, "เลข UCP ไม่มีอยู่ในฐานข้อมูล");
 
 	
 	new query[255];
+	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `characters` WHERE `char_name` = '%e'",name);
+	mysql_tquery(dbCon, query, "CheckWhiteList","dds",playerid, id, name);
+
+	/*new query[255];
 	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `characters` WHERE `char_dbid` = '%d' AND `pWhitelist` = '0'",id);
-	mysql_tquery(dbCon, query, "CheckWhiteList","dd",playerid, id);
+	mysql_tquery(dbCon, query, "CheckWhiteList","dd",playerid, id);*/
 	return 1;
 }
 
-forward CheckWhiteList(playerid, id);
-public CheckWhiteList(playerid, id)
+forward CheckWhiteList(playerid, id, name[]);
+public CheckWhiteList(playerid, id, name[])
 {
-	if(!cache_num_rows())
-		return SendErrorMessage(playerid, "ID Character ได้ถูกยอมรับแล้ว");
-
+	if(cache_num_rows())
+		return SendErrorMessage(playerid, "ชื่อตัวละครนี้ถูกใช้แล้ว");
 	
 	new query[255];
-	mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pWhitelist` = '1' WHERE `char_dbid` = '%d'",id);
+	mysql_format(dbCon, query, sizeof(query), "INSERT INTO `characters`(`master_id`, `char_name`, `pWhitelist`, `pCash`, `pPhone`) VALUES ('%d', '%e', '%d', '%d', '%d')",
+	id, name, 1, 5000, random(99999));
 	mysql_tquery(dbCon, query);
 
-	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "คุณได้ยืนยันให้ตัวละครไอดี #%d สามารถเข้ามาเล่นภายในเซิร์ฟเวอรได้แล้ว",id);
-	SendAdminMessageEx(COLOR_PMS, 2, "[ADMIN: %d] %s ได้ยืนยันให้ตัวละครไอดี #%d สามารถเข้ามาเล่นภายในเซิร์ฟเวอรได้แล้ว",PlayerInfo[playerid][pAdmin], ReturnName(playerid,0), id);
+	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "คุณได้เพิ่ม %s เข้าไปในฐานข้อมูลของระบบแล้ว",name);
+	SendAdminMessageEx(COLOR_PMS, 2, "[ADMIN: %d] %s ได้ยืนยันให้ตัวละครไอดี #%d %s สามารถเข้ามาเล่นภายในเซิร์ฟเวอรได้แล้ว",PlayerInfo[playerid][pAdmin], ReturnName(playerid,0), id, name);
 	return 1;
 }
 

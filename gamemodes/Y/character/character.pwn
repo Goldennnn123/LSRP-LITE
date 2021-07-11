@@ -457,7 +457,7 @@ public LoadCharacter(playerid)
 	{
 		SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}ตัวละครของคุณยังไม่ได้รับการยืนยัน โปรดกรอกใบสมัครของคุณให้เรียบร้อยก่อนที่จะเข้าเล่นเล่นเกม");
 		SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}หากคุณกรอกใบสมัครเรียบร้อยแล้วให้คุณเรียบร้อยแล้วให้คุณเข้ามายืนยันใบสมัครของคุณในห้อง ดิสคอร์ด");
-		SendClientMessageEx(playerid, COLOR_YELLOW, "INFO: {FFFFFF}ชื่อ UCP: %s รหัสตัวละคร: %d", e_pAccountData[playerid][mAccName], PlayerInfo[playerid][pDBID]);
+		SendClientMessageEx(playerid, COLOR_YELLOW, "INFO: {FFFFFF}ชื่อ UCP: %s รหัสตัวละคร: %d รหัส UCP: %d", e_pAccountData[playerid][mAccName], PlayerInfo[playerid][pDBID], e_pAccountData[playerid][mDBID]);
 		ResetPlayerCharacter(playerid);
 		KickEx(playerid);
 		return 1;
@@ -549,8 +549,10 @@ CreateNewCharacter(playerid) {
 	
 	#else
 
-		SendClientMessage(playerid, COLOR_LIGHTRED, "บัญชีของคุณยังไม่ได้ตั้งค่าไว้ให้ใช้ในเกม (ยังไม่ได้ยื่นใบสมัคร/ตัวละครยังไม่ถูกยืนยัน)");
-		SendClientMessage(playerid, COLOR_LIGHTRED, "โปรดเข้าสู่ระบบด้วยบัญชีของคุณบน yoursite.com และลองใหม่อีกครั้ง");
+		//SendClientMessage(playerid, COLOR_LIGHTRED, "บัญชีของคุณยังไม่ได้ตั้งค่าไว้ให้ใช้ในเกม (ยังไม่ได้ยื่นใบสมัคร/ตัวละครยังไม่ถูกยืนยัน)");
+		//SendClientMessage(playerid, COLOR_LIGHTRED, "โปรดเข้าสู่ระบบด้วยบัญชีของคุณบน yoursite.com และลองใหม่อีกครั้ง");
+		SendClientMessage(playerid, COLOR_YELLOWEX, "บัญชีของคุณยังไม่ได้ตั้งค่าไว้ให้ใช้ในเกม (ยังไม่ได้ยื่นใบสมัคร/ตัวละครยังไม่ถูกยืนยัน)");
+		SendClientMessage(playerid, COLOR_YELLOWEX, "โปรดเข้าสมัครตัวละครในห้อง ฟอร์มก่อนเพื่อที่จะดำเนินการเข้าสู่ระบบตัวละครต่อไป");
 		KickEx(playerid);
 
 	#endif

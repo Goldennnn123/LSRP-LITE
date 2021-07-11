@@ -154,6 +154,10 @@ CMD:usedrug(playerid, params[])
     }
 
     GetPlayerHealth(playerid, health);
+
+    if(PlayerInfo[playerid][pDrug][type-1] < 0.01)
+        return SendErrorMessage(playerid, "คุณมียาไม่เพียงพอต่อการที่จะเสพ");
+    
     switch(type)
     {
         case 1:

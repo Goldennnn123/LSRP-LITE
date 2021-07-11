@@ -27,7 +27,7 @@ CMD:checkdrug(playerid, params[])
             return 1;
         }
 
-        if(!tagetid)
+        if(tagetid == -1)
         {
             SendClientMessage(playerid, COLOR_DARKGREEN, "__________DRUGS__________");
             SendClientMessageEx(playerid, -1, "Cocaine: %.2f",PlayerInfo[playerid][pDrug][0]);
@@ -85,7 +85,7 @@ CMD:givedrug(playerid, params[])
 
     switch(type)
     {
-        case 0:
+        case 1:
         {
             if(PlayerInfo[playerid][pDrug][0] < amout)
                 return SendErrorMessage(playerid, "คุณมีจำนวนยาไม่เพียงพอต่อการให้");
@@ -99,10 +99,11 @@ CMD:givedrug(playerid, params[])
             Log(druglog, WARNING, str);
 
             PlayerInfo[playerid][pDrug][0]-=amout;
+            PlayerInfo[tagetid][pDrug][0]+=amout;
             GiveDrug(tagetid, type, amout);
             CharacterSave(playerid);
         }
-        case 1:
+        case 2:
         {
             if(PlayerInfo[playerid][pDrug][1] < amout)
                 return SendErrorMessage(playerid, "คุณมีจำนวนยาไม่เพียงพอต่อการให้");
@@ -115,10 +116,11 @@ CMD:givedrug(playerid, params[])
             Log(druglog, WARNING, str);        
             
             PlayerInfo[playerid][pDrug][1]-=amout;
+            PlayerInfo[tagetid][pDrug][1]+=amout;
             GiveDrug(tagetid, type, amout);
             CharacterSave(playerid);
         }
-        case 2:
+        case 3:
         {
             if(PlayerInfo[playerid][pDrug][2] < amout)
                 return SendErrorMessage(playerid, "คุณมีจำนวนยาไม่เพียงพอต่อการให้");
@@ -131,6 +133,7 @@ CMD:givedrug(playerid, params[])
             Log(druglog, WARNING, str);
 
             PlayerInfo[playerid][pDrug][2]-=amout;
+            PlayerInfo[tagetid][pDrug][2]+=amout;
             GiveDrug(tagetid, type, amout);
             CharacterSave(playerid);
         }
@@ -265,19 +268,19 @@ CMD:setdrug(playerid, params[])
     {
         case 1:
         {
-            PlayerInfo[playerid][pDrug][0] = amout;
+            PlayerInfo[tagetid][pDrug][0] = amout;
             SendClientMessageEx(tagetid, COLOR_YELLOWEX, "ผู้ดูแลได้ปรับยาเสพติด 'Cocaine' ของคุณเป็น %.2f กรัม",amout);
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปรับยาเสพติด 'Cocaine' ของ %s ให้เป็น %.2f กรัม",ReturnName(tagetid,0), amout);
         }
         case 2:
         {
-            PlayerInfo[playerid][pDrug][1] = amout;
+            PlayerInfo[tagetid][pDrug][1] = amout;
             SendClientMessageEx(tagetid, COLOR_YELLOWEX, "ผู้ดูแลได้ปรับยาเสพติด 'Cannabis' ของคุณเป็น %.2f กรัม",amout);
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปรับยาเสพติด 'Cannabis' ของ %s ให้เป็น %.2f กรัม",ReturnName(tagetid,0), amout);
         }
         case 3:
         {
-            PlayerInfo[playerid][pDrug][1] = amout;
+            PlayerInfo[tagetid][pDrug][1] = amout;
             SendClientMessageEx(tagetid, COLOR_YELLOWEX, "ผู้ดูแลได้ปรับยาเสพติด 'Heroin' ของคุณเป็น %.2f กรัม",amout);
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปรับยาเสพติด 'Heroin' ของ %s ให้เป็น %.2f กรัม",ReturnName(tagetid,0), amout);
         }
@@ -316,19 +319,19 @@ CMD:agivedrug(playerid, params[])
     {
         case 1:
         {
-            PlayerInfo[playerid][pDrug][0] += amout;
+            PlayerInfo[tagetid][pDrug][0] += amout;
             SendClientMessageEx(tagetid, COLOR_YELLOWEX, "ผู้ดูแลได้เพิ่มยาเสพติด 'Cocaine' ของคุณ %.2f กรัม",amout);
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เพิ่มยาเสพติด 'Cocaine' ของ %s ให้ %.2f กรัม",ReturnName(tagetid,0), amout);
         }
         case 2:
         {
-            PlayerInfo[playerid][pDrug][1] += amout;
+            PlayerInfo[tagetid][pDrug][1] += amout;
             SendClientMessageEx(tagetid, COLOR_YELLOWEX, "ผู้ดูแลได้เพิ่มยาเสพติด 'Cannabis' ของคุณ %.2f กรัม",amout);
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เพิ่มยาเสพติด 'Cannabis' ของ %s ให้ %.2f กรัม",ReturnName(tagetid,0), amout);
         }
         case 3:
         {
-            PlayerInfo[playerid][pDrug][1] += amout;
+            PlayerInfo[tagetid][pDrug][1] += amout;
             SendClientMessageEx(tagetid, COLOR_YELLOWEX, "ผู้ดูแลได้เพิ่มยาเสพติด 'Heroin' ของคุณ %.2f กรัม",amout);
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เพิ่มยาเสพติด 'Heroin' ของ %s ให้ %.2f กรัม",ReturnName(tagetid,0), amout);
         }

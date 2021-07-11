@@ -1937,7 +1937,7 @@ CMD:frisk(playerid, params[])
 
 			FriskInfo[playerid][Frisk_ID] = tagerid;
 			FriskInfo[tagerid][Frisk_BY] = playerid;
-			SendClientMessageEx(tagerid, COLOR_LIGHTRED, "%s ได้ขอค้นภายในตัวของคุณ /frisk %d หากคุณยอมรับ",playerid,ReturnName(playerid,0));
+			SendClientMessageEx(tagerid, COLOR_LIGHTRED, "%s ได้ขอค้นภายในตัวของคุณ /frisk %d yes หากคุณยอมรับ",playerid,ReturnName(playerid,0));
 			SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ขอค้นตัวของ %s",ReturnName(tagerid,0));
 			return 1;
 		}
@@ -1986,7 +1986,7 @@ CMD:frisk(playerid, params[])
 
 		FriskInfo[playerid][Frisk_ID] = tagerid;
 		FriskInfo[tagerid][Frisk_BY] = playerid;
-		SendClientMessageEx(tagerid, COLOR_LIGHTRED, "%s ได้ขอค้นภายในตัวของคุณ /frisk %d หากคุณยอมรับ",ReturnName(playerid,0),playerid);
+		SendClientMessageEx(tagerid, COLOR_LIGHTRED, "%s ได้ขอค้นภายในตัวของคุณ /frisk %d yes หากคุณยอมรับ",ReturnName(playerid,0),playerid);
 		SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ขอค้นตัวของ %s",ReturnName(tagerid,0));
 	}
 	return 1;

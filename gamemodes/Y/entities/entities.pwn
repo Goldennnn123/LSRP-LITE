@@ -166,6 +166,8 @@ enum E_PLAYER_DATA
 	pClothing[9],
 
 	Float:pDrug[3],
+	bool:pAddicted,
+	pAddictedCount
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];

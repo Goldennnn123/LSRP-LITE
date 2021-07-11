@@ -189,6 +189,8 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_flo(query, "pDrug1",PlayerInfo[playerid][pDrug][0]);
         mysql_flo(query, "pDrug2",PlayerInfo[playerid][pDrug][1]);
         mysql_flo(query, "pDrug3",PlayerInfo[playerid][pDrug][2]);
+        mysql_int(query, "pAddicted",PlayerInfo[playerid][pAddicted]);
+	    mysql_int(query, "pAddictedCount",PlayerInfo[playerid][pAddictedCount]);
 
 		mysql_finish(query);
         

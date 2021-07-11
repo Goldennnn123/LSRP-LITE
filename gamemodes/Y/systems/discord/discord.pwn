@@ -5,9 +5,15 @@ new
     DCC_Channel:g_ServerOpen,
 	DCC_Channel:ConnactLog,
 	DCC_Channel:DeathLogs,
-	DCC_Channel:HackerLog;
+	DCC_Channel:HackerLog,
+	DCC_Channel:DrugLog;
 #endif
 
+
+/**
+* ฟังชั่นในการส่งข้อความเข้า ดิสคอร์ด เพื่อเป็นการแจ้งเตือนข้อความภายในเซิร์ฟเวอร์
+* โปรดใชเอย่างระมัดระวังไม่ไปส่งในห้องของ Player;
+*/
 stock SendDiscordMessage(channel, const message[])
 {
 	switch(channel)
@@ -34,6 +40,12 @@ stock SendDiscordMessage(channel, const message[])
 		{
 			HackerLog = DCC_FindChannelById("863094920281325608");
 			DCC_SendChannelMessage(HackerLog, message);
+			return 1;
+		}
+		case 5:
+		{
+			DrugLog = DCC_FindChannelById("863604214764666900");
+			DCC_SendChannelMessage(DrugLog, message);
 			return 1;
 		}
 	}

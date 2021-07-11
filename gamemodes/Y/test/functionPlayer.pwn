@@ -27,7 +27,7 @@ ptask CheckPlayer[1000](playerid)
 			if(PlayerInfo[playerid][pPoliceDuty])
 				continue;
 
-            if(weapons[i][1] > 400 && weapons[i][0] != WEAPON_CAMERA && weapons[i][0] != WEAPON_FLOWER)
+            if(weapons[i][1] > 400 && weapons[i][0] != WEAPON_CAMERA && weapons[i][0] != WEAPON_FLOWER && PlayerInfo[playerid][pWeaponsAmmo][i] != weapons[i][1])
             {
                 SendAdminMessageEx(COLOR_LIGHTRED, 1, "[WEAPONS-HECK] %s ผู้ต้องสงสัยในการเสกอาวุธ",ReturnName(playerid,0));
 				
@@ -36,14 +36,19 @@ ptask CheckPlayer[1000](playerid)
 				SendDiscordMessage(4, str);
 			}
 	}
+
+	
     return 1;
 }
 
 
 hook function SetPlayerHealth(playerid, Float:health)
 {
+	if(PlayerInfo[playerid][pHealth] > 200)
+		health = 200;
+
 	PlayerInfo[playerid][pHealth] = health;
-    return continue(playerid, PlayerInfo[playerid][pHealth]);
+    return continue(playerid, health);
 }
 
 stock GiveMoney(playerid, amount)

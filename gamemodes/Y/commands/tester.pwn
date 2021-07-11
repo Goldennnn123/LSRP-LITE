@@ -38,8 +38,6 @@ CMD:tduty(playerid, params[])
 			
 		else
 			SetPlayerColor(playerid, COLOR_COP);
-			
-		SetPlayerHealth(playerid, 100); 
 	}
 	else
 	{

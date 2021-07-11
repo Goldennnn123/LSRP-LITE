@@ -68,8 +68,6 @@ CMD:aduty(playerid, params[])
 			
 		else
 			SetPlayerColor(playerid, COLOR_COP);
-			
-		SetPlayerHealth(playerid, 100); 
 	}
 	else
 	{
@@ -79,7 +77,6 @@ CMD:aduty(playerid, params[])
 		SendAdminMessage(1, str);
 		
 		SetPlayerColor(playerid, 0x587B95FF);
-		SetPlayerHealth(playerid, 250);
 	}
 	
 	return 1; 

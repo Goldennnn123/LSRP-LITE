@@ -425,6 +425,8 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_float(0, "pDrug1",PlayerInfo[playerid][pDrug][0]);
 	cache_get_value_name_float(0, "pDrug2",PlayerInfo[playerid][pDrug][1]);
 	cache_get_value_name_float(0, "pDrug3",PlayerInfo[playerid][pDrug][2]);
+	cache_get_value_name_int(0, "pAddicted",PlayerInfo[playerid][pAddicted]);
+	cache_get_value_name_int(0, "pAddictedCount",PlayerInfo[playerid][pAddictedCount]);
 
 	new CheckAccount[MAX_STRING];
 	mysql_format(dbCon, CheckAccount, sizeof(CheckAccount), "SELECT * FROM `bannedlist` WHERE `MasterDBID` = '%d'",e_pAccountData[playerid][mDBID]);

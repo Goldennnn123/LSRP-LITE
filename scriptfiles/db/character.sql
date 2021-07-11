@@ -91,6 +91,8 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `pDrug1` float NOT NULL DEFAULT 0.0,
   `pDrug2` float NOT NULL DEFAULT 0.0,
   `pDrug3` float NOT NULL DEFAULT 0.0,
+  `pAddicted` NOT NULL,
+  `pAddictedCount` NOT NULL DEFAULT 0,
   `pWeapon0` int(11) NOT NULL,
   `pWeapon1` int(11) NOT NULL,
   `pWeapon2` int(11) NOT NULL,

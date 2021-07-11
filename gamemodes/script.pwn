@@ -148,6 +148,7 @@ new globalWeather = 2;
 #include "Y/commands/police.pwn"
 #include "Y/commands/medic.pwn"
 #include "Y/commands/tester.pwn"
+#include "Y/commands/drug.pwn"
 
 #include "Y/Interior/Bank.pwn"
 #include "Y/Interior/House1.pwn"

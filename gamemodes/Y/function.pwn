@@ -119,7 +119,11 @@ stock GivePlayerExp(playerid, amount = 1) {
 	#endif
 }
 
+/**
 
+ * หากใส่ ! แปลว่า เข้าสู่ระบบแล้ว
+ * หากไม่ใส่ ! แปลว่ายังไม่เข้าสู่ระบบ
+ */
 stock IsPlayerLogin(playerid)
 {
 	if(BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
@@ -651,8 +655,25 @@ public CallPaycheck()
 		}
 		SendClientMessageEx(i, COLOR_GREY, "เลขล็อตตารี่ออก คือ: %s",  GlobalInfo[G_Ticket]);
 
+		if(PlayerInfo[i][pAddicted] == true)
+        {
+            new Float:health;
+            GetPlayerHealth(i, health);
+            
+            if(health < 10)
+            {
+                SendNearbyMessage(i, 2.5, COLOR_EMOTE, "* มีอาการแปลกๆใบหน้าและตาของเขาแสดงออกอย่างเห็นได้ชัด (( %s ))",ReturnName(i,0));
+                continue;
+            }
+
+            SendNearbyMessage(i, 2.5, COLOR_EMOTE, "* มีอาการแปลกๆใบหน้าและตาของเขาแสดงออกอย่างเห็นได้ชัด (( %s ))",ReturnName(i,0));
+            SetPlayerHealth(i, health-PlayerInfo[i][pAddictedCount]);
+        }
+
 		CharacterSave(i); 
 		Saveglobal();
+
+		
 	}
 	return 1;
 }

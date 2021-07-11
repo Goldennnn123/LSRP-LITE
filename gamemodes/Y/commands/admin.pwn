@@ -1668,6 +1668,8 @@ CMD:acceptwhitelist(playerid, params[])
 	if(sscanf(params, "ds[32]", id, name))
 		return SendUsageMessage(playerid, "/acceptwhitelist <เลข UCP> <ชื่อตัวละคร>");
 
+	if(!IsValidRoleplayName(name))
+		return SendErrorMessage(playerid, "โปรดใส่ชื่อตัวละครให้ถูกต้อง");
 
 	new query[255];
 	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `masters` WHERE `acc_dbid` = '%d'",id);
@@ -3208,7 +3210,7 @@ public CheckWhiteList(playerid, id, name[])
 	mysql_tquery(dbCon, query);
 
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "คุณได้เพิ่ม %s เข้าไปในฐานข้อมูลของระบบแล้ว",name);
-	SendAdminMessageEx(COLOR_PMS, 2, "[ADMIN: %d] %s ได้ยืนยันให้ตัวละครไอดี #%d %s สามารถเข้ามาเล่นภายในเซิร์ฟเวอรได้แล้ว",PlayerInfo[playerid][pAdmin], ReturnName(playerid,0), id, name);
+	SendAdminMessageEx(COLOR_PMS, 2, "[ADMIN: %d] %s ได้ยืนยันให้ [UCP ID:#%d] %s สามารถเข้ามาเล่นภายในเซิร์ฟเวอรได้แล้ว",PlayerInfo[playerid][pAdmin], ReturnName(playerid,0), id, name);
 	return 1;
 }
 

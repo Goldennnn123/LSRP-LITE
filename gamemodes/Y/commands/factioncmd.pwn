@@ -773,6 +773,21 @@ CMD:towcars(playerid, params[])
 	return 1;
 }
 
+alias:checkgovcash("checkgc")
+CMD:checkgovcash(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่น รัฐบาล");
+
+	new factionid = PlayerInfo[playerid][pFaction];
+
+	if(FactionInfo[factionid][eFactionJob] != GOV)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่นที่เกี่ยวกับการบริหารงบประมาณของรัฐบาล");
+
+	SendClientMessageEx(playerid, COLOR_HELPME, "เงินในกรมการคลังของรัฐ Los Santos: $%s",GlobalInfo[G_GovCash]);
+	return 1;
+}
+
 hook OnPlayerDisconnect(playerid, reason)
 {
     foreach(new i : Player)

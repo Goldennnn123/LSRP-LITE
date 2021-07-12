@@ -31,6 +31,9 @@ CMD:placedrug(playerid, params[])
     if(amount < 0.01)
         return SendErrorMessage(playerid, "กรุณาใส่จำนวนให้ถูกต้อง");
 
+    if(PlayerInfo[playerid][pDrug][type-1] < amount)
+        return SendErrorMessage(playerid, "ยาเสพติดของคุณไม่เพียงพอ");
+
     if(IsPlayerInAnyVehicle(playerid))
     {
         new vehicleid = GetPlayerVehicleID(playerid);

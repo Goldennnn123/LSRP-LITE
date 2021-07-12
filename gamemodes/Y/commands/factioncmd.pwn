@@ -784,7 +784,7 @@ CMD:checkgovcash(playerid, params[])
 	if(FactionInfo[factionid][eFactionJob] != GOV)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่นที่เกี่ยวกับการบริหารงบประมาณของรัฐบาล");
 
-	SendClientMessageEx(playerid, COLOR_HELPME, "เงินในกรมการคลังของรัฐ Los Santos: $%s",MoneyFormat(GlobalInfo[G_GovCash]));
+	SendClientMessageEx(playerid, COLOR_HELPME, "เงินในกรมการคลังของรัฐ San Andreas: $%s",MoneyFormat(GlobalInfo[G_GovCash]));
 	return 1;
 }
 

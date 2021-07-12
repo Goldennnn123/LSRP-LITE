@@ -187,6 +187,76 @@ stock PlaceDrugHouse(playerid, houseid, type, Float:amount)
     return 1;
 }
 
+stock GetDrugVehicle(playerid, vehicleid, type, Float:amount)
+{
+    switch(type)
+    {
+        case 1:
+        {
+            VehicleInfo[vehicleid][eVehicleDrug][0]-= amount;
+            PlayerInfo[playerid][pDrug][0]+= amount;
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้นำ 'Cocaine' ขึ้นมายานะหานะ %s ของคุณแล้ว จำนวน %.2f",ReturnVehicleName(vehicleid), amount);
+            SaveVehicle(vehicleid);
+            CharacterSave(playerid);
+            return 1;
+        }
+        case 2:
+        {
+            VehicleInfo[vehicleid][eVehicleDrug][1]-= amount;
+            PlayerInfo[playerid][pDrug][1]+= amount;
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้นำ 'Cannabis' ขึ้นมายานะหานะ %s ของคุณแล้ว จำนวน %.2f",ReturnVehicleName(vehicleid), amount);
+            SaveVehicle(vehicleid);
+            CharacterSave(playerid);
+            return 1;
+        }
+        case 3:
+        {
+            VehicleInfo[vehicleid][eVehicleDrug][2]-= amount;
+            PlayerInfo[playerid][pDrug][2]+= amount;
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้นำ 'Heroin' ขึ้นมายานะหานะ %s ของคุณแล้ว จำนวน %.2f",ReturnVehicleName(vehicleid), amount);
+            SaveVehicle(vehicleid);
+            CharacterSave(playerid);
+            return 1;
+        }
+    }
+    return 1;
+}
+
+stock GetDrugHouse(playerid, houseid, type, Float:amount)
+{
+    switch(type)
+    {
+        case 1:
+        {
+            HouseInfo[houseid][HouseDrug][0]-= amount;
+            PlayerInfo[playerid][pDrug][0]+= amount;
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้นำ 'Cocaine' จากที่บ้านของคุณแล้ว จำนวน %.2f", amount);
+            Savehouse(houseid);
+            CharacterSave(playerid);
+            return 1;
+        }
+        case 2:
+        {
+            HouseInfo[houseid][HouseDrug][1]-= amount;
+            PlayerInfo[playerid][pDrug][1]+= amount;
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้นำ 'Cannabis' จากที่บ้านของคุณแล้ว จำนวน %.2f", amount);
+            Savehouse(houseid);
+            CharacterSave(playerid);
+            return 1;
+        }
+        case 3:
+        {
+            HouseInfo[houseid][HouseDrug][2]-= amount;
+            PlayerInfo[playerid][pDrug][2]+= amount;
+            SendClientMessageEx(playerid, COLOR_GREY, "คุณได้นำ 'Heroin' จากที่บ้านของคุณแล้ว จำนวน %.2f", amount);
+            Savehouse(houseid);
+            CharacterSave(playerid);
+            return 1;
+        }
+    }
+    return 1;
+}
+
 
 /**
     * ฟังชั่นสำหรับการให้ยาเสพติด ไว้สำหรับการทำงานในการให้ยาเสพติดทุกฟังชั่นจะได้ง่ายไม่ต้องเขียนเยอะ

@@ -7,6 +7,7 @@ CMD:drughelp(playerid, params[])
     SendClientMessage(playerid, -1, "/mydrug (ดูยาเสพติดภายในตัว)");
     SendClientMessage(playerid, -1, "/givedrug (ให้ยา)");
     SendClientMessage(playerid, -1, "/usedrug (ใช้ยา)");
+    SendClientMessage(playerid, -1, "/getdrug (เอายาออกมา)");
     SendClientMessage(playerid, -1, "/placedrug (วางยาเสพติด *ในบ้าน หรือ ยานพาหนะเท่านั้น*)");
     SendClientMessage(playerid, -1, "");
 
@@ -55,6 +56,54 @@ CMD:placedrug(playerid, params[])
             return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุด Place Pos");
 
         PlaceDrugHouse(playerid, id, type, amount);
+        return 1;
+    }
+    else SendErrorMessage(playerid, "คุณไม่ได้อยุ่อยุ่ภายใน บ้าน หรือ ยานหานะของคุณ");
+    return 1;
+}
+
+CMD:getdrug(playerid, params[])
+{
+    new type, Float:amount;
+
+    if(sscanf(params, "df", type, amount))
+    {
+        SendUsageMessage(playerid, "/getdrug <ประเภท> <จำนวน>");
+        SendUsageMessage(playerid, "1.Cocaine 2.Cannabis 3.Heroin");
+        return 1;
+    }
+
+    if(type < 1 || type > 3)
+        return SendErrorMessage(playerid, "กรุณาใส่ประเภทให้ถูกต้อง");
+
+    if(amount < 0.01)
+        return SendErrorMessage(playerid, "กรุณาใส่จำนวนให้ถูกต้อง");
+
+
+    if(IsPlayerInAnyVehicle(playerid))
+    {
+        new vehicleid = GetPlayerVehicleID(playerid);
+
+        if(HasNoEngine(vehicleid))
+            return SendErrorMessage(playerid, "ไม่สามารถใช้กับยานพาหนะที่เป็น จักรยานได้");
+
+        if(VehicleInfo[vehicleid][eVehicleDrug][type-1] < amount)
+            return SendErrorMessage(playerid, "ยาเสพติดของคุณไม่เพียงพอ");
+
+        GetDrugVehicle(playerid, vehicleid, type, amount);
+        return 1;
+    }
+    else if(PlayerInfo[playerid][pInsideProperty])
+    {
+        new id = PlayerInfo[playerid][pInsideProperty];
+
+        if(HouseInfo[id][HouseDrug][type-1] < amount)
+            return SendErrorMessage(playerid, "ยาเสพติดของคุณไม่เพียงพอ");
+
+        if(!IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[id][HousePlacePos][0], HouseInfo[id][HousePlacePos][1], HouseInfo[id][HousePlacePos][2]))
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุด Place Pos");
+
+        GetDrugHouse(playerid, id, type, amount);
         return 1;
     }
     else SendErrorMessage(playerid, "คุณไม่ได้อยุ่อยุ่ภายใน บ้าน หรือ ยานหานะของคุณ");

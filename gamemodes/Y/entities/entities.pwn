@@ -255,6 +255,8 @@ enum E_VEHICLE_SYSTEM
 
 	bool:eVehicleMusic,
 	eVehicleMusicLink,
+
+	Float:eVehicleDrug[3],
 }
 
 new VehicleInfo[MAX_VEHICLES][E_VEHICLE_SYSTEM];
@@ -350,6 +352,8 @@ enum E_HOUSE_INFO
 	HouseStockGPU,
 	HouseStockRAM,
 	HouseStockStored,
+
+	Float:HouseDrug[3],
 
 	bool:HouseMusic,
 	HouseMusicLink[150],

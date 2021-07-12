@@ -3,16 +3,62 @@ CMD:drughelp(playerid, params[])
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________DRUGS HELP____________");
 
     SendClientMessage(playerid, -1, "");
-    SendClientMessage(playerid, -1, "/checkdrug (ตรวจดูยาภายในตัว)");
+    SendClientMessage(playerid, -1, "/checkdrug (ตรวจดูยาภายใน บ้าน หรือ ยานพาหนะ)");
+    SendClientMessage(playerid, -1, "/mydrug (ดูยาเสพติดภายในตัว)");
     SendClientMessage(playerid, -1, "/givedrug (ให้ยา)");
     SendClientMessage(playerid, -1, "/usedrug (ใช้ยา)");
+    SendClientMessage(playerid, -1, "/placedrug (วางยาเสพติด *ในบ้าน หรือ ยานพาหนะเท่านั้น*)");
     SendClientMessage(playerid, -1, "");
 
     SendClientMessage(playerid, COLOR_DARKGREEN, "__________________________________");
     return 1;
 }
 
-CMD:checkdrug(playerid, params[])
+CMD:placedrug(playerid, params[])
+{
+    new type, Float:amount;
+
+    if(sscanf(params, "df", type, amount))
+    {
+        SendUsageMessage(playerid, "/placedrug <ประเภท> <จำนวน>");
+        SendUsageMessage(playerid, "1.Cocaine 2.Cannabis 3.Heroin");
+        return 1;
+    }
+
+    if(type < 1 || type > 3)
+        return SendErrorMessage(playerid, "กรุณาใส่ประเภทให้ถูกต้อง");
+
+    if(amount < 0.01)
+        return SendErrorMessage(playerid, "กรุณาใส่จำนวนให้ถูกต้อง");
+
+    if(IsPlayerInAnyVehicle(playerid))
+    {
+        new vehicleid = GetPlayerVehicleID(playerid);
+
+        if(HasNoEngine(vehicleid))
+            return SendErrorMessage(playerid, "ไม่สามารถใช้กับยานพาหนะที่เป็น จักรยานได้");
+
+        PlaceDrugVehicle(playerid, vehicleid, type, amount);
+        return 1;
+    }
+    else if(PlayerInfo[playerid][pInsideProperty])
+    {
+        new id = PlayerInfo[playerid][pInsideProperty];
+
+        if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+            return SendErrorMessage(playerid, "นี่ไม่ใช่บ้านของคุณ");
+
+        if(!IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[id][HousePlacePos][0], HouseInfo[id][HousePlacePos][1], HouseInfo[id][HousePlacePos][2]))
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุด Place Pos");
+
+        PlaceDrugHouse(playerid, id, type, amount);
+        return 1;
+    }
+    else SendErrorMessage(playerid, "คุณไม่ได้อยุ่อยุ่ภายใน บ้าน หรือ ยานหานะของคุณ");
+    return 1;
+}
+
+CMD:mydrug(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin])
     {
@@ -49,11 +95,44 @@ CMD:checkdrug(playerid, params[])
         return 1;
         
     }
-
     SendClientMessage(playerid, COLOR_DARKGREEN, "__________DRUGS__________");
     SendClientMessageEx(playerid, -1, "Cocaine: %.2f",PlayerInfo[playerid][pDrug][0]);
     SendClientMessageEx(playerid, -1, "Cannabis: %.2f",PlayerInfo[playerid][pDrug][1]);
     SendClientMessageEx(playerid, -1, "Heroin: %.2f",PlayerInfo[playerid][pDrug][2]);
+    return 1;
+}
+
+CMD:checkdrug(playerid, params[])
+{
+    if(PlayerInfo[playerid][pInsideProperty])
+    {
+        new id = PlayerInfo[playerid][pInsideProperty];
+
+        if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+            return SendErrorMessage(playerid, "นี่ไม่ใช่บ้านของคุณ");
+
+        if(!IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[id][HousePlacePos][0], HouseInfo[id][HousePlacePos][1], HouseInfo[id][HousePlacePos][2]))
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุด Place Pos");
+
+        SendClientMessage(playerid, COLOR_DARKGREEN, "__________DRUGS House__________");
+        SendClientMessageEx(playerid, -1, "Cocaine: %.2f",HouseInfo[id][HouseDrug][0]);
+        SendClientMessageEx(playerid, -1, "Cannabis: %.2f",HouseInfo[id][HouseDrug][1]);
+        SendClientMessageEx(playerid, -1, "Heroin: %.2f",HouseInfo[id][HouseDrug][2]);
+        return 1;
+    }
+    else if(IsPlayerInAnyVehicle(playerid))
+    {
+        new vehicleid = GetPlayerVehicleID(playerid);
+
+        if(HasNoEngine(vehicleid))
+            return SendErrorMessage(playerid, "ไม่สามารถใช้กับยานพาหนะที่เป็น จักรยานได้");
+
+        SendClientMessage(playerid, COLOR_DARKGREEN, "__________DRUGS Vehicle__________");
+        SendClientMessageEx(playerid, -1, "Cocaine: %.2f",VehicleInfo[vehicleid][eVehicleDrug][0]);
+        SendClientMessageEx(playerid, -1, "Cannabis: %.2f",VehicleInfo[vehicleid][eVehicleDrug][1]);
+        SendClientMessageEx(playerid, -1, "Heroin: %.2f",VehicleInfo[vehicleid][eVehicleDrug][2]);
+        return 1;
+    }
     return 1;
 }
 
@@ -93,7 +172,7 @@ CMD:givedrug(playerid, params[])
             SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s ยื่นบางอย่างให้กับ %s",ReturnName(playerid,0), ReturnName(tagetid,0));
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบ Cocaine ให้กับ %s จำนวน %.2f กรัม",ReturnName(tagetid,0), amout);
             
-            format(str, sizeof(str), "[%s] %s Give Drug 'Cocaine' for %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
+            format(str, sizeof(str), "[%s] %s Give Drug 'Cocaine' to %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
             SendDiscordMessage(5, str);
 
             Log(druglog, WARNING, str);
@@ -111,7 +190,7 @@ CMD:givedrug(playerid, params[])
             SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s ยื่นบางอย่างให้กับ %s",ReturnName(playerid,0), ReturnName(tagetid,0));
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบ Cannabis ให้กับ %s จำนวน %.2f กรัม",ReturnName(tagetid,0), amout);
             
-            format(str, sizeof(str), "[%s] %s Give Drug 'Cannabis' for %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
+            format(str, sizeof(str), "[%s] %s Give Drug 'Cannabis' to %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
             SendDiscordMessage(5, str);    
             Log(druglog, WARNING, str);        
             
@@ -128,7 +207,7 @@ CMD:givedrug(playerid, params[])
             SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s ยื่นบางอย่างให้กับ %s",ReturnName(playerid,0), ReturnName(tagetid,0));
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบ Heroin ให้กับ %s จำนวน %.2f กรัม",ReturnName(tagetid,0), amout);
             
-            format(str, sizeof(str), "[%s] %s Give Drug 'Heroin' for %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
+            format(str, sizeof(str), "[%s] %s Give Drug 'Heroin' to %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
             SendDiscordMessage(5, str);  
             Log(druglog, WARNING, str);
 

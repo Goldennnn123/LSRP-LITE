@@ -73,6 +73,10 @@ public Query_LoadHouse()
         cache_get_value_name_int(i,"HouseLevel",HouseInfo[i+1][HouseLevel]);
         cache_get_value_name_int(i,"HouseLock",HouseInfo[i+1][HouseLock]);
 
+        cache_get_value_name_float(i,"HouseDrug1",HouseInfo[i+1][HouseDrug][0]);
+        cache_get_value_name_float(i,"HouseDrug2",HouseInfo[i+1][HouseDrug][1]);
+        cache_get_value_name_float(i,"HouseDrug3",HouseInfo[i+1][HouseDrug][2]);
+
 
         cache_get_value_name_int(i,"HouseEle",HouseInfo[i+1][HouseEle]);
         for(new w = 1; w < 22; w++)

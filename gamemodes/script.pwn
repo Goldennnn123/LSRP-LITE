@@ -484,9 +484,6 @@ public OnPlayerDisconnect(playerid, reason) {
         {
             new vehicleid = PlayerInfo[playerid][pVehicleSpawnedID];
 
-            if(IsVehicleOccupied(vehicleid))
-                return 1;
-
             SaveVehicle(vehicleid);
             ResetVehicleVars(vehicleid);
             DestroyVehicle(vehicleid);

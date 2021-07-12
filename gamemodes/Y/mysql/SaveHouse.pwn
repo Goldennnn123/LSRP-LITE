@@ -45,6 +45,10 @@ stock Savehouse(id, thread = MYSQL_TYPE_THREAD)
     mysql_int(query, "HouseStockStored",HouseInfo[id][HouseStockStored]);
 
 
+    mysql_flo(query, "HouseDrug1",HouseInfo[id][HouseDrug][0]);
+    mysql_flo(query, "HouseDrug2",HouseInfo[id][HouseDrug][1]);
+    mysql_flo(query, "HouseDrug3",HouseInfo[id][HouseDrug][2]);
+
     mysql_finish(query);
     return 1;
 }

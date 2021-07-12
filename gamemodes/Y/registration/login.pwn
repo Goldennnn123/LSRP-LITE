@@ -95,8 +95,8 @@ timer ShowLoginCamera[400](playerid)
 {
 	if(IsPlayerConnected(playerid) && BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED)) {
 		SetPlayerVirtualWorld(playerid, playerid + 8000);
-		SetPlayerCameraPos(playerid, 2559.6138,-1719.2664,37.2296);
-		SetPlayerCameraLookAt(playerid, 2488.2173,-1665.3325,13.3438, CAMERA_CUT);
+		SetPlayerCameraPos(playerid, 2071.3523,-1828.8336,21.8929);
+		SetPlayerCameraLookAt(playerid, 2071.3523,-1828.8336,21.8929, CAMERA_MOVE);
 	}
 }
 

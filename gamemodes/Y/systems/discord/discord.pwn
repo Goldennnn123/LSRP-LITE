@@ -1,3 +1,5 @@
+#define USING_DISCORD
+
 #include <discord-connector>
 
 #if defined USING_DISCORD
@@ -6,7 +8,8 @@ new
 	DCC_Channel:ConnactLog,
 	DCC_Channel:DeathLogs,
 	DCC_Channel:HackerLog,
-	DCC_Channel:DrugLog;
+	DCC_Channel:DrugLog,
+	DCC_Channel:CommandAdminLog;
 #endif
 
 
@@ -48,6 +51,11 @@ stock SendDiscordMessage(channel, const message[])
 			DCC_SendChannelMessage(DrugLog, message);
 			return 1;
 		}
+		case 6:
+		{
+			CommandAdminLog = DCC_FindChannelById("862581433302384650");
+			DCC_SendChannelMessage(CommandAdminLog, message);
+		}
 	}
 	return 1;
 }
@@ -57,12 +65,26 @@ stock SendDiscordMessage(channel, const message[])
 forward DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[]);
 public DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[])
 {
-   new channel_name[32];
-   DCC_GetChannelName(channel, channel_name);
+	if(channel != CommandAdminLog)
+		return 1;
+	
+	if(!strcmp(message, "&online", true))
+	{
+		new Android = 0, PC = 0; new str[60];
 
-   new str[145];
-   format(str, sizeof str, "[Discord/%s] %s: %s", channel_name, author, message);
-   SendClientMessageToAll(-1, str);
-   return 1;
+		foreach(new i : Player)
+		{
+			if(IsPlayerAndroid(i) == true)
+			{
+				Android++;
+			}
+			else PC++;
+		}
+		format(str, sizeof(str), "Android: %d คน PC: %d คน",Android, PC);
+		SendDiscordMessage(6, str);
+		return 1;
+	}
+
+	return 1;
 }
 #endif

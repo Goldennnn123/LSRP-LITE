@@ -554,13 +554,11 @@ Dialog:DIALOG_BUYSKIN_INPUT(playerid, response, listitem, inputtext[])
     new id = PlayerInfo[playerid][pInsideBusiness];
     new slotid = PlayerSkinCloseID[playerid];
 
-    BusinessInfo[id][BusinessCash] += 1000/2;
 
     PlayerInfo[playerid][pLastSkin] = skinid; SetPlayerSkin(playerid, skinid);
     PlayerInfo[playerid][pSkinClothing][slotid] = skinid;
 
-    SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ทำการเปลี่ยน Skin ของคุณเป็น ID: %d คุณจ่ายค่า Skin ไป $1,000",skinid);
-    GiveMoney(playerid, -1000);
+    SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ทำการเปลี่ยน Skin ของคุณเป็น ID: %d",skinid);
     SaveBusiness(id);
     CharacterSave(playerid);
     return 1;

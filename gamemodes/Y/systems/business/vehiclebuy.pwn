@@ -894,7 +894,7 @@ stock ShowVehicleVip(playerid)
 {   
     new longstr[MAX_STRING], str[MAX_STRING];
 
-    format(str, sizeof(str), "NAME\tPRICE\n",MoneyFormat(700));
+    format(str, sizeof(str), "NAME\tPRICE\n");
     strcat(longstr, str);
 
     format(str, sizeof(str), "Banshee\t$%s\n",MoneyFormat(300000));

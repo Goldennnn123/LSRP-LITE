@@ -22,8 +22,6 @@
 #define PLAYER_STATE_WOUNDED (2)
 #define PLAYER_STATE_DEAD (3)
 
-#define USING_DISCORD
-
 #define SendUsageMessage(%0,%1) \
 	SendClientMessageEx(%0, COLOR_WHITE, "USAGE: {FFFFFF}"%1) 
 	

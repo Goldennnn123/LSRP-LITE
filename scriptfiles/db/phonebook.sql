@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `phonebook` (
     FOREIGN KEY
       (PhoneOwnerDBID)
     REFERENCES
-      masters(acc_dbid)
+      characters(char_dbid)
     ON DELETE
       CASCADE
     ON UPDATE

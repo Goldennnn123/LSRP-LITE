@@ -10,9 +10,9 @@ CREATE TABLE IF NOT EXISTS `bannedlist` (
   PRIMARY KEY
         (id),
     FOREIGN KEY
-        (MasterDBID)
+        (CharacterDBID)
     REFERENCES
-        masters(acc_dbid)
+        characters(char_dbid)
     ON DELETE
         CASCADE
     ON UPDATE

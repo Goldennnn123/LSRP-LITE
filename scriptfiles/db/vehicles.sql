@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
     FOREIGN KEY
         (VehicleOwnerDBID)
     REFERENCES
-        masters(acc_dbid)
+        characters(char_dbid)
     ON DELETE
         CASCADE
     ON UPDATE

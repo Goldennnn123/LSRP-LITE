@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `ArrestRecord` (
     FOREIGN KEY
         (ArrestOwnerDBID)
     REFERENCES
-        masters(acc_dbid)
+        characters(char_dbid)
     ON DELETE
         CASCADE
     ON UPDATE

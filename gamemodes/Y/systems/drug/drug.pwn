@@ -257,6 +257,45 @@ stock GetDrugHouse(playerid, houseid, type, Float:amount)
     return 1;
 }
 
+ptask AddictedCount[1000](playerid) 
+{
+    new 
+		hour, 
+		minute, 
+		seconds
+	;
+
+	gettime(hour, minute, seconds); 
+	
+	if(minute == 00 && seconds == 59)
+	{
+        if(PlayerInfo[playerid][pAddictedCount])
+        {
+            if(PlayerInfo[playerid][pAddicted])
+            {
+                new Float:health;
+                GetPlayerHealth(playerid, health);
+                    
+                if(health < 10)
+                {
+                    SendNearbyMessage(playerid, 2.5, COLOR_EMOTE, "* มีอาการแปลกๆใบหน้าและตาของเขาแสดงออกอย่างเห็นได้ชัด (( %s ))",ReturnName(playerid,0));
+                    return 1;
+                }
+
+                SendNearbyMessage(playerid, 2.5, COLOR_EMOTE, "* มีอาการแปลกๆใบหน้าและตาของเขาแสดงออกอย่างเห็นได้ชัด (( %s ))",ReturnName(playerid,0));
+                SetPlayerHealth(playerid, health-1);
+                return 1;
+            }
+            else
+            {
+                PlayerInfo[playerid][pAddicted] = true;
+            }
+        }
+        return 1;
+	}
+    return 1;
+}
+
 
 /**
     * ฟังชั่นสำหรับการให้ยาเสพติด ไว้สำหรับการทำงานในการให้ยาเสพติดทุกฟังชั่นจะได้ง่ายไม่ต้องเขียนเยอะ

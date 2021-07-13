@@ -657,22 +657,6 @@ public CallPaycheck()
 			format(PlayerInfo[i][pTicket], PlayerInfo[i][pTicket],"");
 		}
 		SendClientMessageEx(i, COLOR_GREY, "เลขล็อตตารี่ออก คือ: %s",  GlobalInfo[G_Ticket]);
-
-		if(PlayerInfo[i][pAddicted] == true)
-        {
-            new Float:health;
-            GetPlayerHealth(i, health);
-            
-            if(health < 10)
-            {
-                SendNearbyMessage(i, 2.5, COLOR_EMOTE, "* มีอาการแปลกๆใบหน้าและตาของเขาแสดงออกอย่างเห็นได้ชัด (( %s ))",ReturnName(i,0));
-                continue;
-            }
-
-            SendNearbyMessage(i, 2.5, COLOR_EMOTE, "* มีอาการแปลกๆใบหน้าและตาของเขาแสดงออกอย่างเห็นได้ชัด (( %s ))",ReturnName(i,0));
-            SetPlayerHealth(i, health-PlayerInfo[i][pAddictedCount]);
-        }
-
 		CharacterSave(i); 
 		Saveglobal();
 

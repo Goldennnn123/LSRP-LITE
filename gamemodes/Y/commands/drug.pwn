@@ -299,15 +299,8 @@ CMD:usedrug(playerid, params[])
             SetPlayerHealth(playerid, health+2);
             SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Cocaine' ทำให้เลือดของคุณเพิ่ม +2");
             PlayerInfo[playerid][pDrug][0]-= 0.01;
-            if(PlayerInfo[playerid][pAddictedCount] > 4)
-            {
-                PlayerInfo[playerid][pAddicted] = true;
-            }
-            else
-            {
-                PlayerInfo[playerid][pAddicted] = true;
-                PlayerInfo[playerid][pAddictedCount]++;
-            }
+            PlayerInfo[playerid][pAddicted] = false;
+            PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cocaine'", ReturnName(playerid, 0));
             return 1;
         }
@@ -320,15 +313,8 @@ CMD:usedrug(playerid, params[])
             SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Cannabis' ทำให้เลือดของคุณเพิ่ม +3");
             PlayerInfo[playerid][pDrug][1]-= 0.01;
             PlayerInfo[playerid][pAddicted] = true;
-            if(PlayerInfo[playerid][pAddictedCount] > 4)
-            {
-                PlayerInfo[playerid][pAddicted] = true;
-            }
-            else
-            {
-                PlayerInfo[playerid][pAddicted] = true;
-                PlayerInfo[playerid][pAddictedCount]+=2;
-            }
+            PlayerInfo[playerid][pAddicted] = false;
+            PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cannabis'", ReturnName(playerid, 0));
         }
         case 3:
@@ -340,15 +326,8 @@ CMD:usedrug(playerid, params[])
             SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Heroin' ทำให้เลือดของคุณเพิ่ม +5");
             PlayerInfo[playerid][pDrug][1]-= 0.01;
             PlayerInfo[playerid][pAddicted] = true;
-            if(PlayerInfo[playerid][pAddictedCount] > 4)
-            {
-                PlayerInfo[playerid][pAddicted] = true;
-            }
-            else
-            {
-                PlayerInfo[playerid][pAddicted] = true;
-                PlayerInfo[playerid][pAddictedCount]++;
-            }
+            PlayerInfo[playerid][pAddicted] = false;
+            PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cannabis'", ReturnName(playerid, 0));
         }
     }

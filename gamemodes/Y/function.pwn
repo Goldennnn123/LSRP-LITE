@@ -600,18 +600,18 @@ public CallPaycheck()
 		//Add an auto-level up on paycheck for level 1 and 2 to prevent paycheck farming.
 		if(!PlayerInfo[i][pSaving])
 		{
-			interest_saving = 0.5;
-			interest = (PlayerInfo[i][pBank] / 100) * interest_saving;
+			interest_saving = 0.05;
+			interest = PlayerInfo[i][pBank] * interest_saving;
 		}
 		else
 		{
 			interest_saving = 0.10;
-			interest = (PlayerInfo[i][pBank] / 100) * interest_saving; 
+			interest = PlayerInfo[i][pBank] * interest_saving; 
 		}
 
 		interest_convert = floatround(interest, floatround_round); 
 	
-		total_tax = floatround((PlayerInfo[i][pBank] * 0.004), floatround_round);
+		total_tax = floatround((PlayerInfo[i][pBank] * 0.04), floatround_round);
 		
 		SendClientMessageEx(i, COLOR_WHITE, "SERVER TIME:[ %s ]", ReturnHour()); 
 		
@@ -626,7 +626,7 @@ public CallPaycheck()
 		PlayerInfo[i][pBank]+= interest_convert;
 		//PlayerInfo[i][pBank]+= total_paycheck;
 		PlayerInfo[i][pBank]-= total_tax;
-		GlobalInfo[G_GovCash]+= total_tax;
+		GlobalInfo[G_GovCash]+= floatround(total_tax, floatround_round);
 		
 		SendClientMessageEx(i, COLOR_WHITE, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank]));
 		
@@ -658,9 +658,7 @@ public CallPaycheck()
 		}
 		SendClientMessageEx(i, COLOR_GREY, "เลขล็อตตารี่ออก คือ: %s",  GlobalInfo[G_Ticket]);
 		CharacterSave(i); 
-		Saveglobal();
-
-		
+		Saveglobal();		
 	}
 	return 1;
 }

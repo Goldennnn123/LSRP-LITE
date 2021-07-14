@@ -62,7 +62,7 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     SendClientMessage(playerid, -1, string);
     
     GiveMoney(playerid, -price);
-    new Float:result_price = price * 0.03;
+    new Float:result_price = price * 0.07;
 
     BusinessInfo[id][BusinessCash] += price - floatround(result_price, floatround_round);
     GlobalInfo[G_GovCash]+= floatround(result_price, floatround_round);

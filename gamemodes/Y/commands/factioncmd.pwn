@@ -1,5 +1,7 @@
 #include <YSI_Coding\y_hooks>
 
+new VehicleSiren[MAX_VEHICLES];
+
 new 
 	playerWeaponsSave[MAX_PLAYERS][4], 
 	playerWeaponsAmmoSave[MAX_PLAYERS][4]; 
@@ -15,7 +17,8 @@ CMD:factionhelp(playerid, params[])
     if(ReturnFactionType(playerid) == GOVERMENT)
     {
         SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty, /cuff, /uncuff, /showbadge, /m(egaphone), /(dep)artment,");
-		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign, /tazer, /take, /givelicense, /impound, /mdc, /wanted");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign, /tazer, /take, /givelicense, /impound, /mdc");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /siren, /siren2, /siren3");
 		
 		if(PlayerInfo[playerid][pFactionRank] <= FactionInfo[PlayerInfo[playerid][pFaction]][eFactionTowRank])
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /towcars");
@@ -788,6 +791,148 @@ CMD:checkgovcash(playerid, params[])
 	return 1;
 }
 
+CMD:siren(playerid, params[])
+{
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
+
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+	new modelid = GetVehicleModel(vehicleid);
+
+	if(HasNoEngine(vehicleid))
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะนี้ได้");
+
+	/*if(!HasSiren(vehicleid))
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะนี้ได้ (จำเป็นต้องเป็นยานพาหนะที่ได้รับอนุญาตเท่านั้น)");*/
+
+	if(!IsValidDynamicObject(VehicleSiren[vehicleid]))
+	{
+		if(modelid != 560 && modelid != 541 && modelid != 525 && modelid != 426 && modelid != 579) return SendClientMessage(playerid, COLOR_GREY, "ไซเรนรองรับเฉพาะยานพาหนะรุ่น Sultan/Bullet/Towtruck/Premier/Huntley");
+
+		if(modelid == 560)
+		{
+			VehicleSiren[vehicleid] = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0);
+			AttachDynamicObjectToVehicle(VehicleSiren[vehicleid], vehicleid, 0.225000,0.750000,0.449999, 0.000000, 0.000000, 0.000000);
+		}
+		if(modelid == 541)
+		{
+			VehicleSiren[vehicleid] = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0);
+			AttachDynamicObjectToVehicle(VehicleSiren[vehicleid], vehicleid, 0.375000,0.524999,0.375000, 0.000000, 0.000000, 0.000000);
+		}
+		if(modelid == 426)
+		{
+			VehicleSiren[vehicleid] = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0);
+			AttachDynamicObjectToVehicle(VehicleSiren[vehicleid], vehicleid, 0.524999,0.749999, 0.375000, 0.000000, 0.000000, 0.000000);
+		}
+		if(modelid == 525)
+		{
+			VehicleSiren[vehicleid] = CreateDynamicObject(19419, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0);
+			AttachDynamicObjectToVehicle(VehicleSiren[vehicleid], vehicleid, 0.0, -0.485, 1.36, 0.000000, 0.000000, 180.0);
+		}
+		if(modelid == 579)
+		{
+			VehicleSiren[vehicleid] = CreateDynamicObject(18646, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0);
+			AttachDynamicObjectToVehicle(VehicleSiren[vehicleid], vehicleid,  0.679999, 0.479999, 0.734999, 0.000000, 0.000000, 0.000000);
+		}
+        SendClientMessage(playerid, COLOR_LIGHTGREEN, "คุณติดไซเรน");
+	}
+	else
+	{
+		SendClientMessage(playerid, COLOR_LIGHTGREEN, "คุณถอดไซเรนออก");
+		DestroyDynamicObject(VehicleSiren[vehicleid]);
+	}
+	return 1;
+}
+
+CMD:siren2(playerid, params[])
+{
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
+
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+	new modelid = GetVehicleModel(vehicleid);
+
+	if(HasNoEngine(vehicleid))
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะนี้ได้");
+
+	if(!IsValidDynamicObject(VehicleSiren[vehicleid]))
+	{
+		if(modelid != 560 && modelid != 426) return SendClientMessage(playerid, COLOR_GREY, "ไซเรนรองรับเฉพาะยานพาหนะรุ่น Sultan/Premier");
+
+		if(modelid == 560)
+		{
+			VehicleSiren[vehicleid] = CreateDynamicObject(19419, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0);
+			AttachDynamicObjectToVehicle(VehicleSiren[vehicleid], vehicleid, 0.000000, -1.289999, 0.394999, 0.000000, 0.000000, 0.000000);
+			return 1;
+		}
+		if(modelid == 426)
+		{
+			VehicleSiren[vehicleid] = CreateDynamicObject(19419, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1, -1, -1, 300.0);
+			AttachDynamicObjectToVehicle(VehicleSiren[vehicleid], vehicleid, 0.000000, -1.669998, 0.349999, 0.000000, 0.000000, 0.000000);
+		}
+	}
+	else
+	{
+		SendClientMessage(playerid, COLOR_LIGHTGREEN, "คุณถอดไซเรนออก");
+		DestroyDynamicObject(VehicleSiren[vehicleid]);
+	}
+	return 1;
+}
+
+CMD:siren3(playerid, params[])
+{
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
+
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+	//new modelid = GetVehicleModel(vehicleid);
+	new type[8];
+
+	if(HasNoEngine(vehicleid))
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะนี้ได้");
+
+	if(sscanf(params, "s[8]", type))
+	{
+		SendClientMessage(playerid, COLOR_WHITE, "[Usage]: /siren [ตำแหน่ง]");
+		SendClientMessage(playerid, COLOR_WHITE, "ตำแหน่ง: ภายใน | หลังคา | ปิด");
+		return 1;
+	}
+
+	if(!strcmp(type, "ภายใน"))
+	{
+		if(VehicleSiren[vehicleid]) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ติดไซเรนแล้ว");
+        VehicleSiren[vehicleid] = 1;
+        VehicleSiren[vehicleid] = CreateDynamicObject(18646, 10.0, 10.0, 10.0, 0, 0, 0);
+        AttachDynamicObjectToVehicle(VehicleSiren[vehicleid],vehicleid, 0.0, 0.75, 0.275, 0.0, 0.1, 0.0);
+        return 1;
+	}
+	else if(!strcmp(type, "หลังคา"))
+	{
+	    if(VehicleSiren[vehicleid]) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ติดไซเรนแล้ว");
+		VehicleSiren[vehicleid] = 2;
+        VehicleSiren[vehicleid] = CreateDynamicObject(18646, 10.0, 10.0, 10.0, 0, 0, 0);
+        AttachDynamicObjectToVehicle(VehicleSiren[vehicleid], vehicleid, -0.43, 0.0, 0.785, 0.0, 0.1, 0.0);
+        return 1;
+	}
+	else if(!strcmp(type, "ปิด"))
+	{
+	    if(!VehicleSiren[vehicleid]) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ยังไม่ได้ติดไซเรน");
+		VehicleSiren[vehicleid] = 0;
+		DestroyDynamicObject(VehicleSiren[vehicleid]);
+		return 1;
+	}
+	return 1;
+}
+
 hook OnPlayerDisconnect(playerid, reason)
 {
     foreach(new i : Player)
@@ -1119,4 +1264,16 @@ stock SendDOCMessage(color, const str[], {Float,_}:...)
 		}
 	}
 	return 1;
+}
+
+
+stock HasSiren(vehicleid)
+{
+	switch(GetVehicleModel(vehicleid))
+	{
+		case 581, 521, 522, 461, 468, 523, 416, 427, 490,
+			 528, 407, 544, 470, 596, 598, 599, 597, 607, 
+			 428, 560: return 1;
+	}
+	return 0;
 }

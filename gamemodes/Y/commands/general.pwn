@@ -26,7 +26,7 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstaion /boombox /clothing /buyclothing");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp /drughelp");
-	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation)");
+	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation) /walkstyle");
 	SendClientMessage(playerid, COLOR_GREEN,"_____________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
 	return 1; 
@@ -96,9 +96,34 @@ CMD:bitsamphelp(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________BITSAMP : HELP___________");
 	SendClientMessage(playerid, COLOR_DARKGREEN, "");
-	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /checkbit /givebit /sellbit");
+	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /checkbit /givebit /sellbit /buybit");
 	SendClientMessage(playerid, COLOR_DARKGREEN, "");
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________BITSAMP : HELP___________");
+	return 1;
+}
+
+CMD:buybit(playerid, params[])
+{	
+	new Float:bit;
+	if(sscanf(params, "f", bit))
+		return SendUsageMessage(playerid, "/buybit <จำนวนบิต:>");
+
+	if(bit < 0.00001)
+		return SendErrorMessage(playerid, "กรุณาใส่จำนวน บิตให้ถูกต้อง (*ต้องมากกว่า 0.00001*)");
+
+
+	if(PlayerInfo[playerid][pCash] < bit * GlobalInfo[G_BITSAMP])
+		return SendErrorMessage(playerid, "คุณมีบิตไม่เพียงพอ");
+
+
+	PlayerInfo[playerid][pBTC]+=  bit;
+	GlobalInfo[G_BITSAMP] += bit * GlobalInfo[G_BITSAMP];
+	GlobalInfo[G_BitStock]-= bit;
+	GiveMoney(playerid, -floatround(bit * GlobalInfo[G_BITSAMP],floatround_round));
+	CharacterSave(playerid);
+	Saveglobal();
+	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ซื้อ BITSMAP เสียงินมาจำนวน $%s", MoneyFormat(floatround(bit * GlobalInfo[G_BITSAMP],floatround_round)));
+	SendClientMessageEx(playerid, COLOR_GREY, "คุณมี BITSAMP: %.5f",PlayerInfo[playerid][pBTC]);
 	return 1;
 }
 
@@ -115,14 +140,19 @@ CMD:sellbit(playerid, params[])
 
 	if(PlayerInfo[playerid][pBTC] < bit)
 		return SendErrorMessage(playerid, "คุณมีบิตไม่เพียงพอ");
+		
 	new Float:result;
 	
 	PlayerInfo[playerid][pBTC]-= bit;
+	GlobalInfo[G_BitStock]+= bit;
+	
 	result  = GlobalInfo[G_BITSAMP] * bit;
+	GlobalInfo[G_BITSAMP] -= floatround(result,floatround_round);
 	
 	floatround(result,floatround_round);
 	GiveMoney(playerid, floatround(result,floatround_round));
 	CharacterSave(playerid);
+	Saveglobal();
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ขาย BITSMAP ได้เงินมาจำนวน $%s", MoneyFormat(floatround(result,floatround_round)));
 	SendClientMessageEx(playerid, COLOR_GREY, "เหลือ: %.5f",PlayerInfo[playerid][pBTC]);
 	return 1;
@@ -1988,6 +2018,47 @@ CMD:frisk(playerid, params[])
 		FriskInfo[tagerid][Frisk_BY] = playerid;
 		SendClientMessageEx(tagerid, COLOR_LIGHTRED, "%s ได้ขอค้นภายในตัวของคุณ /frisk %d yes หากคุณยอมรับ",ReturnName(playerid,0),playerid);
 		SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ขอค้นตัวของ %s",ReturnName(tagerid,0));
+	}
+	return 1;
+}
+
+CMD:walkstyle(playerid, params[])
+{
+	new id;
+	if(sscanf(params, "d", id))
+		return SendUsageMessage(playerid, "/walkstyle <1-18>");
+
+	if(id < 1 || id > 18)
+		return SendErrorMessage(playerid, "คุณได้ใส่หมายเลข ท่าทางการเดินไม่ถูกต้อง (1-18)");
+
+	PlayerInfo[playerid][pWalk] = id;
+	SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ตั้งค่าท่าทางการเดินของคุณไปที่ %d",id);
+	return 1;
+}
+
+CMD:walk(playerid, params[])
+{
+	switch(PlayerInfo[playerid][pWalk])
+	{
+		case 1: ApplyAnimation(playerid,"PED","WALK_gang1",4.1,1,1,1,1,1);
+		case 2: ApplyAnimation(playerid,"PED","WOMAN_walksexy",4.1,1,1,1,1,1);
+		case 3: ApplyAnimation(playerid,"PED","WALK_armed",4.1,1,1,1,1,1);
+		case 4: ApplyAnimation(playerid,"PED","WALK_civi",4.1,1,1,1,1,1);
+		case 5: ApplyAnimation(playerid,"PED","WALK_csaw",4.1,1,1,1,1,1);
+		case 6: ApplyAnimation(playerid,"PED","WALK_gang2",4.1,1,1,1,1,1);
+		case 7: ApplyAnimation(playerid,"PED","WALK_drunk",4.1,1,1,1,1,1);
+		case 8: ApplyAnimation(playerid,"PED","WALK_fat",4.1,1,1,1,1,1);
+		case 9: ApplyAnimation(playerid,"PED","WALK_fatold",4.1,1,1,1,1,1);
+		case 10: ApplyAnimation(playerid,"PED","WALK_old",4.1,1,1,1,1,1);
+		case 11: ApplyAnimation(playerid,"PED","WALK_player",4.1,1,1,1,1,1);
+		case 12: ApplyAnimation(playerid,"PED","WALK_rocket",4.1,1,1,1,1,1);
+		case 13: ApplyAnimation(playerid,"PED","WALK_shuffle",4.1,1,1,1,1,1);
+		case 14: ApplyAnimation(playerid,"PED","WOMAN_walknorm",4.1,1,1,1,1,1);
+		case 15: ApplyAnimation(playerid,"PED","WOMAN_walkpro",4.1,1,1,1,1,1);
+		case 16: ApplyAnimation(playerid,"PED","WOMAN_walkbusy",4.1,1,1,1,1,1);
+		case 17: ApplyAnimation(playerid,"PED","WOMAN_walknorm",4.1,1,1,1,1,1);
+		case 18: ApplyAnimation(playerid,"PED","Walk_Wuzi",4.1,1,1,1,1,1);
+		default: ApplyAnimation(playerid,"PED","WALK_player",4.1,1,1,1,1,1);
 	}
 	return 1;
 }

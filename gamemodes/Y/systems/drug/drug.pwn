@@ -68,7 +68,7 @@ stock BuyDrug(playerid, Float:amout, type)
     {
         SendClientMessage(playerid, COLOR_GREY, "คนขายยา พูดว่า: เอาล่ะฉันได้ยาและไม่รู้ว่าจะถูกใจแกหรือป่าวแต่ฉันขายมันราคาถูกให้แกนะ อย่าเอาไปบอกใครล่ะ..");
         SendNearbyMessage(playerid, 2.5, COLOR_EMOTE, "* คนขายยา หยิบถุง ZipLock ออกมาและยื่นมันให้กับ %s",ReturnName(playerid,0));
-        GiveMoney(playerid, -500);
+        GiveMoney(playerid, -1000);
 
         GiveDrug(playerid, newtype, amout);
         return 1;

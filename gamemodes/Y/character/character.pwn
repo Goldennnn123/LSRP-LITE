@@ -428,6 +428,8 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pAddicted",PlayerInfo[playerid][pAddicted]);
 	cache_get_value_name_int(0, "pAddictedCount",PlayerInfo[playerid][pAddictedCount]);
 
+	cache_get_value_name_int(0, "pWalk",PlayerInfo[playerid][pWalk]);
+
 	new CheckAccount[MAX_STRING];
 	mysql_format(dbCon, CheckAccount, sizeof(CheckAccount), "SELECT * FROM `bannedlist` WHERE `MasterDBID` = '%d'",e_pAccountData[playerid][mDBID]);
 	mysql_tquery(dbCon, CheckAccount, "CheckBanAccount", "d",playerid);

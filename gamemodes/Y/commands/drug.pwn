@@ -312,7 +312,6 @@ CMD:usedrug(playerid, params[])
             SetPlayerHealth(playerid, health+3);
             SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Cannabis' ทำให้เลือดของคุณเพิ่ม +3");
             PlayerInfo[playerid][pDrug][1]-= 0.01;
-            PlayerInfo[playerid][pAddicted] = true;
             PlayerInfo[playerid][pAddicted] = false;
             PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cannabis'", ReturnName(playerid, 0));
@@ -325,7 +324,6 @@ CMD:usedrug(playerid, params[])
             SetPlayerHealth(playerid, health+5);
             SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Heroin' ทำให้เลือดของคุณเพิ่ม +5");
             PlayerInfo[playerid][pDrug][1]-= 0.01;
-            PlayerInfo[playerid][pAddicted] = true;
             PlayerInfo[playerid][pAddicted] = false;
             PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cannabis'", ReturnName(playerid, 0));
@@ -375,7 +373,7 @@ CMD:setdrug(playerid, params[])
     if(!IsPlayerNearPlayer(playerid, tagetid, 2.5))
         return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้ตัวของคุณ");
 
-    if(amout < 0.01)
+    if(amout < 0.00)
         return SendErrorMessage(playerid, "ใส่จำนวนน้อยเกินไป");
 
     switch(type)

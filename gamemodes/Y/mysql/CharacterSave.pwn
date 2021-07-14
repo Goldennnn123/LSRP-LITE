@@ -192,6 +192,8 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_int(query, "pAddicted",PlayerInfo[playerid][pAddicted]);
 	    mysql_int(query, "pAddictedCount",PlayerInfo[playerid][pAddictedCount]);
 
+        mysql_int(query, "pWalk",PlayerInfo[playerid][pWalk]);
+
 		mysql_finish(query);
         
         SaveUCP(playerid);

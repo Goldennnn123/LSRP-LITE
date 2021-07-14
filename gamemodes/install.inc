@@ -24,9 +24,6 @@ hook OnGameModeInit()
     mysql_tquery_file(MySQL_GetHandle(), "db/vehicles.sql");
     print("[SQL] Install vehicles.sql");
 
-    mysql_tquery_file(MySQL_GetHandle(), "db/vehicles.sql");
-    print("[SQL] Install vehicles.sql");
-
     mysql_tquery_file(MySQL_GetHandle(), "db/factions.sql");
     print("[SQL] Install factions.sql");
 
@@ -63,6 +60,9 @@ hook OnGameModeInit()
 
     mysql_tquery_file(MySQL_GetHandle(), "db/gps.sql");
     print("[SQL] Install gps.sql");
+
+    mysql_tquery_file(MySQL_GetHandle(), "db/global.sql");
+    print("[SQL] Install global.sql");
 
 
     return 1;

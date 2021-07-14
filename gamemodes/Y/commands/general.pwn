@@ -2065,6 +2065,23 @@ CMD:walk(playerid, params[])
 	return 1;
 }
 
+CMD:tackle(playerid, params[]) {
+	if(GetPVarType(playerid, "TacklingMode")) {
+		SendClientMessage(playerid, COLOR_LIGHTRED, "[ ! ] "EMBED_WHITE"โหมดการเข้าปะทะถูกปิด");
+		DeletePVar(playerid, "TacklingMode");
+	}
+	else {
+		SendClientMessage(playerid, COLOR_LIGHTRED, "[ ! ] "EMBED_WHITE"โหมดการเข้าปะทะถูกเปิด");
+		SendClientMessage(playerid, COLOR_LIGHTRED, "หากคุณชกใครสักคน มันจะเป็นการพยายามเข้าปะทะ");
+		SendClientMessage(playerid, COLOR_LIGHTRED, "ผู้เล่นที่คุณชกจะได้รับข้อความ แสดงให้เห็นการพยายามที่จะเข้าปะทะนี้");
+		SendClientMessage(playerid, COLOR_LIGHTRED, "อารมณ์จะถูกส่งไปยังแชทผู้เล่นอื่นเพื่อแจ้งเตือนเกี่ยวกับการพยายาม");
+		SendClientMessage(playerid, COLOR_LIGHTRED, "คุณจะถูกบังคับให้เล่นอนิเมชั่นกระโดดน้ำเพื่อป้องกันการพิมพ์คำสั่งผิดพลาด");
+		SendClientMessage(playerid, COLOR_LIGHTRED, "หากผู้เล่นนั้นไม่เล่นบทการเข้าปะทะ รายงานภายในเกมได้เลย");
+		SetPVarInt(playerid, "TacklingMode", 1);
+	}
+	return 1;
+}
+
 stock ShowInvPlayer(tagerid, playerid)
 {
 	new weapon_id[2][13];
@@ -2204,5 +2221,23 @@ hook OnPlayerDisconnect(playerid, reason)
     }
 
 	
+	return 1;
+}
+
+hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+{
+	if(issuerid != INVALID_PLAYER_ID)
+	{
+		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE)
+		{
+			if(GetPVarType(issuerid, "TacklingMode") && weaponid == 0) 
+			{
+				SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s วิ่งไปที่ %s และพยายามที่จะเข้าปะทะให้ลงไปนอนกับพื้น", ReturnRealName(issuerid), ReturnRealName(playerid));
+				ApplyAnimation(issuerid, "PED", "EV_dive",4.1,0,1,1,1,0);
+				ApplyAnimation(playerid, "PED", "FLOOR_hit_f",4.1,0,1,1,1,0);
+				return 0;
+			}
+		}
+	}
 	return 1;
 }

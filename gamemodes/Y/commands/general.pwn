@@ -148,8 +148,10 @@ CMD:sellbit(playerid, params[])
 	
 	result  = GlobalInfo[G_BITSAMP] * bit;
 	GlobalInfo[G_BITSAMP] -= floatround(result,floatround_round);
+
+	GlobalInfo[G_BITSAMP] += (result * 0.07);
 	
-	floatround(result,floatround_round);
+	result *= 0.07;
 	GiveMoney(playerid, floatround(result,floatround_round));
 	CharacterSave(playerid);
 	Saveglobal();

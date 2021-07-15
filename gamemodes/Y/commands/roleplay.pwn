@@ -4,12 +4,12 @@ CMD:me(playerid, params[])
 	    return SendSyntaxMessage(playerid, "/me [action]");
 
 	if (strlen(params) > 80) {
-	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s %.80s", ReturnRealName(playerid,0), params);
+	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s %.80s", ReturnName(playerid, 0), params);
 	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "... %s", params[80]);
 	}
-	else SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s %s", ReturnRealName(playerid,0), params);
+	else SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s %s", ReturnName(playerid, 0), params);
 
-	Log(chatlog, WARNING, "[ME] * %s %s",ReturnRealName(playerid,0), params);
+	Log(chatlog, WARNING, "[ME] * %s %s",ReturnName(playerid, 0), params);
 	return 1;
 }
 
@@ -19,11 +19,11 @@ CMD:ame(playerid, params[])
 	    return SendSyntaxMessage(playerid, "/ame [action]");
 	
 	new string[128];
-	format(string, sizeof(string), "* %s %s", ReturnRealName(playerid,0), params);
+	format(string, sizeof(string), "* %s %s", ReturnName(playerid, 0), params);
 	SendClientMessage(playerid, COLOR_PURPLE, string);
 
  	SetPlayerChatBubble(playerid, string, COLOR_PURPLE, 5.0, 6000);
-	Log(chatlog, WARNING, "[AME] * %s %s",ReturnRealName(playerid,0), params);
+	Log(chatlog, WARNING, "[AME] * %s %s",ReturnName(playerid, 0), params);
 	return 1;
 }
 
@@ -34,10 +34,10 @@ CMD:do(playerid, params[])
 
 	if (strlen(params) > 80) {
 	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %.80s", params);
-	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "... %s (( %s ))", params[80],ReturnRealName(playerid,0));
+	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "... %s (( %s ))", params[80],ReturnName(playerid, 0));
 	}
-	else SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s (( %s ))", params, ReturnRealName(playerid,0));
-	Log(chatlog, WARNING, "[DO] * %s (( %s ))",params, ReturnRealName(playerid,0));
+	else SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s (( %s ))", params, ReturnName(playerid, 0));
+	Log(chatlog, WARNING, "[DO] * %s (( %s ))",params, ReturnName(playerid, 0));
 	return 1;
 }
 
@@ -48,10 +48,10 @@ CMD:dolow(playerid, params[])
 
 	if (strlen(params) > 80) {
 	    SendNearbyMessage(playerid, 4.0, COLOR_PURPLE, "* %.80s", params);
-	    SendNearbyMessage(playerid, 4.0, COLOR_PURPLE, "... %s (( %s ))", params[80], ReturnRealName(playerid));
+	    SendNearbyMessage(playerid, 4.0, COLOR_PURPLE, "... %s (( %s ))", params[80], ReturnName(playerid, 0));
 	}
-	else SendNearbyMessage(playerid, 4.0, COLOR_PURPLE, "* %s (( %s ))", params, ReturnRealName(playerid));
-	Log(chatlog, WARNING, "[DO-LOW] * %s (( %s ))",params, ReturnRealName(playerid,0));
+	else SendNearbyMessage(playerid, 4.0, COLOR_PURPLE, "* %s (( %s ))", params, ReturnName(playerid, 0));
+	Log(chatlog, WARNING, "[DO-LOW] * %s (( %s ))",params, ReturnName(playerid, 0));
 	return 1;
 }
 
@@ -63,15 +63,15 @@ CMD:low(playerid, params[])
 	new str[128];
 
 	if (strlen(params) > 80) {
-	    format(str, sizeof(str), "%s ¾Ù´ÇèÒ [àÊÕÂ§àºÒ]: %.80s", ReturnRealName(playerid), params);
+	    format(str, sizeof(str), "%s ¾Ù´ÇèÒ [àÊÕÂ§àºÒ]: %.80s", ReturnName(playerid, 0), params);
 	    ProxDetector(playerid, 3.0, str);
 
 	    format(str, sizeof(str), "... %s", params[80]);
 	    ProxDetector(playerid, 3.0, str);
 	}
-	else format(str, sizeof(str), "%s ¾Ù´ÇèÒ [àÊÕÂ§àºÒ]: %s", ReturnRealName(playerid), params), ProxDetector(playerid, 3.0, str);
+	else format(str, sizeof(str), "%s ¾Ù´ÇèÒ [àÊÕÂ§àºÒ]: %s", ReturnName(playerid, 0), params), ProxDetector(playerid, 3.0, str);
 
-	Log(chatlog, WARNING, "[LOW] %s ¾Ù´ÇèÒ [àÊÕÂ§àºÒ]: %s",ReturnRealName(playerid), params);
+	Log(chatlog, WARNING, "[LOW] %s ¾Ù´ÇèÒ [àÊÕÂ§àºÒ]: %s",ReturnName(playerid, 0), params);
 	return 1;
 }
 
@@ -83,13 +83,13 @@ CMD:shout(playerid, params[])
 
 	new str[128];
 	if (strlen(params) > 80) {
-	    format(str, sizeof(str), "%s µÐâ¡¹: %.80s", ReturnRealName(playerid), params);
+	    format(str, sizeof(str), "%s µÐâ¡¹: %.80s", ReturnName(playerid, 0), params);
 	    ProxDetector(playerid, 30.0, str);
 
 	    format(str, sizeof(str), "... %s!", params[80]);
 	    ProxDetector(playerid, 30.0, str);
 	}
-	else format(str, sizeof(str), "%s µÐâ¡¹: %s!", ReturnRealName(playerid), params), ProxDetector(playerid, 30.0, str);
-	Log(chatlog, WARNING, "[SHOUT] %s µÐâ¡¹: %s!",ReturnRealName(playerid), params);
+	else format(str, sizeof(str), "%s µÐâ¡¹: %s!", ReturnName(playerid, 0), params), ProxDetector(playerid, 30.0, str);
+	Log(chatlog, WARNING, "[SHOUT] %s µÐâ¡¹: %s!",ReturnName(playerid, 0), params);
 	return 1;
 }

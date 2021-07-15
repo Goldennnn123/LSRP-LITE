@@ -1492,6 +1492,8 @@ CMD:gotohouse(playerid, params[])
 	}
 	return 1;
 }
+
+alias:gotobusiness("gotobiz")
 CMD:gotobusiness(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2)
@@ -1605,6 +1607,7 @@ CMD:backup(playerid, params[])
 	{
 		CharacterSave(i);
 	}
+	SendClientMessageToAll(COLOR_LIGHTRED, "มีการ Backup ฐานข้อมูลตัวละครของคุณ");
 	return 1;
 }
 
@@ -2563,6 +2566,7 @@ CMD:editentrance(playerid, params[])
 
 
 // Admin Level: 1336:
+alias:makebusiness("makebiz", "createbiz")
 CMD:makebusiness(playerid,params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 5)
@@ -2629,7 +2633,7 @@ CMD:viewbusiness(playerid, params[])
 	return 1;
 }
 
-alias:deletebusiness("delbusiness")
+alias:deletebusiness("delbusiness", "delbiz")
 CMD:deletebusiness(playerid,params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 5)

@@ -114,8 +114,11 @@ CMD:buybit(playerid, params[])
 
 
 	if(PlayerInfo[playerid][pCash] < bit * GlobalInfo[G_BITSAMP])
-		return SendErrorMessage(playerid, "คุณมีบิตไม่เพียงพอ");
+		return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ");
 
+	if(GlobalInfo[G_BitStock] < bit)
+		return SendErrorMessage(playerid, "BIT ในตลาดโลกไม่มี");
+		
 
 	PlayerInfo[playerid][pBTC]+=  bit;
 	GlobalInfo[G_BITSAMP] += bit * GlobalInfo[G_BITSAMP];

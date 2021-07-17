@@ -2223,11 +2223,11 @@ CMD:makeleader(playerid, params[])
 		if(PlayerInfo[i][pFaction] != factionid)
 			continue;
 		
-		SendClientMessageEx(i, -1, "{2ECC71}**((%s: ได้เข้าสู่เฟคชั่นของพวกคุณแล้ว))**", ReturnName(playerid));
+		SendClientMessageEx(i, COLOR_FACTIONCHAT, "**((%s: ได้เข้าสู่เฟคชั่นของพวกคุณแล้ว))**", ReturnName(playerid));
 	}
-	SendClientMessageEx(playerid, -1,"{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} คุณได้ให้ให้ %s เป็นหัวหน้าเฟคชั่น ของ %s",ReturnRealName(playerb,0),FactionInfo[factionid][eFactionName]);
+	SendClientMessageEx(playerid, -1,"คุณได้ให้ให้ %s เป็นหัวหน้าเฟคชั่น ของ %s",ReturnRealName(playerb,0),FactionInfo[factionid][eFactionName]);
 
-	format(str, sizeof(str), "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} %s ตั้งค่าให้ %s เป็นหัวหน้ากลุ่มเฟคชั่น %s", ReturnRealName(playerid,0), ReturnRealName(playerb,0), FactionInfo[factionid][eFactionName]);
+	format(str, sizeof(str), "%s ตั้งค่าให้ %s เป็นหัวหน้ากลุ่มเฟคชั่น %s", ReturnRealName(playerid,0), ReturnRealName(playerb,0), FactionInfo[factionid][eFactionName]);
 	SendAdminMessage(4, str);
 
 	CharacterSave(playerb);

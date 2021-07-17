@@ -18,13 +18,34 @@ CMD:factionhelp(playerid, params[])
     {
         SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty, /cuff, /uncuff, /showbadge, /m(egaphone), /(dep)artment,");
 		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign, /tazer, /take, /givelicense, /impound, /mdc");
-		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /siren, /siren2, /siren3");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /siren, /siren2, /siren3, /headquarter");
 		
 		if(PlayerInfo[playerid][pFactionRank] <= FactionInfo[PlayerInfo[playerid][pFaction]][eFactionTowRank])
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /towcars");
 
         return 1;
     }
+    return 1;
+}
+
+
+alias:headquarter("hq", "headhq")
+CMD:headquarter(playerid, params[])
+{
+    if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
+
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล"); 
+
+    if(isnull(params)) return SendUsageMessage(playerid, "/headquarter <ข้อความ>");
+	
+	if(strlen(params) > 100)
+	{
+		SendFactionMessage(playerid, 0x8D8DFFFF, "HQ: %s: %.100s", ReturnName(playerid, 0), params);
+		SendFactionMessage(playerid, 0x8D8DFFFF, "....%s", ReturnName(playerid, 0), params[100]);
+	}
+	else SendFactionMessage(playerid, 0x8D8DFFFF, "HQ: %s: %s", ReturnName(playerid, 0), params);
     return 1;
 }
 
@@ -46,19 +67,19 @@ CMD:f(playerid, params[])
 			
 		if(strlen(params) > 79)
 		{
-			SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
-			SendFactionMessage(playerid, "{2ECC71}**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params[79]); 
+			SendFactionMessage(playerid, COLOR_FACTIONCHAT, "**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
+			SendFactionMessage(playerid, COLOR_FACTIONCHAT, "**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params[79]); 
 		}
-		else SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
+		else SendFactionMessage(playerid, COLOR_FACTIONCHAT, "**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
 		return 1;
 	}
 	
 	if(strlen(params) > 79)
 	{
-		SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
-		SendFactionMessage(playerid, "{2ECC71}**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params[79]); 
+		SendFactionMessage(playerid, COLOR_FACTIONCHAT, "**(( %s %s: %.79s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
+		SendFactionMessage(playerid, COLOR_FACTIONCHAT, "**(( %s %s: ...%s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params[79]); 
 	}
-	else SendFactionMessage(playerid, "{2ECC71}**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params);
+	else SendFactionMessage(playerid, COLOR_FACTIONCHAT, "**(( %s %s: %s ))**", ReturnFactionRank(playerid), ReturnName(playerid, 0), params);
     return 1;
 }
 
@@ -733,7 +754,7 @@ CMD:park(playerid ,params[])
 	GetVehicleZAngle(vehicleid, VehFacInfo[vehicleid][VehFacPos][3]);
 	VehFacInfo[vehicleid][VehFacPosWorld] = GetPlayerVirtualWorld(playerid); 
 
-	SendFactionMessage(playerid, "{2ECC71}**(( %s ได้เปลี่ยนจุดยานพาหนะ ไอดี %d ))**",ReturnRealName(playerid, 0), VehFacInfo[vehicleid][VehFacDBID]);
+	SendFactionMessage(playerid, COLOR_FACTION, "**(( %s ได้เปลี่ยนจุดยานพาหนะ ไอดี %d ))**",ReturnRealName(playerid, 0), VehFacInfo[vehicleid][VehFacDBID]);
 
 	SaveFacVehicle(vehicleid);
 
@@ -772,7 +793,7 @@ CMD:towcars(playerid, params[])
 		SetVehicleHp(v);
 	}
 
-	SendFactionMessageEx(playerid, -1, "{2ECC71}**(( %s ได้ส่งยานพาหนะที่ไม่มีคนนั่งของกลุ่มกลับจุดเกิดทั้งหมด ))**", ReturnName(playerid, 0));
+	SendFactionMessageEx(playerid, COLOR_FACTION, "**(( %s ได้ส่งยานพาหนะที่ไม่มีคนนั่งของกลุ่มกลับจุดเกิดทั้งหมด ))**", ReturnName(playerid, 0));
 	return 1;
 }
 
@@ -960,7 +981,7 @@ stock ReturnNameLetter(playerid)
 }
 
 
-stock SendFactionMessage(playerid, const str[], {Float,_}:...)
+stock SendFactionMessage(playerid, color, const str[], {Float,_}:...)
 {
 	static
 	    args,
@@ -998,7 +1019,7 @@ stock SendFactionMessage(playerid, const str[], {Float,_}:...)
 			if (PlayerInfo[i][pFaction] == PlayerInfo[playerid][pFaction]) {
 				if(PlayerInfo[i][pFactionChat] == false)
   				{ 
-					SendClientMessage(i, FactionInfo[PlayerInfo[playerid][pFaction]][eFactionChatColor], string);
+					SendClientMessage(i, color, string);
 				}
 			}
 		}
@@ -1009,7 +1030,7 @@ stock SendFactionMessage(playerid, const str[], {Float,_}:...)
 		if (PlayerInfo[i][pFaction] == PlayerInfo[playerid][pFaction]) {
 			if(PlayerInfo[i][pFactionChat] == false)
   			{ 
-				SendClientMessage(i, FactionInfo[PlayerInfo[playerid][pFaction]][eFactionChatColor], str);
+				SendClientMessage(i, color, str);
 			}
 		}
 	}

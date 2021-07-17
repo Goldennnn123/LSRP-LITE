@@ -787,6 +787,9 @@ CMD:towcars(playerid, params[])
 		if(IsVehicleOccupied(v))
 			continue;
 
+		Delete3DTextLabel(VehicleInfo[v][eVehicleCarsign]); 
+		VehicleInfo[v][eVehicleHasCarsign] = false;
+
 		SetVehicleToRespawn(v);
 		SetVehicleVirtualWorld(v, VehFacInfo[v][VehFacPosWorld]);
 		SetVehicleNumberPlate(v, FactionInfo[id][eFactionAbbrev]);

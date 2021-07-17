@@ -32,7 +32,7 @@ ptask CheckPlayer[1000](playerid)
                 SendAdminMessageEx(COLOR_LIGHTRED, 1, "[WEAPONS-HECK] %s ผู้ต้องสงสัยในการเสกอาวุธ",ReturnName(playerid,0));
 				
 				new str[120];
-				format(str, sizeof(str), "[WEAPONS-HECK] %s The suspect is suspected of conjuring a weapon.",ReturnName(playerid,0));
+				format(str, sizeof(str), "[WEAPONS-HECK] CHARDBID:%d  %s The suspect is suspected of conjuring a weapon.",PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 				SendDiscordMessage(4, str);
 			}
 	}

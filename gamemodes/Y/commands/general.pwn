@@ -78,6 +78,7 @@ CMD:jobhelp(playerid, params[])
 		SendClientMessage(playerid,COLOR_WHITE,"/service (คำสั่งซ่อมยานพาหนะ)");
 		SendClientMessage(playerid,COLOR_WHITE,"/checkcomponents (เช็ค อะไหล่)");
 		SendClientMessage(playerid,COLOR_WHITE,"/buycomponents (ซื้อ อะไหล่)");
+		SendClientMessage(playerid,COLOR_WHITE,"/changcolorvehicle (เปลี่ยนสียานพาหนะ)");
 	}
 
 	if(PlayerInfo[playerid][pJob] == JOB_MINER)

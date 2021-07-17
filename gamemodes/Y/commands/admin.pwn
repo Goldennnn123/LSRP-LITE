@@ -1492,6 +1492,8 @@ CMD:gotohouse(playerid, params[])
 	}
 	return 1;
 }
+
+alias:gotobusiness("gotobiz")
 CMD:gotobusiness(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 2)

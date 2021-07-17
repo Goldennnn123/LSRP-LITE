@@ -35,12 +35,14 @@ CMD:takejob(playerid, params[])
 	{
 		PlayerInfo[playerid][pJob] = JOB_TRUCKER;
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[TRUCKER JOB] คุณได้ทำการสมัครงาน พนักงานส่งของแล้ว สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
+		CharacterSave(playerid);
 		return 1;
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 3.0, 88.1169,-164.9625,2.5938))
 	{
 		PlayerInfo[playerid][pJob] = JOB_MECHANIC;
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[MECHANIC JOB] คุณได้ทำการสมัครงาน ช่าง สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
+		CharacterSave(playerid);
 		return 1;
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 3.0, 586.4755,872.6391,-42.4973))
@@ -60,6 +62,7 @@ CMD:takejob(playerid, params[])
 
 		
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[MINER JOB] คุณได้ทำการสมัครงาน นักขุดเหมือง สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
+		CharacterSave(playerid);
 		return 1;
 	}
 

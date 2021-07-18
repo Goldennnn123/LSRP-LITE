@@ -654,7 +654,7 @@ CMD:engine(playerid, params[])
 	if(health <= 300)
 		return SendErrorMessage(playerid, "ยานพหานะของคุณมีความเสียหายอย่างหนักจึงไม่สามารถ สตาร์ทเครื่องยนต์ได้");
 
-	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid) && !VehicleInfo[vehicleid][eVehicleFaction] && !VehFacInfo[vehicleid][VehFacDBID])
+	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid) && !VehicleInfo[vehicleid][eVehicleFaction] && !VehFacInfo[vehicleid][VehFacDBID] && !IsElecVehicle(vehicleid))
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้สามารถใช้ได้เฉพาะยานพาหนะส่วนตัว แต่คุณอยู่ในยานพาหนะสาธารณะ (Static)");
 		
 	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
@@ -683,7 +683,8 @@ CMD:engine(playerid, params[])
 	PlayerInfo[playerid][pDuplicateKey] != vehicleid && 
 	VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && 
 	!VehicleInfo[vehicleid][eVehicleAdminSpawn] && 
-	!IsRentalVehicle(vehicleid))
+	!IsRentalVehicle(vehicleid) &&
+	!IsElecVehicle(vehicleid))
 	{
 		new idx, str[128];
 		
@@ -2410,7 +2411,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 forward OnVehicleUpdate();
 public OnVehicleUpdate()
 {
-	new Float:Health; new playerid = INVALID_PLAYER_ID;
+	new Float:Health;
 	for(new vehicleid = 1; vehicleid < MAX_VEHICLES; vehicleid++)
 	{
 		GetVehicleHealth(vehicleid, Health);
@@ -2419,21 +2420,19 @@ public OnVehicleUpdate()
 		{
 			if(GetPlayerVehicleID(i) == vehicleid)
 			{
-				playerid = i;
-			}
-		}
+				if(Health < 250)
+				{
+					SetVehicleHealth(vehicleid, 300.0);
+					ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 
-		if(Health < 250)
-		{
-			SetVehicleHealth(vehicleid, 300.0);
-			ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
-
-			if(VehicleInfo[vehicleid][eVehicleDBID])
-			{
-				VehicleInfo[vehicleid][eVehicleBattery]--;
-				SendClientMessageEx(playerid, -1, "ยานพาหนะมีความเสียหาย ทำให้แบตตารี่ ลดลง เหลือ %f", VehicleInfo[vehicleid][eVehicleBattery]);
+					if(VehicleInfo[vehicleid][eVehicleDBID])
+					{
+						VehicleInfo[vehicleid][eVehicleBattery]--;
+						SendClientMessageEx(i, -1, "ยานพาหนะมีความเสียหาย ทำให้แบตตารี่ ลดลง เหลือ %f", VehicleInfo[vehicleid][eVehicleBattery]);
+					}
+					SendClientMessage(i, -1, "รถดับ");
+				}
 			}
-			SendClientMessage(playerid, -1, "รถดับ");
 		}
 	}
 	return 1;

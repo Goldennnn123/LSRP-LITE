@@ -90,6 +90,14 @@ CMD:jobhelp(playerid, params[])
 		SendClientMessage(playerid,COLOR_WHITE,"/giveore (ให้แร่)");
 	}
 
+	if(PlayerInfo[playerid][pJob] == JOB_ELECTRICIAN)
+	{
+ 		SendClientMessage(playerid,COLOR_LIGHTRED,"คำสั่งของช่างซ่อมเสาไฟฟ้า:");
+		SendClientMessage(playerid,COLOR_WHITE,"/startele (เพิ่อเริ่มงาน)");
+		SendClientMessage(playerid,COLOR_WHITE,"/getstair (นำบรรไดออกมาจากท้ายยานพหานะ)");
+		SendClientMessage(playerid,COLOR_WHITE,"/fixele (เริ่มซ่อมเสาไฟฟ้าที่เสียหายชำรุด)");
+	}
+
 	return 1;
 }
 

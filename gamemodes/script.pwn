@@ -122,6 +122,7 @@ new globalWeather = 2;
 #include "Y/jobs/trucker.pwn"
 #include "Y/jobs/mechanic.pwn"
 #include "Y/jobs/miner.pwn"
+#include "Y/jobs/electrician.pwn"
 
 #include "Y/mysql/CharacterSave.pwn"
 #include "Y/mysql/SaveVehicle.pwn"

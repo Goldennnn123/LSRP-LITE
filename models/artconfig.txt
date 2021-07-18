@@ -88,3 +88,4 @@ AddCharModel( 180, 29075, "wmydrug.dff", "wmydrug.txd");
 AddCharModel( 180, 29076, "wmymech.dff", "wmymech.txd");
 AddCharModel( 20, 29077, "bmyri.dff", "bmyri.txd");
 AddCharModel( 286, 29078, "random.dff", "random.txd");
+AddCharModel( 286, 29079, "andre.dff", "andre.txd");

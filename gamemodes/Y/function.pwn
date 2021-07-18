@@ -369,7 +369,8 @@ ptask FunctionPlayers[1000](playerid)
 			new str[128];
 			format(str, sizeof(str), "%s ได้ถูกปล่อยตัวออกจากคุกแอดมินแล้ว.", ReturnName(playerid));
 			SendAdminMessage(1, str);
-				
+			
+			SetPlayerHealth(playerid, 100);
 			SpawnPlayer(playerid);
 		}
 	}

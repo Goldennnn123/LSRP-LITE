@@ -62,6 +62,10 @@ CMD:buyclothing(playerid, params[])
         strcat(longstr, str);
         format(str, sizeof(str), "Flashlight\n");
         strcat(longstr, str);
+        format(str, sizeof(str), "case_1\n");
+        strcat(longstr, str);
+        format(str, sizeof(str), "para_pack\n");
+        strcat(longstr, str);
 
         Dialog_Show(playerid, D_CLOTHING_BUY, DIALOG_STYLE_LIST, "BUY CLOTHING:", longstr, "ยืนยัน", "ยกเลิก");
         PlayerSeClo[playerid] = 0;
@@ -234,6 +238,20 @@ Dialog:D_CLOTHING_BUY(playerid, response, listitem, inputtext[])
         {
             PlayerSeCloBuy[playerid] = 18641;
             SetPlayerAttachedObject(playerid, 6, 18641, 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 12:
+        {
+            PlayerSeCloBuy[playerid] = 19624;
+            SetPlayerAttachedObject(playerid, 6, 19624, 5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 13:
+        {
+            PlayerSeCloBuy[playerid] = 3026;
+            SetPlayerAttachedObject(playerid, 6, 3026, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
             EditAttachedObject(playerid, 6);
             return 1;
         }

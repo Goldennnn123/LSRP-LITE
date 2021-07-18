@@ -131,8 +131,10 @@ hook OnPlayerEnterCheckpoint(playerid) {
             else if (IsPlayerInRangeOfPoint(playerid, 2.5, DELIVERY_FISH_X,DELIVERY_FISH_Y,DELIVERY_FISH_Z) && GetPlayerState(playerid) == PLAYER_STATE_ONFOOT) { // ขายปลา LS
                 new earn = PlayerInfo[playerid][pFishes] + random(floatround(PlayerInfo[playerid][pFishes]/5));
   
-                GiveMoney(playerid, earn);
-                GameTextForPlayer(playerid, sprintf("~p~SOLD FISHES WEIGHT ~w~%d FOR %d", PlayerInfo[playerid][pFishes], earn), 8000, 4);
+                new Float:tax = earn * 0.07;
+                GiveMoney(playerid, earn - floatround(tax, floatround_round));
+                GlobalInfo[G_GovCash]+=floatround(tax, floatround_round);
+                GameTextForPlayer(playerid, sprintf("~p~SOLD FISHES WEIGHT ~w~%d FOR %d", PlayerInfo[playerid][pFishes], earn - floatround(tax, floatround_round)), 8000, 4);
 
                 PlayerInfo[playerid][pFishes] = 0;
                 FishingCP[playerid] = 0;

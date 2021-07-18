@@ -1200,6 +1200,8 @@ CMD:vehicle(playerid, params[])
 		}
 		else
 		{
+			vehicleid = GetPlayerVehicleID(playerid);
+			
 			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin])
 				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้"); 
 					

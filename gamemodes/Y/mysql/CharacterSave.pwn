@@ -1,4 +1,4 @@
-CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
+stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 {
 	if(BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED) || force)
 	{
@@ -84,7 +84,7 @@ CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 		
         
         mysql_bool(query, "pAdminjailed",PlayerInfo[playerid][pAdminjailed]);
-        mysql_int(query, "pAdminjailTime",PlayerInfo[playerid][pAdminjailed]);
+        mysql_int(query, "pAdminjailTime",PlayerInfo[playerid][pAdminjailTime]);
 
         mysql_str(query, "pLastOnline",PlayerInfo[playerid][pLastOnline]);
         mysql_int(query, "pTimeplayed",PlayerInfo[playerid][pTimeplayed]);

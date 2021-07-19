@@ -23,7 +23,7 @@ stock SendDiscordMessage(channel, const message[])
 	{
 		case 0:
 		{
-			g_ServerOpen = DCC_FindChannelById("853624525354041375");
+			g_ServerOpen = DCC_FindChannelById("848148148714209311");
 			DCC_SendChannelMessage(g_ServerOpen, message);
             return 1;
 		}

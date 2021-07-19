@@ -428,7 +428,7 @@ CMD:ajail(playerid, params[])
 	
 	new insertLog[250];
 	
-	mysql_format(dbCon, insertLog, sizeof(insertLog), "INSERT INTO ajail_logs (`JailedDBID`, `JailedName`, `Reason`, `Date`, `JailedBy`, `Time`) VALUES(%i, '%e', '%e', '%e', '%e', %i)",
+	mysql_format(dbCon, insertLog, sizeof(insertLog), "INSERT INTO ajaillog (`JailedDBID`, `JailedName`, `Reason`, `Date`, `JailedBy`, `Time`) VALUES(%i, '%e', '%e', '%e', '%e', %i)",
 		PlayerInfo[playerb][pDBID], ReturnName(playerb), reason, ReturnDate(), ReturnName(playerid), length);
 		
 	mysql_tquery(dbCon, insertLog);

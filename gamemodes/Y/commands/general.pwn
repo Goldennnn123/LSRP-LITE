@@ -128,14 +128,15 @@ CMD:buybit(playerid, params[])
 		return SendErrorMessage(playerid, "BIT ในตลาดโลกไม่มี");
 		
 
-	PlayerInfo[playerid][pBTC]+=  bit;
-	GlobalInfo[G_BITSAMP] += floatround(bit * GlobalInfo[G_BITSAMP]);
-	GlobalInfo[G_BitStock]-= bit;
-	GiveMoney(playerid, -floatround(bit * GlobalInfo[G_BITSAMP],floatround_round));
-	CharacterSave(playerid);
-	Saveglobal();
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ซื้อ BITSMAP เสียงินมาจำนวน $%s", MoneyFormat(floatround(bit * GlobalInfo[G_BITSAMP],floatround_round)));
 	SendClientMessageEx(playerid, COLOR_GREY, "คุณมี BITSAMP: %.5f",PlayerInfo[playerid][pBTC]);
+
+	PlayerInfo[playerid][pBTC]+=  bit;
+	GiveMoney(playerid, -floatround(bit * GlobalInfo[G_BITSAMP],floatround_round));
+	GlobalInfo[G_BITSAMP] += floatround(bit * GlobalInfo[G_BITSAMP]);
+	GlobalInfo[G_BitStock]-= bit;
+	CharacterSave(playerid);
+	Saveglobal();
 	return 1;
 }
 
@@ -157,14 +158,16 @@ CMD:sellbit(playerid, params[])
 	
 	PlayerInfo[playerid][pBTC]-= bit;
 	GlobalInfo[G_BitStock]+= bit;
-	
+
+	if(!GlobalInfo[G_BITSAMP])
+		GlobalInfo[G_BITSAMP] = 100;	
+		
 	result  = GlobalInfo[G_BITSAMP] * bit;
 	GlobalInfo[G_BITSAMP] -= floatround(result,floatround_round);
 
-	GlobalInfo[G_BITSAMP] += (result * 0.07);
+	GlobalInfo[G_GovCash] += floatround(result * 0.07, floatround_round);
 	
-	result *= 0.07;
-	GiveMoney(playerid, floatround(result,floatround_round));
+	GiveMoney(playerid, floatround(result - (result * 0.07),floatround_round));
 	CharacterSave(playerid);
 	Saveglobal();
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ขาย BITSMAP ได้เงินมาจำนวน $%s", MoneyFormat(floatround(result,floatround_round)));
@@ -216,7 +219,7 @@ CMD:global(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________GLOBAL: PRICE___________");
 	SendClientMessage(playerid, COLOR_DARKGREEN, "");
-	SendClientMessageEx(playerid, COLOR_GRAD2, "BITSAMP: 1 บิตมีค่าเท่ากับ %s ", MoneyFormat(GlobalInfo[G_BITSAMP]));
+	SendClientMessageEx(playerid, COLOR_GRAD2, "BITSAMP %.5f: 1 บิตมีค่าเท่ากับ %s ",GlobalInfo[G_BitStock], MoneyFormat(GlobalInfo[G_BITSAMP]));
 	SendClientMessage(playerid, COLOR_DARKGREEN, "");
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________GLOBAL: PRICE___________");
 	return 1;

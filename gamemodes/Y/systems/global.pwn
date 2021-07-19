@@ -19,6 +19,7 @@ public LoadGlobal()
     {
         cache_get_value_name_int(i,"G_BITSAMP",GlobalInfo[G_BITSAMP]);
         cache_get_value_name_int(i,"G_GovCash",GlobalInfo[G_GovCash]);
+        cache_get_value_name_float(i,"G_BITStock",GlobalInfo[G_BitStock]);
     }
 
     printf("[SERVER]: Load Global \"%s\" database...", MYSQL_DB);

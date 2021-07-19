@@ -922,6 +922,26 @@ CMD:respawncar(playerid, params[])
 		
 	new vehicleid, str[128];
 	
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		vehicleid = GetPlayerVehicleID(playerid);
+		SetVehicleToRespawn(vehicleid);
+		SetVehicleHp(vehicleid);
+		
+		foreach(new i : Player)
+		{
+			if(GetPlayerVehicleID(i) == vehicleid)
+			{
+				if(!VehicleInfo[vehicleid][eVehicleEngineStatus])
+					TogglePlayerControllable(i, 1);
+				SendServerMessage(i, "รถถูกผู้ดูแลระบบ %s ส่งกลับจุดเกิดรถแล้ว", ReturnName(playerid));
+			}
+		}
+		
+		format(str, sizeof(str), "%s ได้ส่งรถ ไอดี:%d กลับจุดเกิดแล้ว", ReturnName(playerid), vehicleid);
+		SendAdminMessage(1, str);
+		return 1;
+	}
 	if(sscanf(params, "d", vehicleid))
 		return SendUsageMessage(playerid, "/respawncar [ไอดี รถ]");
 		
@@ -935,6 +955,9 @@ CMD:respawncar(playerid, params[])
 	{
 		if(GetPlayerVehicleID(i) == vehicleid)
 		{
+			if(!VehicleInfo[vehicleid][eVehicleEngineStatus])
+				TogglePlayerControllable(i, 1);
+
 			SendServerMessage(i, "รถถูกผู้ดูแลระบบ %s ส่งกลับจุดเกิดรถแล้ว", ReturnName(playerid));
 		}
 	}

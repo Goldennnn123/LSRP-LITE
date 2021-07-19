@@ -129,7 +129,7 @@ CMD:buybit(playerid, params[])
 		
 
 	PlayerInfo[playerid][pBTC]+=  bit;
-	GlobalInfo[G_BITSAMP] += bit * GlobalInfo[G_BITSAMP];
+	GlobalInfo[G_BITSAMP] += floatround(bit * GlobalInfo[G_BITSAMP]);
 	GlobalInfo[G_BitStock]-= bit;
 	GiveMoney(playerid, -floatround(bit * GlobalInfo[G_BITSAMP],floatround_round));
 	CharacterSave(playerid);

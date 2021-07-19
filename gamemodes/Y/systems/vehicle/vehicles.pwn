@@ -582,7 +582,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		if(!VehicleInfo[vehicleid][eVehicleEngineStatus] && !IsRentalVehicle(vehicleid) && !HasNoEngine(vehicleid))
 		{
-			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ /en(gine)");
+			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ /engine");
 			SendClientMessage(playerid,COLOR_WHITE,"ข้อแนะ: คุณสามารถออกจากรถด้วยการพิมพ์ /exitveh(icle)");
 			TogglePlayerControllable(playerid, 0);
 		}

@@ -33,7 +33,7 @@ hook OnGameModeInit()
 {
     RanDomDrugPoint = Random(1, 6);
 
-    chatlog = CreateLog("server/druglog");
+    druglog = CreateLog("server/druglog");
     return 1;
 }
 

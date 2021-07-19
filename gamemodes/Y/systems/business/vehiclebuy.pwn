@@ -899,7 +899,7 @@ stock ShowVehicleVip(playerid)
 
     format(str, sizeof(str), "Banshee\t$%s\n",MoneyFormat(300000));
     strcat(longstr, str);
-    format(str, sizeof(str), "Bullet\t$%s\n",MoneyFormat(400000));
+    format(str, sizeof(str), "Bullet\t$%s\n",MoneyFormat(1200000));
     strcat(longstr, str);
     format(str, sizeof(str), "Cheetah\t$%s\n",MoneyFormat(400000));
     strcat(longstr, str);
@@ -1923,7 +1923,7 @@ Dialog:DIALOG_BUY_VIP(playerid, response, listitem, inputtext[])
         case 1:
         {
             PlayerSeleteVehicle[playerid] = 541;
-            PLayerVehiclePrice[playerid] = 400000;
+            PLayerVehiclePrice[playerid] = 1200000;
             PlayerVehicleColor1[playerid] = random(255);
             PlayerVehicleColor2[playerid] = random(255);
             SelectTextDraw(playerid, 0xFFFFFF95);

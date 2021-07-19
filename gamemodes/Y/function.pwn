@@ -793,7 +793,7 @@ stock GivePlayerHealth(playerid, Float:amount)
 {
 	new Float:health;
 	GetPlayerHealth(playerid, health);
-	SetPlayerHealth(playerid, (health + amount > 100.0) ? (100.0) : (health + amount));
+	SetPlayerHealth(playerid, health + amount);
 	return 1;
 }
 

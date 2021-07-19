@@ -2094,6 +2094,15 @@ CMD:tackle(playerid, params[]) {
 	return 1;
 }
 
+CMD:coin(playerid, params[])
+{
+	new str[128];
+	format(str, sizeof(str), "* %s พลิกเหรียญลงพื้นและมันออก%s", ReturnRealName(playerid), (random(2)) ? ("หัว") : ("ก้อย"));
+    SendNearbyMessage(playerid, 15.0, COLOR_WHITE, str);
+	return 1;
+	
+}
+
 stock ShowInvPlayer(tagerid, playerid)
 {
 	new weapon_id[2][13];

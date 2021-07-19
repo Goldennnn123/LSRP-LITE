@@ -146,12 +146,10 @@ CMD:goto(playerid, params[])
 	if(GetPlayerInterior(playerb) != 0)
 		SetPlayerInterior(playerid, GetPlayerInterior(playerb)); 
 		
-	SendTeleportMessage(playerid);	
-	
-	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
-	{
-		PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
-	}
+	SendTeleportMessage(playerid);
+
+	PlayerInfo[playerid][pInsideProperty] = PlayerInfo[playerb][pInsideProperty]; 
+	PlayerInfo[playerid][pInsideBusiness] = PlayerInfo[playerb][pInsideBusiness];
 	return 1;
 }
 
@@ -165,7 +163,7 @@ CMD:gotojob(playerid, params[])
 
 	if(sscanf(params, "d", jobid))
 	{
-		SendClientMessage(playerid, -1, "[JOB:] 1.ชาวไร่ 2.พนักงานส่งของ 3.ช่างยนต์ 4.นักขุดเหมือง");
+		SendClientMessage(playerid, -1, "[JOB:] 1.ชาวไร่ 2.พนักงานส่งของ 3.ช่างยนต์ 4.นักขุดเหมือง 5.ช่างซ่อมไฟฟ้า");
 		return 1;
 	}
 
@@ -217,6 +215,18 @@ CMD:gotojob(playerid, params[])
 				PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
 			}
 			SendClientMessage(playerid, -1, "คุณได้เคลื่อนย้ายไปที่ งาน นักขุดเหมือง");
+			return 1;
+		}
+		case 5:
+		{
+			SetPlayerPos(playerid, 2076.7122,-2026.7233,13.5469);
+			SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+			if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+			{
+				PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+			}
+			SendClientMessage(playerid, -1, "คุณได้เคลื่อนย้ายไปที่ งาน ช่างซ่อมไฟฟ้า");
 			return 1;
 		}
 		default : SendErrorMessage(playerid, "ไม่มี อาชีพที่ต้องการ");

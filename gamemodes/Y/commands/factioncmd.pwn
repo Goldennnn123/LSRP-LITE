@@ -247,7 +247,7 @@ CMD:giverank(playerid, params[])
     if(PlayerInfo[playerb][pFaction] != PlayerInfo[playerid][pFaction])
 		return SendErrorMessage(playerid, "ผู้เล่นคนนี้ไม่ได้อยู่ในเฟคชั่นของคุณ");
 		
-	if(PlayerInfo[playerb][pFactionRank] < PlayerInfo[playerid][pFactionRank])
+	if(PlayerInfo[playerb][pFactionRank] < PlayerInfo[playerid][pFactionRank] && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "คุณไม่สามารถปรับหรือแก้ไข ยศ/ต่ำแหน่ง ของ %s", ReturnName(playerb));
 
     if(rank > PlayerInfo[playerb][pFactionRank])

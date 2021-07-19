@@ -368,7 +368,7 @@ CMD:editcom(playerid, params[])
     if(!strcmp(option, "pos"))
     {
         if(!ComputerInfo[id][ComputerDBID])
-        return SendErrorMessage(playerid,"ไม่มีคอมที่คุณเลือก");
+            return SendErrorMessage(playerid,"ไม่มีคอมที่คุณเลือก");
     
         if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
             return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
@@ -419,6 +419,23 @@ CMD:editcom(playerid, params[])
 
         Dialog_Show(playerid, D_COMPUTER_UPGRAD_LIST, DIALOG_STYLE_LIST, "Upgrade computer:", longstr, "ยืนยัน", "ยกเลิก");
         return 1;
+    }
+    else if(!strcmp(option, "get"))
+    {
+        if(!ComputerInfo[id][ComputerDBID])
+            return SendErrorMessage(playerid,"ไม่มีคอมที่คุณเลือก");
+    
+        if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+            return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
+
+        if(!ComputerInfo[id][ComputerSpawn])
+            return SendErrorMessage(playerid, "คอมพิวเตอร์ไม่ได้ถูกวาง");
+
+        if(IsPlayerNearComputer(playerid) != id)
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้คอมพิวเตอร์ หรือ แล็ปท็อป");
+
+        DestroyDynamicObject(ComputerInfo[id][ComputerObject]);
+        ComputerInfo[id][ComputerSpawn] = false;
     }
     else SendErrorMessage(playerid, "ใส่ให้ถูกต้อง");
     return 1;

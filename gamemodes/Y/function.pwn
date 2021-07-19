@@ -772,3 +772,28 @@ stock SendMsgLocalEx(playerid, Float:radius = 15.0, colour, const fmat[], {Float
 	return 1;
 }
 
+
+SetPlayerToFacePlayer(playerid, targetid)
+{
+	new
+	    Float:px,
+	    Float:py,
+	    Float:pz,
+	    Float:tx,
+	    Float:ty,
+	    Float:tz;
+
+	GetPlayerPos(targetid, tx, ty, tz);
+	GetPlayerPos(playerid, px, py, pz);
+	SetPlayerFacingAngle(playerid, 180.0 - atan2(px - tx, py - ty));
+	return 1;
+}
+
+stock GivePlayerHealth(playerid, Float:amount)
+{
+	new Float:health;
+	GetPlayerHealth(playerid, health);
+	SetPlayerHealth(playerid, (health + amount > 100.0) ? (100.0) : (health + amount));
+	return 1;
+}
+

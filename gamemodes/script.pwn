@@ -422,6 +422,8 @@ public OnPlayerConnect(playerid) {
 
     PlayerInfo[playerid][pBoomBox] = false;
     PlayerInfo[playerid][pBoomBoxSpawnID] = 0;
+
+    PlayerInfo[playerid][pShakeOffer] = INVALID_PLAYER_ID;
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;

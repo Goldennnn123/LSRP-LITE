@@ -639,7 +639,6 @@ public Query_AddPlayerVehicle(playerid, playerb)
 	return 1;
 }
 
-alias:engine("en")
 CMD:engine(playerid, params[])
 {
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)

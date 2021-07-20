@@ -228,7 +228,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
+        //KickEx(playerid);
     }
     else if(code == 9)
     {
@@ -261,15 +261,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น ล่องหน", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Invisible",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
-        SetPlayerArmour(playerid,0);
-        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
-    }
-    else if(code == 48)
-    {
-        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น ล่องหน", playerid, ReturnName(playerid,0));
-        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Invisible",e_pAccountData[playerid][mDBID] ,PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");

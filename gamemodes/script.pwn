@@ -217,53 +217,73 @@ public OnCheatDetected(playerid, ip_address[], type, code)
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น Airbreck", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Airbreck",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
     }
     else if(code == 2)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น teleport", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke teleport",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
     }
     else if(code == 9)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น Surf", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Surf",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
     }
     else if(code == 15)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น ในการเสกอาวุธ", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Weapons",e_pAccountData[playerid][mDBID] ,PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
     }
     else if(code == 18)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสก Jeckpat", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Jeckpat",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
     }
     else if(code == 48)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น ล่องหน", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Invisible",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
     }
     else if(code == 48)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น ล่องหน", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Invisible",e_pAccountData[playerid][mDBID] ,PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
     }
     else 
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น (%d)", playerid, ReturnName(playerid,0), code);
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacker is check in game now",e_pAccountData[playerid][mDBID],PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
         SendDiscordMessage(4, str);
+        /*SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);*/
     }
-
-    SetPlayerArmour(playerid,0);
-    SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-    KickEx(playerid);
     return 1;
 }
 

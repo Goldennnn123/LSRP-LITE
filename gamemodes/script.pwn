@@ -275,6 +275,78 @@ public OnCheatDetected(playerid, ip_address[], type, code)
         SendClientMessage(playerid, COLOR_LIGHTRED, "Ping คุณมากเกินไปในการเข้าเล่นโปรดตรวจสอบการเชื่อมต่ออินเตอร์เน็ตอีกครั้ง");
         KickEx(playerid);
     }
+    else if(code == 47)
+    {
+        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสกอาวุธ", playerid, ReturnName(playerid,0));
+        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Weapons",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
+	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
+    }
+    else if(code == 11)
+    {
+        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น ซ่อมยานพหานะ", playerid, ReturnName(playerid,0));
+        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Repair Vehicle",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
+	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
+    }
+    else if(code == 13)
+    {
+        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสกเกราะ", playerid, ReturnName(playerid,0));
+        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Armour",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
+	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
+    }
+    else if(code == 12)
+    {
+        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสกเลือด", playerid, ReturnName(playerid,0));
+        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Health",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
+	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
+    }
+    else if(code == 23)
+    {
+        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น แต่งยานพาหานะ", playerid, ReturnName(playerid,0));
+        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Modefile Vehicle",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
+	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
+    }
+    else if(code == 10)
+    {
+        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น Speed Hack", playerid, ReturnName(playerid,0));
+        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Speed Hack",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
+	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
+    }
+    else if(code == 4)
+    {
+        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น วาปเข้ายานพหานะ", playerid, ReturnName(playerid,0));
+        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Warp To Vehicle",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
+	    SendDiscordMessage(4, str);
+        //SetPlayerArmour(playerid,0);
+        //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        //KickEx(playerid);
+    }
+    else if(code == 14)
+    {
+        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสกเงิน", playerid, ReturnName(playerid,0));
+        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Money",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
+	    SendDiscordMessage(4, str);
+        //SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
+        KickEx(playerid);
+    }
     else 
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น (%d)", playerid, ReturnName(playerid,0), code);

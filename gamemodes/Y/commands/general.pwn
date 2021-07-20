@@ -1115,19 +1115,19 @@ CMD:radio(playerid, params[])
 				{
 					if(strlen(params) > 75)
 					{
-						SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s ¾Ù´ÇèÒ: %.75s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
-						SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] ...%s ¾Ù´ÇèÒ: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params[75]);
+						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s ¾Ù´ÇèÒ: %.75s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s ¾Ù´ÇèÒ: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params[75]);
 					}
-					else SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s ¾Ù´ÇèÒ: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+					else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s ¾Ù´ÇèÒ: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
 				}
 				else 
 				{
 					if(strlen(params) > 75)
 					{
 						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s ¾Ù´ÇèÒ: %.75s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
-						SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] ...%s ¾Ù´ÇèÒ: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params[75]);
+						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s ¾Ù´ÇèÒ: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params[75]);
 					}
-					else SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s ¾Ù´ÇèÒ: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+					else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s ¾Ù´ÇèÒ: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
 				}
 			}
 		}

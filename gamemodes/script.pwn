@@ -266,6 +266,15 @@ public OnCheatDetected(playerid, ip_address[], type, code)
         SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
         KickEx(playerid);
     }
+    else if(code == 38)
+    {
+        SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s อินเตอร์เน็ตมีความล่าช้าเกินไป", playerid, ReturnName(playerid,0));
+        format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Low Internet",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
+	    SendDiscordMessage(4, str);
+        SetPlayerArmour(playerid,0);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "Ping คุณมากเกินไปในการเข้าเล่นโปรดตรวจสอบการเชื่อมต่ออินเตอร์เน็ตอีกครั้ง");
+        KickEx(playerid);
+    }
     else 
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น (%d)", playerid, ReturnName(playerid,0), code);

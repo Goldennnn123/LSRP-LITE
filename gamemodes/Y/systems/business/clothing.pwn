@@ -62,12 +62,52 @@ CMD:buyclothing(playerid, params[])
         strcat(longstr, str);
         format(str, sizeof(str), "Flashlight\n");
         strcat(longstr, str);
+        format(str, sizeof(str), "case_1\n");
+        strcat(longstr, str);
+        format(str, sizeof(str), "para_pack\n");
+        strcat(longstr, str);
 
         Dialog_Show(playerid, D_CLOTHING_BUY, DIALOG_STYLE_LIST, "BUY CLOTHING:", longstr, "ยืนยัน", "ยกเลิก");
         PlayerSeClo[playerid] = 0;
         return 1;
     }
+    else if(IsPlayerInRangeOfPoint(playerid, 3.5, 264.9105,108.3571,1004.6172))
+    {
+        format(str, sizeof(str), "Police Officer II Badge\n"); //0
+        strcat(longstr, str);
+        format(str, sizeof(str), "Police Officer III Badge\n"); //1
+        strcat(longstr, str);
+        format(str, sizeof(str), "Police Officer III+1 Badge\n"); //2
+        strcat(longstr, str);
+        format(str, sizeof(str), "Police Officer III+1 Badge\n"); //3
+        strcat(longstr, str);
+        format(str, sizeof(str), "Police Sergeant I Badge\n"); //4
+        strcat(longstr, str);
+        format(str, sizeof(str), "Police Sergeant II Badge\n"); //5
+        strcat(longstr, str);
+        format(str, sizeof(str), "Police Detective I Badge\n"); //6
+        strcat(longstr, str);
+        format(str, sizeof(str), "Police Detective II Badge\n"); //7
+        strcat(longstr, str);
+        format(str, sizeof(str), "Police Detective III Badge\n"); //8
+        strcat(longstr, str);
+        format(str, sizeof(str), "Armour\n"); //9
+        strcat(longstr, str);
+        format(str, sizeof(str), "policeHat\n"); //10
+        strcat(longstr, str);
+        format(str, sizeof(str), "PoliceShield\n"); //11
+        strcat(longstr, str);
+        format(str, sizeof(str), "PoliceHelmet\n"); //12
+        strcat(longstr, str);
+        format(str, sizeof(str), "SWATHelmet\n"); //13
+        strcat(longstr, str);
+
+        Dialog_Show(playerid, D_CLOTHING_BUY_POLICE, DIALOG_STYLE_LIST, "BUY CLOTHING:", longstr, "ยืนยัน", "ยกเลิก");
+        PlayerSeClo[playerid] = 0;
+        return 1;
+    }
     else SendErrorMessage(playerid, "คุณไมได้อยู่จุดซื้อ Clothing");
+
     return 1;
 }
 
@@ -143,6 +183,115 @@ CMD:clothing(playerid, params[])
         return 1;
     }
     else SendErrorMessage(playerid, "กรุณาพิพม์ให้ถูกต้อง");
+    return 1;
+}
+
+Dialog:D_CLOTHING_BUY_POLICE(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+    switch(listitem)
+    {
+        case 0:
+        {
+            PlayerSeCloBuy[playerid] = 19783;
+            SetPlayerAttachedObject(playerid, 6, 19783, 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 1:
+        {
+            PlayerSeCloBuy[playerid] = 19784;
+            SetPlayerAttachedObject(playerid, 6, 19784, 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 2:
+        {
+            PlayerSeCloBuy[playerid] = 19785;
+            SetPlayerAttachedObject(playerid, 6, 19785, 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 3:
+        {
+            PlayerSeCloBuy[playerid] = 19781;
+            SetPlayerAttachedObject(playerid, 6, 19781, 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 4:
+        {
+            PlayerSeCloBuy[playerid] = 19782;
+            SetPlayerAttachedObject(playerid, 6, 19782, 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 5:
+        {
+            PlayerSeCloBuy[playerid] = 19778;
+            SetPlayerAttachedObject(playerid, 6, 19778, 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 6:
+        {
+            PlayerSeCloBuy[playerid] = 19779;
+            SetPlayerAttachedObject(playerid, 6, 19779, 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 7:
+        {
+            PlayerSeCloBuy[playerid] = 19780;
+            SetPlayerAttachedObject(playerid, 6, 19780, 3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 8:
+        {
+            PlayerSeCloBuy[playerid] = 19780;
+            SetPlayerAttachedObject(playerid, 6, 19780, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 9:
+        {
+            PlayerSeCloBuy[playerid] = 19142;
+            SetPlayerAttachedObject(playerid, 6, 19142, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 10:
+        {
+            PlayerSeCloBuy[playerid] = 19521;
+            SetPlayerAttachedObject(playerid, 6, 19521, 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 11:
+        {
+            PlayerSeCloBuy[playerid] = 18637;
+            SetPlayerAttachedObject(playerid, 6, 18637, 5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 12:
+        {
+            PlayerSeCloBuy[playerid] = 19200;
+            SetPlayerAttachedObject(playerid, 6, 19200, 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 13:
+        {
+            PlayerSeCloBuy[playerid] = 19141;
+            SetPlayerAttachedObject(playerid, 6, 19141, 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+    }
     return 1;
 }
 
@@ -234,6 +383,20 @@ Dialog:D_CLOTHING_BUY(playerid, response, listitem, inputtext[])
         {
             PlayerSeCloBuy[playerid] = 18641;
             SetPlayerAttachedObject(playerid, 6, 18641, 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 12:
+        {
+            PlayerSeCloBuy[playerid] = 19624;
+            SetPlayerAttachedObject(playerid, 6, 19624, 5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+            EditAttachedObject(playerid, 6);
+            return 1;
+        }
+        case 13:
+        {
+            PlayerSeCloBuy[playerid] = 3026;
+            SetPlayerAttachedObject(playerid, 6, 3026, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
             EditAttachedObject(playerid, 6);
             return 1;
         }
@@ -605,6 +768,7 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
             {
                 RemovePlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
                 ClothingInfo[id][ClothingSpawn] = false;
+                SaveClothing(id);
                 return 1;
             }
 
@@ -614,6 +778,7 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
             SetPlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex], ClothingInfo[id][ClothingModel], ClothingInfo[id][ClothingBone], ClothingInfo[id][ClothingOffPos][0], ClothingInfo[id][ClothingOffPos][1], ClothingInfo[id][ClothingOffPos][2], ClothingInfo[id][ClothingOffPosR][0], ClothingInfo[id][ClothingOffPosR][1], ClothingInfo[id][ClothingOffPosR][2], ClothingInfo[id][ClothingOffPosSacal][0], ClothingInfo[id][ClothingOffPosSacal][1], ClothingInfo[id][ClothingOffPosSacal][2],0);
             ClothingInfo[id][ClothingSpawn] = true;
             SendClientMessageEx(playerid, -1, "คุณได้ใส่เครื่องแต่ตัวแล้ว %d", ClothingInfo[id][ClothingModel]);
+            SaveClothing(id);
             return 1;
         }
         case 6:

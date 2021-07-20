@@ -26,7 +26,7 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstaion /boombox /clothing /buyclothing");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp /drughelp");
-	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation) /walkstyle");
+	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation) /walkstyle /shakehand");
 	SendClientMessage(playerid, COLOR_GREEN,"_____________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
 	return 1; 
@@ -78,6 +78,7 @@ CMD:jobhelp(playerid, params[])
 		SendClientMessage(playerid,COLOR_WHITE,"/service (คำสั่งซ่อมยานพาหนะ)");
 		SendClientMessage(playerid,COLOR_WHITE,"/checkcomponents (เช็ค อะไหล่)");
 		SendClientMessage(playerid,COLOR_WHITE,"/buycomponents (ซื้อ อะไหล่)");
+		SendClientMessage(playerid,COLOR_WHITE,"/changcolorvehicle (เปลี่ยนสียานพาหนะ)");
 	}
 
 	if(PlayerInfo[playerid][pJob] == JOB_MINER)
@@ -87,6 +88,14 @@ CMD:jobhelp(playerid, params[])
 		SendClientMessage(playerid,COLOR_WHITE,"/ptze (แปรรูป)");
 		SendClientMessage(playerid,COLOR_WHITE,"/sellore (ขายแร่)");
 		SendClientMessage(playerid,COLOR_WHITE,"/giveore (ให้แร่)");
+	}
+
+	if(PlayerInfo[playerid][pJob] == JOB_ELECTRICIAN)
+	{
+ 		SendClientMessage(playerid,COLOR_LIGHTRED,"คำสั่งของช่างซ่อมเสาไฟฟ้า:");
+		SendClientMessage(playerid,COLOR_WHITE,"/startele (เพิ่อเริ่มงาน)");
+		SendClientMessage(playerid,COLOR_WHITE,"/getstair (นำบรรไดออกมาจากท้ายยานพหานะ)");
+		SendClientMessage(playerid,COLOR_WHITE,"/fixele (เริ่มซ่อมเสาไฟฟ้าที่เสียหายชำรุด)");
 	}
 
 	return 1;
@@ -113,17 +122,21 @@ CMD:buybit(playerid, params[])
 
 
 	if(PlayerInfo[playerid][pCash] < bit * GlobalInfo[G_BITSAMP])
-		return SendErrorMessage(playerid, "คุณมีบิตไม่เพียงพอ");
+		return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ");
 
+	if(GlobalInfo[G_BitStock] < bit)
+		return SendErrorMessage(playerid, "BIT ในตลาดโลกไม่มี");
+		
 
-	PlayerInfo[playerid][pBTC]+=  bit;
-	GlobalInfo[G_BITSAMP] += bit * GlobalInfo[G_BITSAMP];
-	GlobalInfo[G_BitStock]-= bit;
-	GiveMoney(playerid, -floatround(bit * GlobalInfo[G_BITSAMP],floatround_round));
-	CharacterSave(playerid);
-	Saveglobal();
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ซื้อ BITSMAP เสียงินมาจำนวน $%s", MoneyFormat(floatround(bit * GlobalInfo[G_BITSAMP],floatround_round)));
 	SendClientMessageEx(playerid, COLOR_GREY, "คุณมี BITSAMP: %.5f",PlayerInfo[playerid][pBTC]);
+
+	PlayerInfo[playerid][pBTC]+=  bit;
+	GiveMoney(playerid, -floatround(bit * GlobalInfo[G_BITSAMP],floatround_round));
+	GlobalInfo[G_BITSAMP] += floatround(bit * GlobalInfo[G_BITSAMP]);
+	GlobalInfo[G_BitStock]-= bit;
+	CharacterSave(playerid);
+	Saveglobal();
 	return 1;
 }
 
@@ -145,14 +158,16 @@ CMD:sellbit(playerid, params[])
 	
 	PlayerInfo[playerid][pBTC]-= bit;
 	GlobalInfo[G_BitStock]+= bit;
-	
+
+	if(!GlobalInfo[G_BITSAMP])
+		GlobalInfo[G_BITSAMP] = 100;	
+		
 	result  = GlobalInfo[G_BITSAMP] * bit;
 	GlobalInfo[G_BITSAMP] -= floatround(result,floatround_round);
 
-	GlobalInfo[G_BITSAMP] += (result * 0.07);
+	GlobalInfo[G_GovCash] += floatround(result * 0.07, floatround_round);
 	
-	result *= 0.07;
-	GiveMoney(playerid, floatround(result,floatround_round));
+	GiveMoney(playerid, floatround(result - (result * 0.07),floatround_round));
 	CharacterSave(playerid);
 	Saveglobal();
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ขาย BITSMAP ได้เงินมาจำนวน $%s", MoneyFormat(floatround(result,floatround_round)));
@@ -204,7 +219,7 @@ CMD:global(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________GLOBAL: PRICE___________");
 	SendClientMessage(playerid, COLOR_DARKGREEN, "");
-	SendClientMessageEx(playerid, COLOR_GRAD2, "BITSAMP: 1 บิตมีค่าเท่ากับ %s ", MoneyFormat(GlobalInfo[G_BITSAMP]));
+	SendClientMessageEx(playerid, COLOR_GRAD2, "BITSAMP %.5f: 1 บิตมีค่าเท่ากับ %s ",GlobalInfo[G_BitStock], MoneyFormat(GlobalInfo[G_BITSAMP]));
 	SendClientMessage(playerid, COLOR_DARKGREEN, "");
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________GLOBAL: PRICE___________");
 	return 1;
@@ -1097,9 +1112,23 @@ CMD:radio(playerid, params[])
 			if(PlayerInfo[i][pRadio][r] == channel)
 			{
 				if(r != PlayerInfo[i][pMainSlot])
-					SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
-					
-				else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+				{
+					if(strlen(params) > 75)
+					{
+						SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+						SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params[75]);
+					}
+					else SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+				}
+				else 
+				{
+					if(strlen(params) > 75)
+					{
+						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+						SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params[75]);
+					}
+					else SendClientMessageEx(i, COLOR_RADIOEX, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+				}
 			}
 		}
 	}
@@ -2079,6 +2108,115 @@ CMD:tackle(playerid, params[]) {
 		SendClientMessage(playerid, COLOR_LIGHTRED, "หากผู้เล่นนั้นไม่เล่นบทการเข้าปะทะ รายงานภายในเกมได้เลย");
 		SetPVarInt(playerid, "TacklingMode", 1);
 	}
+	return 1;
+}
+
+CMD:coin(playerid, params[])
+{
+	new str[128];
+	format(str, sizeof(str), "* %s พลิกเหรียญลงพื้นและมันออก%s", ReturnRealName(playerid), (random(2)) ? ("หัว") : ("ก้อย"));
+    SendNearbyMessage(playerid, 15.0, COLOR_EMOTE, str);
+	return 1;
+	
+}
+
+CMD:shakehand(playerid, params[])
+{
+	new targetid, type;
+
+	if(sscanf(params, "ui", targetid, type))
+	    return SendUsageMessage(playerid, "/shakehand <ชื่อบางส่วน/ไอดี> <ประเภท (1-6)>");
+
+	if(!IsPlayerConnected(targetid) || !IsPlayerNearPlayer(playerid, targetid, 1.5))
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "ผู้เล่นไม่ได้อยู่ภายในเซิร์ฟเวอร์/หรือไม่ได้อยู่ใกล้คุณ");
+	}
+	if(targetid == playerid)
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "คุณไม่สามารถใช้คำสั่งนี้กับตัวคุณเองได้");
+	}
+
+	if(PlayerInfo[playerid][pShakeOffer] != INVALID_PLAYER_ID)
+	{
+		new offeredby = PlayerInfo[playerid][pShakeOffer];
+
+	    if(offeredby == INVALID_PLAYER_ID)
+	    {
+	        return SendClientMessage(playerid, COLOR_GREY, "ไม่ได้มีการส่งขอคำมาให้คุณ");
+	    }
+
+	    ClearAnimations(playerid);
+		ClearAnimations(offeredby);
+
+		SetPlayerToFacePlayer(playerid, offeredby);
+		SetPlayerToFacePlayer(offeredby, playerid);
+
+		switch(PlayerInfo[playerid][pShakeType])
+		{
+		    case 1:
+		    {
+				ApplyAnimation(playerid,  "GANGS", "hndshkaa", 4.0, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation(offeredby, "GANGS", "hndshkaa", 4.0, 0, 0, 0, 0, 0, 1);
+			}
+			case 2:
+			{
+				ApplyAnimation(playerid, "GANGS", "hndshkba", 4.0, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation(offeredby, "GANGS", "hndshkba", 4.0, 0, 0, 0, 0, 0, 1);
+			}
+			case 3:
+			{
+				ApplyAnimation(playerid, "GANGS", "hndshkda", 4.0, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation(offeredby, "GANGS", "hndshkda", 4.0, 0, 0, 0, 0, 0, 1);
+			}
+			case 4:
+			{
+				ApplyAnimation(playerid, "GANGS", "hndshkea", 4.0, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation(offeredby, "GANGS", "hndshkea", 4.0, 0, 0, 0, 0, 0, 1);
+			}
+			case 5:
+			{
+				ApplyAnimation(playerid, "GANGS", "hndshkfa", 4.0, 0, 0, 0, 0, 0, 1);
+				ApplyAnimation(offeredby, "GANGS", "hndshkfa", 4.0, 0, 0, 0, 0, 0, 1);
+			}
+			case 6:
+			{
+			    ApplyAnimation(playerid, "GANGS", "prtial_hndshk_biz_01", 4.0, 0, 0, 0, 0, 0);
+			    ApplyAnimation(offeredby, "GANGS", "prtial_hndshk_biz_01", 4.0, 0, 0, 0, 0, 0);
+			}
+		}
+  		PlayerInfo[playerid][pShakeOffer] = INVALID_PLAYER_ID;
+		return 1;
+	}
+
+	if(!(1 <= type <= 6))
+	{
+	    return SendClientMessage(playerid, COLOR_GREY, "คุณเลือกประเภทไม่ถูกต้อง 1-6 เท่านั้น");
+	}
+
+	PlayerInfo[targetid][pShakeOffer] = playerid;
+	PlayerInfo[targetid][pShakeType] = type;
+
+	SendClientMessageEx(targetid, COLOR_WHITE, "** %s ต้องการที่จะจับมือกับคุณ (/shakehand %d)", ReturnName(playerid, 0), playerid);
+	SendClientMessageEx(playerid, COLOR_WHITE, "** คุณได้ส่งคำขอการจับมือกับ %s", ReturnName(targetid, 0));
+	return 1;
+}
+
+CMD:isafk(playerid, params[])
+{
+	new 
+		playerb;
+		
+	if(sscanf(params, "u", playerb))
+		return SendUsageMessage(playerid, "/isafk <ชื่อบางส่วน/ไอดี>");
+		
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซิร์ฟเวอร์");
+	
+	if(IsAfk{playerb})
+		SendClientMessageEx(playerid, COLOR_GREY, "%s AFK %d วินาที", ReturnName(playerb), AFKCount[playerb]);
+		
+	else SendClientMessageEx(playerid, COLOR_GREY, "ผู้เล่นไม่ได้ AFK.", ReturnName(playerb)); 
+
 	return 1;
 }
 

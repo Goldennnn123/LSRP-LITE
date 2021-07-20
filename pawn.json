@@ -19,7 +19,8 @@
 		"katursis/Pawn.RakNet",
 		"AGraber/samp-compat",
 		"infin1tyy/customplayernametags",
-		"maddinat0r/samp-discord-connector"
+		"maddinat0r/samp-discord-connector",
+		"NexiusTailer/Nex-AC"
 	],
 	"local": true,
 	"runtime": {

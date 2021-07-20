@@ -369,7 +369,8 @@ ptask FunctionPlayers[1000](playerid)
 			new str[128];
 			format(str, sizeof(str), "%s ได้ถูกปล่อยตัวออกจากคุกแอดมินแล้ว.", ReturnName(playerid));
 			SendAdminMessage(1, str);
-				
+			
+			SetPlayerHealth(playerid, 100);
 			SpawnPlayer(playerid);
 		}
 	}
@@ -768,6 +769,31 @@ stock SendMsgLocalEx(playerid, Float:radius = 15.0, colour, const fmat[], {Float
 			SendClientMessage(i, colour, chat_msgOut);	
         }
     }
+	return 1;
+}
+
+
+SetPlayerToFacePlayer(playerid, targetid)
+{
+	new
+	    Float:px,
+	    Float:py,
+	    Float:pz,
+	    Float:tx,
+	    Float:ty,
+	    Float:tz;
+
+	GetPlayerPos(targetid, tx, ty, tz);
+	GetPlayerPos(playerid, px, py, pz);
+	SetPlayerFacingAngle(playerid, 180.0 - atan2(px - tx, py - ty));
+	return 1;
+}
+
+stock GivePlayerHealth(playerid, Float:amount)
+{
+	new Float:health;
+	GetPlayerHealth(playerid, health);
+	SetPlayerHealth(playerid, health + amount);
 	return 1;
 }
 

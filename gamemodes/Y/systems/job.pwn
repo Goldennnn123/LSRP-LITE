@@ -7,6 +7,7 @@ enum
 	JOB_TRUCKER,
 	JOB_MECHANIC,
 	JOB_MINER,
+	JOB_ELECTRICIAN,
 }
 
 stock GetJobName(career, jobid)
@@ -21,6 +22,7 @@ stock GetJobName(career, jobid)
 		case JOB_TRUCKER: format(name, 32, "พนักงานส่งของ");
 		case JOB_MECHANIC: format(name, 32, "ช่างยนต์");
 		case JOB_MINER: format(name, 32, "นักขุดเหมือง");
+		case JOB_ELECTRICIAN: format(name, 32, "ช่างไฟฟ้า");
 	    default: format(name, 32, "ว่างงาน");
 	}
 	return name;
@@ -35,12 +37,14 @@ CMD:takejob(playerid, params[])
 	{
 		PlayerInfo[playerid][pJob] = JOB_TRUCKER;
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[TRUCKER JOB] คุณได้ทำการสมัครงาน พนักงานส่งของแล้ว สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
+		CharacterSave(playerid);
 		return 1;
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 3.0, 88.1169,-164.9625,2.5938))
 	{
 		PlayerInfo[playerid][pJob] = JOB_MECHANIC;
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[MECHANIC JOB] คุณได้ทำการสมัครงาน ช่าง สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
+		CharacterSave(playerid);
 		return 1;
 	}
 	else if(IsPlayerInRangeOfPoint(playerid, 3.0, 586.4755,872.6391,-42.4973))
@@ -60,6 +64,27 @@ CMD:takejob(playerid, params[])
 
 		
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[MINER JOB] คุณได้ทำการสมัครงาน นักขุดเหมือง สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
+		CharacterSave(playerid);
+		return 1;
+	}
+	else if(IsPlayerInRangeOfPoint(playerid, 3.0, 2076.7122,-2026.7233,13.5469))
+	{
+
+		if(PlayerInfo[playerid][pJob])
+		{
+			if(PlayerInfo[playerid][pSideJob])
+				return SendErrorMessage(playerid, "คุณมีอาชีพเสริมอยู่แล้ว");
+			
+			PlayerInfo[playerid][pSideJob] = JOB_ELECTRICIAN;
+		}
+		else
+		{
+			PlayerInfo[playerid][pJob] = JOB_ELECTRICIAN;
+		}
+
+		
+		SendClientMessage(playerid, COLOR_DARKGREEN, "[ELECTRICIAN JOB] คุณได้ทำการสมัครงาน ช่างซ่อมไฟฟ้า สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
+		CharacterSave(playerid);
 		return 1;
 	}
 

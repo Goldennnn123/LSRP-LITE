@@ -11,6 +11,7 @@ filterscripts/ACBS.pwn
 *.lst
 *.asm
 *.dll
+.dist
 
 # Vendor directory for dependencies
 dependencies/

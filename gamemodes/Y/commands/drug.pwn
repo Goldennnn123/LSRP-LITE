@@ -1,3 +1,13 @@
+#include <YSI_Coding\y_hooks>
+
+new PlayerDrugUse[MAX_PLAYERS];
+
+hook OnPlayerConnect(playerid)
+{
+    KillTimer(PlayerDrugUse[playerid]);
+    return 1;
+}
+
 CMD:drughelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________DRUGS HELP____________");
@@ -284,49 +294,63 @@ CMD:usedrug(playerid, params[])
         return 1;
     }
 
-    GetPlayerHealth(playerid, health);
-
     if(PlayerInfo[playerid][pDrug][type-1] < 0.01)
         return SendErrorMessage(playerid, "คุณมียาไม่เพียงพอต่อการที่จะเสพ");
     
+
+    GetPlayerHealth(playerid, health);
+
     switch(type)
     {
         case 1:
         {
-            if(health > 200)
+            if(health > 170)
                 return SendErrorMessage(playerid, "คุณมีเลือดถึงขีดจำกัดแล้ว");
 
-            SetPlayerHealth(playerid, health+2);
-            SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Cocaine' ทำให้เลือดของคุณเพิ่ม +2");
+            PlayerDrugUse[playerid] = SetTimerEx("SetPlayerHealth_Stap", 2000, true, "dd",playerid, type);
+
+            SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Cocaine' ทำให้เลือดของคุณเพิ่มทีละ +2");
             PlayerInfo[playerid][pDrug][0]-= 0.01;
             PlayerInfo[playerid][pAddicted] = false;
             PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cocaine'", ReturnName(playerid, 0));
+            
+            new str[120];
+            format(str, sizeof(str), "หยิบยาออกมาเสพ");
+            callcmd::ame(playerid, str);
             return 1;
         }
         case 2:
         {
-            if(health > 200)
+            if(health > 150)
                 return SendErrorMessage(playerid, "คุณมีเลือดถึงขีดจำกัดแล้ว");
 
-            SetPlayerHealth(playerid, health+3);
-            SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Cannabis' ทำให้เลือดของคุณเพิ่ม +3");
+            PlayerDrugUse[playerid] = SetTimerEx("SetPlayerHealth_Stap", 2000, true, "dd",playerid, type);
+            SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Cannabis' ทำให้เลือดของคุณเพิ่มทีละ +2");
             PlayerInfo[playerid][pDrug][1]-= 0.01;
             PlayerInfo[playerid][pAddicted] = false;
             PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cannabis'", ReturnName(playerid, 0));
+            
+            new str[120];
+            format(str, sizeof(str), "หยิบยาออกมาเสพ");
+            callcmd::ame(playerid, str);
         }
         case 3:
         {
             if(health > 200)
                 return SendErrorMessage(playerid, "คุณมีเลือดถึงขีดจำกัดแล้ว");
 
-            SetPlayerHealth(playerid, health+5);
-            SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Heroin' ทำให้เลือดของคุณเพิ่ม +5");
+            PlayerDrugUse[playerid] = SetTimerEx("SetPlayerHealth_Stap", 2000, true, "dd",playerid, type);
+            SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Heroin' ทำให้เลือดของคุณเพิ่มทีละ +2");
             PlayerInfo[playerid][pDrug][1]-= 0.01;
             PlayerInfo[playerid][pAddicted] = false;
             PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cannabis'", ReturnName(playerid, 0));
+            
+            new str[120];
+            format(str, sizeof(str), "หยิบยาออกมาเสพ");
+            callcmd::ame(playerid, str);
         }
     }
     return 1;
@@ -443,11 +467,60 @@ CMD:agivedrug(playerid, params[])
         }
         case 3:
         {
-            PlayerInfo[tagetid][pDrug][1] += amout;
+            PlayerInfo[tagetid][pDrug][2] += amout;
             SendClientMessageEx(tagetid, COLOR_YELLOWEX, "ผู้ดูแลได้เพิ่มยาเสพติด 'Heroin' ของคุณ %.2f กรัม",amout);
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เพิ่มยาเสพติด 'Heroin' ของ %s ให้ %.2f กรัม",ReturnName(tagetid,0), amout);
         }
         default: SendErrorMessage(playerid, "ใส่ปรเะเภทของยาเสพติดให้ถูกต้อง");
+    }
+    return 1;
+}
+
+
+forward SetPlayerHealth_Stap(playerid, type);
+public SetPlayerHealth_Stap(playerid, type)
+{
+    new Float:health;
+
+    GetPlayerHealth(playerid, health);
+
+    if(GetPlayerState(playerid) != PLAYER_STATE_ALIVE)
+    {
+        KillTimer(PlayerDrugUse[playerid]);
+        SendClientMessage(playerid, COLOR_LIGHTRED, "สถานะคุณไม่ได้อยู้สำหรับการเสพยา");
+        return 1;
+    }
+
+    switch(type)
+    {
+        case 1:
+        {
+            if(health > 170)
+            {
+                SetPlayerHealth(playerid, 170);
+                KillTimer(PlayerDrugUse[playerid]);
+            }
+
+            GivePlayerHealth(playerid, 2);
+        }
+        case 2:
+        {
+            if(health > 150)
+            {
+                SetPlayerHealth(playerid, 150);
+                KillTimer(PlayerDrugUse[playerid]);
+            }
+            GivePlayerHealth(playerid, 2);
+        }
+        case 3:
+        {
+            if(health > 200)
+            {
+                SetPlayerHealth(playerid, 200);
+                KillTimer(PlayerDrugUse[playerid]);
+            }
+            GivePlayerHealth(playerid, 2);
+        }
     }
     return 1;
 }

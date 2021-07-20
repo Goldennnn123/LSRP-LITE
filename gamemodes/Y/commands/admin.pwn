@@ -146,12 +146,10 @@ CMD:goto(playerid, params[])
 	if(GetPlayerInterior(playerb) != 0)
 		SetPlayerInterior(playerid, GetPlayerInterior(playerb)); 
 		
-	SendTeleportMessage(playerid);	
-	
-	if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
-	{
-		PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
-	}
+	SendTeleportMessage(playerid);
+
+	PlayerInfo[playerid][pInsideProperty] = PlayerInfo[playerb][pInsideProperty]; 
+	PlayerInfo[playerid][pInsideBusiness] = PlayerInfo[playerb][pInsideBusiness];
 	return 1;
 }
 
@@ -165,7 +163,7 @@ CMD:gotojob(playerid, params[])
 
 	if(sscanf(params, "d", jobid))
 	{
-		SendClientMessage(playerid, -1, "[JOB:] 1.ชาวไร่ 2.พนักงานส่งของ 3.ช่างยนต์ 4.นักขุดเหมือง");
+		SendClientMessage(playerid, -1, "[JOB:] 1.ชาวไร่ 2.พนักงานส่งของ 3.ช่างยนต์ 4.นักขุดเหมือง 5.ช่างซ่อมไฟฟ้า");
 		return 1;
 	}
 
@@ -217,6 +215,18 @@ CMD:gotojob(playerid, params[])
 				PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
 			}
 			SendClientMessage(playerid, -1, "คุณได้เคลื่อนย้ายไปที่ งาน นักขุดเหมือง");
+			return 1;
+		}
+		case 5:
+		{
+			SetPlayerPos(playerid, 2076.7122,-2026.7233,13.5469);
+			SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
+	
+			if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
+			{
+				PlayerInfo[playerid][pInsideProperty] = 0; PlayerInfo[playerid][pInsideBusiness] = 0;
+			}
+			SendClientMessage(playerid, -1, "คุณได้เคลื่อนย้ายไปที่ งาน ช่างซ่อมไฟฟ้า");
 			return 1;
 		}
 		default : SendErrorMessage(playerid, "ไม่มี อาชีพที่ต้องการ");
@@ -428,7 +438,7 @@ CMD:ajail(playerid, params[])
 	
 	new insertLog[250];
 	
-	mysql_format(dbCon, insertLog, sizeof(insertLog), "INSERT INTO ajail_logs (`JailedDBID`, `JailedName`, `Reason`, `Date`, `JailedBy`, `Time`) VALUES(%i, '%e', '%e', '%e', '%e', %i)",
+	mysql_format(dbCon, insertLog, sizeof(insertLog), "INSERT INTO ajaillog (`JailedDBID`, `JailedName`, `Reason`, `Date`, `JailedBy`, `Time`) VALUES(%i, '%e', '%e', '%e', '%e', %i)",
 		PlayerInfo[playerb][pDBID], ReturnName(playerb), reason, ReturnDate(), ReturnName(playerid), length);
 		
 	mysql_tquery(dbCon, insertLog);
@@ -912,6 +922,26 @@ CMD:respawncar(playerid, params[])
 		
 	new vehicleid, str[128];
 	
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		vehicleid = GetPlayerVehicleID(playerid);
+		SetVehicleToRespawn(vehicleid);
+		SetVehicleHp(vehicleid);
+		
+		foreach(new i : Player)
+		{
+			if(GetPlayerVehicleID(i) == vehicleid)
+			{
+				if(!VehicleInfo[vehicleid][eVehicleEngineStatus])
+					TogglePlayerControllable(i, 1);
+				SendServerMessage(i, "รถถูกผู้ดูแลระบบ %s ส่งกลับจุดเกิดรถแล้ว", ReturnName(playerid));
+			}
+		}
+		
+		format(str, sizeof(str), "%s ได้ส่งรถ ไอดี:%d กลับจุดเกิดแล้ว", ReturnName(playerid), vehicleid);
+		SendAdminMessage(1, str);
+		return 1;
+	}
 	if(sscanf(params, "d", vehicleid))
 		return SendUsageMessage(playerid, "/respawncar [ไอดี รถ]");
 		
@@ -925,6 +955,9 @@ CMD:respawncar(playerid, params[])
 	{
 		if(GetPlayerVehicleID(i) == vehicleid)
 		{
+			if(!VehicleInfo[vehicleid][eVehicleEngineStatus])
+				TogglePlayerControllable(i, 1);
+
 			SendServerMessage(i, "รถถูกผู้ดูแลระบบ %s ส่งกลับจุดเกิดรถแล้ว", ReturnName(playerid));
 		}
 	}
@@ -2224,11 +2257,11 @@ CMD:makeleader(playerid, params[])
 		if(PlayerInfo[i][pFaction] != factionid)
 			continue;
 		
-		SendClientMessageEx(i, -1, "{2ECC71}**((%s: ได้เข้าสู่เฟคชั่นของพวกคุณแล้ว))**", ReturnName(playerid));
+		SendClientMessageEx(i, COLOR_FACTIONCHAT, "**((%s: ได้เข้าสู่เฟคชั่นของพวกคุณแล้ว))**", ReturnName(playerid));
 	}
-	SendClientMessageEx(playerid, -1,"{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} คุณได้ให้ให้ %s เป็นหัวหน้าเฟคชั่น ของ %s",ReturnRealName(playerb,0),FactionInfo[factionid][eFactionName]);
+	SendClientMessageEx(playerid, -1,"คุณได้ให้ให้ %s เป็นหัวหน้าเฟคชั่น ของ %s",ReturnRealName(playerb,0),FactionInfo[factionid][eFactionName]);
 
-	format(str, sizeof(str), "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} %s ตั้งค่าให้ %s เป็นหัวหน้ากลุ่มเฟคชั่น %s", ReturnRealName(playerid,0), ReturnRealName(playerb,0), FactionInfo[factionid][eFactionName]);
+	format(str, sizeof(str), "%s ตั้งค่าให้ %s เป็นหัวหน้ากลุ่มเฟคชั่น %s", ReturnRealName(playerid,0), ReturnRealName(playerb,0), FactionInfo[factionid][eFactionName]);
 	SendAdminMessage(4, str);
 
 	CharacterSave(playerb);

@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `pAddicted` int(11) NOT NULL,
   `pAddictedCount` int(11) NOT NULL DEFAULT 0,
   `pWalk` int(11) NOT NULL DEFAULT 0,
+  `pCigare` int(11) NOT NULL DEFAULT 0,
   `pWeapon0` int(11) NOT NULL,
   `pWeapon1` int(11) NOT NULL,
   `pWeapon2` int(11) NOT NULL,

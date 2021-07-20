@@ -582,7 +582,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		if(!VehicleInfo[vehicleid][eVehicleEngineStatus] && !IsRentalVehicle(vehicleid) && !HasNoEngine(vehicleid))
 		{
-			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ /en(gine)");
+			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ /engine");
 			SendClientMessage(playerid,COLOR_WHITE,"ข้อแนะ: คุณสามารถออกจากรถด้วยการพิมพ์ /exitveh(icle)");
 			TogglePlayerControllable(playerid, 0);
 		}
@@ -639,7 +639,6 @@ public Query_AddPlayerVehicle(playerid, playerb)
 	return 1;
 }
 
-alias:engine("en")
 CMD:engine(playerid, params[])
 {
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
@@ -654,7 +653,7 @@ CMD:engine(playerid, params[])
 	if(health <= 300)
 		return SendErrorMessage(playerid, "ยานพหานะของคุณมีความเสียหายอย่างหนักจึงไม่สามารถ สตาร์ทเครื่องยนต์ได้");
 
-	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid) && !VehicleInfo[vehicleid][eVehicleFaction] && !VehFacInfo[vehicleid][VehFacDBID])
+	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid) && !VehicleInfo[vehicleid][eVehicleFaction] && !VehFacInfo[vehicleid][VehFacDBID] && !IsElecVehicle(vehicleid))
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้สามารถใช้ได้เฉพาะยานพาหนะส่วนตัว แต่คุณอยู่ในยานพาหนะสาธารณะ (Static)");
 		
 	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
@@ -683,7 +682,8 @@ CMD:engine(playerid, params[])
 	PlayerInfo[playerid][pDuplicateKey] != vehicleid && 
 	VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && 
 	!VehicleInfo[vehicleid][eVehicleAdminSpawn] && 
-	!IsRentalVehicle(vehicleid))
+	!IsRentalVehicle(vehicleid) &&
+	!IsElecVehicle(vehicleid))
 	{
 		new idx, str[128];
 		
@@ -1157,37 +1157,69 @@ CMD:vehicle(playerid, params[])
 	{
 		new bool:foundCar = false, vehicleid, Float:fetchPos[3];
 		
-		for (new i = 0; i < MAX_VEHICLES; i++)
+		if(!IsPlayerInAnyVehicle(playerid))
 		{
-			GetVehiclePos(i, fetchPos[0], fetchPos[1], fetchPos[2]);
-			if(IsPlayerInRangeOfPoint(playerid, 4.0, fetchPos[0], fetchPos[1], fetchPos[2]))
+			for (new i = 0; i < MAX_VEHICLES; i++)
 			{
-				foundCar = true;
-				vehicleid = i; 
-				break; 
+				GetVehiclePos(i, fetchPos[0], fetchPos[1], fetchPos[2]);
+				if(IsPlayerInRangeOfPoint(playerid, 4.0, fetchPos[0], fetchPos[1], fetchPos[2]))
+				{
+					foundCar = true;
+					vehicleid = i; 
+					break; 
+				}
+			}
+			if(foundCar == true)
+			{
+				if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin])
+					return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้"); 
+					
+				new statusString[90]; 
+				new engine, lights, alarm, doors, bonnet, boot, objective; 
+		
+				GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+				
+				if(VehicleInfo[vehicleid][eVehicleLocked])
+				{
+					format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
+				
+					SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
+					VehicleInfo[vehicleid][eVehicleLocked] = false;
+				}
+				else 
+				{
+					format(statusString, sizeof(statusString), "~r~%s LOCKED", ReturnVehicleName(vehicleid));
+					
+					SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
+					VehicleInfo[vehicleid][eVehicleLocked] = true;
+				}
+				GameTextForPlayer(playerid, statusString, 3000, 3);
+				return 1;
 			}
 		}
-		if(foundCar == true)
+		else
 		{
+			vehicleid = GetPlayerVehicleID(playerid);
+			
 			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin])
 				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้"); 
-				
+					
 			new statusString[90]; 
 			new engine, lights, alarm, doors, bonnet, boot, objective; 
-	
+
 			GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-			
+				
 			if(VehicleInfo[vehicleid][eVehicleLocked])
 			{
 				format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
-			
+				
 				SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
 				VehicleInfo[vehicleid][eVehicleLocked] = false;
 			}
 			else 
 			{
 				format(statusString, sizeof(statusString), "~r~%s LOCKED", ReturnVehicleName(vehicleid));
-				
+					
 				SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
 				VehicleInfo[vehicleid][eVehicleLocked] = true;
 			}
@@ -2380,7 +2412,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 forward OnVehicleUpdate();
 public OnVehicleUpdate()
 {
-	new Float:Health; new playerid = INVALID_PLAYER_ID;
+	new Float:Health;
 	for(new vehicleid = 1; vehicleid < MAX_VEHICLES; vehicleid++)
 	{
 		GetVehicleHealth(vehicleid, Health);
@@ -2389,21 +2421,19 @@ public OnVehicleUpdate()
 		{
 			if(GetPlayerVehicleID(i) == vehicleid)
 			{
-				playerid = i;
-			}
-		}
+				if(Health < 250)
+				{
+					SetVehicleHealth(vehicleid, 300.0);
+					ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 
-		if(Health < 250)
-		{
-			SetVehicleHealth(vehicleid, 300.0);
-			ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
-
-			if(VehicleInfo[vehicleid][eVehicleDBID])
-			{
-				VehicleInfo[vehicleid][eVehicleBattery]--;
-				SendClientMessageEx(playerid, -1, "ยานพาหนะมีความเสียหาย ทำให้แบตตารี่ ลดลง เหลือ %f", VehicleInfo[vehicleid][eVehicleBattery]);
+					if(VehicleInfo[vehicleid][eVehicleDBID])
+					{
+						VehicleInfo[vehicleid][eVehicleBattery]--;
+						SendClientMessageEx(i, -1, "ยานพาหนะมีความเสียหาย ทำให้แบตตารี่ ลดลง เหลือ %f", VehicleInfo[vehicleid][eVehicleBattery]);
+					}
+					SendClientMessage(i, -1, "รถดับ");
+				}
 			}
-			SendClientMessage(playerid, -1, "รถดับ");
 		}
 	}
 	return 1;

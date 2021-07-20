@@ -13,7 +13,7 @@ new
 #endif
 
 
-/**
+/*
 * ฟังชั่นในการส่งข้อความเข้า ดิสคอร์ด เพื่อเป็นการแจ้งเตือนข้อความภายในเซิร์ฟเวอร์
 * โปรดใชเอย่างระมัดระวังไม่ไปส่งในห้องของ Player;
 */
@@ -23,7 +23,7 @@ stock SendDiscordMessage(channel, const message[])
 	{
 		case 0:
 		{
-			g_ServerOpen = DCC_FindChannelById("853624525354041375");
+			g_ServerOpen = DCC_FindChannelById("848148148714209311");
 			DCC_SendChannelMessage(g_ServerOpen, message);
             return 1;
 		}

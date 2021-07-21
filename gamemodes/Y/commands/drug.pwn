@@ -1,7 +1,5 @@
 #include <YSI_Coding\y_hooks>
 
-new PlayerDrugUse[MAX_PLAYERS];
-
 CMD:drughelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________DRUGS HELP____________");
@@ -481,6 +479,7 @@ public SetPlayerHealth_Stap(playerid, type)
     if(GetPlayerState(playerid) != PLAYER_STATE_ALIVE)
     {
         KillTimer(PlayerDrugUse[playerid]);
+        PlayerDrugUse[playerid] = -1;
         SendClientMessage(playerid, COLOR_LIGHTRED, "สถานะคุณไม่ได้อยู้สำหรับการเสพยา");
         return 1;
     }

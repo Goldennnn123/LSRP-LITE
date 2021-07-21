@@ -176,6 +176,7 @@ enum E_PLAYER_DATA
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];
+new PlayerDrugUse[MAX_PLAYERS];
 
 enum P_MASTER_ACCOUNTS
 {

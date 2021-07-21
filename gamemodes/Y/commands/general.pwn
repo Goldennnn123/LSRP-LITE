@@ -234,10 +234,10 @@ CMD:enter(playerid,params[])
 
 		if(IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[p][HouseEntrance][0], HouseInfo[p][HouseEntrance][1], HouseInfo[p][HouseEntrance][2]))
 		{
-			if(GetPlayerInterior(playerid) != HouseInfo[p][HouseEntranceWorld])
+			if(GetPlayerVirtualWorld(playerid) != HouseInfo[p][HouseEntranceWorld])
 				continue;
 					
-			if(GetPlayerVirtualWorld(playerid) != HouseInfo[p][HouseEntranceInterior])
+			if(GetPlayerInterior(playerid) != HouseInfo[p][HouseEntranceInterior])
 				continue;
 
 			if(HouseInfo[p][HouseLock] == true)

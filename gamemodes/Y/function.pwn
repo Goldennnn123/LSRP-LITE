@@ -48,9 +48,12 @@ new
 
 stock PlayerSpec(playerid, playerb)
 {
-	KillTimer(PlayerDrugUse[playerid]);
-    PlayerDrugUse[playerid] = -1;
-    SendClientMessage(playerid, COLOR_LIGHTRED, "สถานะคุณไม่ได้อยู้สำหรับการเสพยา");
+	if(PlayerDrugUse[playerid] != -1)
+	{
+			KillTimer(PlayerDrugUse[playerid]);
+		PlayerDrugUse[playerid] = -1;
+		SendClientMessage(playerid, COLOR_LIGHTRED, "สถานะคุณไม่ได้อยู้สำหรับการเสพยา");
+	}
 
 	new weapon[13][2];
 

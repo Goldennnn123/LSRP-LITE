@@ -2,12 +2,6 @@
 
 new PlayerDrugUse[MAX_PLAYERS];
 
-hook OnPlayerConnect(playerid)
-{
-    KillTimer(PlayerDrugUse[playerid]);
-    return 1;
-}
-
 CMD:drughelp(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________DRUGS HELP____________");

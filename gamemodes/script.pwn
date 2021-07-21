@@ -592,7 +592,10 @@ public OnPlayerConnect(playerid) {
     SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
 
     KillTimer(playerTowTimer[playerid]);
+    playerTowTimer[playerid] = -1;
     playerTowingVehicle[playerid] = false;
+    KillTimer(PlayerDrugUse[playerid]);
+    PlayerDrugUse[playerid] = -1;
 
 
     for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)

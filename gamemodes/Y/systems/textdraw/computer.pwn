@@ -494,6 +494,7 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				SendClientMessage(playerid, COLOR_DARKGREEN, "คุณได้หยุดขุด เหรียญ BTC.....");
 
 				KillTimer(ComputerInfo[id][ComputerTimer]);
+				ComputerInfo[id][ComputerTimer] = -1;
 				PlayerTextDrawSetString(playerid,PL_Computer[playerid][21], "~g~START");
 				
 				PlayerInfo[playerid][pBTC] += ComputerInfo[id][ComputerBTC];

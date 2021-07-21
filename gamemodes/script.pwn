@@ -155,6 +155,7 @@ new globalWeather = 2;
 #include "Y/Interior/Bank.pwn"
 #include "Y/Interior/House1.pwn"
 #include "Y/Interior/House2.pwn"
+#include "Y/Interior/house3.pwn"
 #include "Y/Interior/pizza.pwn"
 #include "Y/Interior/bar2.pwn"
 #include "Y/Interior/House3.pwn"

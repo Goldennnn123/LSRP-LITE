@@ -905,6 +905,7 @@ CMD:siren2(playerid, params[])
 	{
 		SendClientMessage(playerid, COLOR_LIGHTGREEN, "คุณถอดไซเรนออก");
 		DestroyDynamicObject(VehicleSiren[vehicleid]);
+		
 	}
 	return 1;
 }
@@ -933,22 +934,23 @@ CMD:siren3(playerid, params[])
 
 	if(!strcmp(type, "ภายใน"))
 	{
-		if(VehicleSiren[vehicleid]) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ติดไซเรนแล้ว");
+		if(VehicleSiren[vehicleid] != INVALID_OBJECT_ID) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ติดไซเรนแล้ว");
         VehicleSiren[vehicleid] = CreateDynamicObject(18646, 10.0, 10.0, 10.0, 0, 0, 0);
         AttachDynamicObjectToVehicle(VehicleSiren[vehicleid],vehicleid, 0.0, 0.75, 0.275, 0.0, 0.1, 0.0);
         return 1;
 	}
 	else if(!strcmp(type, "หลังคา"))
 	{
-	    if(VehicleSiren[vehicleid]) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ติดไซเรนแล้ว");
+	    if(VehicleSiren[vehicleid] != INVALID_OBJECT_ID) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ติดไซเรนแล้ว");
         VehicleSiren[vehicleid] = CreateDynamicObject(18646, 10.0, 10.0, 10.0, 0, 0, 0);
         AttachDynamicObjectToVehicle(VehicleSiren[vehicleid], vehicleid, -0.43, 0.0, 0.785, 0.0, 0.1, 0.0);
         return 1;
 	}
 	else if(!strcmp(type, "ปิด"))
 	{
-	    if(!VehicleSiren[vehicleid]) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ยังไม่ได้ติดไซเรน");
+	    if(VehicleSiren[vehicleid] != INVALID_OBJECT_ID) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ยังไม่ได้ติดไซเรน");
 		DestroyDynamicObject(VehicleSiren[vehicleid]);
+		VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
 		return 1;
 	}
 	return 1;

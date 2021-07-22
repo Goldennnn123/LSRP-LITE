@@ -621,6 +621,20 @@ public OnPlayerConnect(playerid) {
             PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/134nwjnrnmTd"); // Timber - Pitbull.
         }
     }
+
+    new pname[MAX_PLAYER_NAME];
+    GetPlayerName(playerid, pname, sizeof(pname));
+	new maxname = strlen(pname);
+
+	for(new i=0; i<maxname; i++)
+	{
+		if(pname[i] == '_')
+		{
+			SendServerMessage(playerid, "คุณไม่ได้ใส่ชื่อ Username โปรดออกไปใส่ชื่อเป็น Username เพื่อเข้าสู่ระบบ");
+			return Dialog_Show(playerid, DIALOG_SET_USERNAME, DIALOG_STYLE_INPUT, "เปลี่ยนชื่อเป็น Username ที่คุณต้องการ", "ใส่ชื่อ Username ที่คุณต้องการเข้าสู่ระบบ หากมีชื่อผู้ใช้อยู่แล้วจะนำเข้าสู่ระบบต่อไป:", "ยืนยัน", "ยกเลิก");
+		}
+	}
+    
 	mysql_format(dbCon, query, sizeof(query), "SELECT COUNT(acc_name) FROM `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
 	mysql_tquery(dbCon, query, "OnPlayerJoin", "d", playerid);
 

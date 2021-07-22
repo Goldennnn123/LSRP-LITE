@@ -837,12 +837,6 @@ public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 		SendClientMessage(playerid, COLOR_LIGHTRED, "ACCESS DENIED: {FFFFFF}คุณต้องเข้าสู่ระบบก่อนที่จะใช้คำสั่ง");
 		return 0;
 	}
-    else if (!(flags & PlayerInfo[playerid][pCMDPermission]) && flags)
-    {
-        SendClientMessage(playerid, COLOR_LIGHTRED, "ACCESS DENIED: {FFFFFF}คุณไม่ได้รับอนุญาตให้ใช้คำสั่งนี้");
-        return 0;
-    }
-
     return 1;
 }
 
@@ -853,14 +847,7 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
         SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}เกิดข้อผิดพลาดในการใช้คำสั่ง");
         return 0;
     }
-
-	if(flags) { // Permission CMD
-		if (flags & PlayerInfo[playerid][pCMDPermission])
-		{
-			Log(adminactionlog, INFO, "%s: /%s %s", ReturnPlayerName(playerid), cmd, params);
-		}
-	}   
-
+  
     Log(allcmdlog, WARNING, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
     return 1;
 }

@@ -1065,7 +1065,7 @@ CMD:setchannel(playerid, params[])
 	if(sscanf(params, "ii", channel, slot))
 		return SendUsageMessage(playerid, "/setchannel [áªÅàà¹Ç] [ÊçÍµ]"); 
 		
-	if(slot > 10 || slot < 1)
+	if(slot > 2 || slot < 1)
 		return SendErrorMessage(playerid, "ÊçÍµ¨ÐÊÒÁÒÃ¶»ÃÑºä´éà¾ÕÂ§á¤è (1-10)");
 		
 	if(channel < 1 || channel > 1000000)

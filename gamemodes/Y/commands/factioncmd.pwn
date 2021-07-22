@@ -2,6 +2,13 @@
 
 new VehicleSiren[MAX_VEHICLES];
 
+hook function SetVehicleToRespawn(vehicleid)
+{
+	VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
+	return 1;
+}
+
+
 new 
 	playerWeaponsSave[MAX_PLAYERS][4], 
 	playerWeaponsAmmoSave[MAX_PLAYERS][4]; 

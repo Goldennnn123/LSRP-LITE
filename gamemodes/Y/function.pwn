@@ -50,7 +50,7 @@ stock PlayerSpec(playerid, playerb)
 {
 	if(PlayerDrugUse[playerid] != -1)
 	{
-			KillTimer(PlayerDrugUse[playerid]);
+		KillTimer(PlayerDrugUse[playerid]);
 		PlayerDrugUse[playerid] = -1;
 		SendClientMessage(playerid, COLOR_LIGHTRED, "สถานะคุณไม่ได้อยู้สำหรับการเสพยา");
 	}

@@ -484,6 +484,9 @@ public SetPlayerHealth_Stap(playerid, type)
         return 1;
     }
 
+    if(PlayerDrugUse[playerid] == -1)
+        return 1;
+
     switch(type)
     {
         case 1:
@@ -515,5 +518,12 @@ public SetPlayerHealth_Stap(playerid, type)
             GivePlayerHealth(playerid, 2);
         }
     }
+    return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+    KillTimer(PlayerDrugUse[playerid]);
+    PlayerDrugUse[playerid] = -1;
     return 1;
 }

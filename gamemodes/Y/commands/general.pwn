@@ -2284,6 +2284,10 @@ public HelpUpPLayer(playerid, tagerid)
 	SetPlayerWeather(tagerid, globalWeather);  
 	PlayerHelpUp[tagerid] = false;
 	SendNearbyMessage(playerid, 3.5, COLOR_EMOTE, "* %s ปฐมพยาบาลเบื่องต้นให้กับ %s",ReturnName(playerid,0), ReturnName(tagerid,0));
+
+	new str[150];
+	format(str, sizeof(str), "%s Helpup %s", ReturnRealName(playerid,0), ReturnRealName(tagerid,0));
+	SendDiscordMessage(7, str);
 	return 1;
 }
 

@@ -310,6 +310,9 @@ CMD:usedrug(playerid, params[])
             new str[120];
             format(str, sizeof(str), "หยิบยาออกมาเสพ");
             callcmd::ame(playerid, str);
+
+            format(str, sizeof(str), "%s use drug 'Cocaine'",ReturnRealName(playerid, 0));
+            SendDiscordMessageEx("866676805569609768", str);
             return 1;
         }
         case 2:
@@ -327,6 +330,9 @@ CMD:usedrug(playerid, params[])
             new str[120];
             format(str, sizeof(str), "หยิบยาออกมาเสพ");
             callcmd::ame(playerid, str);
+
+            format(str, sizeof(str), "%s use drug 'Cannabis'",ReturnRealName(playerid, 0));
+            SendDiscordMessageEx("866676805569609768", str);
         }
         case 3:
         {
@@ -338,11 +344,14 @@ CMD:usedrug(playerid, params[])
             PlayerInfo[playerid][pDrug][1]-= 0.01;
             PlayerInfo[playerid][pAddicted] = false;
             PlayerInfo[playerid][pAddictedCount] = 1;
-            Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cannabis'", ReturnName(playerid, 0));
+            Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด ''", ReturnName(playerid, 0));
             
             new str[120];
             format(str, sizeof(str), "หยิบยาออกมาเสพ");
             callcmd::ame(playerid, str);
+
+            format(str, sizeof(str), "%s use drug 'Heroin'",ReturnRealName(playerid, 0));
+            SendDiscordMessageEx("866676805569609768", str);
         }
     }
     return 1;

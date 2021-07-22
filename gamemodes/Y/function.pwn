@@ -173,20 +173,14 @@ stock MoneyFormat(integer)
  *  เรียกชื่อ Roleplay จากผู้เล่น ไม่มีขีดเส้นใต้ (Underscore)
  * @param {number} ไอดีผู้เล่น
  */
-ReturnRealName(playerid, underScore = 1)
+stock ReturnRealName(playerid, underScore = 1)
 {
     new pname[MAX_PLAYER_NAME];
     GetPlayerName(playerid, pname, MAX_PLAYER_NAME);
 
 	if(!underScore)
-	{
-		if(PlayerInfo[playerid][pMasked])
-			format(pname, sizeof(pname), "[Mask %i_%i]", PlayerInfo[playerid][pMaskID][0], PlayerInfo[playerid][pMaskID][1]); 
-			
-		else
-		{
-			 for (new i = 0, len = strlen(pname); i < len; i ++) if (pname[i] == '_') pname[i] = ' ';
-		}
+	{		
+		for (new i = 0, len = strlen(pname); i < len; i ++) if (pname[i] == '_') pname[i] = ' ';
 	}
     return pname;
 }

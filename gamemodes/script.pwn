@@ -621,12 +621,8 @@ public OnPlayerConnect(playerid) {
             PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/134nwjnrnmTd"); // Timber - Pitbull.
         }
     }
-
-    mysql_format(dbCon, query, sizeof(query), "SELECT * FROM bannedlist WHERE IpAddress = '%e'", ReturnIP(playerid));
-	mysql_tquery(dbCon, query, "CheckBanList", "i", playerid);
-
-	/*mysql_format(dbCon, query, sizeof(query), "SELECT COUNT(acc_name) FROM `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
-	mysql_tquery(dbCon, query, "OnPlayerJoin", "d", playerid);*/
+	mysql_format(dbCon, query, sizeof(query), "SELECT COUNT(acc_name) FROM `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
+	mysql_tquery(dbCon, query, "OnPlayerJoin", "d", playerid);
 
     SendClientMessage(playerid, -1, "ยินดีต้อนรับเข้าสู่ "EMBED_YELLOW"Los Santos Roleplay LITE");
     return 1;
@@ -884,6 +880,7 @@ public OnPlayerUpdate(playerid)
 	else if(GetPlayerTeam(playerid) == PLAYER_STATE_DEAD)
 	{
 		SetPlayerChatBubble(playerid, "(( ผู้เล่นคนนี้เสียชีวิตแล้ว ))", COLOR_RED, 30.0, 2500); 
+        ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 0, 1, 1, 1, 0, 1);	
 	}
     return 1;
 }

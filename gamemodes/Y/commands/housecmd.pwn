@@ -4,7 +4,7 @@ CMD:housecmds(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_DARKGREEN, "____________________HOUSE COMMAND__________________________");
 
-    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /house /buyhouse /sellhouse /lock /placepos /swicth /knock /ddo /ds");
+    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /house /buyhouse /sellhouse /lock /placepos /switch /knock /ddo /ds");
 
     SendClientMessage(playerid, COLOR_GREEN,"________________________________________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
@@ -205,7 +205,7 @@ CMD:knock(playerid, params[])
 }
 
 
-CMD:swicth(playerid, params[])
+CMD:switch(playerid, params[])
 {
     new id = PlayerInfo[playerid][pInsideProperty], str[32];
 
@@ -218,7 +218,7 @@ CMD:swicth(playerid, params[])
     {
         SendClientMessage(playerid, -1, "on = เปิดไฟภายในบ้าน");
         SendClientMessage(playerid, -1, "off = ปิดไฟภายในบ้าน");
-        SendUsageMessage(playerid, "/swicth <on หรือ off>");
+        SendUsageMessage(playerid, "/switch <on หรือ off>");
         return 1;
     }
 
@@ -278,7 +278,7 @@ CMD:swicth(playerid, params[])
         KillTimer(HouseInfo[id][HouseTimerEle]);
 
         format(str, sizeof(str), "ปิดสวิทซ์ไฟภายในบ้าน");
-        SendClientMessage(playerid, COLOR_YELLOWEX, "ไฟที่บ้านของคุณดับอยู่พิมพ์ /swicth on เพื่อเปิด");
+        SendClientMessage(playerid, COLOR_YELLOWEX, "ไฟที่บ้านของคุณดับอยู่พิมพ์ /switch on เพื่อเปิด");
         callcmd::me(playerid,str);
         return 1;
     }

@@ -9,7 +9,9 @@ new
 	DCC_Channel:DeathLogs,
 	DCC_Channel:HackerLog,
 	DCC_Channel:DrugLog,
-	DCC_Channel:CommandAdminLog;
+	DCC_Channel:CommandAdminLog,
+	DCC_Channel:D_HelpupLog,
+	DCC_Channel:channelFind;
 #endif
 
 
@@ -56,10 +58,22 @@ stock SendDiscordMessage(channel, const message[])
 			CommandAdminLog = DCC_FindChannelById("862581433302384650");
 			DCC_SendChannelMessage(CommandAdminLog, message);
 		}
+		case 7:
+		{
+			D_HelpupLog = DCC_FindChannelById("862585567232786452");
+			DCC_SendChannelMessage(D_HelpupLog, message);
+		}
 	}
 	return 1;
 }
 
+stock SendDiscordMessageEx(const channel[], const fmat[])
+{
+	channelFind = DCC_FindChannelById(channel);
+
+	DCC_SendChannelMessage(channelFind, fmat);
+	return 1;
+}
 
 #if defined USING_DISCORD
 forward DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[]);

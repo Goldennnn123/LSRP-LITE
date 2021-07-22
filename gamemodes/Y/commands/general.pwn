@@ -1066,7 +1066,7 @@ CMD:setchannel(playerid, params[])
 		return SendUsageMessage(playerid, "/setchannel [แชลเเนว] [ส็อต]"); 
 		
 	if(slot > 2 || slot < 1)
-		return SendErrorMessage(playerid, "ส็อตจะสามารถปรับได้เพียงแค่ (1-10)");
+		return SendErrorMessage(playerid, "ส็อตจะสามารถปรับได้เพียงแค่ (1-2)");
 		
 	if(channel < 1 || channel > 1000000)
 		return SendErrorMessage(playerid, "คุณไม่สามารถปรับแชลแนวเกิน (1-1000000)"); 

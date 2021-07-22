@@ -129,7 +129,7 @@ CMD:invite(playerid, params[])
 	if(!PlayerInfo[playerid][pFaction])
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
 		
-	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank])
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้"); 
 	
 	if(sscanf(params, "u", playerb))
@@ -185,7 +185,7 @@ CMD:uninvite(playerid, params[])
 	if(!PlayerInfo[playerid][pFaction])
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
 		
-	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank])
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้"); 
 	
 	if(sscanf(params, "u", playerb))

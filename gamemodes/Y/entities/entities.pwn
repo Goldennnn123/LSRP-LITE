@@ -266,6 +266,7 @@ enum E_VEHICLE_SYSTEM
 }
 
 new VehicleInfo[MAX_VEHICLES][E_VEHICLE_SYSTEM];
+new VehicleSiren[MAX_VEHICLES];
 
 
 enum G_REPORT_INFO

@@ -927,7 +927,9 @@ CMD:respawncar(playerid, params[])
 		vehicleid = GetPlayerVehicleID(playerid);
 		SetVehicleToRespawn(vehicleid);
 		SetVehicleHp(vehicleid);
-		
+
+		VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
+
 		foreach(new i : Player)
 		{
 			if(GetPlayerVehicleID(i) == vehicleid)
@@ -950,6 +952,7 @@ CMD:respawncar(playerid, params[])
 		
 	SetVehicleToRespawn(vehicleid);
 	SetVehicleHp(vehicleid);
+	VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
 	
 	foreach(new i : Player)
 	{

@@ -1,12 +1,6 @@
 #include <YSI_Coding\y_hooks>
 
-new VehicleSiren[MAX_VEHICLES];
 
-hook function SetVehicleToRespawn(vehicleid)
-{
-	VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
-	return 1;
-}
 
 
 new 
@@ -801,6 +795,7 @@ CMD:towcars(playerid, params[])
 		SetVehicleVirtualWorld(v, VehFacInfo[v][VehFacPosWorld]);
 		SetVehicleNumberPlate(v, FactionInfo[id][eFactionAbbrev]);
 		SetVehicleHp(v);
+		VehicleSiren[v] = INVALID_OBJECT_ID;
 	}
 
 	SendFactionMessageEx(playerid, COLOR_FACTION, "**(( %s ได้ส่งยานพาหนะที่ไม่มีคนนั่งของกลุ่มกลับจุดเกิดทั้งหมด ))**", ReturnName(playerid, 0));

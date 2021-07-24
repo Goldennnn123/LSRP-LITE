@@ -142,9 +142,7 @@ CMD:goto(playerid, params[])
 		SetPlayerPos(playerid, PlayerInfo[playerb][pLastPosX], PlayerInfo[playerb][pLastPosY], PlayerInfo[playerb][pLastPosZ]);
 		
 	SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
-	
-	if(GetPlayerInterior(playerb) != 0)
-		SetPlayerInterior(playerid, GetPlayerInterior(playerb)); 
+	SetPlayerInterior(playerid, GetPlayerInterior(playerb)); 
 		
 	SendTeleportMessage(playerid);
 

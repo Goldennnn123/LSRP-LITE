@@ -277,6 +277,9 @@ CMD:givedrug(playerid, params[])
 
 CMD:usedrug(playerid, params[])
 {
+    if(PlayerDrugUse[playerid] != -1)
+        return SendErrorMessage(playerid, "คุณยังมีการเสพยาเสพติดอยู่ในขณะนี้");
+
     new type, Float:health;
 
     if(sscanf(params, "d", type))
@@ -504,6 +507,7 @@ public SetPlayerHealth_Stap(playerid, type)
             {
                 SetPlayerHealth(playerid, 170);
                 KillTimer(PlayerDrugUse[playerid]);
+                PlayerDrugUse[playerid] = -1;
             }
 
             GivePlayerHealth(playerid, 2);
@@ -514,6 +518,7 @@ public SetPlayerHealth_Stap(playerid, type)
             {
                 SetPlayerHealth(playerid, 150);
                 KillTimer(PlayerDrugUse[playerid]);
+                PlayerDrugUse[playerid] = -1;
             }
             GivePlayerHealth(playerid, 2);
         }
@@ -523,6 +528,7 @@ public SetPlayerHealth_Stap(playerid, type)
             {
                 SetPlayerHealth(playerid, 200);
                 KillTimer(PlayerDrugUse[playerid]);
+                PlayerDrugUse[playerid] = -1;
             }
             GivePlayerHealth(playerid, 2);
         }

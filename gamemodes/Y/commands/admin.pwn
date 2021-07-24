@@ -267,6 +267,26 @@ CMD:gethere(playerid, params[])
 	return 1;
 }
 
+CMD:setnumberphone(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+	
+	new number, tagerid;
+	if(sscanf(params, "ud", tagerid,number))
+		return SendUsageMessage(playerid, "/setnumberphone <ชื่อบางส่วน/ไอดี> <เบอร์โทรศัพท์>");
+	
+	if(!IsPlayerConnected(tagerid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+	PlayerInfo[playerid][pPhone] = number;
+	SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เปลี่ยน เบอร์โทรศัพท์ให้ %s", ReturnRealName(tagerid,0));
+	return 1;
+}
+
 CMD:showmain(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])

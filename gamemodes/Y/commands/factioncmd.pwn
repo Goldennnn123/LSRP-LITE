@@ -19,7 +19,7 @@ CMD:factionhelp(playerid, params[])
     {
         SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty, /cuff, /uncuff, /showbadge, /m(egaphone), /(dep)artment,");
 		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign, /tazer, /take, /givelicense, /impound, /mdc");
-		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /siren, /siren2, /siren3, /headquarter");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /siren, /siren2, /siren3, /headquarter /setbadge");
 		
 		if(PlayerInfo[playerid][pFactionRank] <= FactionInfo[PlayerInfo[playerid][pFaction]][eFactionTowRank])
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /towcars");
@@ -955,6 +955,42 @@ CMD:siren3(playerid, params[])
 		VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
 		return 1;
 	}
+	return 1;
+}
+
+CMD:setbadge(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
+
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
+
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
+		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
+
+	new tagetid, badgenumber;
+
+	if(sscanf(params, "ud", tagetid, badgenumber))
+		return SendUsageMessage(playerid, "/setbadge <ชื่อบางส่วน/ไอดี> <เลขตรา>");
+	
+	if(!IsPlayerConnected(tagetid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagetid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+	
+	if(PlayerInfo[playerid][pFaction] != PlayerInfo[tagetid][pFaction])
+		return SendErrorMessage(playerid, "แฟคชั่นของผู้เล่นไม่ได้อยู่กับคุณ");
+
+	
+	PlayerInfo[tagetid][pBadge] = badgenumber;
+	
+	CharacterSave(playerid);
+	CharacterSave(tagetid);
+
+	SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เปลี่ยนเลขตราให้กับ %s เป็น %d",ReturnName(tagetid,0), badgenumber);
+	SendClientMessageEx(tagetid, COLOR_HELPME, "%s ได้เปลี่ยนได้เลขตราให้คุณเป็น %d",ReturnName(playerid,0), badgenumber);
 	return 1;
 }
 

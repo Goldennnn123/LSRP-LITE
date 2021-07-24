@@ -604,6 +604,11 @@ public OnPlayerConnect(playerid) {
         PlayerInfo[playerid][pClothing][i-1] = 0;
     }
 
+    for(new i = 0; i < 10; i++)
+    {
+        PlayerInfo[playerid][pObject][i] = 0;
+    }
+
 	new query[90];
     new musicrandom = random(3);
     switch(musicrandom)

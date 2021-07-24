@@ -28,14 +28,15 @@ public OnPlayerRegister(playerid)
 	return 1;
 }
 
-forward OnPlayerLogin(playerid, race_check);
-public OnPlayerLogin(playerid, race_check)
+forward OnPlayerLogin(playerid/*, race_check*/);
+public OnPlayerLogin(playerid/*, race_check*/)
 {
-	if (race_check != g_MysqlRaceCheck[playerid]) 
-		return Kick(playerid);
+	/*if (race_check != g_MysqlRaceCheck[playerid]) 
+		return Kick(playerid);*/
 
 	new pPass[129], unhashed_pass[129];
 	GetPVarString(playerid, "Unhashed_Pass",unhashed_pass, 129);
+	printf("%s",unhashed_pass);
 	if(cache_num_rows())
 	{
 		cache_get_value_index(0, 0, pPass, 129);
@@ -46,7 +47,7 @@ public OnPlayerLogin(playerid, race_check)
         if (strequal(unhashed_pass, pPass, true)) {
             DeletePVar(playerid, "Unhashed_Pass");
 
-            cache_get_value_name_int(0, "admin", PlayerInfo[playerid][pAdmin]);
+            //cache_get_value_name_int(0, "admin", PlayerInfo[playerid][pAdmin]);
             ShowCharacterSelection(playerid);
 
         }
@@ -110,9 +111,9 @@ Dialog:DIALOG_LOGIN(playerid, response, listitem, inputtext[])
     WP_Hash(buf, sizeof (buf), inputtext);
     SetPVarString(playerid, "Unhashed_Pass",buf);
 
-	g_MysqlRaceCheck[playerid]++;
-    mysql_format(dbCon, query, sizeof(query), "SELECT acc_pass, acc_dbid, acc_name, forum_name ,admin from `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
-    mysql_tquery(dbCon, query, "OnPlayerLogin", "id", playerid, g_MysqlRaceCheck[playerid]);
+	//g_MysqlRaceCheck[playerid]++;
+    mysql_format(dbCon, query, sizeof(query), "SELECT acc_pass, acc_dbid, acc_name, admin from `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
+    mysql_tquery(dbCon, query, "OnPlayerLogin", "i", playerid/*,g_MysqlRaceCheck[playerid]*/);
 
     return 1;
 }

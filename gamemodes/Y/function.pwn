@@ -624,11 +624,13 @@ public CallPaycheck()
 		SendClientMessageEx(i, COLOR_GREY, "   ภาษี: $%s", MoneyFormat(total_tax)); 
 		SendClientMessage(i, COLOR_WHITE, "|________________________|");
 		
-		PlayerInfo[i][pPaycheck]+= total_paycheck; 
+		PlayerInfo[i][pPaycheck]+= total_paycheck;
+
 		PlayerInfo[i][pBank]+= interest_convert;
 		//PlayerInfo[i][pBank]+= total_paycheck;
 		PlayerInfo[i][pBank]-= total_tax;
 		GlobalInfo[G_GovCash]+= floatround(total_tax, floatround_round);
+		GlobalInfo[G_GovCash]-= floatround(total_paycheck, floatround_round);
 		
 		SendClientMessageEx(i, COLOR_WHITE, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank]));
 		

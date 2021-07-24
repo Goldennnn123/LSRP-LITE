@@ -606,8 +606,10 @@ public OnPlayerConnect(playerid) {
 
     for(new i = 0; i < 10; i++)
     {
-        PlayerInfo[playerid][pObject][i] = 0;
+        PlayerInfo[playerid][pObject][i] = INVALID_OBJECT_ID;
     }
+
+    MealOder[playerid] = false;
 
 	new query[90];
     new musicrandom = random(3);
@@ -675,7 +677,14 @@ public OnPlayerDisconnect(playerid, reason) {
         }
     }
 
+    for(new i = 0; i < 10; i++)
+    {
+        DestroyDynamicObject(PlayerInfo[playerid][pObject][i]);
+        PlayerInfo[playerid][pObject][i] = INVALID_OBJECT_ID;
+    }
 
+    MealOder[playerid] = false;
+    
     new playerTime = NetStats_GetConnectedTime(playerid);
 	new secondsConnection = (playerTime % (1000*60*60)) / (1000*60);
 	

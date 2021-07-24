@@ -25,7 +25,7 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstaion /boombox /clothing /buyclothing");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
-	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp /drughelp");
+	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp /drughelp /meal");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation) /walkstyle /shakehand");
 	SendClientMessage(playerid, COLOR_GREEN,"_____________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
@@ -2217,6 +2217,74 @@ CMD:isafk(playerid, params[])
 		
 	else SendClientMessageEx(playerid, COLOR_GREY, "ผู้เล่นไม่ได้ AFK.", ReturnName(playerb)); 
 
+	return 1;
+}
+
+CMD:meal(playerid, params[])
+{
+	new
+	    type[24],
+		menuid,
+		value;
+
+	if (sscanf(params, "s[24]D()D()", type, menuid, value))
+ 	{
+	    SendClientMessage(playerid, COLOR_GRAD3, "Available commands:");
+	    SendClientMessage(playerid, -1, "{FF6347}/meal order "EMBED_WHITE"- เปิดเมนูสั่งอาหาร");
+        SendClientMessage(playerid, -1, "{FF6347}/meal place "EMBED_WHITE"- หากคุณกำลังถือถาดอาหาร คุณสามารถวางมันบนโต๊ะได้");
+        SendClientMessage(playerid, -1, "{FF6347}/meal pickup "EMBED_WHITE"- คุณสามารถหยิบถาดอาหารของคุณที่วางอยู่ได้");
+        SendClientMessage(playerid, -1, "{FF6347}/meal throw "EMBED_WHITE"- โยนถาดอาหารทิ้ง");
+		return 1;
+	}
+	if (!strcmp(type, "order", true))
+	{	
+		callcmd::eat(playerid, "");
+	}
+	else if (!strcmp(type, "place", true))
+	{
+		if(MealOder[playerid] == false || PlayerInfo[playerid][pObject][9] != INVALID_OBJECT_ID)
+			return SendErrorMessage(playerid, "คุณยังไม่ได้ซื้ออาหาร / หรือมีถาดอาหารที่ยังไม่ได้ทิ้ง");
+		
+		if(IsPlayerAttachedObjectSlotUsed(playerid, 9))
+			RemovePlayerAttachedObject(playerid, 9);
+
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(playerid, x, y, z);
+		PlayerInfo[playerid][pObject][9] = CreateDynamicObject(2222, x, y, z, 0.0, 0.0, 0.0, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+		EditDynamicObject(playerid, PlayerInfo[playerid][pObject][9]);
+		SetPVarInt(playerid, "MealEditPosObj", 1);
+
+		return 1;
+	}
+	else if (!strcmp(type, "pickup", true))
+	{
+		new Float:x, Float:y, Float:z;
+		GetDynamicObjectPos(PlayerInfo[playerid][pObject][9], x, y, z);
+
+		if(!IsPlayerInRangeOfPoint(playerid, 2.5, x, y, z))
+		{
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ถาดอาหารของคุณ");
+		}
+
+		if(IsValidDynamicObject(PlayerInfo[playerid][pObject][9]))
+            DestroyDynamicObject(PlayerInfo[playerid][pObject][9]);
+		
+		GetMealOder(playerid);
+		return 1;
+	}
+	else if (!strcmp(type, "throw", true))
+	{
+		if(MealOder[playerid] == false)
+			return SendErrorMessage(playerid, "คุณยังไม่ได้ซื้ออาหาร / หรือมีถาดอาหารที่ยังไม่ได้ทิ้ง");
+
+		if(IsPlayerAttachedObjectSlotUsed(playerid, 9))
+			RemovePlayerAttachedObject(playerid, 9);
+		
+		MealOder[playerid] = false;
+		SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s โยนถาดอาหารทิ้ง",ReturnName(playerid,0));
+		return 1;
+	}
+	else SendErrorMessage(playerid, "พิพม์คำสั่งไม่ถูกต้อง");
 	return 1;
 }
 

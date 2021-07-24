@@ -1089,6 +1089,14 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
             SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $150");
             GiveMoney(playerid, -150);
             BusinessInfo[id][BusinessCash] += 150;
+
+            GetMealOder(playerid);
+            for(new f = 0; f < 8; f++)
+            {
+                PlayerTextDrawDestroy(playerid, BuyFood[playerid][f]);
+            }
+            CancelSelectTextDraw(playerid);
+
             CharacterSave(playerid);
             SaveBusiness(id);
             return 1;
@@ -1116,6 +1124,14 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
             SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $300");
             GiveMoney(playerid, -300);
+
+            GetMealOder(playerid);
+            for(new f = 0; f < 8; f++)
+            {
+                PlayerTextDrawDestroy(playerid, BuyFood[playerid][f]);
+            }
+            CancelSelectTextDraw(playerid);
+
             BusinessInfo[id][BusinessCash] += 300;
             CharacterSave(playerid);
             SaveBusiness(id);
@@ -1144,6 +1160,14 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
             SendClientMessage(playerid, -1, "คุณได้ซื้ออาหารแล้ว เสียเงินไป $500");
             GiveMoney(playerid, -500);
+
+            GetMealOder(playerid);
+            for(new f = 0; f < 8; f++)
+            {
+                PlayerTextDrawDestroy(playerid, BuyFood[playerid][f]);
+            }
+            CancelSelectTextDraw(playerid);
+            
             BusinessInfo[id][BusinessCash] += 500;
             CharacterSave(playerid);
             SaveBusiness(id);
@@ -1154,6 +1178,45 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
     return 1;
 }
 
+stock GetMealOder(playerid)
+{
+    MealOder[playerid] = true;
+    SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
+	SetPlayerAttachedObject(playerid,9, 2222, 5,0.165000,0.100999,0.139999,-78.300018,-11.500016,20.599998,1.000000,1.000000,1.000000);
+    return 1;
+}
+
+
+hook OP_EditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+{
+    if(GetPVarInt(playerid, "MealEditPosObj"))
+    {
+        switch(response)
+        {
+            case EDIT_RESPONSE_FINAL:
+            {
+                if(IsValidDynamicObject(PlayerInfo[playerid][pObject][9]))
+                    DestroyDynamicObject(PlayerInfo[playerid][pObject][9]);
+
+                MealOder[playerid] = false;
+                PlayerInfo[playerid][pObject][9] = CreateDynamicObject(2222, x, y, z, rx, ry, rz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+                SendClientMessage(playerid, -1, "คุณได้วางถาดอาหารไว้ในจุดที่คุณต้องการแล้ว");
+                SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+
+                return 1;
+            }
+            case EDIT_RESPONSE_CANCEL: 
+            {
+                GetMealOder(playerid);
+                DeletePVar(playerid, "MealEditPosObj");
+                SendClientMessage(playerid, -1, "คุณได้ยกเลิกการวางอาหารของคุณแล้ว");
+                MealOder[playerid] = true;
+                return 1;
+            }
+        }
+    }
+    return 1;
+}
 
 
 

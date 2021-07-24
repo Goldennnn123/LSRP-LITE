@@ -96,6 +96,9 @@ CMD:biz(playerid,params[])
 
 CMD:eat(playerid, params[])
 {
+    if(MealOder[playerid] == true)
+		return SendErrorMessage(playerid, "คุณยังมีถาดอาหารอยู่");
+
     new id = PlayerInfo[playerid][pInsideBusiness];
 
     if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_RESTAURANT)

@@ -159,6 +159,7 @@ new globalWeather = 2;
 #include "Y/Interior/pizza.pwn"
 #include "Y/Interior/bar2.pwn"
 #include "Y/Interior/House3.pwn"
+#include "Y/Interior/House5.pwn"
 
 
 #include "Y/Map/LSPDHQ.pwn"
@@ -853,6 +854,14 @@ public OnPlayerText(playerid, text[]) {
 	//printf("[%d]%s: %s", playerid, ReturnPlayerName(playerid), text);*/
 
 	return 0;
+}
+
+public OnPlayerCommandText(playerid, cmdtext[])
+{
+    return 0;
+    // Returning 0 informs the server that the command hasn't been processed by this script.
+    // OnPlayerCommandText will be called in other scripts until one returns 1.
+    // If no scripts return 1, the 'SERVER: Unknown Command' message will be shown to the player.
 }
 
 public OnPlayerCommandReceived(playerid, cmd[], params[], flags)

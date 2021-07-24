@@ -36,7 +36,6 @@ public OnPlayerLogin(playerid/*, race_check*/)
 
 	new pPass[129], unhashed_pass[129];
 	GetPVarString(playerid, "Unhashed_Pass",unhashed_pass, 129);
-	printf("%s",unhashed_pass);
 	if(cache_num_rows())
 	{
 		cache_get_value_index(0, 0, pPass, 129);

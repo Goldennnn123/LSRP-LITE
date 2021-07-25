@@ -848,7 +848,7 @@ CMD:vehicle(playerid, params[])
 		if(sscanf(secString, "d", slotid))
 			return SendUsageMessage(playerid, "/vehicle get [สล็อตรถ]");
 
-		if(slotid < 0)
+		if(slotid < 1 || slotid > 5)
 			return SendErrorMessage(playerid, "ไม่มีส็อตที่ต้องการ");
 
 		if(!PlayerInfo[playerid][pOwnedVehicles][slotid])

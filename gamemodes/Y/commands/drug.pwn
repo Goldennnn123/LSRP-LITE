@@ -289,6 +289,9 @@ CMD:usedrug(playerid, params[])
         return 1;
     }
 
+    if(type < 1 || type > 3)
+        return SendErrorMessage(playerid, "คุณใส่ประเภทยาเสพติดไม่ถูก (1-3 เท่านั้น)");
+
     if(PlayerInfo[playerid][pDrug][type-1] < 0.01)
         return SendErrorMessage(playerid, "คุณมียาไม่เพียงพอต่อการที่จะเสพ");
     

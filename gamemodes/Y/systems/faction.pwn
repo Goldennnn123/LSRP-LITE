@@ -15,6 +15,9 @@ public Query_InsertFaction(playerid, varName, varAbbrev, idx)
 		
 	mysql_format(dbCon, insertRanks, sizeof(insertRanks), "INSERT INTO faction_ranks (`factionid`) VALUES(%i)", cache_insert_id()); 
 	mysql_tquery(dbCon, insertRanks); 
+
+	mysql_format(dbCon, insertRanks, sizeof(insertRanks), "INSERT INTO customskinfac (`factionid`) VALUES(%i)", cache_insert_id()); 
+	mysql_tquery(dbCon, insertRanks);
 	
 	FactionInfo[idx][eFactionDBID] = cache_insert_id();
 		
@@ -62,6 +65,9 @@ public Query_LoadFactions()
 		
 		mysql_format(dbCon, newThread, sizeof(newThread), "SELECT * FROM faction_ranks WHERE factionid = %i", i+1); 
 		mysql_tquery(dbCon, newThread, "Query_LoadFactionRanks", "i", i+1);
+
+		mysql_format(dbCon, newThread, sizeof(newThread), "SELECT * FROM customskinfac WHERE factionid = %i", i+1); 
+		mysql_tquery(dbCon, newThread, "Query_LoadFactionSkin", "i", i+1);
 	}
 	printf("[SERVER]: %i factions were loaded from \"%s\" database...", rows, MYSQL_DB);
 	return 1;
@@ -91,6 +97,33 @@ public Query_LoadFactionRanks(factionid)
 		{
 			format(str, sizeof(str), "FactionRank%i", j); 
             cache_get_value_name(i,str,FactionRanks[factionid][j],60);
+		}
+	}
+	return 1;
+}
+
+forward Query_LoadFactionSkin(factionid);
+public Query_LoadFactionSkin(factionid)
+{
+	new str[128];
+	
+	new rows; cache_get_row_count(rows);
+
+	if(!rows)
+	{
+		new query[250];
+		mysql_format(dbCon, query, sizeof(query), "INSERT INTO customskinfac (`factionid`) VALUES(%i)", factionid); 
+		mysql_tquery(dbCon, query, "Query_LoadFactionSkin", "d", factionid);
+		return 1;
+	}
+
+	
+	for (new i = 0; i < rows; i++)
+	{
+		for (new j = 1; j < 31; j++)
+		{
+			format(str, sizeof(str), "FactionSkin%i", j); 
+            cache_get_value_name_int(i, str,CustomskinFacInfo[factionid][FactionSkin][j]);
 		}
 	}
 	return 1;

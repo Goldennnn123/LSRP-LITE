@@ -999,6 +999,40 @@ CMD:setbadge(playerid, params[])
 	return 1;
 }
 
+CMD:customskin(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
+
+	new skinid, factionid = PlayerInfo[playerid][pFaction];
+	if(sscanf(params, "d", skinid))
+	{
+		new skincuount;
+		for(new i = 1; i < 31; i++)
+		{
+			if(!CustomskinFacInfo[factionid][FactionSkin][i])
+				continue;
+			
+			skincuount = i;
+		}
+
+		SendUsageMessage(playerid, "/customskin <1-%d>", skincuount);
+		return 1;
+	}
+
+	if(skinid < 1 || skinid > 30)
+		return SendErrorMessage(playerid, "คุณใส่ สกินไม่ถูกต้อง");
+
+	if(!CustomskinFacInfo[factionid][FactionSkin][skinid])
+		return SendErrorMessage(playerid, "คุณใส่ สกินไม่ถูกต้อง");
+	
+	SetPlayerSkin(playerid, CustomskinFacInfo[factionid][FactionSkin][skinid]);
+	TogglePlayerControllable(playerid, 1);
+	ClearAnimations(playerid);
+	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+	return 1;
+}
+
 hook OnPlayerDisconnect(playerid, reason)
 {
     foreach(new i : Player)

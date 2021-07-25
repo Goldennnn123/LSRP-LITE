@@ -59,5 +59,26 @@ stock SaveFactionRanks(id, thread = MYSQL_TYPE_THREAD)
 	}
 	
 	mysql_finish(query);
+
+	SaveFactionSkins(id);
+	return 1;
+}
+
+stock SaveFactionSkins(id, thread = MYSQL_TYPE_THREAD)
+{
+	if(!FactionInfo[id][eFactionDBID])
+		return 0;
+		
+	new query[MAX_STRING], str[MAX_STRING];
+
+	mysql_init("customskinfac", "factionid", FactionInfo[id][eFactionDBID], thread);
+
+	for(new i = 1; i < 31; i++)
+	{
+		format(str, sizeof(str), "FactionSkin%d",i);
+		mysql_int(query, str,CustomskinFacInfo[id][FactionSkin][i]);
+	}
+	mysql_finish(query);
+	printf("%s",query);
 	return 1;
 }

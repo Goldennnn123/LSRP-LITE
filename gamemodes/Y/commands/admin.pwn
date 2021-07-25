@@ -3061,6 +3061,28 @@ CMD:makefaction(playerid, params[])
 	
 	return 1;
 }
+
+CMD:setcustomskin(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1339)
+		return SendUnauthMessage(playerid);
+
+	new factionid, slotid, skinid;
+	if(sscanf(params, "ddd", factionid, slotid, skinid))
+		return SendUsageMessage(playerid, "/setcustomskin <แฟคชั่นไอดี> <1-30> <skinid>");
+
+	if(!FactionInfo[factionid][eFactionDBID])
+		return SendErrorMessage(playerid, "ไม่มีเฟคชั่นไอดีที่ต้องการ");
+	
+	if(slotid < 1 || slotid > 30)
+		return SendErrorMessage(playerid, "ไอดีสล็อตไม่ถูกต้อง");
+
+	CustomskinFacInfo[factionid][FactionSkin][slotid] = skinid;
+	SendClientMessageEx(playerid, -1, "คุณได้เปลี่ยน Skin Slotid %d เป็น %d", slotid, skinid);
+	SaveFaction(factionid);
+	return 1;
+}
+
 CMD:makeadmin(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 1339)

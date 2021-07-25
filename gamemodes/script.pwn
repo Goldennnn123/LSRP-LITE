@@ -85,6 +85,7 @@ new globalWeather = 2;
 #include "Y/entities/global.pwn"
 #include "Y/entities/boombox.pwn"
 #include "Y/entities/clothing.pwn"
+#include "Y/entities/customskin.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -609,7 +610,6 @@ public OnPlayerConnect(playerid) {
     {
         PlayerInfo[playerid][pObject][i] = INVALID_OBJECT_ID;
     }
-
     MealOder[playerid] = false;
 
 	new query[90];

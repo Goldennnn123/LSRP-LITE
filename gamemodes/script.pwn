@@ -881,7 +881,11 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
         return 0;
     }
   
-    Log(allcmdlog, WARNING, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
+    new str[120];
+    format(str, sizeof(str), "[CMD] %s: /%s",ReturnRealName(playerid, 0), cmd);
+    SendDiscordMessageEx("862581433302384650", str);
+
+    Log(allcmdlog, INFO, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
     return 1;
 }
 

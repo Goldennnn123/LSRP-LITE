@@ -946,7 +946,14 @@ CMD:respawncar(playerid, params[])
 		SetVehicleToRespawn(vehicleid);
 		SetVehicleHp(vehicleid);
 
-		VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
+		if(IsValidDynamicObject(VehicleSiren[vehicleid]))
+		{
+			DestroyDynamicObject(VehicleSiren[vehicleid]);
+			VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
+		}
+
+		Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
+		VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
 
 		foreach(new i : Player)
 		{
@@ -970,7 +977,15 @@ CMD:respawncar(playerid, params[])
 		
 	SetVehicleToRespawn(vehicleid);
 	SetVehicleHp(vehicleid);
-	VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
+	
+	if(IsValidDynamicObject(VehicleSiren[vehicleid]))
+	{
+		DestroyDynamicObject(VehicleSiren[vehicleid]);
+		VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
+	}
+
+	Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
+	VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
 	
 	foreach(new i : Player)
 	{

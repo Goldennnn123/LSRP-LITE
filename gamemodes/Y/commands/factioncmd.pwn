@@ -795,7 +795,12 @@ CMD:towcars(playerid, params[])
 		SetVehicleVirtualWorld(v, VehFacInfo[v][VehFacPosWorld]);
 		SetVehicleNumberPlate(v, FactionInfo[id][eFactionAbbrev]);
 		SetVehicleHp(v);
-		VehicleSiren[v] = INVALID_OBJECT_ID;
+
+		if(IsValidDynamicObject(VehicleSiren[v]))
+		{
+			DestroyDynamicObject(VehicleSiren[v]);
+			VehicleSiren[v] = INVALID_OBJECT_ID;
+		}
 	}
 
 	SendFactionMessageEx(playerid, COLOR_FACTION, "**(( %s ได้ส่งยานพาหนะที่ไม่มีคนนั่งของกลุ่มกลับจุดเกิดทั้งหมด ))**", ReturnName(playerid, 0));

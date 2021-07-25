@@ -1794,6 +1794,11 @@ public LoadFactionVehicle()
 		SetVehicleNumberPlate(vehicleid, FactionInfo[VehFacInfo[vehicleid][VehFacFaction]][eFactionAbbrev]);
 		SetVehicleToRespawn(vehicleid);
 		SetVehicleHp(vehicleid);
+		
+		new engine, lights, alarm, doors, bonnet, boot, objective; 
+		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+		SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
+		VehicleInfo[vehicleid][eVehicleLocked] = false;
 		amout_veh++;
 	}
 

@@ -986,6 +986,7 @@ CMD:respawncar(playerid, params[])
 
 	Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
 	VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
+	VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 	
 	foreach(new i : Player)
 	{

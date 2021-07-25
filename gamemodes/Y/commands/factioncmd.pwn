@@ -790,6 +790,7 @@ CMD:towcars(playerid, params[])
 
 		Delete3DTextLabel(VehicleInfo[v][eVehicleCarsign]); 
 		VehicleInfo[v][eVehicleHasCarsign] = false;
+		VehicleInfo[v][eVehicleEngineStatus] = false;
 
 		SetVehicleToRespawn(v);
 		SetVehicleVirtualWorld(v, VehFacInfo[v][VehFacPosWorld]);

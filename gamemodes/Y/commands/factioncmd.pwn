@@ -10,7 +10,7 @@ new
 alias:factionhelp("fhelp")
 CMD:factionhelp(playerid, params[])
 {
-    SendClientMessage(playerid, COLOR_RED, "[FACTION]:{FFFFFF} /f, /togfam, /nofam, /factionhelp"); 
+    SendClientMessage(playerid, COLOR_RED, "[FACTION]:{FFFFFF} /f, /togfam, /nofam, /factionhelp /customskin"); 
 
     if(!PlayerInfo[playerid][pFaction])
 		return 1;
@@ -254,7 +254,7 @@ CMD:giverank(playerid, params[])
     if(rank > PlayerInfo[playerb][pFactionRank])
     {
         SendClientMessageEx(playerb, COLOR_HELPME, "คุณถูกลดต่ำแหน่งของคุณ เป็น %s โดย %s", FactionRanks[PlayerInfo[playerb][pFaction]][rank], ReturnRealName(playerid, 0)); 
-        SendClientMessageEx(playerid, COLOR_YELLOW, "คุณได้ลดต่ำแหน่งของ %s จาก %s เป็น %s", ReturnRealName(playerb, 0), FactionRanks[PlayerInfo[playerb][pFaction]][PlayerInfo[playerb][pFactionRank]], FactionRanks[PlayerInfo[playerb][pFaction]][rank]);
+        SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้ลดต่ำแหน่งของ %s จาก %s เป็น %s", ReturnRealName(playerb, 0), FactionRanks[PlayerInfo[playerb][pFaction]][PlayerInfo[playerb][pFactionRank]], FactionRanks[PlayerInfo[playerb][pFaction]][rank]);
             
         PlayerInfo[playerb][pFactionRank] = rank; 
         CharacterSave(playerb);
@@ -262,7 +262,7 @@ CMD:giverank(playerid, params[])
     else
     {
         SendClientMessageEx(playerb, COLOR_HELPME, "คุณได้ถูกเพื่มต่ำแหน่งของคุณ เป็น %s", FactionRanks[PlayerInfo[playerb][pFaction]][rank], ReturnRealName(playerid, 0)); 
-        SendClientMessageEx(playerid, COLOR_YELLOW, "คุณได้อัปเกรด ยศ/ต่ำแหน่งของ %s จาก %s เป็น %s", ReturnRealName(playerb, 0), FactionRanks[PlayerInfo[playerb][pFaction]][PlayerInfo[playerb][pFactionRank]], FactionRanks[PlayerInfo[playerb][pFaction]][rank]);
+        SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้อัปเกรด ยศ/ต่ำแหน่งของ %s จาก %s เป็น %s", ReturnRealName(playerb, 0), FactionRanks[PlayerInfo[playerb][pFaction]][PlayerInfo[playerb][pFactionRank]], FactionRanks[PlayerInfo[playerb][pFaction]][rank]);
             
         PlayerInfo[playerb][pFactionRank] = rank; 
         CharacterSave(playerb);

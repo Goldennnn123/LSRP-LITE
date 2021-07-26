@@ -1743,7 +1743,7 @@ CMD:helpup(playerid, params[])
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
 
 	if(GetPlayerTeam(playerid) == PLAYER_STATE_DEAD || GetPlayerTeam(playerid) == PLAYER_STATE_WOUNDED)
-		return SendErrorMessage(playerid, "คุณไม่สามารถช่วยได้เนืองจากคุณเองก็มีสภาพร่างกายไม่พร้อม และต้องการการรักษาอย่างด่านเช่นกัน");
+		return SendErrorMessage(playerid, "คุณไม่สามารถช่วยได้เนืองจากคุณเองก็มีสภาพร่างกายไม่พร้อม และต้องการการรักษาอย่างด่วนเช่นกัน");
 
 	
 	if(GetPlayerTeam(tagerid) == PLAYER_STATE_ALIVE)

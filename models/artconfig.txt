@@ -90,3 +90,40 @@ AddCharModel( 20, 29077, "bmyri.dff", "bmyri.txd");
 AddCharModel( 286, 29078, "random.dff", "random.txd");
 AddCharModel( 286, 29079, "andre.dff", "andre.txd");
 AddCharModel( 286, 29080, "model/hmycr.dff", "model/hmycr.txd");
+
+
+
+///Skin Police
+AddCharModel( 280, 29081, "LSPD_SKIN/PD01.dff", "LSPD_SKIN/PD01.txd");
+AddCharModel( 280, 29082, "LSPD_SKIN/PD02.dff", "LSPD_SKIN/PD02.txd");
+AddCharModel( 280, 29083, "LSPD_SKIN/PD03.dff", "LSPD_SKIN/PD03.txd");
+AddCharModel( 280, 29084, "LSPD_SKIN/PD04.dff", "LSPD_SKIN/PD04.txd");
+AddCharModel( 280, 29085, "LSPD_SKIN/PD05.dff", "LSPD_SKIN/PD05.txd");
+AddCharModel( 280, 29086, "LSPD_SKIN/PD06.dff", "LSPD_SKIN/PD06.txd");
+AddCharModel( 280, 29087, "LSPD_SKIN/PD07.dff", "LSPD_SKIN/PD07.txd");
+AddCharModel( 280, 29098, "LSPD_SKIN/PD08.dff", "LSPD_SKIN/PD08.txd");
+AddCharModel( 280, 29089, "LSPD_SKIN/PD09.dff", "LSPD_SKIN/PD09.txd");
+AddCharModel( 280, 29090, "LSPD_SKIN/PD10.dff", "LSPD_SKIN/PD10.txd");
+AddCharModel( 280, 29091, "LSPD_SKIN/PD11.dff", "LSPD_SKIN/PD11.txd");
+AddCharModel( 280, 29092, "LSPD_SKIN/PD12.dff", "LSPD_SKIN/PD12.txd");
+AddCharModel( 280, 29093, "LSPD_SKIN/PD13.dff", "LSPD_SKIN/PD13.txd");
+AddCharModel( 280, 29094, "LSPD_SKIN/PD14.dff", "LSPD_SKIN/PD14.txd");
+AddCharModel( 280, 29095, "LSPD_SKIN/PD15.dff", "LSPD_SKIN/PD15.txd");
+AddCharModel( 280, 29096, "LSPD_SKIN/PD16.dff", "LSPD_SKIN/PD16.txd");
+AddCharModel( 280, 29096, "LSPD_SKIN/PD16.dff", "LSPD_SKIN/PD16.txd");
+AddCharModel( 280, 29097, "LSPD_SKIN/PD17.dff", "LSPD_SKIN/PD17.txd");
+AddCharModel( 280, 29098, "LSPD_SKIN/PD18.dff", "LSPD_SKIN/PD18.txd");
+AddCharModel( 280, 29099, "LSPD_SKIN/PD19.dff", "LSPD_SKIN/PD19.txd");
+AddCharModel( 280, 29100, "LSPD_SKIN/PD20.dff", "LSPD_SKIN/PD20.txd");
+AddCharModel( 280, 29100, "LSPD_SKIN/PD20.dff", "LSPD_SKIN/PD20.txd");
+AddCharModel( 280, 29101, "LSPD_SKIN/PD21.dff", "LSPD_SKIN/PD21.txd");
+AddCharModel( 280, 29102, "LSPD_SKIN/PD22.dff", "LSPD_SKIN/PD22.txd");
+AddCharModel( 280, 29103, "LSPD_SKIN/PD23.dff", "LSPD_SKIN/PD23.txd");
+AddCharModel( 280, 29104, "LSPD_SKIN/PD24.dff", "LSPD_SKIN/PD24.txd");
+AddCharModel( 280, 29105, "LSPD_SKIN/PD25.dff", "LSPD_SKIN/PD25.txd");
+AddCharModel( 280, 29106, "LSPD_SKIN/PD26.dff", "LSPD_SKIN/PD26.txd");
+AddCharModel( 280, 29107, "LSPD_SKIN/PD27.dff", "LSPD_SKIN/PD27.txd");
+AddCharModel( 280, 29108, "LSPD_SKIN/PD28.dff", "LSPD_SKIN/PD28.txd");
+AddCharModel( 280, 29109, "LSPD_SKIN/PD29.dff", "LSPD_SKIN/PD29.txd");
+AddCharModel( 280, 29110, "LSPD_SKIN/PD10.dff", "LSPD_SKIN/PD10.txd");
+

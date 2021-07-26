@@ -595,6 +595,7 @@ CMD:hangup(playerid, params[])
 	if(playerPhone[playerid])
 	{
         KillTimer(playerPhone[playerid]);
+        playerPhone[playerid] = -1;
 
         if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USECELLPHONE){
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
@@ -617,7 +618,12 @@ CMD:hangup(playerid, params[])
 	
 	if(PlayerInfo[playerid][pPhoneline] == 999 || PlayerInfo[playerid][pPhoneline] == 911)
 	{
-		for(new i = 0; i < 2; i++) KillTimer(Player911Timer[i][playerid]); 
+		for(new i = 0; i < 2; i++)
+        {
+            KillTimer(Player911Timer[i][playerid]);
+            Player911Timer[i][playerid] = -1;
+        }
+
 		SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
 		
 		PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
@@ -633,7 +639,7 @@ CMD:hangup(playerid, params[])
 	if(PlayerInfo[playerid][pPhoneline] == INVALID_PLAYER_ID)
 		return SendErrorMessage(playerid, "ยังไม่ได้มีใครโทรมาหาคุณ"); 
 	
-	if(PlayerInfo[playerid][pCalling] && PlayerInfo[playerid][pPhoneline] != INVALID_PLAYER_ID)
+    if(PlayerInfo[playerid][pCalling] && PlayerInfo[playerid][pPhoneline] != INVALID_PLAYER_ID)
 	{	
 		SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
 		SendClientMessage(PlayerInfo[playerid][pPhoneline], COLOR_GREY, "[ ! ] ไม่มีการตอบรับจากเลขหมายที่ท่านเรียก"); 
@@ -648,7 +654,6 @@ CMD:hangup(playerid, params[])
 		PlayerInfo[playerid][pCalling] = 0; 
         StopAudioStreamForPlayer(PlayerInfo[playerid][pPhoneline]);
 		PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID; 
-		printf("call 0");
         StopAudioStreamForPlayer(playerid);
         
 		return 1;
@@ -659,16 +664,13 @@ CMD:hangup(playerid, params[])
 		SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
 		//SendClientMessage(PlayerInfo[playerid][pPhoneline], COLOR_GREY, "[ ! ] ไม่มีการตอบรับจากเลขหมายที่ท่านเรียก"); 
 		
-		printf("pPhoneline = %i", PlayerInfo[playerid][pPhoneline]);
 		
 		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USECELLPHONE){
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
-			printf("call 1");
 		}
 		
 		if(GetPlayerSpecialAction(PlayerInfo[playerid][pPhoneline]) == SPECIAL_ACTION_USECELLPHONE){
 			SetPlayerSpecialAction(PlayerInfo[playerid][pPhoneline], SPECIAL_ACTION_STOPUSECELLPHONE);
-			printf("call 2"); 
 		}
 		
 		/*format(str, sizeof(str), "* %s ปฏิเสทสายเรียกเข้า", ReturnName(playerid, 0));
@@ -683,7 +685,6 @@ CMD:hangup(playerid, params[])
         StopAudioStreamForPlayer(PlayerInfo[playerid][pPhoneline]);
 		PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pPhoneline] = INVALID_PLAYER_ID;
 		PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
-		printf("call 3"); 
         StopAudioStreamForPlayer(playerid);
 		return 1;
 	}
@@ -1021,7 +1022,7 @@ stock Send911Message(playerid, type)
 	}
 	
 
-	Player911Type[playerid] = 0;	
+	/*Player911Type[playerid] = 0;	
 	//cmd_hangup(playerid, ""); 
     for(new i = 0; i < 2; i++) KillTimer(Player911Timer[i][playerid]); 
 	SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
@@ -1031,7 +1032,8 @@ stock Send911Message(playerid, type)
 		
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USECELLPHONE){
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
-	}
+	}*/
+    callcmd::hangup(playerid, "");
 	return 1;
 }
 

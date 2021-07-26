@@ -79,6 +79,5 @@ stock SaveFactionSkins(id, thread = MYSQL_TYPE_THREAD)
 		mysql_int(query, str,CustomskinFacInfo[id][FactionSkin][i]);
 	}
 	mysql_finish(query);
-	printf("%s",query);
 	return 1;
 }

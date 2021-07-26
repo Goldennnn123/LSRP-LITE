@@ -1021,11 +1021,11 @@ CMD:customskin(playerid, params[])
 		return 1;
 	}
 
-	if(skinid < 0 || skinid > 30)
-		return SendErrorMessage(playerid, "คุณใส่ สกินไม่ถูกต้อง");
-
 	if(skinid == 0)
 		SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
+
+	if(skinid < 0 || skinid > 30)
+		return SendErrorMessage(playerid, "คุณใส่ สกินไม่ถูกต้อง");
 
 	if(!CustomskinFacInfo[factionid][FactionSkin][skinid])
 		return SendErrorMessage(playerid, "คุณใส่ สกินไม่ถูกต้อง");

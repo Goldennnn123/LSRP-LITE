@@ -661,7 +661,7 @@ CMD:department(playerid, params[])
 			
 		if(FactionInfo[factionid][eFactionType] == GOVERMENT)
 		{
-			SendClientMessageEx(i, COLOR_DEPT, "** [%s] %s %s: %s", FactionInfo[factionid][eFactionAbbrev], ReturnFactionRank(i), ReturnName(playerid, 0), params); 
+			SendClientMessageEx(i, COLOR_DEPT, "** [%s] %s %s: %s", FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAbbrev], ReturnFactionRank(playerid), ReturnName(playerid, 0), params); 
 		}
 	}
 

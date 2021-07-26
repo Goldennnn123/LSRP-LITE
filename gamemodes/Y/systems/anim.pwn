@@ -1,7 +1,3 @@
-//เตรียมไฟล์สำหรับการสร้าง ท่าทาง Anim ต่างๆ ลงตรงนี้
-
-//สร้างเส็จให้พืพม์ git add . และ git comit -m "พิมพ์รายละเอียดการอัพเดท" ต่อด้วยการพิมพ์ git push master/origin
-
 CMD:anim(playerid, params[])
 {
     SendClientMessage(playerid, COLOR_GREEN,"____________อนิเมชั่นตัวละคร____________");
@@ -1091,32 +1087,12 @@ CMD:angry(playerid, params[])
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(RELEASED(88))
+	{
+		callcmd::stopanimation(playerid, "");
+		return 1;
+	}
+	return 1;
+}

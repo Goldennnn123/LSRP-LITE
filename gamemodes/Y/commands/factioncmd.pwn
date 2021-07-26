@@ -17,9 +17,21 @@ CMD:factionhelp(playerid, params[])
     
     if(ReturnFactionType(playerid) == GOVERMENT)
     {
-        SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty, /cuff, /uncuff, /showbadge, /m(egaphone), /(dep)artment,");
-		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign, /tazer, /take, /givelicense, /impound, /mdc");
-		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /siren, /siren2, /siren3, /headquarter /setbadge");
+        SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty/showbadge, /m(egaphone), /(dep)artment,");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign/impound, /mdc");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /siren, /siren2, /siren3, /headquarter /setbadge /elm");
+
+		if(ReturnFactionJob(playerid) == POLICE && ReturnFactionJob(playerid) == SHERIFF)
+		{
+			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty, /cuff, /uncuff, /showbadge");
+			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign, /tazer, /impound, /mdc");
+			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /arrest /checkarrest");
+		}
+
+		if(ReturnFactionJob(playerid) == MEDIC)
+		{
+			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} ยังไม่มีคำสั่งสำหรับแฟคชั่นนี้");
+		}
 		
 		if(PlayerInfo[playerid][pFactionRank] <= FactionInfo[PlayerInfo[playerid][pFaction]][eFactionTowRank])
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /towcars");
@@ -1022,7 +1034,7 @@ CMD:customskin(playerid, params[])
 	}
 
 	if(skinid == 0)
-		SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
+		return SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
 
 	if(skinid < 0 || skinid > 30)
 		return SendErrorMessage(playerid, "คุณใส่ สกินไม่ถูกต้อง");
@@ -1035,6 +1047,67 @@ CMD:customskin(playerid, params[])
 	ClearAnimations(playerid);
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 	return 1;
+}
+
+CMD:elm(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
+
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
+
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไมได้อยู่บนยานพาหนะ");
+
+	new vehicleid = GetPlayerVehicleID(playerid),Float:veh_health;
+
+	if(!VehicleInfo[vehicleid][eVehicleLights])
+		return SendErrorMessage(playerid, "เปิดไฟหน้ายานพาหนะของคุณก่อน");
+
+	if(VehicleInfo[vehicleid][eVehicleElmTimer] != -1)
+	{
+		new VehDamage[4];
+
+		KillTimer(VehicleInfo[vehicleid][eVehicleElmTimer]);
+		VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
+
+		GetVehicleHealth(vehicleid, veh_health);
+		GetVehicleDamageStatus(vehicleid, VehDamage[0],VehDamage[1], VehDamage[2], VehDamage[3]);
+
+		RepairVehicle(vehicleid);
+		SetVehicleHealth(vehicleid, veh_health);
+		UpdateVehicleDamageStatus(vehicleid, VehDamage[0],VehDamage[1], VehDamage[2], VehDamage[3]);
+
+		GameTextForPlayer(playerid, "~g~Emergency Lights Off", 2000, 4);
+		return 1;
+	}
+	else
+	{
+		VehicleInfo[vehicleid][eVehicleElmTimer] = SetTimerEx("OnLightFlash", 115, true, "i", vehicleid);
+		GameTextForPlayer(playerid, "~g~Emergency Lights On", 2000, 4);
+		return 1;
+	}
+}
+
+forward OnLightFlash(vehicleid);
+public OnLightFlash(vehicleid)
+{
+    new panels, doors, lights, tires;
+    GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+
+    new states[ 3 ] = 
+    {
+        2, 4, 5
+    };
+    
+    new idx = random( 3 );
+
+    idx = ( ( states[ idx ] == VehicleInfo[ vehicleid ][ eVehicleElmFlash ] ) ? ( idx == 2 ? 0 : ( idx + 1 ) ) : idx );
+
+    UpdateVehicleDamageStatus( vehicleid, panels, doors, states[ idx ], tires );
+    VehicleInfo[ vehicleid ][ eVehicleElmFlash ] = states[ idx ];
+    return 1;
 }
 
 hook OnPlayerDisconnect(playerid, reason)

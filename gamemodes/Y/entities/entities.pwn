@@ -265,6 +265,9 @@ enum E_VEHICLE_SYSTEM
 	eVehicleMusicLink,
 
 	Float:eVehicleDrug[3],
+
+	eVehicleElmTimer,
+	eVehicleElmFlash,
 }
 
 new VehicleInfo[MAX_VEHICLES][E_VEHICLE_SYSTEM];

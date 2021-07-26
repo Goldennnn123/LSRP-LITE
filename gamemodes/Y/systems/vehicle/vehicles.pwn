@@ -428,6 +428,8 @@ stock ResetVehicleVars(vehicleid)
 	VehicleInfo[vehicleid][eVehicleTruck] = 0;
 
 	VehicleInfo[vehicleid][eVehiclePrice] = 0;
+
+	VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
 	return 1;
 }
 
@@ -1171,9 +1173,12 @@ CMD:vehicle(playerid, params[])
 			}
 			if(foundCar == true)
 			{
-				if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin])
-					return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้"); 
-					
+				if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin] && !VehFacInfo[vehicleid][VehFacFaction])
+					return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้");
+
+				if(PlayerInfo[playerid][pFaction] != VehFacInfo[vehicleid][VehFacFaction])
+					return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้");
+
 				new statusString[90]; 
 				new engine, lights, alarm, doors, bonnet, boot, objective; 
 		
@@ -1798,7 +1803,9 @@ public LoadFactionVehicle()
 		new engine, lights, alarm, doors, bonnet, boot, objective; 
 		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 		SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
+		
 		VehicleInfo[vehicleid][eVehicleLocked] = false;
+		VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
 		amout_veh++;
 	}
 

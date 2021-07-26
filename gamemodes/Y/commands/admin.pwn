@@ -1799,6 +1799,7 @@ CMD:spawncar(playerid, params[])
 		VehicleInfo[vehicleid][eVehicleColor2] = color2;
 		VehicleInfo[vehicleid][eVehicleFuel] = 50;
 		VehicleInfo[vehicleid][eVehicleEngine] = 50.0;
+		VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
 	}
 	
 	PutPlayerInVehicle(playerid, vehicleid, 0);

@@ -28,6 +28,11 @@ CMD:factionhelp(playerid, params[])
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /arrest /checkarrest");
 		}
 
+		if(ReturnFactionJob(playerid) != GOV)
+		{
+			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /checkgovcash /withdrawgov");
+		}
+
 		if(ReturnFactionJob(playerid) == MEDIC)
 		{
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} ยังไม่มีคำสั่งสำหรับแฟคชั่นนี้");
@@ -1009,6 +1014,32 @@ CMD:setbadge(playerid, params[])
 
 	SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เปลี่ยนเลขตราให้กับ %s เป็น %d",ReturnName(tagetid,0), badgenumber);
 	SendClientMessageEx(tagetid, COLOR_HELPME, "%s ได้เปลี่ยนได้เลขตราให้คุณเป็น %d",ReturnName(playerid,0), badgenumber);
+	return 1;
+}
+
+CMD:withdrawgov(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่น รัฐบาล");
+
+	new factionid = PlayerInfo[playerid][pFaction];
+
+	if(FactionInfo[factionid][eFactionJob] != GOV)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่นที่เกี่ยวกับการบริหารงบประมาณของรัฐบาล");
+
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[factionid][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
+		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
+
+	new amount;
+	if(sscanf(params, "d", amount))
+		return SendUsageMessage(playerid, "/withdrawgov <จำนวน>");
+
+	if(amount > GlobalInfo[G_GovCash])
+		return SendErrorMessage(playerid, "จำนวนเงินภายใน รัฐบาล ไม่เพียงพอ");
+	
+	GlobalInfo[G_GovCash]-= amount;
+	GiveMoney(playerid, amount);
+	SendFactionMessageEx(playerid, COLOR_FACTIONCHAT, "HQ: %s %s: ถอนเงินจากรัฐบาลออกมาจำนวน $%s",ReturnFactionRank(playerid), ReturnRealName(playerid,0), amount);
 	return 1;
 }
 

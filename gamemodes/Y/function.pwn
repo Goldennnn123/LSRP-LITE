@@ -811,7 +811,7 @@ stock UpDateRadioStats(playerid)
 	{
 		if(PlayerInfo[playerid][pRadio][r] == channel)
 		{
-			format(str, sizeof(str), "~b~RADIO:INFO~n~CH: ~g~%d~n~~b~SLOT: ~g~%d",PlayerInfo[playerid][pRadio][r], GetChannelSlot(playerid, channel));
+			format(str, sizeof(str), "~b~RADIO:INFO~n~CH: ~g~%d~n~~b~SLOT: ~g~%d",PlayerInfo[playerid][pRadio][r], PlayerInfo[playerid][pMainSlot]);
 			PlayerTextDrawSetString(playerid, RadioStats[playerid], str);
 		}
 	}

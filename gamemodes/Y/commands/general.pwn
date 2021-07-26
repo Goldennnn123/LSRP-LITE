@@ -1117,19 +1117,19 @@ CMD:radio(playerid, params[])
 				{
 					if(strlen(params) > 75)
 					{
-						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
-						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params[75]);
+						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
+						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r],PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params[75]);
 					}
-					else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+					else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
 				}
 				else 
 				{
 					if(strlen(params) > 75)
 					{
-						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
-						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params[75]);
+						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
+						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params[75]);
 					}
-					else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], GetChannelSlot(i, channel), ReturnName(playerid, 0), params);
+					else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
 				}
 			}
 		}
@@ -1630,7 +1630,7 @@ CMD:helpme(playerid, params[])
 	SendClientMessage(playerid, COLOR_LIGHTRED, "SERVER: คำขอความช่วยเหลือของคุณได้ถูกส่งไปยังผู้ดูแลทุกคนที่ออนไลน์");
 	
 	new str[60];
-	format(str, sizeof(str), "%s Helpme now",ReturnRealName(playerid,0));
+	format(str, sizeof(str), "[%s] %s Helpme now", ReturnDate(),ReturnRealName(playerid,0));
 	SendDiscordMessageEx("848148148714209311", str);
 	new idx;
 	

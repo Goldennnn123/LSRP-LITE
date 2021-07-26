@@ -7,6 +7,7 @@ enum F_FRISK_DATA
 	Frisk_ID,
 	Frisk_BY
 }
+
 new FriskInfo[MAX_PLAYERS][F_FRISK_DATA];
 
 hook OnPlayerConnect(playerid)
@@ -23,7 +24,7 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines /frisk");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
-	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstaion /boombox /clothing /buyclothing");
+	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstation /boombox /clothing /buyclothing");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp /drughelp /meal");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation) /walkstyle /shakehand");
@@ -1779,13 +1780,13 @@ CMD:id(playerid, params[])
 	return 1;
 }
 
-CMD:setstaion(playerid, params[])
+CMD:setstation(playerid, params[])
 {
 	new option[15],url[400], secstr[150];
 
 	if(sscanf(params, "s[15]S()[150]", option,secstr)) 
 	{
-		SendUsageMessage(playerid, "/setstaion <option>");
+		SendUsageMessage(playerid, "/setstation <option>");
 		SendClientMessage(playerid, -1, "ลิ้งค์สำหรับการแปลง: https://vocaroo.com/upload");
 		SendClientMessage(playerid, -1, "วิธีการใช้คือ อัปโหลดเพลงที่ต้องการจากคอมพิวเตอร์ของคุณลงไปในลิ้งค์นี้");
 		SendClientMessage(playerid, -1, "และนำลิ้งค์นั้นมาเป็นลิ้งในการเปิดเพลง");
@@ -2286,6 +2287,27 @@ CMD:meal(playerid, params[])
 		return 1;
 	}
 	else SendErrorMessage(playerid, "พิพม์คำสั่งไม่ถูกต้อง");
+	return 1;
+}
+
+CMD:hidehud(playerid, params[])
+{
+	if(!GetPVarInt(playerid, "HideGUI"))
+	{
+		PlayerTextDrawHide(playerid, Statsvehicle[playerid]);
+		PlayerTextDrawHide(playerid, RadioStats[playerid]);
+		SetPVarInt(playerid, "HideGUI",1);
+	}
+	else
+	{
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+		{
+			PlayerTextDrawShow(playerid, Statsvehicle[playerid]);
+		}
+
+		PlayerTextDrawShow(playerid, RadioStats[playerid]);
+		DeletePVar(playerid, "HideGUI");
+	}
 	return 1;
 }
 

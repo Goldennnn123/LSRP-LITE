@@ -650,6 +650,20 @@ public OnPlayerConnect(playerid) {
 	PlayerTextDrawSetProportional(playerid, RadioStats[playerid], 1);
 	PlayerTextDrawSetSelectable(playerid, RadioStats[playerid], 0);
 
+    Statsvehicle[playerid] = CreatePlayerTextDraw(playerid, 501.000000, 138.000000, "~b~km/h: ~g~~n~~b~Fuel: ~g~");
+	PlayerTextDrawFont(playerid, Statsvehicle[playerid], 3);
+	PlayerTextDrawLetterSize(playerid, Statsvehicle[playerid], 0.320833, 1.100000);
+	PlayerTextDrawTextSize(playerid, Statsvehicle[playerid], 609.500000, 17.000000);
+	PlayerTextDrawSetOutline(playerid, Statsvehicle[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, Statsvehicle[playerid], 0);
+	PlayerTextDrawAlignment(playerid, Statsvehicle[playerid], 1);
+	PlayerTextDrawColor(playerid, Statsvehicle[playerid], -1029514497);
+	PlayerTextDrawBackgroundColor(playerid, Statsvehicle[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, Statsvehicle[playerid], 50);
+	PlayerTextDrawUseBox(playerid, Statsvehicle[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, Statsvehicle[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, Statsvehicle[playerid], 0);
+
 	for(new i=0; i<maxname; i++)
 	{
 		if(pname[i] == '_')
@@ -709,6 +723,9 @@ public OnPlayerDisconnect(playerid, reason) {
     CharacterSave(playerid);
     ResetPlayerCharacter(playerid);
 
+
+    PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
+	PlayerTextDrawDestroy(playerid, RadioStats[playerid]);
     return 1;
 }
 

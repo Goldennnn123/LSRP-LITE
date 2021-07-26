@@ -585,7 +585,10 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 
-		ShowspeedVehicle(playerid);
+		if(!GetPVarInt(playerid,"HideGUI"))
+		{
+			PlayerTextDrawShow(playerid, Statsvehicle[playerid]);
+		}
 
 		if(!VehicleInfo[vehicleid][eVehicleEngineStatus] && !IsRentalVehicle(vehicleid) && !HasNoEngine(vehicleid))
 		{
@@ -622,7 +625,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 	else
 	{
-		PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
+		PlayerTextDrawHide(playerid, Statsvehicle[playerid]);
 	}
 
 	if (newstate == PLAYER_STATE_PASSENGER) {
@@ -2167,25 +2170,6 @@ stock GetVehicleHood(vehicleid, &Float:x, &Float:y, &Float:z)
     z = pos[5]; 
 
     return 1; 
-}
-
-stock ShowspeedVehicle(playerid)
-{
-	Statsvehicle[playerid] = CreatePlayerTextDraw(playerid, 501.000000, 138.000000, "~b~km/h: ~g~~n~~b~Fuel: ~g~");
-	PlayerTextDrawFont(playerid, Statsvehicle[playerid], 3);
-	PlayerTextDrawLetterSize(playerid, Statsvehicle[playerid], 0.320833, 1.100000);
-	PlayerTextDrawTextSize(playerid, Statsvehicle[playerid], 609.500000, 17.000000);
-	PlayerTextDrawSetOutline(playerid, Statsvehicle[playerid], 1);
-	PlayerTextDrawSetShadow(playerid, Statsvehicle[playerid], 0);
-	PlayerTextDrawAlignment(playerid, Statsvehicle[playerid], 1);
-	PlayerTextDrawColor(playerid, Statsvehicle[playerid], -1029514497);
-	PlayerTextDrawBackgroundColor(playerid, Statsvehicle[playerid], 255);
-	PlayerTextDrawBoxColor(playerid, Statsvehicle[playerid], 50);
-	PlayerTextDrawUseBox(playerid, Statsvehicle[playerid], 0);
-	PlayerTextDrawSetProportional(playerid, Statsvehicle[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, Statsvehicle[playerid], 0);
-	PlayerTextDrawShow(playerid, Statsvehicle[playerid]);
-	return 1;
 }
 
 hook OnPlayerUpdate(playerid)

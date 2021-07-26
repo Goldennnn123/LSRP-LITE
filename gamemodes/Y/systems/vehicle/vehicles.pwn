@@ -1210,8 +1210,8 @@ CMD:vehicle(playerid, params[])
 		{
 			vehicleid = GetPlayerVehicleID(playerid);
 			
-			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin])
-				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้"); 
+			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pFaction] != VehFacInfo[vehicleid][VehFacFaction])
+				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้");
 					
 			new statusString[90]; 
 			new engine, lights, alarm, doors, bonnet, boot, objective; 

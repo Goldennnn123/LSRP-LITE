@@ -1628,7 +1628,10 @@ CMD:helpme(playerid, params[])
 	format(PlayerHelpme[playerid], 120, "%s",params);
 
 	SendClientMessage(playerid, COLOR_LIGHTRED, "SERVER: คำขอความช่วยเหลือของคุณได้ถูกส่งไปยังผู้ดูแลทุกคนที่ออนไลน์");
-
+	
+	new str[60];
+	format(str, sizeof(str), "%s Helpme now",ReturnRealName(playerid,0));
+	SendDiscordMessageEx("848148148714209311", str);
 	new idx;
 	
 	for (new i = 1; i < sizeof(HelpmeData); i ++)

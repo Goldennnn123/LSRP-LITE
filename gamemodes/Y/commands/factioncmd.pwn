@@ -28,7 +28,7 @@ CMD:factionhelp(playerid, params[])
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /arrest /checkarrest");
 		}
 
-		if(ReturnFactionJob(playerid) != GOV)
+		if(ReturnFactionJob(playerid) == GOV)
 		{
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /checkgovcash /withdrawgov");
 		}

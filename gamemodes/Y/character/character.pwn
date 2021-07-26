@@ -515,6 +515,7 @@ public LoadCharacter(playerid)
 	new str[120];
     format(str, sizeof(str), "[%s] %s : Connected to the Server", ReturnDate(),ReturnName(playerid,0));
     SendDiscordMessage(1, str);
+	UpDateRadioStats(playerid);
 	return 1;
 }
 

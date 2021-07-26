@@ -635,6 +635,21 @@ public OnPlayerConnect(playerid) {
     GetPlayerName(playerid, pname, sizeof(pname));
 	new maxname = strlen(pname);
 
+
+    RadioStats[playerid] = CreatePlayerTextDraw(playerid, 500.000000, 168.000000, "~b~RADIO:INFO~n~CHAN: 911~n~SLOIT: 1");
+	PlayerTextDrawFont(playerid, RadioStats[playerid], 3);
+	PlayerTextDrawLetterSize(playerid, RadioStats[playerid], 0.300000, 1.100000);
+	PlayerTextDrawTextSize(playerid, RadioStats[playerid], 609.500000, 17.000000);
+	PlayerTextDrawSetOutline(playerid, RadioStats[playerid], 1);
+	PlayerTextDrawSetShadow(playerid, RadioStats[playerid], 0);
+	PlayerTextDrawAlignment(playerid, RadioStats[playerid], 1);
+	PlayerTextDrawColor(playerid, RadioStats[playerid], -1029514497);
+	PlayerTextDrawBackgroundColor(playerid, RadioStats[playerid], 255);
+	PlayerTextDrawBoxColor(playerid, RadioStats[playerid], 50);
+	PlayerTextDrawUseBox(playerid, RadioStats[playerid], 0);
+	PlayerTextDrawSetProportional(playerid, RadioStats[playerid], 1);
+	PlayerTextDrawSetSelectable(playerid, RadioStats[playerid], 0);
+
 	for(new i=0; i<maxname; i++)
 	{
 		if(pname[i] == '_')
@@ -742,6 +757,7 @@ public OnPlayerSpawn(playerid) {
 
     SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
 	SetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
+    PlayerTextDrawShow(playerid, RadioStats[playerid]);
 
     if(PlayerInfo[playerid][pAdminjailed] == true)
     {

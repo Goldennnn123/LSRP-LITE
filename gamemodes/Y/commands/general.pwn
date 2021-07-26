@@ -1080,6 +1080,7 @@ CMD:setchannel(playerid, params[])
 	PlayerInfo[playerid][pRadio][slot] = channel;
 	PlayerInfo[playerid][pMainSlot] = slot;
 	SendClientMessageEx(playerid, COLOR_RADIOEX, "คุณได้ปรับวิทยุไปที่คลื่น %i ภายใต้ สล็อต %i.", channel, slot);
+	UpDateRadioStats(playerid);
 	CharacterSave(playerid); 
 	return 1;
 }

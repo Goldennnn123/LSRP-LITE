@@ -800,3 +800,18 @@ stock GivePlayerHealth(playerid, Float:amount)
 	return 1;
 }
 
+stock UpDateRadioStats(playerid)
+{
+	new str[120];
+
+	new local = PlayerInfo[playerid][pMainSlot];
+	new channel = PlayerInfo[playerid][pRadio][local];
+
+	for(new r = 1; r < 3; r ++)
+	{
+		format(str, sizeof(str), "~b~RADIO:INFO~n~CH: ~g~%d~n~~b~SLOT: ~g~%d",PlayerInfo[playerid][pRadio][r], GetChannelSlot(playerid, channel));
+		PlayerTextDrawSetString(playerid, RadioStats[playerid], str);
+	}
+	return 1;
+}
+

@@ -6,6 +6,8 @@ CMD:housecmds(playerid, params[])
 
     SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /house /buyhouse /sellhouse /lock /placepos /switch /knock /ddo /ds");
 
+    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /renthouse /sethouse");
+
     SendClientMessage(playerid, COLOR_GREEN,"________________________________________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
     return 1;
@@ -29,6 +31,144 @@ CMD:house(playerid, params[])
     strcat(str, longstr);
 
     Dialog_Show(playerid, DIALOG_MYHOUSE, DIALOG_STYLE_MSGBOX, "HOUSE:", str, ">>", "");
+    return 1;
+}
+
+CMD:sethouse(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideProperty];
+
+    if(!id)
+        return SendErrorMessage(playerid, "คุณจำเป็นจะต้องอยู่ภายในบ้านของคุณ");
+
+    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid,"บ้านหลังนี้ไม่ใช่บ้านของคุณ");
+
+    new str[60], secstr[60];
+
+    if(sscanf(params, "s[60]S()[60]", str, secstr))
+    {
+        SendUsageMessage(playerid, "/sethouse <option>");
+        SendClientMessage(playerid, -1, "OPTION: rentopen , rentprice");
+        return 1;
+    }
+
+    if(!strcmp(str, "rentopen", true))
+    {
+        
+        if(HouseInfo[id][HouseRentStats])
+        {
+            HouseInfo[id][HouseRentStats] = false;
+            SendClientMessage(playerid, COLOR_LIGHTRED, "คุณได้ยกเลิกสัญญาการเช่าบ้านหลังนี้ออก");
+
+            foreach(new i : Player)
+            {
+                if(PlayerInfo[i][pDBID] != HouseInfo[id][HouseRent])
+                    continue;
+                
+                SendClientMessageEx(i, COLOR_LIGHTRED, "บ้าน: %s, Los Santos, San Andreas ได้มีการยกเลิกสัญญาการเช่าบ้านหลังดังกล่าวแล้ว",HouseInfo[id][HouseName]);
+                SendClientMessage(i, COLOR_LIGHTRED, "หากคุณพบว่า เจ้าของบ้านหลังดังกล่าวไม่ได้มีการตกลงหรือทำผิดข้อสัญญาที่พวกคุณให้กันไว้ตามเอกสาร (IC)");
+                SendClientMessage(i, COLOR_LIGHTRED, "คุณสามารถเลือกที่จะร้องเรียนเรื่องนี้ได้ในทันที โดยการไปแจ้งกับเจ้าหน้าที่ตำรวจภายใน สำนักงานตำรวจ");
+                
+                if(PlayerInfo[i][pSpawnHouse] == HouseInfo[id][HouseDBID])
+                {
+                    PlayerInfo[i][pSpawnPoint] = SPAWN_AT_DEFAULT;
+                    PlayerInfo[i][pSpawnHouse] = 0;
+                    SendClientMessage(i, -1, "คุณได้ถูกเซ็ตจุดเกิดกลับมาที่ สนามบินแล้ว!");
+                }
+            }
+            Savehouse(id);
+            return 1;
+        }
+        else
+        {
+            if(!HouseInfo[id][HouseRentPrice])
+                return SendErrorMessage(playerid, "บ้านหลังนี้ยังไมได้ต้องราคาในการช่า");
+              
+            HouseInfo[id][HouseRentStats] = true;
+            SendClientMessage(playerid, COLOR_LIGHTRED, "คุณได้ทำการปล่อยบ้านหลังนี้ของคุณเป็นการเช่า");
+            Savehouse(id);
+        }
+        return 1;
+    }
+    else if(!strcmp(str, "rentprice", true))
+    {
+        new value;
+
+        if(HouseInfo[id][HouseRent])
+            return SendErrorMessage(playerid, "ยังมีผู้เช่าบ้านของคุณอยู่");
+    
+        if(sscanf(secstr, "d", value))
+            return SendUsageMessage(playerid, "/sethouse <rentprice> <จำนวนค่าเช่า>");
+
+        if(value < 1 || value > 200000)
+            return SendErrorMessage(playerid, "คุณใส่ราคาค่าเช่าบ้านไม่ถูกต้อง <1-200000>");
+
+        HouseInfo[id][HouseRentPrice] = value;
+        SendClientMessageEx(playerid, COLOR_DARKGREEN, "บ้าน: %d %s Los Santos, San Andreas",HouseInfo[id][HouseDBID], HouseInfo[id][HouseName]);
+        SendClientMessageEx(playerid, COLOR_DARKGREEN, "ได้มีการปรับราคาค่าเช่าบ้านหลังนี้เป็น $%s",MoneyFormat(value));
+        return 1;
+    }
+    return 1;
+}
+
+CMD:renthouse(playerid, params[])
+{
+    for(new p = 1; p < MAX_HOUSE; p++)
+	{
+		if(!HouseInfo[p][HouseDBID])
+			continue;
+
+        if(IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[p][HouseEntrance][0], HouseInfo[p][HouseEntrance][1], HouseInfo[p][HouseEntrance][2]))
+		{
+			if(GetPlayerVirtualWorld(playerid) != HouseInfo[p][HouseEntranceWorld])
+				continue;
+					
+			if(GetPlayerInterior(playerid) != HouseInfo[p][HouseEntranceInterior])
+				continue;
+
+            if(!HouseInfo[p][HouseRentStats])
+                return SendErrorMessage(playerid, "คุณไม่สามารถเช่าบ้านหลังนี้ได้เนื่องจากบ้านหลังนี้เป็นบ้านส่วนบุคคล ไม่ได้มีการเปิดให้เช่าอยู่แต่อย่างใด");
+
+            if(HouseInfo[p][HouseRent])
+                return SendErrorMessage(playerid, "บ้านหลังนี้มีคนอยู่ภายในบ้านอยู่แล้ว");
+
+            if(PlayerInfo[playerid][pDBID] == HouseInfo[p][HouseRent])
+                return SendErrorMessage(playerid, "คุณได้เช่าบ้านหลังนี้อยู่แล้ว");
+
+            if(PlayerInfo[playerid][pDBID] == HouseInfo[p][HouseOwnerDBID])
+                return SendErrorMessage(playerid, "คุณไม่สามารถเช่าบ้านของตัวเองได้");
+
+            HouseInfo[p][HouseRent] = PlayerInfo[playerid][pDBID];
+            
+            GiveMoney(playerid, -HouseInfo[p][HouseRentPrice]);
+            
+            new total_tax = floatround(HouseInfo[p][HouseRentPrice] * 0.07,floatround_round);
+            new query[MAX_STRING];
+
+            foreach(new i : Player)
+            {
+                if(PlayerInfo[i][pDBID] == HouseInfo[p][HouseOwnerDBID])
+                {
+                    GiveMoney(playerid, HouseInfo[p][HouseRentPrice] - total_tax);
+                    GlobalInfo[G_GovCash]+= total_tax;
+                    SendClientMessageEx(playerid, COLOR_RADIO, "SMS: %s ได้มีการเช่าบ้าน %d %s, Los Santos, San Andreas ของคุณแล้ว ได้จ่ายค่าเช่ามาที่คุณ $%s",ReturnName(playerid,0), HouseInfo[p][HouseDBID], HouseInfo[p][HouseName], MoneyFormat(HouseInfo[p][HouseRentPrice] - total_tax));
+                }
+                else
+                {
+                    mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pCash`='%d' WHERE `char_dbid` = %d", HouseInfo[p][HouseRentPrice] - total_tax,HouseInfo[p][HouseOwnerDBID]);
+                    mysql_tquery(dbCon, query);
+                }
+            }
+
+            Savehouse(p);
+            Saveglobal();
+
+
+            return 1;
+        }
+        else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้บ้านที่เปิดให้เช่า");
+    }
     return 1;
 }
 
@@ -292,7 +432,7 @@ CMD:checkele(playerid, params[])
     if(!PlayerInfo[playerid][pInsideProperty])
         return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} คุณไม่ได้อยู่ในบ้าน");
 
-    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && HouseInfo[id][HouseRent] != PlayerInfo[playerid][pDBID])
         return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} บ้านหลังนี้ไม่ใช่บ้านของคุณ");
 
     bill = HouseInfo[id][HouseEle];
@@ -456,7 +596,7 @@ CMD:checkbill(playerid, params[])
             if(!HouseInfo[h][HouseDBID])
                 continue;
             
-            if(HouseInfo[h][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+            if(HouseInfo[h][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && HouseInfo[h][HouseRent] != PlayerInfo[playerid][pDBID])
                 continue;
 
             if(HouseInfo[h][HouseEle] <= 200)

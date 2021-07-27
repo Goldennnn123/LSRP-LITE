@@ -1238,7 +1238,7 @@ CMD:setspawn(playerid, params[])
 			if(id_house == 0)
 				return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในบ้าน");
 
-			if(HouseInfo[id_house][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+			if(HouseInfo[id_house][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && HouseInfo[id_house][HouseRent] != PlayerInfo[playerid][pDBID])
 			{
 				new tagerid = INVALID_PLAYER_ID;
 

@@ -49,6 +49,10 @@ stock Savehouse(id, thread = MYSQL_TYPE_THREAD)
     mysql_flo(query, "HouseDrug2",HouseInfo[id][HouseDrug][1]);
     mysql_flo(query, "HouseDrug3",HouseInfo[id][HouseDrug][2]);
 
+    mysql_bool(query, "HouseRentStats", HouseInfo[id][HouseRentStats]);
+    mysql_int(query, "HouseRent", HouseInfo[id][HouseRent]);
+    mysql_int(query, "HouseRentPrice", HouseInfo[id][HouseRentPrice]);
+
     mysql_finish(query);
     return 1;
 }

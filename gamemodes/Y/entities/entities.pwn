@@ -347,6 +347,9 @@ enum E_HOUSE_INFO
 
 	HousePrice,
 	HouseLevel,
+	bool:HouseRentStats,
+	HouseRent,
+	HouseRentPrice,
 
 	HouseWeapons[22],
 	HouseWeaponsAmmo[22],

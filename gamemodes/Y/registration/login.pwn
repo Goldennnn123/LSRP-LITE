@@ -46,7 +46,7 @@ public OnPlayerLogin(playerid/*, race_check*/)
         if (strequal(unhashed_pass, pPass, true)) {
             DeletePVar(playerid, "Unhashed_Pass");
 
-            //cache_get_value_name_int(0, "admin", PlayerInfo[playerid][pAdmin]);
+            cache_get_value_name_int(0, "admin", PlayerInfo[playerid][pAdmin]);
             ShowCharacterSelection(playerid);
 
         }

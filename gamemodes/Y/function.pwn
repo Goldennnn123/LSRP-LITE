@@ -817,4 +817,3 @@ stock UpDateRadioStats(playerid)
 	}
 	return 1;
 }
-

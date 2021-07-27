@@ -102,6 +102,7 @@
 #define TEAM_ADUTY_COLOR 0x8EB3C400
 #define COLOR_LSPDNEW 0x9189EFFF
 #define COLOR_HELPME 0x2EFE9AFF
+#define COLOR_ORANGE 0xFF9900FF
 //=======Embed Colors=======
 #define EMBED_RED "{FF0000}"
 #define EMBED_WHITE "{FFFFFF}"

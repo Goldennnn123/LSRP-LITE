@@ -828,12 +828,12 @@ CMD:towcars(playerid, params[])
 alias:checkgovcash("checkgc")
 CMD:checkgovcash(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pFaction])
+	if(!PlayerInfo[playerid][pFaction] && PlayerInfo[playerid][pAdmin] < 1339)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่น รัฐบาล");
 
 	new factionid = PlayerInfo[playerid][pFaction];
 
-	if(FactionInfo[factionid][eFactionJob] != GOV)
+	if(FactionInfo[factionid][eFactionJob] != GOV && PlayerInfo[playerid][pAdmin] < 1339)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่นที่เกี่ยวกับการบริหารงบประมาณของรัฐบาล");
 
 	SendClientMessageEx(playerid, COLOR_HELPME, "เงินในกรมการคลังของรัฐ San Andreas: $%s",MoneyFormat(GlobalInfo[G_GovCash]));
@@ -1019,12 +1019,12 @@ CMD:setbadge(playerid, params[])
 
 CMD:withdrawgov(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pFaction])
+	if(!PlayerInfo[playerid][pFaction] && PlayerInfo[playerid][pAdmin] < 1339)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่น รัฐบาล");
 
 	new factionid = PlayerInfo[playerid][pFaction];
 
-	if(FactionInfo[factionid][eFactionJob] != GOV)
+	if(FactionInfo[factionid][eFactionJob] != GOV && PlayerInfo[playerid][pAdmin] < 1339)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่นที่เกี่ยวกับการบริหารงบประมาณของรัฐบาล");
 
 	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[factionid][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
@@ -1039,7 +1039,7 @@ CMD:withdrawgov(playerid, params[])
 	
 	GlobalInfo[G_GovCash]-= amount;
 	GiveMoney(playerid, amount);
-	SendFactionMessageEx(playerid, COLOR_FACTIONCHAT, "HQ: %s %s: ถอนเงินจากรัฐบาลออกมาจำนวน $%s",ReturnFactionRank(playerid), ReturnRealName(playerid,0), amount);
+	SendFactionMessageEx(playerid, COLOR_ORANGE, "HQ: %s %s: ถอนเงินจากรัฐบาลออกมาจำนวน $%s",ReturnFactionRank(playerid), ReturnRealName(playerid,0), MoneyFormat(amount));
 	return 1;
 }
 

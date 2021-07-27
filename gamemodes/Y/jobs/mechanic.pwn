@@ -672,7 +672,6 @@ public OnRepairVehicle(playerid, vehicleid, option)
         case 5:
         {
             AddVehicleComponent(vehicleid, ServiceCalls[playerid][S_SER_COMPONENT]);
-
             new slotid = GetVehicleComponentType(ServiceCalls[playerid][S_SER_COMPONENT]);
             
             VehicleInfo[vehicleid][eVehicleMod][slotid] = ServiceCalls[playerid][S_SER_COMPONENT];

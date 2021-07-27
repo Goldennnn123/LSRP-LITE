@@ -111,7 +111,7 @@ Dialog:DIALOG_LOGIN(playerid, response, listitem, inputtext[])
     SetPVarString(playerid, "Unhashed_Pass",buf);
 
 	//g_MysqlRaceCheck[playerid]++;
-    mysql_format(dbCon, query, sizeof(query), "SELECT acc_pass, acc_dbid, acc_name, admin from `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
+    mysql_format(dbCon, query, sizeof(query), "SELECT acc_pass, acc_dbid, acc_name, forum_name, admin from `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
     mysql_tquery(dbCon, query, "OnPlayerLogin", "i", playerid/*,g_MysqlRaceCheck[playerid]*/);
 
     return 1;

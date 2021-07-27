@@ -158,7 +158,6 @@ CMD:renthouse(playerid, params[])
             GiveMoney(playerid, -HouseInfo[p][HouseRentPrice]);
             
             new total_tax = floatround(HouseInfo[p][HouseRentPrice] * 0.07,floatround_round);
-            new query[MAX_STRING];
 
             foreach(new i : Player)
             {
@@ -168,11 +167,6 @@ CMD:renthouse(playerid, params[])
                     GiveMoney(i, HouseInfo[p][HouseRentPrice] - total_tax);
                     GlobalInfo[G_GovCash]+= total_tax;
                     SendClientMessageEx(i, COLOR_RADIO, "SMS: %s ได้มีการเช่าบ้าน %d %s, Los Santos, San Andreas ของคุณแล้ว ได้จ่ายค่าเช่ามาที่คุณ $%s",ReturnName(playerid,0), HouseInfo[p][HouseDBID], HouseInfo[p][HouseName], MoneyFormat(HouseInfo[p][HouseRentPrice] - total_tax));
-                }
-                else
-                {
-                    mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pCash`='%d' WHERE `char_dbid` = %d",HouseInfo[p][HouseRentPrice] - total_tax, HouseInfo[p][HouseOwnerDBID]);
-                    mysql_tquery(dbCon, query);
                 }
             }
 

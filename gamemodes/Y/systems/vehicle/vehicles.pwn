@@ -1828,7 +1828,7 @@ public Query_LoadPrivateVehicle(playerid)
 	new rows; cache_get_row_count(rows); 
 	new str[MAX_STRING], vehicleid = INVALID_VEHICLE_ID; 
 
-	new VehicleModel,Float:VehicleParkPos[4],VehicleColor1,VehicleColor2;
+	new VehicleModel,Float:VehicleParkPos[4],VehicleColor1,VehicleColor2, VehiclePaintjob;
 	
 	for (new i = 0; i < rows && i < MAX_VEHICLES; i++)
 	{
@@ -1839,6 +1839,7 @@ public Query_LoadPrivateVehicle(playerid)
 		cache_get_value_name_float(i, "VehicleParkPosA", VehicleParkPos[3]);
 		cache_get_value_name_int(i, "VehicleColor1", VehicleColor1);
 		cache_get_value_name_int(i, "VehicleColor2", VehicleColor2);
+		cache_get_value_name_int(i, "VehiclePaintjob",VehiclePaintjob);
 
 		vehicleid = CreateVehicle(VehicleModel, 
 			VehicleParkPos[0],
@@ -1847,7 +1848,7 @@ public Query_LoadPrivateVehicle(playerid)
 			VehicleParkPos[3],
 			VehicleColor1,
 			VehicleColor2,
-			-1,
+			VehiclePaintjob,
 			0);
 			
 		if(vehicleid != INVALID_VEHICLE_ID)
@@ -1906,11 +1907,11 @@ public Query_LoadPrivateVehicle(playerid)
 			cache_get_value_name_float(i, "VehicleDrug2", VehicleInfo[vehicleid][eVehicleDrug][1]);
 			cache_get_value_name_float(i, "VehicleDrug3", VehicleInfo[vehicleid][eVehicleDrug][2]);
 
-			/*for(new j = 1; j < 15; j++)
+			for(new j = 1; j < 14; j++)
 			{
 				format(str, sizeof(str), "VehicleMod%d", j);
 				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleMod][j]);
-			}*/
+			}
 			
 			for(new j = 1; j < 6; j++)
 			{
@@ -1955,6 +1956,11 @@ public Query_LoadPrivateVehicle(playerid)
 			
 			if(HasNoEngine(playerid))
 				ToggleVehicleEngine(vehicleid, true); 
+			
+			for(new j = 1; j < 14; j++)
+			{
+				AddVehicleComponent(vehicleid, VehicleInfo[vehicleid][eVehicleMod][j]);
+			}
 
 		}
 	}

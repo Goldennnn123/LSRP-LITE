@@ -95,7 +95,6 @@ new globalWeather = 2;
 #include "Y/mysql/database.pwn"
 
 #include "Y/systems/vehicle/vehicles.pwn"
-#include "Y/systems/vehicle/trun.pwn"
 #include "Y/systems/cooldown.pwn"
 #include "Y/systems/job.pwn"
 #include "Y/systems/report.pwn"
@@ -133,7 +132,6 @@ new globalWeather = 2;
 #include "Y/mysql/SaveBusiness.pwn"
 #include "Y/mysql/SaveEntrance.pwn"
 #include "Y/mysql/SaveFacVehicle.pwn"
-#include "Y/mysql/SaveMc_Garage.pwn"
 #include "Y/mysql/SaveComputer.pwn"
 #include "Y/mysql/SaveGps.pwn"
 #include "Y/mysql/SaveClothing.pwn"
@@ -203,6 +201,7 @@ new globalWeather = 2;
 #endif
 
 main() { }
+
 
 
 forward OnCheatDetected(playerid, ip_address[], type, code);
@@ -962,15 +961,6 @@ public OnPlayerUpdate(playerid)
 
 public OnPlayerPickUpDynamicPickup(playerid, STREAMER_TAG_PICKUP:pickupid)
 {
-    for(new i = 1; i < MAX_MCGARAGE; i++)
-    {
-        if(pickupid == McGarageInfo[i][Mc_GarageIcon])
-        {
-            SendClientMessage(playerid, COLOR_GREY, "/trun เพื่อทำระบบแต่งรถ");
-            return 1;
-        }
-    }
-
     if(pickupid == mechanic_pickup)
     {
         GameTextForPlayer(playerid, "~g~Mechamic Job ~n~~w~/takejob~n~~g~For Register", 3500, 3);

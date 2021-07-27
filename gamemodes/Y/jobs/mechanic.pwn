@@ -13,22 +13,12 @@ enum S_SERVEICE_DATA
 
     S_SER_COLOR[2],
     S_SER_PAINT,
+    S_SER_COMPONENT
 }
 new ServiceCalls[MAX_PLAYERS][S_SERVEICE_DATA];
 
 new Float:oldhp;
 
-enum M_MCGARAGE_DATA
-{
-    Mc_GarageDBID,
-
-    Float:Mc_GaragePos[3],
-    Mc_GarageWorld,
-    Mc_GarageInterior,
-    Mc_GarageIcon
-}
-
-new McGarageInfo[MAX_MCGARAGE][M_MCGARAGE_DATA];
 
 new const g_arrSelectColors[256] = {
 	0x000000FF, 0xF5F5F5FF, 0x2A77A1FF, 0x840410FF, 0x263739FF, 0x86446EFF, 0xD78E10FF, 0x4C75B7FF, 0xBDBEC6FF, 0x5E7072FF,
@@ -59,59 +49,6 @@ new const g_arrSelectColors[256] = {
 	0x706C67FF, 0x3B3E42FF, 0x2E2D33FF, 0x7B7E7DFF, 0x4A4442FF, 0x28344EFF
 };
 
-hook OnGameModeInit@14()
-{
-    mysql_tquery(dbCon, "SELECT * FROM mc_garage ORDER BY Mc_GarageDBID", "LoadMcGarage");
-
-    mechanic_pickup = CreateDynamicPickup(1239, 2, 88.1169,-164.9625,2.5938, -1, -1,-1);
-    return 1;
-}
-
-forward LoadMcGarage();
-public LoadMcGarage()
-{
-    if(!cache_num_rows())
-		return printf("[SERVER]: No MC_Garage were loaded from \"%s\" database...", MYSQL_DB);
-
-    new rows,countmc_garage; cache_get_row_count(rows);
-
-    for (new i = 0; i < rows && i < MAX_MCGARAGE; i ++)
-    {
-        cache_get_value_name_int(i,"Mc_GarageDBID",McGarageInfo[i+1][Mc_GarageDBID]);
-        cache_get_value_name_float(i,"Mc_GaragePosX",McGarageInfo[i+1][Mc_GaragePos][0]);
-        cache_get_value_name_float(i,"Mc_GaragePosY",McGarageInfo[i+1][Mc_GaragePos][1]);
-        cache_get_value_name_float(i,"Mc_GaragePosZ",McGarageInfo[i+1][Mc_GaragePos][2]);
-
-        cache_get_value_name_int(i,"Mc_GarageWorld",McGarageInfo[i+1][Mc_GarageWorld]);
-        cache_get_value_name_int(i,"Mc_GarageInterior",McGarageInfo[i+1][Mc_GarageInterior]);
-
-        if(IsValidDynamicPickup(McGarageInfo[i+1][Mc_GarageIcon]))
-			DestroyDynamicPickup(McGarageInfo[i+1][Mc_GarageIcon]);
-
-        McGarageInfo[i+1][Mc_GarageIcon] = CreateDynamicPickup(1239, 2, McGarageInfo[i+1][Mc_GaragePos][0], McGarageInfo[i+1][Mc_GaragePos][1], McGarageInfo[i+1][Mc_GaragePos][2], McGarageInfo[i+1][Mc_GarageWorld], McGarageInfo[i+1][Mc_GarageInterior], -1);
-        countmc_garage++;
-    }
-
-    
-
-    printf("[SERVER]: %d MC_Garage loaded from \"%s\" database...", countmc_garage, MYSQL_DB);
-    return 1;
-}
-
-forward Query_InsertMcGarage(playerid, newid, Float:X, Float:Y, Float:Z, World, Interior);
-public Query_InsertMcGarage(playerid, newid, Float:X, Float:Y, Float:Z, World, Interior)
-{
-    McGarageInfo[newid][Mc_GarageDBID] = newid;
-    McGarageInfo[newid][Mc_GaragePos][0] = X;
-    McGarageInfo[newid][Mc_GaragePos][1] = Y;
-    McGarageInfo[newid][Mc_GaragePos][2] = Z;
-    McGarageInfo[newid][Mc_GarageWorld] = World;
-    McGarageInfo[newid][Mc_GarageInterior] = Interior;
-    McGarageInfo[newid][Mc_GarageIcon] = CreateDynamicPickup(1239, 2, McGarageInfo[newid][Mc_GaragePos][0], McGarageInfo[newid][Mc_GaragePos][1], McGarageInfo[newid][Mc_GaragePos][2], McGarageInfo[newid][Mc_GarageWorld], McGarageInfo[newid][Mc_GarageInterior], -1);
-
-    SendAdminMessageEx(-1, 5, "MCGARAGE: สร้าง อู่ซ่อมรถ %d",newid);
-    return 1;
-}
 
 hook OP_EnterCheckpoint@12(playerid)
 {
@@ -127,23 +64,6 @@ hook OP_EnterCheckpoint@12(playerid)
 hook OnPlayerConnect@12(playerid)
 {
     ResetService(playerid);
-    return 1;
-}
-
-stock DeleteMcGarage(id)
-{
-    new delMc_garage[MAX_STRING];
-
-    mysql_format(dbCon, delMc_garage, sizeof(delMc_garage), "DELETE FROM mc_garage WHERE Mc_GarageDBID = %d", McGarageInfo[id][Mc_GarageDBID]);
-	mysql_tquery(dbCon, delMc_garage); 
-
-    McGarageInfo[id][Mc_GarageDBID] = 0;
-	McGarageInfo[id][Mc_GaragePos][0] = 0.0;
-	McGarageInfo[id][Mc_GaragePos][1] = 0.0;
-	McGarageInfo[id][Mc_GaragePos][2] = 0.0;
-	McGarageInfo[id][Mc_GarageWorld] = 0;
-	McGarageInfo[id][Mc_GarageInterior] = 0;
-    DestroyDynamicPickup(McGarageInfo[id][Mc_GarageIcon]);
     return 1;
 }
 
@@ -471,6 +391,67 @@ CMD:changcolorvehicle(playerid, params[])
     return 1;
 }
 
+CMD:trun(playerid, params[])
+{
+    if(PlayerInfo[playerid][pJob] != JOB_MECHANIC)
+        return SendErrorMessage(playerid, "คุณไม่ใช่อาชีพช่างยนต์");
+
+    if(!IsPlayerInAnyVehicle(playerid))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ TowTruck");
+
+    if(GetVehicleModel(GetPlayerVehicleID(playerid)) != 525)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพหานะ Tow Truck");
+
+    new componentid, tagetid, confirm[20];
+
+    if(sscanf(params, "udS()[20]", tagetid, componentid, confirm))
+        return SendUsageMessage(playerid, "/trun <ชื่อบางส่วน/ไอดี> <componentid>");
+
+    if(!IsPlayerConnected(tagetid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagetid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+    if(!IsPlayerNearPlayer(playerid, tagetid, 15.0))
+        return SendErrorMessage(playerid, "ผู้เล่นไมได้อยู่ใกล้คุณ");
+
+    if(!IsPlayerInAnyVehicle(tagetid))
+        return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่บนยานพาหนะ");
+
+    
+    if(componentid < 1000 || componentid > 1193)
+        return SendErrorMessage(playerid, "คุณใส่เลข componentid ไม่ถูกต้อง");
+
+
+    new vehicleid_taget = GetPlayerVehicleID(tagetid);
+    new vehicleid_my = GetPlayerVehicleID(playerid);
+    new comp = floatround(componentid / 50, floatround_round);
+
+    if(VehicleInfo[vehicleid_my][eVehicleComp] < comp)
+        return SendErrorMessage(playerid, "คุณมีอะไหล่ไม่เพียงพอ");
+
+
+    if(!strcmp(confirm, "yes", true) && strlen(confirm))
+    {
+        ServiceCalls[playerid][S_SER_ID] = tagetid;
+        ServiceCalls[playerid][S_SER_VID][0] = GetPlayerVehicleID(playerid);
+        ServiceCalls[playerid][S_SER_VID][1] = vehicleid_taget;
+        ServiceCalls[playerid][S_SER_COMP] = comp;
+        ServiceCalls[playerid][S_SER_CALL] = 5;
+        ServiceCalls[playerid][S_SER_COMPONENT] = componentid;
+
+        ServiceCalls[tagetid][S_SER_BY] = playerid;
+        SendClientMessageEx(tagetid, -1, "%s ได้ยืนข้อเสนอสำหรับการแต่งยานพาหนะ %s ของคุณ "EMBED_LIGHTRED"- กด Y เพื่อยอมรับข้อเสนอนี้", ReturnName(playerid, 0), ReturnVehicleName(vehicleid_taget));
+    }
+    else
+    {
+        SendClientMessageEx(playerid, COLOR_YELLOW, "บริการนี้ต้องใช้ อะไหล่ ทั้งหมด %d ชิ้น", 15);
+        SendSyntaxMessage(playerid, "/trun %d %d yes", tagetid, componentid);
+    }
+    return 1;
+}
+
 CMD:colorlist(playerid, params[])
 {
 	static
@@ -688,6 +669,22 @@ public OnRepairVehicle(playerid, vehicleid, option)
             ResetService(ServiceCalls[playerid][S_SER_ID]);
             ResetService(playerid);
         }
+        case 5:
+        {
+            AddVehicleComponent(vehicleid, ServiceCalls[playerid][S_SER_COMPONENT]);
+
+            new slotid = GetVehicleComponentType(ServiceCalls[playerid][S_SER_COMPONENT]);
+            
+            VehicleInfo[vehicleid][eVehicleMod][slotid] = ServiceCalls[playerid][S_SER_COMPONENT];
+            SaveVehicle(vehicleid);
+            SendClientMessageEx(playerid, -1, "คุณได้แต่งยานพาหนะของ %s สำหรับเร็จแล้ว", ReturnVehicleName(vehicleid));
+            VehicleInfo[ServiceCalls[playerid][S_SER_VID][0]][eVehicleComp] -= ServiceCalls[playerid][S_SER_COMP];
+            TogglePlayerControllable(playerid, 1);
+            ApplyAnimation(playerid, "CARRY", "crry_prtial", 1.0, 0, 0, 0, 0, 0);
+            ClearAnimations(playerid);
+            ResetService(ServiceCalls[playerid][S_SER_ID]);
+            ResetService(playerid);
+        }
     }
     return 1;
 }
@@ -704,6 +701,7 @@ stock ResetService(playerid)
     ServiceCalls[playerid][S_SER_COLOR][0] = 0;
     ServiceCalls[playerid][S_SER_COLOR][1] = 0;
     ServiceCalls[playerid][S_SER_PAINT] = -1;
+    ServiceCalls[playerid][S_SER_COMPONENT] = -1;
     return 1;
 }
 

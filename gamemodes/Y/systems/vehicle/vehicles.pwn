@@ -1801,6 +1801,8 @@ public LoadFactionVehicle()
 		}
 
 		SetVehicleNumberPlate(vehicleid, FactionInfo[VehFacInfo[vehicleid][VehFacFaction]][eFactionAbbrev]);
+		
+		VehicleInfo[vehicleid][eVehiclePlates] = FactionInfo[VehFacInfo[vehicleid][VehFacFaction]][eFactionAbbrev];
 		SetVehicleToRespawn(vehicleid);
 		SetVehicleHp(vehicleid);
 		

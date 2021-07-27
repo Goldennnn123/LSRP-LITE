@@ -25,6 +25,7 @@ hook OnGameModeInit()
 
 	for(new c = 0; c < sizeof rental_vehicles; c++) {
     	SetVehicleNumberPlate(rental_vehicles[c], "RENTAL");
+		format(VehicleInfo[rental_vehicles[c]][eVehiclePlates], 32, "RENTAL");
 		SetVehicleParamsEx(rental_vehicles[c], 0, 0, 0, 0, 0, 0, 0);
 		VehicleInfo[rental_vehicles[c]][eVehicleFuel] = 100;
         VehicleInfo[rental_vehicles[c]][eVehicleEngine] = 100;

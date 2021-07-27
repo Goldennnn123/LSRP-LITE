@@ -470,6 +470,33 @@ CMD:arrest(playerid, params[])
 	return 1;
 }
 
+CMD:checkplate(playerid, params[])
+{
+	if(!IsPlayerInAnyVehicle(playerid) && GetNearestVehicle(playerid) != INVALID_VEHICLE_ID)
+    {
+        new
+            Float:x,
+            Float:y,
+            Float:z
+        ;
+
+        GetVehicleBoot(GetNearestVehicle(playerid), x, y, z); 
+        new 
+            vehicleid = GetNearestVehicle(playerid)
+        ;
+
+        if(!IsPlayerInRangeOfPoint(playerid, 2.5, x, y, z))
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ท้ายรถ");
+
+
+		SendClientMessageEx(playerid, COLOR_GREEN, "* กำลังตรวจสอบ... พบคำตอบแล้ว: %s", VehicleInfo[vehicleid][eVehiclePlates]);
+        return 1;
+    }
+	
+	else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ท้ายรถ");
+	return 1;
+}
+
 CMD:checkarrest(playerid, params[])
 {
 	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)

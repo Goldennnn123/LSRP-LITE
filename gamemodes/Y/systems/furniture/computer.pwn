@@ -191,8 +191,8 @@ CMD:opencom(playerid, params[])
     if(!HouseInfo[id_h][HouseSwicth])
         return SendErrorMessage(playerid, "คุณยังไม่ได้เปิด สวิทซ์ไฟภายในบ้าน");
 
-    if(PlayerInfo[playerid][pGUI])
-        return SendErrorMessage(playerid, "มีการใช้ UI อยู่");
+    /*if(PlayerInfo[playerid][pGUI])
+        return SendErrorMessage(playerid, "มีการใช้ UI อยู่");*/
 
     if(!ComputerInfo[id][ComputerCPU])
         return SendErrorMessage(playerid, "คุณไม่ได้มี "EMBED_LIGHTRED"CPU"EMBED_WHITE" อยู่ในเครื่องคอมพิวเตอร์ของคุณไม่สามารถเปิดคอมพิวเตอร์ได้");

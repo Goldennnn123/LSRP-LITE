@@ -55,7 +55,8 @@ CMD:sethouse(playerid, params[])
 
     if(!strcmp(str, "rentopen", true))
     {
-        
+        new query[MAX_STRING];
+
         if(HouseInfo[id][HouseRentStats])
         {
             HouseInfo[id][HouseRentStats] = false;
@@ -64,7 +65,11 @@ CMD:sethouse(playerid, params[])
             foreach(new i : Player)
             {
                 if(PlayerInfo[i][pDBID] != HouseInfo[id][HouseRent])
-                    continue;
+                {
+                    mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pSpawnPoint`='0', `pSpawnHouse` = '0' WHERE `char_dbid` = %d", HouseInfo[id][HouseRent]);
+                    mysql_tquery(dbCon, query);
+                    break;
+                }
                 
                 SendClientMessageEx(i, COLOR_LIGHTRED, "บ้าน: %s, Los Santos, San Andreas ได้มีการยกเลิกสัญญาการเช่าบ้านหลังดังกล่าวแล้ว",HouseInfo[id][HouseName]);
                 SendClientMessage(i, COLOR_LIGHTRED, "หากคุณพบว่า เจ้าของบ้านหลังดังกล่าวไม่ได้มีการตกลงหรือทำผิดข้อสัญญาที่พวกคุณให้กันไว้ตามเอกสาร (IC)");
@@ -156,7 +161,7 @@ CMD:renthouse(playerid, params[])
                 }
                 else
                 {
-                    mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pCash`='%d' WHERE `char_dbid` = %d", HouseInfo[p][HouseRentPrice] - total_tax,HouseInfo[p][HouseOwnerDBID]);
+                    mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pCash`='%d' WHERE `char_dbid` = %d",HouseInfo[p][HouseRentPrice] - total_tax, HouseInfo[p][HouseOwnerDBID]);
                     mysql_tquery(dbCon, query);
                 }
             }
@@ -224,6 +229,9 @@ CMD:sellhouse(playerid, params[])
 
     if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
         return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} บ้านหลังนี้ไม่ใช่บ้านของคุณ");
+
+    if(HouseInfo[id][HouseRentStats])
+        return SendErrorMessage(playerid, "คุณจำเป็นต้องไปปิดการเช่าบ้านก่อน");
     
     Dialog_Show(playerid, DIALOG_SELL_HOUSE, DIALOG_STYLE_MSGBOX, "คุณแน่ใจ?", "คุณแน่ใจใช่ไหมที่จะขายบ้านหลังนี้\n\
                                                                                คุณจะได้เงินคืนแค่ครึ่งของราคาบ้านทั้งมหด\n\

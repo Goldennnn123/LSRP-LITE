@@ -60,6 +60,7 @@ CMD:sethouse(playerid, params[])
         if(HouseInfo[id][HouseRentStats])
         {
             HouseInfo[id][HouseRentStats] = false;
+            HouseInfo[id][HouseRent] = 0;
             SendClientMessage(playerid, COLOR_LIGHTRED, "คุณได้ยกเลิกสัญญาการเช่าบ้านหลังนี้ออก");
 
             foreach(new i : Player)

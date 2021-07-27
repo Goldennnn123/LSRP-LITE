@@ -1967,6 +1967,8 @@ public Query_LoadPrivateVehicle(playerid)
 	
 	PlayerInfo[playerid][pVehicleSpawned] = true;
 	PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
+	VehFacInfo[vehicleid][VehFacFaction] = 0;
+
 	
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้นำรถ %s ออกมาแล้ว", ReturnVehicleName(vehicleid));
 	SendClientMessageEx(playerid, COLOR_WHITE, "Lifespan: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%d]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);

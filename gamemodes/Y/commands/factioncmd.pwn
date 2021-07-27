@@ -1098,17 +1098,13 @@ CMD:elm(playerid, params[])
 
 	if(VehicleInfo[vehicleid][eVehicleElmTimer] != -1)
 	{
-		new VehDamage[4];
-
 		KillTimer(VehicleInfo[vehicleid][eVehicleElmTimer]);
 		VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
 
 		GetVehicleHealth(vehicleid, veh_health);
-		GetVehicleDamageStatus(vehicleid, VehDamage[0],VehDamage[1], VehDamage[2], VehDamage[3]);
 
 		RepairVehicle(vehicleid);
 		SetVehicleHealth(vehicleid, veh_health);
-		UpdateVehicleDamageStatus(vehicleid, VehDamage[0],VehDamage[1], VehDamage[2], VehDamage[3]);
 
 		GameTextForPlayer(playerid, "~g~Emergency Lights Off", 2000, 4);
 		return 1;

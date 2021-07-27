@@ -268,7 +268,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
+        //KickEx(playerid);
     }
     else if(code == 38)
     {

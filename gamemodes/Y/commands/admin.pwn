@@ -350,6 +350,8 @@ CMD:kick(playerid, params[])
 	return 1;
 }
 
+
+
 CMD:ban(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])

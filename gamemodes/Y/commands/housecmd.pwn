@@ -55,7 +55,7 @@ CMD:sethouse(playerid, params[])
 
     if(!strcmp(str, "rentopen", true))
     {
-        new query[MAX_STRING];
+        new query[MAX_STRING], count;
 
         if(HouseInfo[id][HouseRentStats])
         {
@@ -66,9 +66,7 @@ CMD:sethouse(playerid, params[])
             {
                 if(PlayerInfo[i][pDBID] != HouseInfo[id][HouseRent])
                 {
-                    mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pSpawnPoint`='0', `pSpawnHouse` = '0' WHERE `char_dbid` = %d", HouseInfo[id][HouseRent]);
-                    mysql_tquery(dbCon, query);
-                    break;
+                    continue;
                 }
                 
                 SendClientMessageEx(i, COLOR_LIGHTRED, "บ้าน: %s, Los Santos, San Andreas ได้มีการยกเลิกสัญญาการเช่าบ้านหลังดังกล่าวแล้ว",HouseInfo[id][HouseName]);
@@ -81,6 +79,16 @@ CMD:sethouse(playerid, params[])
                     PlayerInfo[i][pSpawnHouse] = 0;
                     SendClientMessage(i, -1, "คุณได้ถูกเซ็ตจุดเกิดกลับมาที่ สนามบินแล้ว!");
                 }
+
+                count++;
+
+            }
+
+            if(!count)
+            {
+                mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pSpawnPoint`='0', `pSpawnHouse` = '0' WHERE `char_dbid` = %d", HouseInfo[id][HouseRent]);
+                mysql_tquery(dbCon, query);
+                
             }
             HouseInfo[id][HouseRent] = 0;
             Savehouse(id);
@@ -157,6 +165,7 @@ CMD:renthouse(playerid, params[])
                 if(PlayerInfo[i][pDBID] == HouseInfo[p][HouseOwnerDBID])
                 {
                     GiveMoney(playerid, HouseInfo[p][HouseRentPrice] - total_tax);
+                    GiveMoney(i, HouseInfo[p][HouseRentPrice] - total_tax);
                     GlobalInfo[G_GovCash]+= total_tax;
                     SendClientMessageEx(i, COLOR_RADIO, "SMS: %s ได้มีการเช่าบ้าน %d %s, Los Santos, San Andreas ของคุณแล้ว ได้จ่ายค่าเช่ามาที่คุณ $%s",ReturnName(playerid,0), HouseInfo[p][HouseDBID], HouseInfo[p][HouseName], MoneyFormat(HouseInfo[p][HouseRentPrice] - total_tax));
                 }

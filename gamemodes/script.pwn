@@ -209,7 +209,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 {
     new str[120];
 
-    if(PlayerInfo[playerid][pAdmin] > 1337)
+    if(PlayerInfo[playerid][pAdmin])
         return 1;
     
     if(IsPlayerAndroid(playerid) == true)

@@ -2613,6 +2613,25 @@ CMD:makebusiness(playerid,params[])
 	return 1;
 }
 
+alias:editbusiness("editbiz")
+CMD:editbusiness(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+	new id;
+	if(sscanf(params, "d", id))
+		return SendUsageMessage(playerid, "/editbusiness <ไอดี>");
+
+	if(!BusinessInfo[id][BusinessDBID])
+		return SendErrorMessage(playerid, "ไม่มีกิจการไอดีนี้");
+	
+	PlayerSelectBusiness[playerid] = id;
+	ShowSelectBusiness(playerid);
+	return 1;
+}
+
+
 CMD:viewbusiness(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 5)

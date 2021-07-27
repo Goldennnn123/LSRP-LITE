@@ -471,7 +471,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = IsPlayerNearHouse(playerid);
 
-		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pAdminDuty] && PlayerInfo[playerid][pDBID] != HouseInfo[id][HouseRent])
+		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdminDuty] && PlayerInfo[playerid][pDBID] != HouseInfo[id][HouseRent])
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของบ้านหลังนี้");
 
 		if(HouseInfo[id][HouseLock])

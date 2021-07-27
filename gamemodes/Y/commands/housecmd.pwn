@@ -60,7 +60,6 @@ CMD:sethouse(playerid, params[])
         if(HouseInfo[id][HouseRentStats])
         {
             HouseInfo[id][HouseRentStats] = false;
-            HouseInfo[id][HouseRent] = 0;
             SendClientMessage(playerid, COLOR_LIGHTRED, "คุณได้ยกเลิกสัญญาการเช่าบ้านหลังนี้ออก");
 
             foreach(new i : Player)
@@ -83,6 +82,7 @@ CMD:sethouse(playerid, params[])
                     SendClientMessage(i, -1, "คุณได้ถูกเซ็ตจุดเกิดกลับมาที่ สนามบินแล้ว!");
                 }
             }
+            HouseInfo[id][HouseRent] = 0;
             Savehouse(id);
             return 1;
         }

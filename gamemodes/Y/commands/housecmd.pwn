@@ -157,7 +157,7 @@ CMD:renthouse(playerid, params[])
                 {
                     GiveMoney(playerid, HouseInfo[p][HouseRentPrice] - total_tax);
                     GlobalInfo[G_GovCash]+= total_tax;
-                    SendClientMessageEx(playerid, COLOR_RADIO, "SMS: %s ได้มีการเช่าบ้าน %d %s, Los Santos, San Andreas ของคุณแล้ว ได้จ่ายค่าเช่ามาที่คุณ $%s",ReturnName(playerid,0), HouseInfo[p][HouseDBID], HouseInfo[p][HouseName], MoneyFormat(HouseInfo[p][HouseRentPrice] - total_tax));
+                    SendClientMessageEx(i, COLOR_RADIO, "SMS: %s ได้มีการเช่าบ้าน %d %s, Los Santos, San Andreas ของคุณแล้ว ได้จ่ายค่าเช่ามาที่คุณ $%s",ReturnName(playerid,0), HouseInfo[p][HouseDBID], HouseInfo[p][HouseName], MoneyFormat(HouseInfo[p][HouseRentPrice] - total_tax));
                 }
                 else
                 {

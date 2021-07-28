@@ -523,7 +523,7 @@ public FunctionPaychecks()
 	if(minute == 00 && seconds == 59)
 	{
 		CallPaycheck(); 
-		SetWorldTime(hour + 1); 
+		SetWorldTime(hour + 1);
 	}
 	
 	return 1;
@@ -653,7 +653,6 @@ public CallPaycheck()
 
 		format(GlobalInfo[G_Ticket], 32,  "%s%s", Ticketnumber[randset[0]],Ticketnumber[randset[1]]);
 
-
 		if(PlayerInfo[i][pTicket] == GlobalInfo[G_Ticket])
 		{
 			SendClientMessageEx(i, COLOR_GENANNOUNCE, "คุณถูกรางวัลจากการซื้อ ล็อตตารี่ %d ได้รับเงิน $2,000",GlobalInfo[G_Ticket]);
@@ -661,9 +660,74 @@ public CallPaycheck()
 			format(PlayerInfo[i][pTicket], PlayerInfo[i][pTicket],"");
 		}
 		SendClientMessageEx(i, COLOR_GREY, "เลขล็อตตารี่ออก คือ: %s",  GlobalInfo[G_Ticket]);
+
+		
+		for(new h = 1; h < MAX_HOUSE; h++)
+		{
+			if(!HouseInfo[h][HouseDBID])
+				continue;
+			
+			if(!HouseInfo[h][HouseOwnerDBID])
+				continue;
+			
+			if(HouseInfo[h][HouseRent] == PlayerInfo[i][pDBID])
+			{
+				GiveMoney(i, -HouseInfo[h][HouseRentPrice]);
+
+				new total_tax_h = floatround(HouseInfo[h][HouseRentPrice] * 0.07,floatround_round);
+				SendClientMessageEx(i, COLOR_LIGHTRED, "ค่าเช่าบ้านของคุณ: $%s",MoneyFormat(HouseInfo[h][HouseRentPrice]));
+				
+				if(HouseInfo[h][HouseOwnerDBID] == PlayerInfo[i][pDBID])
+				{
+					GiveMoney(i, HouseInfo[h][HouseRentPrice] - total_tax_h);
+					SendClientMessageEx(i, COLOR_ORANGE,"คุณได้ค่าเช่าบ้าน: $%s",MoneyFormat(HouseInfo[h][HouseRentPrice] - total_tax_h));
+				}
+				else
+				{
+					AddPlayerCash(HouseInfo[h][HouseOwnerDBID], HouseInfo[h][HouseRentPrice] - total_tax_h);
+				}
+			}
+			else
+			{
+				new total_tax_h = floatround(HouseInfo[h][HouseRentPrice] * 0.07,floatround_round);
+				AddPlayerCash(HouseInfo[h][HouseRent], HouseInfo[h][HouseRentPrice] - total_tax_h);
+
+				if(HouseInfo[h][HouseOwnerDBID] == PlayerInfo[i][pDBID])
+				{
+					GiveMoney(i, HouseInfo[h][HouseRentPrice] - total_tax_h);
+					SendClientMessageEx(i, COLOR_ORANGE,"คุณได้ค่าเช่าบ้าน: $%s",MoneyFormat(HouseInfo[h][HouseRentPrice] - total_tax_h));
+				}
+				else
+				{
+					AddPlayerCash(HouseInfo[h][HouseOwnerDBID], HouseInfo[h][HouseRentPrice] - total_tax_h);
+				}
+			}
+		}
+
+
 		CharacterSave(i); 
 		Saveglobal();		
 	}
+	return 1;
+}
+
+stock AddPlayerCash(charid, amount)
+{
+	new query[MAX_STRING], Money;
+	
+	mysql_format(dbCon, query, sizeof(query), "SELECT `pCash` FROM `characters` WHERE `char_dbid` = '%d'",charid);
+	new Cache:cache = mysql_query(dbCon, query);
+	
+	if(!cache_num_rows())
+		return 1;
+
+	else
+		cache_get_value_index_int(0, 0, Money);
+	
+	cache_delete(cache);
+
+	mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pCash` = '%d' WHERE `char_dbid` = '%d';",Money += amount, charid);
+	mysql_tquery(dbCon, query);
 	return 1;
 }
 

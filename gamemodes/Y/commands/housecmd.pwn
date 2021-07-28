@@ -65,9 +65,7 @@ CMD:sethouse(playerid, params[])
             foreach(new i : Player)
             {
                 if(PlayerInfo[i][pDBID] != HouseInfo[id][HouseRent])
-                {
                     continue;
-                }
                 
                 SendClientMessageEx(i, COLOR_LIGHTRED, "บ้าน: %s, Los Santos, San Andreas ได้มีการยกเลิกสัญญาการเช่าบ้านหลังดังกล่าวแล้ว",HouseInfo[id][HouseName]);
                 SendClientMessage(i, COLOR_LIGHTRED, "หากคุณพบว่า เจ้าของบ้านหลังดังกล่าวไม่ได้มีการตกลงหรือทำผิดข้อสัญญาที่พวกคุณให้กันไว้ตามเอกสาร (IC)");
@@ -78,10 +76,8 @@ CMD:sethouse(playerid, params[])
                     PlayerInfo[i][pSpawnPoint] = SPAWN_AT_DEFAULT;
                     PlayerInfo[i][pSpawnHouse] = 0;
                     SendClientMessage(i, -1, "คุณได้ถูกเซ็ตจุดเกิดกลับมาที่ สนามบินแล้ว!");
+                    count++;
                 }
-
-                count++;
-
             }
 
             if(!count)
@@ -153,7 +149,11 @@ CMD:renthouse(playerid, params[])
             if(PlayerInfo[playerid][pDBID] == HouseInfo[p][HouseOwnerDBID])
                 return SendErrorMessage(playerid, "คุณไม่สามารถเช่าบ้านของตัวเองได้");
 
+            if(PlayerInfo[playerid][pCash] < HouseInfo[p][HouseRentPrice])
+                return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอต่อการเช่า ราคาเช่าคือ $%s, (ยังขาดอยู่ $%s)",MoneyFormat(HouseInfo[p][HouseRentPrice]), MoneyFormat(HouseInfo[p][HouseRentPrice] - PlayerInfo[playerid][pCash]));
+
             HouseInfo[p][HouseRent] = PlayerInfo[playerid][pDBID];
+
             
             GiveMoney(playerid, -HouseInfo[p][HouseRentPrice]);
             
@@ -167,6 +167,10 @@ CMD:renthouse(playerid, params[])
                     GiveMoney(i, HouseInfo[p][HouseRentPrice] - total_tax);
                     GlobalInfo[G_GovCash]+= total_tax;
                     SendClientMessageEx(i, COLOR_RADIO, "SMS: %s ได้มีการเช่าบ้าน %d %s, Los Santos, San Andreas ของคุณแล้ว ได้จ่ายค่าเช่ามาที่คุณ $%s",ReturnName(playerid,0), HouseInfo[p][HouseDBID], HouseInfo[p][HouseName], MoneyFormat(HouseInfo[p][HouseRentPrice] - total_tax));
+                }
+                else
+                {
+                    AddPlayerCash(HouseInfo[p][HouseOwnerDBID], HouseInfo[p][HouseRentPrice] - total_tax);
                 }
             }
 

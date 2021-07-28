@@ -518,6 +518,10 @@ public OnPlayerNereHouseTime()
                 {
                     SendClientMessageEx(i,COLOR_DARKGREEN,"%d %s, Los Santos, San Andreas", HouseInfo[p][HouseDBID],HouseInfo[p][HouseName]);
                     SendClientMessage(i,-1,"Available commands: /enter, /ds(hout), /ddo, /knock");
+                    if(HouseInfo[p][HouseRentStats])
+                    {
+                        SendClientMessageEx(i,-1,"RentHouse commands: /renthouse ในราคา $%s", MoneyFormat(HouseInfo[p][HouseRentPrice]));
+                    }
                     OnPlayerNereHouse[i][p] = gettime();
                 }
                 else

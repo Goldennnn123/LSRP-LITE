@@ -550,7 +550,16 @@ public CallPaycheck()
 			interest_convert,
 			total_tax,
 			Float:interest_saving
-		; 
+		;
+
+		if(IsAfk{i}) 
+		{
+			if(AFKCount[i] > 120)
+			{
+				SendClientMessageEx(i, COLOR_LIGHTRED, "คุณไม่ได้รับ PayCheck เนื่องจากคุณมีการ AFK ไป %s วินาที ซึ่งเรากำหนดให้แค่ไม่เกิน 120 วินาที",AFKCount[i]);
+				continue;
+			}
+		}
 		
 		PlayerInfo[i][pTimeplayed]++; 
 		PlayerInfo[i][pExp]++;

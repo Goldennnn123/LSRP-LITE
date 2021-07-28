@@ -2443,6 +2443,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnPlayerDisconnect(playerid, reason)
 {
+	new str[120];
+	
 	for(new i = 1; i < sizeof(HelpmeData); i++)
     {
         if(HelpmeData[i][hHelpmeExit] == true)
@@ -2450,6 +2452,9 @@ hook OnPlayerDisconnect(playerid, reason)
 			if(HelpmeData[i][hHelpmeBy] == playerid)
 			{
 				ClearHelpme(i);
+
+				format(str, sizeof(str), "[%s] %s Disconnect Helpme therefore deleted %s",ReturnDate(),ReturnRealName(playerid,0));
+				SendDiscordMessageEx("848148148714209311",str);
 			}
         }
     }

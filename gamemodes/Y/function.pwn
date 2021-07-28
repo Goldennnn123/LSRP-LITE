@@ -669,6 +669,9 @@ public CallPaycheck()
 			
 			if(!HouseInfo[h][HouseOwnerDBID])
 				continue;
+
+			if(!HouseInfo[h][HouseRent])
+				continue;
 			
 			if(HouseInfo[h][HouseRent] == PlayerInfo[i][pDBID])
 			{

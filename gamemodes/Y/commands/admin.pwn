@@ -3247,8 +3247,10 @@ public CheckWhiteList(playerid, id, name[])
 	id, name, 1, 5000, random(99999));
 	mysql_tquery(dbCon, query);
 
+	GlobalInfo[G_GovCash]-= 5000;
 	SendClientMessageEx(playerid, COLOR_LIGHTBLUE, "คุณได้เพิ่ม %s เข้าไปในฐานข้อมูลของระบบแล้ว",name);
 	SendAdminMessageEx(COLOR_PMS, 2, "[ADMIN: %d] %s ได้ยืนยันให้ [UCP ID:#%d] %s สามารถเข้ามาเล่นภายในเซิร์ฟเวอรได้แล้ว",PlayerInfo[playerid][pAdmin], ReturnName(playerid,0), id, name);
+	Saveglobal();
 	return 1;
 }
 

@@ -9,7 +9,7 @@
 
 #define	MAX_STRING					4000
 
-#define SETUP_TABLE (false)
+#define SETUP_TABLE (true)
 
 #define	SPAWN_AT_DEFAULT			0
 #define	SPAWN_AT_HOUSE				1

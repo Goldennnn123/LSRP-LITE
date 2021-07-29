@@ -45,10 +45,10 @@ stock SaveVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 		mysql_int(query, str,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][i]);
 	}
 
-	for(new i = 1; i < 14; i++)
+	for(new i = 0; i < 14; i++)
 	{
 		format(str, sizeof(str), "VehicleMod%d",i);
-		mysql_int(query, str,VehicleInfo[vehicleid][eVehicleMod][i-1]);
+		mysql_int(query, str,VehicleInfo[vehicleid][eVehicleMod][i]);
 	}
 
 	mysql_int(query, "VehicleComp",VehicleInfo[vehicleid][eVehicleComp]);

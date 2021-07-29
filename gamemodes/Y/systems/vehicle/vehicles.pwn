@@ -1909,10 +1909,10 @@ public Query_LoadPrivateVehicle(playerid)
 			cache_get_value_name_float(i, "VehicleDrug2", VehicleInfo[vehicleid][eVehicleDrug][1]);
 			cache_get_value_name_float(i, "VehicleDrug3", VehicleInfo[vehicleid][eVehicleDrug][2]);
 
-			for(new j = 1; j < 14; j++)
+			for(new j = 0; j < 14; j++)
 			{
 				format(str, sizeof(str), "VehicleMod%d", j);
-				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleMod][j-1]);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleMod][j]);
 			}
 			
 			for(new j = 1; j < 6; j++)

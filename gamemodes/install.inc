@@ -45,8 +45,6 @@ hook OnGameModeInit()
     mysql_tquery_file(MySQL_GetHandle(), "db/business.sql");
     print("[SQL] Install business.sql");
 
-    mysql_tquery_file(MySQL_GetHandle(), "db/mc_garage.sql");
-    print("[SQL] Install mc_garage.sql");
 
     mysql_tquery_file(MySQL_GetHandle(), "db/arrest.sql");
     print("[SQL] Install Arrest.sql");
@@ -63,6 +61,9 @@ hook OnGameModeInit()
 
     mysql_tquery_file(MySQL_GetHandle(), "db/global.sql");
     print("[SQL] Install global.sql");
+
+    mysql_tquery_file(MySQL_GetHandle(), "db/clothing.sql");
+    print("[SQL] Install clothing.sql");
 
 
     return 1;

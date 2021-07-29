@@ -15,7 +15,7 @@ hook OnPlayerConnect(playerid)
 
 stock SetPlayerClothing(playerid)
 {
-    new query[MAX_PLAYERS]; new id;
+    new query[MAX_STRING]; new id;
 
     for(new i = 0; i < MAX_PLAYER_CLOTHING; i++)
     {
@@ -56,6 +56,8 @@ stock SetPlayerClothing(playerid)
     }
     return 1;
 }
+
+
 CMD:buyclothing(playerid, params[])
 {
     if(IsPlayerInAnyVehicle(playerid))

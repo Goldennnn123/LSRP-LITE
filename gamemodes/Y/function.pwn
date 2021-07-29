@@ -556,7 +556,7 @@ public CallPaycheck()
 		{
 			if(AFKCount[i] > 120)
 			{
-				SendClientMessageEx(i, COLOR_LIGHTRED, "คุณไม่ได้รับ PayCheck เนื่องจากคุณมีการ AFK ไป %s วินาที ซึ่งเรากำหนดให้แค่ไม่เกิน 120 วินาที",AFKCount[i]);
+				SendClientMessageEx(i, COLOR_LIGHTRED, "คุณไม่ได้รับ PayCheck เนื่องจากคุณมีการ AFK ไป %s วินาที ซึ่งเรากำหนดให้แค่ไม่เกิน 120 วินาที",MoneyFormat(AFKCount[i]));
 				continue;
 			}
 		}

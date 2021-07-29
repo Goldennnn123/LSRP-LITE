@@ -19,7 +19,7 @@ stock SetPlayerClothing(playerid)
 
     for(new i = 0; i < MAX_PLAYER_CLOTHING; i++)
     {
-        
+
         if(PlayerInfo[playerid][pClothing][i])
         {
             mysql_format(dbCon, query, sizeof(query), "SELECT `ClothingDBID`, `ClothingOwnerDBID`, `ClothingSpawn`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ` FROM `clothing` WHERE `ClothingDBID` = '%d'",PlayerInfo[playerid][pClothing][i]);
@@ -848,7 +848,14 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
     switch(listitem)
     {
         case 0: return 1;
-        case 1: return 1;
+        case 1: 
+        {
+            if(PlayerInfo[playerid][pAdmin] < 3)
+                return 1;
+
+            Dialog_Show(playerid, D_CLOTHING_SETMODEL, DIALOG_STYLE_INPUT, "เปลี่ยน Model", "กรุณาใส่เลขโมเดลของคุณ", "ยืนยัน", "ยกเลิก");
+            return 1;
+        }
         case 2:
         {
             new str[255], longstr[255];
@@ -973,6 +980,26 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
             return 1;
         }
     }
+    return 1;
+}
+
+Dialog:D_CLOTHING_SETMODEL(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+    {
+        ShowClothing(playerid);
+        PlayerCloID[playerid] = 0;
+        return 1;
+    }
+
+    new modelid = strval(inputtext);
+
+    new id = GetPVarInt(playerid, "PlayerClothing");
+
+    ClothingData[id][C_Model] = modelid;
+    SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณได้เปลี่ยน Model เป็น %d", modelid);
+    SaveClothing(id);
+    DeletePVar(playerid, "PlayerClothing");
     return 1;
 }
 

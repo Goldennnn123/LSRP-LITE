@@ -19,6 +19,7 @@ stock SetPlayerClothing(playerid)
 
     for(new i = 0; i < MAX_PLAYER_CLOTHING; i++)
     {
+        
         if(PlayerInfo[playerid][pClothing][i])
         {
             mysql_format(dbCon, query, sizeof(query), "SELECT `ClothingDBID`, `ClothingOwnerDBID`, `ClothingSpawn`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ` FROM `clothing` WHERE `ClothingDBID` = '%d'",PlayerInfo[playerid][pClothing][i]);

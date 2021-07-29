@@ -1,4 +1,4 @@
-#define MAX_CLOTHING (100)
+#define MAX_CLOTHING (500)
 #define MAX_PLAYER_CLOTHING (6)
 
 enum C_CLOTHING_PLAYER

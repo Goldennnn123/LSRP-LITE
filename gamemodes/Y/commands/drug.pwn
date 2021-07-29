@@ -292,7 +292,7 @@ CMD:usedrug(playerid, params[])
     if(type < 1 || type > 3)
         return SendErrorMessage(playerid, "คุณใส่ประเภทยาเสพติดไม่ถูก (1-3 เท่านั้น)");
 
-    if(PlayerInfo[playerid][pDrug][type-1] < 0.01)
+    if(PlayerInfo[playerid][pDrug][type-1] < 0.2)
         return SendErrorMessage(playerid, "คุณมียาไม่เพียงพอต่อการที่จะเสพ");
     
 
@@ -308,7 +308,7 @@ CMD:usedrug(playerid, params[])
             PlayerDrugUse[playerid] = SetTimerEx("SetPlayerHealth_Stap", 2000, true, "dd",playerid, type);
 
             SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Cocaine' ทำให้เลือดของคุณเพิ่มทีละ +2");
-            PlayerInfo[playerid][pDrug][0]-= 0.01;
+            PlayerInfo[playerid][pDrug][0]-= 0.2;
             PlayerInfo[playerid][pAddicted] = false;
             PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cocaine'", ReturnName(playerid, 0));
@@ -328,7 +328,7 @@ CMD:usedrug(playerid, params[])
 
             PlayerDrugUse[playerid] = SetTimerEx("SetPlayerHealth_Stap", 2000, true, "dd",playerid, type);
             SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Cannabis' ทำให้เลือดของคุณเพิ่มทีละ +2");
-            PlayerInfo[playerid][pDrug][1]-= 0.01;
+            PlayerInfo[playerid][pDrug][1]-= 0.2;
             PlayerInfo[playerid][pAddicted] = false;
             PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด 'Cannabis'", ReturnName(playerid, 0));
@@ -347,7 +347,7 @@ CMD:usedrug(playerid, params[])
 
             PlayerDrugUse[playerid] = SetTimerEx("SetPlayerHealth_Stap", 2000, true, "dd",playerid, type);
             SendClientMessage(playerid, COLOR_GREY, "คุณได้มีการเสพยาเสพติด 'Heroin' ทำให้เลือดของคุณเพิ่มทีละ +2");
-            PlayerInfo[playerid][pDrug][1]-= 0.01;
+            PlayerInfo[playerid][pDrug][1]-= 0.2;
             PlayerInfo[playerid][pAddicted] = false;
             PlayerInfo[playerid][pAddictedCount] = 1;
             Log(druglog, WARNING, "%s มีการใช้ ยาเสพติด ''", ReturnName(playerid, 0));

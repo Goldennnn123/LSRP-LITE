@@ -1,4 +1,5 @@
 
+#include <YSI_Coding\y_hooks>
 
 new PlayerSeClo[MAX_PLAYERS], PlayerSeCloBuy[MAX_PLAYERS], PlayerSeCloBuySect[MAX_PLAYERS], PlayerCloID[MAX_PLAYERS];
 
@@ -10,6 +11,51 @@ hook OnPlayerConnect(playerid)
     return 1;
 }
 
+
+
+stock SetPlayerClothing(playerid)
+{
+    new query[MAX_PLAYERS]; new id;
+
+    for(new i = 0; i < MAX_PLAYER_CLOTHING; i++)
+    {
+        if(PlayerInfo[playerid][pClothing][i])
+        {
+            mysql_format(dbCon, query, sizeof(query), "SELECT `ClothingDBID`, `ClothingOwnerDBID`, `ClothingSpawn`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ` FROM `clothing` WHERE `ClothingDBID` = '%d'",PlayerInfo[playerid][pClothing][i]);
+            new Cache:cache = mysql_query(dbCon, query);
+
+            if(!cache_num_rows())
+                continue;
+
+            cache_get_value_index_int(0, 0, id);
+            
+            cache_get_value_index_int(0, 1, ClothingData[id][C_Owner]);
+            cache_get_value_index_bool(0, 2, ClothingData[id][C_Spawn]);
+            cache_get_value_index_int(0, 3, ClothingData[id][C_Model]);
+            cache_get_value_index_int(0, 4, ClothingData[id][C_Index]);
+            cache_get_value_index_int(0, 5, ClothingData[id][C_Bone]);
+            cache_get_value_index_float(0, 6, ClothingData[id][C_OFFPOS][0]);
+            cache_get_value_index_float(0, 7, ClothingData[id][C_OFFPOS][1]);
+            cache_get_value_index_float(0, 8, ClothingData[id][C_OFFPOS][2]);
+            cache_get_value_index_float(0, 9, ClothingData[id][C_OFFPOSR][0]);
+            cache_get_value_index_float(0, 10, ClothingData[id][C_OFFPOSR][1]);
+            cache_get_value_index_float(0, 11, ClothingData[id][C_OFFPOSR][2]);
+            cache_get_value_index_float(0, 12, ClothingData[id][C_OFFPOSS][0]);
+            cache_get_value_index_float(0, 13, ClothingData[id][C_OFFPOSS][1]);
+            cache_get_value_index_float(0, 14, ClothingData[id][C_OFFPOSS][2]);
+            cache_delete(cache);
+
+            ClothingData[id][C_ID] = id;
+            
+            if(!ClothingData[id][C_Spawn])
+                continue;
+
+            SetPlayerAttachedObject(playerid, ClothingData[id][C_Index], ClothingData[id][C_Model], ClothingData[id][C_Bone], ClothingData[id][C_OFFPOS][0], ClothingData[id][C_OFFPOS][1], ClothingData[id][C_OFFPOS][2], ClothingData[id][C_OFFPOSR][0], ClothingData[id][C_OFFPOSR][1], ClothingData[id][C_OFFPOSR][2], ClothingData[id][C_OFFPOSS][0], ClothingData[id][C_OFFPOSS][1], ClothingData[id][C_OFFPOSS][2], 0);
+            
+        }
+    }
+    return 1;
+}
 CMD:buyclothing(playerid, params[])
 {
     if(IsPlayerInAnyVehicle(playerid))
@@ -165,15 +211,15 @@ CMD:clothing(playerid, params[])
         }
         if(idx == -1) return SendErrorMessage(tagetid, "คุณมีการซื้อเต็มแล้ว");
 
-        if(ClothingInfo[PlayerInfo[playerid][pClothing][id-1]][ClothingSpawn])
+        if(ClothingData[PlayerInfo[playerid][pClothing][id-1]][C_Spawn])
         {
-            RemovePlayerAttachedObject(playerid, ClothingInfo[PlayerInfo[playerid][pClothing][id-1]][ClothingIndex]);
+            RemovePlayerAttachedObject(playerid, ClothingData[PlayerInfo[playerid][pClothing][id-1]][C_Index]);
         }
 
         PlayerInfo[tagetid][pClothing][idx] = PlayerInfo[playerid][pClothing][id-1];
 
-        ClothingInfo[id][ClothingOwnerDBID] = PlayerInfo[tagetid][pDBID];
-        SaveClothing(id);
+        ClothingData[PlayerInfo[playerid][pClothing][id-1]][C_Owner] = PlayerInfo[tagetid][pDBID];
+        SaveClothing(PlayerInfo[playerid][pClothing][id-1]);
 
         SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบสิ่งของให้กับ %s",ReturnName(tagetid,0));
         SendClientMessageEx(tagetid, COLOR_GREY, "คุณได้รับสิ่งของจาก %s",ReturnName(playerid,0));
@@ -409,6 +455,8 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
     if(!response)
         return 1;
     
+    new query[MAX_STRING];
+
     switch(listitem)
     {
         case 0:
@@ -417,35 +465,53 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][0], idx = 0;
+            mysql_format(dbCon, query, sizeof(query), "SELECT `ClothingDBID`, `ClothingOwnerDBID`, `ClothingSpawn`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ` FROM `clothing` WHERE `ClothingDBID` = '%d'",PlayerInfo[playerid][pClothing][0]);
+            new Cache:cache = mysql_query(dbCon, query);
 
-            for(new i = 1; i < MAX_CLOTHING; i++)
+            if(!cache_num_rows())
             {
-                if(id == ClothingInfo[i][ClothingDBID])
-                {
-                    idx = i;
-                }
+                PlayerInfo[playerid][pClothing][0] = 0;
+                return SendErrorMessage(playerid, "ไม่มี ไอดีนี้ในฐ้านข้อมูล");
             }
-            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+
+            new id;
+
+            cache_get_value_index_int(0, 0, id);
             
-            PlayerCloID[playerid] = idx;
+            cache_get_value_index_int(0, 1, ClothingData[id][C_Owner]);
+            cache_get_value_index_bool(0, 2, ClothingData[id][C_Spawn]);
+            cache_get_value_index_int(0, 3, ClothingData[id][C_Model]);
+            cache_get_value_index_int(0, 4, ClothingData[id][C_Index]);
+            cache_get_value_index_int(0, 5, ClothingData[id][C_Bone]);
+            cache_get_value_index_float(0, 6, ClothingData[id][C_OFFPOS][0]);
+            cache_get_value_index_float(0, 7, ClothingData[id][C_OFFPOS][1]);
+            cache_get_value_index_float(0, 8, ClothingData[id][C_OFFPOS][2]);
+            cache_get_value_index_float(0, 9, ClothingData[id][C_OFFPOSR][0]);
+            cache_get_value_index_float(0, 10, ClothingData[id][C_OFFPOSR][1]);
+            cache_get_value_index_float(0, 11, ClothingData[id][C_OFFPOSR][2]);
+            cache_get_value_index_float(0, 12, ClothingData[id][C_OFFPOSS][0]);
+            cache_get_value_index_float(0, 13, ClothingData[id][C_OFFPOSS][1]);
+            cache_get_value_index_float(0, 14, ClothingData[id][C_OFFPOSS][2]);
+            cache_delete(cache);
+
+            ClothingData[id][C_ID] = id;
 
             new str[120], longstr[120];
 
-            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            format(str, sizeof(str), "ID: %d\n",ClothingData[id][C_ID]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            format(str, sizeof(str), "Model: %d\n",ClothingData[id][C_Model]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            format(str, sizeof(str), "Index: %d\n",ClothingData[id][C_Index]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            format(str, sizeof(str), "Bone: %d\n",ClothingData[id][C_Bone]);
             strcat(longstr, str);
 
             format(str, sizeof(str), "Pos\n");
             strcat(longstr, str);
 
 
-            if(ClothingInfo[idx][ClothingSpawn])
+            if(ClothingData[id][C_Spawn])
             {
                 format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
                 strcat(longstr, str);
@@ -460,44 +526,67 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
             strcat(longstr, str);
 
             
+
+            PlayerCloID[playerid] = ClothingData[id][C_ID];
+            SetPVarInt(playerid, "PlayerClothing", ClothingData[id][C_ID]);
+
             Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
         case 1:
         {
-            if(!PlayerInfo[playerid][pClothing][4])
+            if(!PlayerInfo[playerid][pClothing][1])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][1], idx = 0;
+            mysql_format(dbCon, query, sizeof(query), "SELECT `ClothingDBID`, `ClothingOwnerDBID`, `ClothingSpawn`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ` FROM `clothing` WHERE `ClothingDBID` = '%d'",PlayerInfo[playerid][pClothing][1]);
+            new Cache:cache = mysql_query(dbCon, query);
+        
 
-            for(new i = 1; i < MAX_CLOTHING; i++)
+            if(!cache_num_rows())
             {
-                if(id == ClothingInfo[i][ClothingDBID])
-                {
-                    idx = i;
-                }
+                PlayerInfo[playerid][pClothing][1] = 0;
+                return SendErrorMessage(playerid, "ไม่มี ไอดีนี้ในฐ้านข้อมูล");
             }
-            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+
+            new id;
+
+            cache_get_value_index_int(0, 0, id);
             
-            PlayerCloID[playerid] = idx;
+            cache_get_value_index_int(0, 1, ClothingData[id][C_Owner]);
+            cache_get_value_index_bool(0, 2, ClothingData[id][C_Spawn]);
+            cache_get_value_index_int(0, 3, ClothingData[id][C_Model]);
+            cache_get_value_index_int(0, 4, ClothingData[id][C_Index]);
+            cache_get_value_index_int(0, 5, ClothingData[id][C_Bone]);
+            cache_get_value_index_float(0, 6, ClothingData[id][C_OFFPOS][0]);
+            cache_get_value_index_float(0, 7, ClothingData[id][C_OFFPOS][1]);
+            cache_get_value_index_float(0, 8, ClothingData[id][C_OFFPOS][2]);
+            cache_get_value_index_float(0, 9, ClothingData[id][C_OFFPOSR][0]);
+            cache_get_value_index_float(0, 10, ClothingData[id][C_OFFPOSR][1]);
+            cache_get_value_index_float(0, 11, ClothingData[id][C_OFFPOSR][2]);
+            cache_get_value_index_float(0, 12, ClothingData[id][C_OFFPOSS][0]);
+            cache_get_value_index_float(0, 13, ClothingData[id][C_OFFPOSS][1]);
+            cache_get_value_index_float(0, 14, ClothingData[id][C_OFFPOSS][2]);
+            cache_delete(cache);
+
+            ClothingData[id][C_ID] = id;
 
             new str[120], longstr[120];
 
-            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            format(str, sizeof(str), "ID: %d\n",ClothingData[id][C_ID]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            format(str, sizeof(str), "Model: %d\n",ClothingData[id][C_Model]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            format(str, sizeof(str), "Index: %d\n",ClothingData[id][C_Index]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            format(str, sizeof(str), "Bone: %d\n",ClothingData[id][C_Bone]);
             strcat(longstr, str);
 
             format(str, sizeof(str), "Pos\n");
             strcat(longstr, str);
 
 
-            if(ClothingInfo[idx][ClothingSpawn])
+            if(ClothingData[id][C_Spawn])
             {
                 format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
                 strcat(longstr, str);
@@ -512,6 +601,10 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
             strcat(longstr, str);
 
             
+
+            PlayerCloID[playerid] = ClothingData[id][C_ID];
+            SetPVarInt(playerid, "PlayerClothing", ClothingData[id][C_ID]);
+
             Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
@@ -521,35 +614,53 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][2], idx = 0;
+            mysql_format(dbCon, query, sizeof(query), "SELECT `ClothingDBID`, `ClothingOwnerDBID`, `ClothingSpawn`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ` FROM `clothing` WHERE `ClothingDBID` = '%d'",PlayerInfo[playerid][pClothing][2]);
+            new Cache:cache = mysql_query(dbCon, query);
 
-            for(new i = 1; i < MAX_CLOTHING; i++)
+            if(!cache_num_rows())
             {
-                if(id == ClothingInfo[i][ClothingDBID])
-                {
-                    idx = i;
-                }
+                PlayerInfo[playerid][pClothing][2] = 0;
+                return SendErrorMessage(playerid, "ไม่มี ไอดีนี้ในฐ้านข้อมูล");
             }
-            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+
+            new id;
+
+            cache_get_value_index_int(0, 0, id);
             
-            PlayerCloID[playerid] = idx;
+            cache_get_value_index_int(0, 1, ClothingData[id][C_Owner]);
+            cache_get_value_index_bool(0, 2, ClothingData[id][C_Spawn]);
+            cache_get_value_index_int(0, 3, ClothingData[id][C_Model]);
+            cache_get_value_index_int(0, 4, ClothingData[id][C_Index]);
+            cache_get_value_index_int(0, 5, ClothingData[id][C_Bone]);
+            cache_get_value_index_float(0, 6, ClothingData[id][C_OFFPOS][0]);
+            cache_get_value_index_float(0, 7, ClothingData[id][C_OFFPOS][1]);
+            cache_get_value_index_float(0, 8, ClothingData[id][C_OFFPOS][2]);
+            cache_get_value_index_float(0, 9, ClothingData[id][C_OFFPOSR][0]);
+            cache_get_value_index_float(0, 10, ClothingData[id][C_OFFPOSR][1]);
+            cache_get_value_index_float(0, 11, ClothingData[id][C_OFFPOSR][2]);
+            cache_get_value_index_float(0, 12, ClothingData[id][C_OFFPOSS][0]);
+            cache_get_value_index_float(0, 13, ClothingData[id][C_OFFPOSS][1]);
+            cache_get_value_index_float(0, 14, ClothingData[id][C_OFFPOSS][2]);
+            cache_delete(cache);
+
+            ClothingData[id][C_ID] = id;
 
             new str[120], longstr[120];
 
-            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            format(str, sizeof(str), "ID: %d\n",ClothingData[id][C_ID]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            format(str, sizeof(str), "Model: %d\n",ClothingData[id][C_Model]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            format(str, sizeof(str), "Index: %d\n",ClothingData[id][C_Index]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            format(str, sizeof(str), "Bone: %d\n",ClothingData[id][C_Bone]);
             strcat(longstr, str);
 
             format(str, sizeof(str), "Pos\n");
             strcat(longstr, str);
 
 
-            if(ClothingInfo[idx][ClothingSpawn])
+            if(ClothingData[id][C_Spawn])
             {
                 format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
                 strcat(longstr, str);
@@ -564,6 +675,10 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
             strcat(longstr, str);
 
             
+
+            PlayerCloID[playerid] = ClothingData[id][C_ID];
+            SetPVarInt(playerid, "PlayerClothing", ClothingData[id][C_ID]);
+
             Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
@@ -573,35 +688,53 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][3], idx = 0;
+            mysql_format(dbCon, query, sizeof(query), "SELECT `ClothingDBID`, `ClothingOwnerDBID`, `ClothingSpawn`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ` FROM `clothing` WHERE `ClothingDBID` = '%d'",PlayerInfo[playerid][pClothing][3]);
+            new Cache:cache = mysql_query(dbCon, query);
 
-            for(new i = 1; i < MAX_CLOTHING; i++)
+            if(!cache_num_rows())
             {
-                if(id == ClothingInfo[i][ClothingDBID])
-                {
-                    idx = i;
-                }
+                PlayerInfo[playerid][pClothing][3] = 0;
+                return SendErrorMessage(playerid, "ไม่มี ไอดีนี้ในฐ้านข้อมูล");
             }
-            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+
+            new id;
+
+            cache_get_value_index_int(0, 0, id);
             
-            PlayerCloID[playerid] = idx;
+            cache_get_value_index_int(0, 1, ClothingData[id][C_Owner]);
+            cache_get_value_index_bool(0, 2, ClothingData[id][C_Spawn]);
+            cache_get_value_index_int(0, 3, ClothingData[id][C_Model]);
+            cache_get_value_index_int(0, 4, ClothingData[id][C_Index]);
+            cache_get_value_index_int(0, 5, ClothingData[id][C_Bone]);
+            cache_get_value_index_float(0, 6, ClothingData[id][C_OFFPOS][0]);
+            cache_get_value_index_float(0, 7, ClothingData[id][C_OFFPOS][1]);
+            cache_get_value_index_float(0, 8, ClothingData[id][C_OFFPOS][2]);
+            cache_get_value_index_float(0, 9, ClothingData[id][C_OFFPOSR][0]);
+            cache_get_value_index_float(0, 10, ClothingData[id][C_OFFPOSR][1]);
+            cache_get_value_index_float(0, 11, ClothingData[id][C_OFFPOSR][2]);
+            cache_get_value_index_float(0, 12, ClothingData[id][C_OFFPOSS][0]);
+            cache_get_value_index_float(0, 13, ClothingData[id][C_OFFPOSS][1]);
+            cache_get_value_index_float(0, 14, ClothingData[id][C_OFFPOSS][2]);
+            cache_delete(cache);
+
+            ClothingData[id][C_ID] = id;
 
             new str[120], longstr[120];
 
-            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            format(str, sizeof(str), "ID: %d\n",ClothingData[id][C_ID]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            format(str, sizeof(str), "Model: %d\n",ClothingData[id][C_Model]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            format(str, sizeof(str), "Index: %d\n",ClothingData[id][C_Index]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            format(str, sizeof(str), "Bone: %d\n",ClothingData[id][C_Bone]);
             strcat(longstr, str);
 
             format(str, sizeof(str), "Pos\n");
             strcat(longstr, str);
 
 
-            if(ClothingInfo[idx][ClothingSpawn])
+            if(ClothingData[id][C_Spawn])
             {
                 format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
                 strcat(longstr, str);
@@ -616,6 +749,10 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
             strcat(longstr, str);
 
             
+
+            PlayerCloID[playerid] = ClothingData[id][C_ID];
+            SetPVarInt(playerid, "PlayerClothing", ClothingData[id][C_ID]);
+
             Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
@@ -625,35 +762,53 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
                 return SendErrorMessage(playerid, "คุณไม่มี Model ในนี้");
 
 
-            new id = PlayerInfo[playerid][pClothing][4], idx = 0;
+            mysql_format(dbCon, query, sizeof(query), "SELECT `ClothingDBID`, `ClothingOwnerDBID`, `ClothingSpawn`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ` FROM `clothing` WHERE `ClothingDBID` = '%d'",PlayerInfo[playerid][pClothing][4]);
+            new Cache:cache = mysql_query(dbCon, query);
 
-            for(new i = 1; i < MAX_CLOTHING; i++)
+            if(!cache_num_rows())
             {
-                if(id == ClothingInfo[i][ClothingDBID])
-                {
-                    idx = i;
-                }
+                PlayerInfo[playerid][pClothing][4] = 0;
+                return SendErrorMessage(playerid, "ไม่มี ไอดีนี้ในฐ้านข้อมูล");
             }
-            if(idx == 0) return SendErrorMessage(playerid, "ไม่มี ID Model นี้ในฐานข้อมูล");
+
+            new id;
+
+            cache_get_value_index_int(0, 0, id);
             
-            PlayerCloID[playerid] = idx;
+            cache_get_value_index_int(0, 1, ClothingData[id][C_Owner]);
+            cache_get_value_index_bool(0, 2, ClothingData[id][C_Spawn]);
+            cache_get_value_index_int(0, 3, ClothingData[id][C_Model]);
+            cache_get_value_index_int(0, 4, ClothingData[id][C_Index]);
+            cache_get_value_index_int(0, 5, ClothingData[id][C_Bone]);
+            cache_get_value_index_float(0, 6, ClothingData[id][C_OFFPOS][0]);
+            cache_get_value_index_float(0, 7, ClothingData[id][C_OFFPOS][1]);
+            cache_get_value_index_float(0, 8, ClothingData[id][C_OFFPOS][2]);
+            cache_get_value_index_float(0, 9, ClothingData[id][C_OFFPOSR][0]);
+            cache_get_value_index_float(0, 10, ClothingData[id][C_OFFPOSR][1]);
+            cache_get_value_index_float(0, 11, ClothingData[id][C_OFFPOSR][2]);
+            cache_get_value_index_float(0, 12, ClothingData[id][C_OFFPOSS][0]);
+            cache_get_value_index_float(0, 13, ClothingData[id][C_OFFPOSS][1]);
+            cache_get_value_index_float(0, 14, ClothingData[id][C_OFFPOSS][2]);
+            cache_delete(cache);
+
+            ClothingData[id][C_ID] = id;
 
             new str[120], longstr[120];
 
-            format(str, sizeof(str), "ID: %d\n",ClothingInfo[idx][ClothingDBID]);
+            format(str, sizeof(str), "ID: %d\n",ClothingData[id][C_ID]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Model: %d\n",ClothingInfo[idx][ClothingModel]);
+            format(str, sizeof(str), "Model: %d\n",ClothingData[id][C_Model]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Index: %d\n",ClothingInfo[idx][ClothingIndex]);
+            format(str, sizeof(str), "Index: %d\n",ClothingData[id][C_Index]);
             strcat(longstr, str);
-            format(str, sizeof(str), "Bone: %d\n",ClothingInfo[idx][ClothingBone]);
+            format(str, sizeof(str), "Bone: %d\n",ClothingData[id][C_Bone]);
             strcat(longstr, str);
 
             format(str, sizeof(str), "Pos\n");
             strcat(longstr, str);
 
 
-            if(ClothingInfo[idx][ClothingSpawn])
+            if(ClothingData[id][C_Spawn])
             {
                 format(str, sizeof(str), ""EMBED_GREENMONEY"Take Off\n");
                 strcat(longstr, str);
@@ -668,6 +823,10 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
             strcat(longstr, str);
 
             
+
+            PlayerCloID[playerid] = ClothingData[id][C_ID];
+            SetPVarInt(playerid, "PlayerClothing", ClothingData[id][C_ID]);
+
             Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
             return 1;
         }
@@ -681,7 +840,7 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
     if(!response)
         return 1;
     
-    new id = PlayerCloID[playerid];
+    new id = GetPVarInt(playerid, "PlayerClothing");
 
     switch(listitem)
     {
@@ -751,57 +910,63 @@ Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
         }
         case 4:
         {
-            if(ClothingInfo[id][ClothingSpawn])
+
+            if(ClothingData[id][C_Spawn])
             {
-                EditAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
+                EditAttachedObject(playerid, ClothingData[id][C_Index]);
             }
             else
             {
-                SetPlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex], ClothingInfo[id][ClothingModel], ClothingInfo[id][ClothingBone], ClothingInfo[id][ClothingOffPos][0], ClothingInfo[id][ClothingOffPos][1], ClothingInfo[id][ClothingOffPos][2], ClothingInfo[id][ClothingOffPosR][0], ClothingInfo[id][ClothingOffPosR][1], ClothingInfo[id][ClothingOffPosR][2], ClothingInfo[id][ClothingOffPosSacal][0], ClothingInfo[id][ClothingOffPosSacal][1], ClothingInfo[id][ClothingOffPosSacal][2],0);
-                EditAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
+                SetPlayerAttachedObject(playerid, ClothingData[id][C_Index], ClothingData[id][C_Model], ClothingData[id][C_Bone], ClothingData[id][C_OFFPOS][0], ClothingData[id][C_OFFPOS][1], ClothingData[id][C_OFFPOS][2], ClothingData[id][C_OFFPOSR][0], ClothingData[id][C_OFFPOSR][1], ClothingData[id][C_OFFPOSR][2], ClothingData[id][C_OFFPOSS][0], ClothingData[id][C_OFFPOSS][1], ClothingData[id][C_OFFPOSS][2], 0);
+                EditAttachedObject(playerid, ClothingData[id][C_Index]);
             }
             return 1;
         }
         case 5:
         {
-            if(ClothingInfo[id][ClothingSpawn])
+            if(ClothingData[id][C_Spawn])
             {
-                RemovePlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
-                ClothingInfo[id][ClothingSpawn] = false;
+                RemovePlayerAttachedObject(playerid, ClothingData[id][C_Index]);
+                ClothingData[id][C_Spawn] = false;
                 SaveClothing(id);
+                DeletePVar(playerid, "PlayerClothing");
                 return 1;
             }
 
-            if(IsPlayerAttachedObjectSlotUsed(playerid, ClothingInfo[id][ClothingIndex]))
-                RemovePlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
+            if(IsPlayerAttachedObjectSlotUsed(playerid, ClothingData[id][C_Index]))
+                RemovePlayerAttachedObject(playerid, ClothingData[id][C_Index]);
 
-            SetPlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex], ClothingInfo[id][ClothingModel], ClothingInfo[id][ClothingBone], ClothingInfo[id][ClothingOffPos][0], ClothingInfo[id][ClothingOffPos][1], ClothingInfo[id][ClothingOffPos][2], ClothingInfo[id][ClothingOffPosR][0], ClothingInfo[id][ClothingOffPosR][1], ClothingInfo[id][ClothingOffPosR][2], ClothingInfo[id][ClothingOffPosSacal][0], ClothingInfo[id][ClothingOffPosSacal][1], ClothingInfo[id][ClothingOffPosSacal][2],0);
-            ClothingInfo[id][ClothingSpawn] = true;
-            SendClientMessageEx(playerid, -1, "คุณได้ใส่เครื่องแต่ตัวแล้ว %d", ClothingInfo[id][ClothingModel]);
+            SetPlayerAttachedObject(playerid, ClothingData[id][C_Index], ClothingData[id][C_Model], ClothingData[id][C_Bone], ClothingData[id][C_OFFPOS][0], ClothingData[id][C_OFFPOS][1], ClothingData[id][C_OFFPOS][2], ClothingData[id][C_OFFPOSR][0], ClothingData[id][C_OFFPOSR][1], ClothingData[id][C_OFFPOSR][2], ClothingData[id][C_OFFPOSS][0], ClothingData[id][C_OFFPOSS][1], ClothingData[id][C_OFFPOSS][2], 0);
+            ClothingData[id][C_Spawn] = true;
+            SendClientMessageEx(playerid, -1, "คุณได้ใส่เครื่องแต่ตัวแล้ว %d", ClothingData[id][C_Model]);
             SaveClothing(id);
+            DeletePVar(playerid, "PlayerClothing");
             return 1;
         }
         case 6:
         {
-            for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
-            {
-                if(PlayerInfo[playerid][pClothing][i-1] != ClothingInfo[id][ClothingDBID])
-                    continue;
-
-                PlayerInfo[playerid][pClothing][i-1] = 0;
-            }
-
-            if(ClothingInfo[id][ClothingSpawn])
-                RemovePlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
+           
+            if(ClothingData[id][C_Spawn])
+                RemovePlayerAttachedObject(playerid, ClothingData[id][C_Index]);
 
             new query[120];
-            mysql_format(dbCon, query, sizeof(query), "DELETE FROM `clothing` WHERE `ClothingDBID` = '%d'", ClothingInfo[id][ClothingDBID]);
+            mysql_format(dbCon, query, sizeof(query), "DELETE FROM `clothing` WHERE `ClothingDBID` = '%d'", id);
             mysql_tquery(dbCon, query);
 
-            ClothingInfo[id][ClothingDBID] = 0;
-            ClothingInfo[id][ClothingSpawn] = false;
-            ClothingInfo[id][ClothingModel] = 0;
+
+            for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
+            {
+                if(PlayerInfo[playerid][pClothing][i] == id)
+                {
+                    PlayerInfo[playerid][pClothing][i] = 0;
+                }
+            }
+
+            ClothingData[id][C_ID] = 0;
+            ClothingData[id][C_Spawn] = false;
+            ClothingData[id][C_Model] = 0;
             CharacterSave(playerid);
+            DeletePVar(playerid, "PlayerClothing");
             return 1;
         }
     }
@@ -813,11 +978,12 @@ Dialog:D_CLOTHING_BONE(playerid, response, listitem, inputtext[])
     if(!response)
         return 1;
 
-    new id = PlayerCloID[playerid];
-    ClothingInfo[id][ClothingBone] = listitem+1;
+    new id = GetPVarInt(playerid, "PlayerClothing");
+    ClothingData[id][C_Bone] = listitem+1;
 
     SendClientMessageEx(playerid, -1, "คุณได้เปลี่ยนต่ำแหน่ง Bone ไปที่ %d",listitem+1);
     SaveClothing(id);
+    DeletePVar(playerid, "PlayerClothing");
     return 1;
 }
 
@@ -826,11 +992,13 @@ Dialog:D_CLOTHING_INDEX(playerid, response, listitem, inputtext[])
     if(!response)
         return 1;
 
-    new id = PlayerCloID[playerid];
-    ClothingInfo[id][ClothingIndex] = listitem+1;
+    new id = GetPVarInt(playerid, "PlayerClothing");
+
+    ClothingData[id][C_Index] = listitem+1;
 
     SendClientMessageEx(playerid, -1, "คุณได้เปลี่ยนต่ำแหน่ง Index ไปที่ %d",listitem+1);
     SaveClothing(id);
+    DeletePVar(playerid, "PlayerClothing");
     return 1;
 }
 
@@ -838,45 +1006,35 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
 {
     if(response)
     {
-        if(PlayerCloID[playerid])
+        if(GetPVarInt(playerid, "PlayerClothing"))
         {
-            new id = PlayerCloID[playerid];
+            new id = GetPVarInt(playerid, "PlayerClothing");
 
-            if(IsPlayerAttachedObjectSlotUsed(playerid, ClothingInfo[id][ClothingIndex]))
-                RemovePlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
+            if(IsPlayerAttachedObjectSlotUsed(playerid, ClothingData[id][C_Index]))
+                RemovePlayerAttachedObject(playerid, ClothingData[id][C_Index]);
 
-            ClothingInfo[id][ClothingOffPos][0] = fOffsetX;
-            ClothingInfo[id][ClothingOffPos][1] = fOffsetY;
-            ClothingInfo[id][ClothingOffPos][2] = fOffsetZ;
 
-            ClothingInfo[id][ClothingOffPosR][0] = fRotX;
-            ClothingInfo[id][ClothingOffPosR][1] = fRotY;
-            ClothingInfo[id][ClothingOffPosR][2] = fRotZ;
+            ClothingData[id][C_OFFPOS][0] = fOffsetX;
+            ClothingData[id][C_OFFPOS][1] = fOffsetY;
+            ClothingData[id][C_OFFPOS][2] = fOffsetZ;
 
-            ClothingInfo[id][ClothingOffPosSacal][0] = fScaleX;
-            ClothingInfo[id][ClothingOffPosSacal][1] = fScaleY;
-            ClothingInfo[id][ClothingOffPosSacal][2] = fScaleZ;
-            ClothingInfo[id][ClothingSpawn] = true;
+            ClothingData[id][C_OFFPOSR][0] = fRotX;
+            ClothingData[id][C_OFFPOSR][1] = fRotY;
+            ClothingData[id][C_OFFPOSR][2] = fRotZ;
+
+            ClothingData[id][C_OFFPOSS][0] = fScaleX;
+            ClothingData[id][C_OFFPOSS][1] = fScaleY;
+            ClothingData[id][C_OFFPOSS][2] = fScaleZ;
+
+            ClothingData[id][C_Spawn] = true;
             
             SetPlayerAttachedObject(playerid, index, modelid, boneid, fOffsetX, fOffsetY, fOffsetZ,fRotX, fRotY, fRotZ,fScaleX,fScaleY,fScaleZ,0,0);
             SaveClothing(id);
-            PlayerCloID[playerid] = 0;
+            DeletePVar(playerid, "PlayerClothing");
             return 1;
         }
         if(PlayerSeCloBuy[playerid])
         {
-            new idx = 0;
-
-            for(new i = 1; i < MAX_CLOTHING; i++)
-            {
-                if(!ClothingInfo[i][ClothingDBID])
-                {
-                    idx = i;
-                    break;
-                }
-            }
-
-            if(idx == 0) return SendErrorMessage(playerid, "ของแต่ตัวเต็มเซิร์ฟเวอร์แล้ว");
         
             new query[1000];
             mysql_format(dbCon, query, sizeof(query), "INSERT INTO `clothing` (`ClothingOwnerDBID`, `ClothingModel`, `ClothingIndex`, `ClothingBone`, `ClothingOffPosX`, `ClothingOffPosY`, `ClothingOffPosZ`, `ClothingOffPosRX`, `ClothingOffPosRY`, `ClothingOffPosRZ`, `ClothingOffPosSacalX`, `ClothingOffPosSacalY`, `ClothingOffPosSacalZ`) VALUE ('%d','%d','%d','%d', '%f','%f','%f','%f','%f','%f','%f','%f','%f')",
@@ -893,7 +1051,7 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
             fScaleX,
             fScaleY,
             fScaleZ);
-            mysql_tquery(dbCon, query, "Query_InsertClothing", "dddddfffffffff",playerid, idx, modelid, index, boneid, fOffsetX, fOffsetY,fOffsetZ,fRotX, fRotY, fRotZ,fScaleX, fScaleY, fScaleZ);
+            mysql_tquery(dbCon, query, "Query_InsertClothing", "ddddfffffffff",playerid, modelid, index, boneid, fOffsetX, fOffsetY,fOffsetZ,fRotX, fRotY, fRotZ,fScaleX, fScaleY, fScaleZ);
             
             return 1;
         }
@@ -901,10 +1059,10 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
     }
     else
     {
-        if(PlayerSeClo[playerid])
+        if(GetPVarInt(playerid, "PlayerClothing"))
         {
-            new id = PlayerSeClo[playerid];
-            RemovePlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex]);
+            new id = GetPVarInt(playerid, "PlayerClothing");
+            RemovePlayerAttachedObject(playerid, ClothingData[id][C_Index]);
             return 1;
         }
         if(PlayerSeCloBuy[playerid])
@@ -919,31 +1077,15 @@ public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Fl
     return 1;
 }
 
-forward Query_InsertClothing(playerid, newid, modelid, index, boneid, Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ, Float:fRotX, Float:fRotY, Float:fRotZ, Float:fScaleX, Float:fScaleY, Float:fScaleZ);
-public Query_InsertClothing(playerid, newid, modelid, index, boneid, Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ, Float:fRotX, Float:fRotY, Float:fRotZ, Float:fScaleX, Float:fScaleY, Float:fScaleZ)
+forward Query_InsertClothing(playerid, modelid, index, boneid, Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ, Float:fRotX, Float:fRotY, Float:fRotZ, Float:fScaleX, Float:fScaleY, Float:fScaleZ);
+public Query_InsertClothing(playerid, modelid, index, boneid, Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ, Float:fRotX, Float:fRotY, Float:fRotZ, Float:fScaleX, Float:fScaleY, Float:fScaleZ)
 {
 
     new id = PlayerSeCloBuySect[playerid];
 
     PlayerInfo[playerid][pClothing][id] = cache_insert_id();
-    ClothingInfo[newid][ClothingDBID] = cache_insert_id();
-    ClothingInfo[newid][ClothingOwnerDBID] = PlayerInfo[playerid][pDBID];
-    ClothingInfo[newid][ClothingModel] = PlayerSeCloBuy[playerid];
-    ClothingInfo[newid][ClothingSpawn] = false;
 
-    ClothingInfo[newid][ClothingOffPos][0] = fOffsetX;
-    ClothingInfo[newid][ClothingOffPos][2] = fOffsetY;
-    ClothingInfo[newid][ClothingOffPos][2] = fOffsetZ;
-
-    ClothingInfo[newid][ClothingOffPosR][0] = fRotX;
-    ClothingInfo[newid][ClothingOffPosR][1] = fRotY;
-    ClothingInfo[newid][ClothingOffPosR][2] = fRotZ;
-
-    ClothingInfo[newid][ClothingOffPosSacal][0] = fScaleX;
-    ClothingInfo[newid][ClothingOffPosSacal][1] = fScaleY;
-    ClothingInfo[newid][ClothingOffPosSacal][2] = fScaleZ;
-
-    SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้ทำการซื้อ %d สำเร็จแล้ว %d",PlayerSeCloBuy[playerid], newid);
+    SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้ทำการซื้อ %d สำเร็จแล้ว",id);
     PlayerSeCloBuy[playerid] = 0;
     RemovePlayerAttachedObject(playerid, index);
     CharacterSave(playerid);

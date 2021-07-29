@@ -113,7 +113,6 @@ new globalWeather = 2;
 #include "Y/systems/fine.pwn"
 #include "Y/systems/gps.pwn"
 #include "Y/systems/global.pwn"
-#include "Y/systems/clothing.pwn"
 #include "Y/systems/business/clothing.pwn"
 #include "Y/systems/drug/drug.pwn"
 
@@ -756,22 +755,7 @@ public OnPlayerSpawn(playerid) {
         PlayerInfo[playerid][pWeaponsSpawned] = true;
     }
 
-    for(new i = 0; i < MAX_PLAYER_CLOTHING; i++)
-    {
-        if(PlayerInfo[playerid][pClothing][i])
-        {
-            for(new id = 1; id < MAX_CLOTHING; id++)
-            {
-                if(PlayerInfo[playerid][pClothing][i] == ClothingInfo[id][ClothingDBID])
-                {
-                    if(ClothingInfo[id][ClothingSpawn])
-                    {
-                        SetPlayerAttachedObject(playerid, ClothingInfo[id][ClothingIndex], ClothingInfo[id][ClothingModel], ClothingInfo[id][ClothingBone], ClothingInfo[id][ClothingOffPos][0], ClothingInfo[id][ClothingOffPos][1], ClothingInfo[id][ClothingOffPos][2], ClothingInfo[id][ClothingOffPosR][0], ClothingInfo[id][ClothingOffPosR][1], ClothingInfo[id][ClothingOffPosR][2], ClothingInfo[id][ClothingOffPosSacal][0], ClothingInfo[id][ClothingOffPosSacal][1], ClothingInfo[id][ClothingOffPosSacal][2],0);
-                    }
-                }
-            }
-        }
-    }
+    SetPlayerClothing(playerid);
 
     SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
 	SetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);

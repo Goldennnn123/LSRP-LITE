@@ -178,7 +178,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE && PlayerInfo[playerid][pDeathFix])
 			SetPlayerHealth(playerid, 500); 
 		
-		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE ||GetPlayerTeam(playerid) == PLAYER_STATE_WOUNDED)
+		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE)
 		{
 			if(weaponid == 23)
 			{

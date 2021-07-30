@@ -24,7 +24,7 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines /frisk");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
-	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstation /boombox /clothing /buyclothing");
+	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstation /boombox /clothing /buyclothing /takegun");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp /drughelp /meal");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation) /walkstyle /shakehand");
@@ -641,9 +641,6 @@ CMD:place(playerid, params[])
 
 	if(sscanf(params, "i", weaponid))
 		return SendUsageMessage(playerid, "/place [ไอดีอาวุธ]");
-		
-	if(!PlayerHasWeapon(playerid, weaponid))
-		return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
 
 	if(!IsPlayerInAnyVehicle(playerid) && GetNearestVehicle(playerid) != INVALID_VEHICLE_ID)
 	{
@@ -652,6 +649,29 @@ CMD:place(playerid, params[])
 		new 
 			vehicleid = GetNearestVehicle(playerid)
 		;
+
+		if(VehFacInfo[vehicleid][VehFacDBID])
+		{
+			new factionid = VehFacInfo[vehicleid][VehFacFaction];
+			
+			if(FactionInfo[factionid][eFactionJob] != POLICE && FactionInfo[factionid][eFactionJob] != SHERIFF)
+				return SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
+			
+			if(PlayerInfo[playerid][pFaction] != factionid)
+				return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะแฟคชั่นอื่นได้");
+			
+			RemovePlayerWeapon(playerid, weaponid);
+		
+			format(str, sizeof(str), "* %s ได้วาง %s ลงไปในรถ %s.", ReturnName(playerid, 0), ReturnWeaponName(weaponid), ReturnVehicleName(vehicleid));
+			SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4000);
+			SendClientMessage(playerid, COLOR_EMOTE, str);
+			return 1;
+		}
+
+		if(!PlayerHasWeapon(playerid, weaponid))
+			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
+		
+
 		
 		if(VehicleInfo[vehicleid][eVehicleFaction])
 			return SendClientMessage(playerid, COLOR_YELLOW, "รถคันนี้เป็นรถของเฟคชั่นไม่สามารถใช้คำสั่งนี้ได้");
@@ -749,6 +769,274 @@ CMD:place(playerid, params[])
 		SendClientMessage(playerid, COLOR_EMOTE, str);
 		CharacterSave(playerid); Savehouse(id);
 	}
+	return 1;
+}
+
+CMD:takegun(playerid, params[])
+{
+	new slotid;
+
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+
+		if(HasNoEngine(vehicleid))
+			return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะไม่สามารถเก็บของได้"); 
+
+		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn] && !VehFacInfo[vehicleid][VehFacDBID])
+			return SendServerMessage(playerid, "รถคันนี้เป็นรถส่วนบุคคนไม่สามารถใช้คำสั่ง /takegun ได้");
+
+
+		if(sscanf(params, "i", slotid))
+			return SendUsageMessage(playerid, "/takegun <1-5>");
+
+		if(slotid < 1 || slotid > 5)
+			return SendErrorMessage(playerid, "กรุณาใส่ สล็อตให้ถูกต้อง");
+
+		if(VehFacInfo[vehicleid][VehFacDBID])
+		{
+			new factionid = VehFacInfo[vehicleid][VehFacFaction];
+			
+			if(FactionInfo[factionid][eFactionJob] != POLICE && FactionInfo[factionid][eFactionJob] != SHERIFF)
+				return SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
+			
+			if(PlayerInfo[playerid][pFaction] != factionid)
+				return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะแฟคชั่นอื่นได้");
+
+			switch(slotid)
+			{
+				case 1:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 25, 100);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(25), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+				case 2:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 29, 60);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(29), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+				case 3:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 31, 60);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(31), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+				case 4:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 34, 60);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(34), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+				case 5:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 27, 60);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(27), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+			}
+			return 1;
+		}
+
+		if(!VehicleInfo[vehicleid][eVehicleWeapons][slotid])
+			return SendErrorMessage(playerid, "ไม่มีอาวุธใน สล็อตที่คุณเลือก");
+
+		new str[255];
+
+		GivePlayerGun(playerid, VehicleInfo[vehicleid][eVehicleWeapons][slotid], VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]); 
+				
+		format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]), 
+		ReturnVehicleName(vehicleid));
+					
+		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+		SendClientMessage(playerid, COLOR_EMOTE, str);
+				
+		VehicleInfo[vehicleid][eVehicleWeapons][slotid] = 0; 
+		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid] = 0; 
+	}
+	else if(GetNearestVehicle(playerid) != INVALID_VEHICLE_ID)
+	{
+		new Float: x, Float: y, Float: z;
+		new engine, lights, alarm, doors, bonnet, boot, objective;
+
+		GetVehicleBoot(GetNearestVehicle(playerid), x, y, z);
+
+		new vehicleid = GetNearestVehicle(playerid);
+
+		if(HasNoEngine(vehicleid))
+			return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะไม่สามารถเก็บของได้"); 
+
+		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn] && !VehFacInfo[vehicleid][VehFacDBID])
+			return SendServerMessage(playerid, "รถคันนี้เป็นรถส่วนบุคคนไม่สามารถใช้คำสั่ง /takegun ได้");
+
+		if(!IsPlayerInRangeOfPoint(playerid, 2.5, x, y, z))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ฝากระโปรงท้ายรถ");
+			
+		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+
+		if(!boot)
+			SendErrorMessage(playerid, "ท้ายยานพาหนะยังไม่เปิด");
+
+		if(sscanf(params, "i", slotid))
+			return SendUsageMessage(playerid, "/takegun <1-5>");
+
+		if(slotid < 1 || slotid > 5)
+			return SendErrorMessage(playerid, "กรุณาใส่ สล็อตให้ถูกต้อง");
+
+		if(VehFacInfo[vehicleid][VehFacDBID])
+		{
+			new factionid = VehFacInfo[vehicleid][VehFacFaction];
+			
+			if(FactionInfo[factionid][eFactionJob] != POLICE && FactionInfo[factionid][eFactionJob] != SHERIFF)
+				return SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
+			
+			if(PlayerInfo[playerid][pFaction] != factionid)
+				return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะแฟคชั่นอื่นได้");
+
+			switch(slotid)
+			{
+				case 1:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 25, 100);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(25), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+				case 2:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 29, 60);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(29), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+				case 3:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 31, 60);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(31), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+				case 4:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 34, 60);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(34), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+				case 5:
+				{
+					new str[255];
+
+					GivePlayerWeapon(playerid, 27, 60);
+							
+					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(27), 
+					ReturnVehicleName(vehicleid));
+								
+					SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+					SendClientMessage(playerid, COLOR_EMOTE, str);
+				}
+			}
+			return 1;
+		}
+
+		if(!VehicleInfo[vehicleid][eVehicleWeapons][slotid])
+			return SendErrorMessage(playerid, "ไม่มีอาวุธใน สล็อตที่คุณเลือก");
+
+		new str[255];
+
+		GivePlayerGun(playerid, VehicleInfo[vehicleid][eVehicleWeapons][slotid], VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]); 
+				
+		format(str, sizeof(str), "* %s หยิบ %s ออกมาจากท้ายรถ %s", ReturnName(playerid, 0), ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]), 
+		ReturnVehicleName(vehicleid));
+					
+		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+		SendClientMessage(playerid, COLOR_EMOTE, str);
+				
+		VehicleInfo[vehicleid][eVehicleWeapons][slotid] = 0; 
+		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid] = 0; 
+		return 1;
+	}
+	else if(PlayerInfo[playerid][pInsideProperty])
+	{
+		new id = PlayerInfo[playerid][pInsideProperty];
+
+		if(!IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[id][HousePlacePos][0], HouseInfo[id][HousePlacePos][1], HouseInfo[id][HousePlacePos][2]))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้จุดตู้เซฟ");
+		
+		if(sscanf(params, "i", slotid))
+			return SendUsageMessage(playerid, "/takegun <1-22>");
+
+		if(slotid < 1 || slotid > 22)
+			return SendErrorMessage(playerid, "กรุณาใส่ สล็อตให้ถูกต้อง");
+
+		if(!HouseInfo[id][HouseWeapons][slotid])
+			return SendErrorMessage(playerid, "ไม่มีอาวุธใน สล็อตที่คุณเลือก");
+
+		GivePlayerGun(playerid, HouseInfo[id][HouseWeapons][slotid], HouseInfo[id][HouseWeaponsAmmo][slotid]);
+
+		new str[255];	
+		format(str, sizeof(str), "* %s หยิบ %s ออกมาจากตู้เซฟ", ReturnName(playerid, 0), ReturnWeaponName(HouseInfo[id][HouseWeapons][slotid])); 
+		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
+		SendClientMessage(playerid, COLOR_EMOTE, str); 
+				
+		HouseInfo[id][HouseWeapons][slotid] = 0; 
+		HouseInfo[id][HouseWeaponsAmmo][slotid] = 0; 
+			
+		CharacterSave(playerid); Savehouse(id);
+		return 1;
+	}
+	else SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
 	return 1;
 }
 
@@ -1147,6 +1435,9 @@ CMD:radio(playerid, params[])
 
 		else if(IsPlayerInRangeOfPoint(i, 10.0, posx,posy,posz))
 		{
+			if(GetPlayerVirtualWorld(i) != GetPlayerVirtualWorld(playerid))
+				continue;
+			
 			SendClientMessageEx(i, COLOR_GRAD1, "(วิทยุ) %s พูดว่า: %s", ReturnName(playerid, 0), params);
 		}
 	}
@@ -1200,6 +1491,9 @@ CMD:rlow(playerid, params[])
 
 		else if(IsPlayerInRangeOfPoint(i, 5.0, posx,posy,posz))
 		{
+			if(GetPlayerVirtualWorld(i) != GetPlayerVirtualWorld(playerid))
+				continue;
+			
 			SendClientMessageEx(i, COLOR_GRAD1, "(วิทยุ) %s พูดว่า[เบา]: %s", ReturnName(playerid, 0), params);
 		}
 	}
@@ -1524,13 +1818,19 @@ CMD:pm(playerid, params[])
 		playerb,
 		text[144]
 	;
+
+	if(PlayerInfo[playerid][pTogPm])
+		return SendErrorMessage(playerid, "คุณได้ปิดการรับ ข้อความส่วนตัว");
 		
 	if(sscanf(params, "us[144]", playerb, text))
 		return SendUsageMessage(playerid, "/pm [ชื่อบางส่วน/ไอดี] [text]");
 		
 	if(!IsPlayerConnected(playerb))
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
-		
+	
+	if(PlayerInfo[playerb][pTogPm] && !PlayerInfo[playerid][pAdmin] && !PlayerInfo[playerid][pTester])
+		return SendErrorMessage(playerid, "ผู้เล่นอีกฝั่งมีการปิดการใช้งานการส่งข้อความส่วนตัว");
+	
 	if(PlayerInfo[playerid][pAdminDuty])
 	{
 		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {FF9900}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
@@ -1576,6 +1876,25 @@ CMD:pm(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 			Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		}
+	}
+	return 1;
+}
+
+CMD:togpm(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pDonater] && !PlayerInfo[playerid][pAdmin] && !PlayerInfo[playerid][pTester])
+		return SendErrorMessage(playerid, "คุณไม่ใช้ Donater");
+
+	if(PlayerInfo[playerid][pTogPm])
+	{
+		PlayerInfo[playerid][pTogPm] = false;
+		SendClientMessage(playerid, COLOR_ORANGE, "คุณได้ปิดการรับข้อความส่วนตัว");
+		return 1;
+	}
+	else
+	{
+		PlayerInfo[playerid][pTogPm] = true;
+		SendClientMessage(playerid, COLOR_ORANGE, "คุณได้เปิดการรับข้อความส่วนตัว");
 	}
 	return 1;
 }
@@ -2291,6 +2610,7 @@ CMD:meal(playerid, params[])
 	return 1;
 }
 
+alias:hidehud("toghud")
 CMD:hidehud(playerid, params[])
 {
 	if(!GetPVarInt(playerid, "HideGUI"))

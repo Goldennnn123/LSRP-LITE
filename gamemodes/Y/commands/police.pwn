@@ -507,11 +507,41 @@ CMD:checkarrest(playerid, params[])
 
     if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
+	
 	new query[255];
-	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `arrestrecord` ORDER BY ArrestDBID");
-	mysql_tquery(dbCon, query, "CheckArrest", "d", playerid);
+	mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `arrestrecord` WHERE 1");
+	new Cache:cache = mysql_query(dbCon, query);
+
+
+	if(!cache_num_rows())
+		return SendClientMessage(playerid, -1, "ไม่มีใครที่ถูกขังเลย");
+
+	new rows; cache_get_row_count(rows);
+
+	new Name, reason[255], By, time, date[60];
+	new str[4000], longstr[4000];
+
+	format(str, sizeof(str), "ชื่อ\tข้อหา\tเวลา\tผู้กุมขัง\tวันที่\n");
+	strcat(longstr, str);
+
+	for (new i = 1; i < rows; i++)
+	{
+		cache_get_value_index_int(i,1,Name);
+		cache_get_value_index_int(i,2,By);
+		cache_get_value_index(i,3,reason,255);
+		cache_get_value_index_int(i,4,time);
+		cache_get_value_index(i,5,date,60);
+		format(str, sizeof(str), "%s\t%s\t%d นาที\t%s\t%s\n",ReturnDBIDName(Name), reason, time, ReturnDBIDName(By), date);
+		strcat(longstr, str);
+	}
+
+	cache_delete(cache);
+	Dialog_Show(playerid, DIALOG_SHOW_ARREST_LIST, DIALOG_STYLE_TABLIST_HEADERS, "Arrest Record", longstr, "ยืนยัน", "ออก");
 	return 1;
 }
+
+
+
 Dialog:DIALOG_FINES_LIST(playerid, response, listitem, inputtext[])
 {
 	if(!response)

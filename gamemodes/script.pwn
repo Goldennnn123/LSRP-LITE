@@ -377,8 +377,6 @@ public OnGameModeInit() {
     mysql_tquery(dbCon, "SELECT * FROM entrance ORDER BY EntranceDBID", "LoadEntrance");
     mysql_tquery(dbCon, "SELECT * FROM vehicle_faction ORDER BY VehicleDBID", "LoadFactionVehicle");
     mysql_tquery(dbCon, "SELECT * FROM global ORDER BY ID", "LoadGlobal");
-
-    SendDiscordMessage(0, "[SERVER] Server run");
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();
 	DisableInteriorEnterExits();
@@ -612,6 +610,9 @@ public OnPlayerConnect(playerid) {
         PlayerInfo[playerid][pObject][i] = INVALID_OBJECT_ID;
     }
     MealOder[playerid] = false;
+
+
+    PlayerInfo[playerid][pTogPm] = false;
 
 	new query[90];
     new musicrandom = random(3);

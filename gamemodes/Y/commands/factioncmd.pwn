@@ -892,6 +892,7 @@ CMD:siren(playerid, params[])
 	{
 		SendClientMessage(playerid, COLOR_LIGHTGREEN, "คุณถอดไซเรนออก");
 		DestroyDynamicObject(VehicleSiren[vehicleid]);
+		VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
 	}
 	return 1;
 }
@@ -930,6 +931,7 @@ CMD:siren2(playerid, params[])
 	{
 		SendClientMessage(playerid, COLOR_LIGHTGREEN, "คุณถอดไซเรนออก");
 		DestroyDynamicObject(VehicleSiren[vehicleid]);
+		VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
 		
 	}
 	return 1;

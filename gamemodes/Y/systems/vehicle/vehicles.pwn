@@ -1669,6 +1669,12 @@ public OnVehicleSpawn(vehicleid)
 	
 	SetVehicleHp(vehicleid);
 
+	new engine, lights, alarm, doors, bonnet, boot, objective;
+	GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+	SetVehicleParamsEx(vehicleid, 0, 0, 0, 0, 0, 0, objective);
+	VehicleInfo[vehicleid][eVehicleLocked] = false;
+	VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
+	VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
 	return 1;
 }
 
@@ -1808,7 +1814,7 @@ public LoadFactionVehicle()
 		
 		new engine, lights, alarm, doors, bonnet, boot, objective; 
 		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-		SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
+		SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, false, objective);
 		
 		VehicleInfo[vehicleid][eVehicleLocked] = false;
 		VehicleInfo[vehicleid][eVehicleElmTimer] = -1;

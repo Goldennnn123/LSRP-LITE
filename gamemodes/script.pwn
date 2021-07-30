@@ -29,7 +29,7 @@
 #include <Pawn.RakNet>
 #include <MenuStore>
 #include <compat>
-#include <cpn>
+//#include <cpn>
 #define DEBUG
 #include <nex-ac>
 #include <nex-ac_en.lang>
@@ -385,7 +385,7 @@ public OnGameModeInit() {
 
 
     ShowPlayerMarkers(0);
-    ShowNameTags(0);
+    ShowNameTags(1);
     //Timer:
     SetTimer("OnPlayerNereHouseTime", 1000, true);
     SetTimer("OnPlayerNereBusinessTime", 3000, true);

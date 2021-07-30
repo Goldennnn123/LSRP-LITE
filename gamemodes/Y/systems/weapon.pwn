@@ -178,7 +178,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE && PlayerInfo[playerid][pDeathFix])
 			SetPlayerHealth(playerid, 500); 
 		
-		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE)
+		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE ||GetPlayerTeam(playerid) == PLAYER_STATE_WOUNDED)
 		{
 			if(weaponid == 23)
 			{
@@ -441,14 +441,14 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			{
 				if(armor)
 				{
-					amount_armour = 25;
-					amount = 2;
+					amount_armour = 3;
+					amount = 3;
 					SetPlayerArmour(playerid, armor - amount_armour);
 					SetPlayerHealth(playerid, health - amount);
 				}
 				else
 				{
-					amount = 45;
+					amount = 5;
 					SetPlayerHealth(playerid, health - amount);
 				}
 			}

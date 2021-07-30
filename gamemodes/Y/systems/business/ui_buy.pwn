@@ -56,6 +56,12 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
 
         PlayerInfo[playerid][pBoomBox] = true;
     }
+
+    if(itemid == 7)
+    {
+        GivePlayerGun(playerid, 5, 1);
+        
+    }
     
     new string[128];
     format(string, 128, "คุณได้ซื้อ %dx %s", amount, itemname);

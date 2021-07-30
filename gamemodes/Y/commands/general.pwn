@@ -1157,6 +1157,15 @@ CMD:respawnme(playerid, params[])
 	SetPlayerTeam(playerid, PLAYER_STATE_ALIVE); 
 			
 	TogglePlayerControllable(playerid, 1);
+
+	ResetPlayerWeapons(playerid);
+	
+	for(new i = 0; i < 13; i++)
+	{
+		PlayerInfo[playerid][pWeapons][i] = 0;
+		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
+	}
+
 	GiveMoney(playerid, -2000);
 	SetPlayerHealth(playerid, 100);
 	ClearDamages(playerid);

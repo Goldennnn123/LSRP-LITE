@@ -1769,17 +1769,17 @@ CMD:spawncar(playerid, params[])
 	new vehicleid = INVALID_VEHICLE_ID, modelid, color1, color2, siren, str[128], Float:a;
 	new Float:X,Float:Y,Float:Z;
 	
-	if(sscanf(params, "iI(0)I(0)I(0)", modelid, color1, color2, siren))
+	if(sscanf(params, "iI(-1)I(-1)I(-1)", modelid, color1, color2, siren))
 	{
 		SendUsageMessage(playerid, "/spawncar [โทเดลรถ] [สีที่ 1] [สีที่ 2] [ระบบไซเรน]");
 		SendServerMessage(playerid, "เป็นการสร้างรถที่มีแค่เฉพาะผู้ดูแลระบบเท่านั้นที่จะสามารถใช้งานได้"); 
 		return 1;
 	}
 
-	if(!color1)
+	if(color1 == -1)
 		color1 = random(255);
 
-	if(!color2)
+	if(color2 == -1)
 		color2 = random(255);
 
 	if(modelid < 400 || modelid > 611)

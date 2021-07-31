@@ -823,7 +823,7 @@ CMD:takegun(playerid, params[])
 			if(PlayerInfo[playerid][pFaction] != factionid)
 				return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะแฟคชั่นอื่นได้");
 
-			if(modelid != 596 || modelid != 598 || modelid != 599 || modelid != 490 || modelid != 528 || modelid != 427 || modelid != 597 || modelid != 426 || modelid != 560)
+			if(modelid != 596 && modelid != 598 && modelid != 599 && modelid != 490 && modelid != 528 && modelid != 427 && modelid != 597 && modelid != 426 && modelid != 560)
 				return SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
 
 			switch(slotid)
@@ -943,12 +943,16 @@ CMD:takegun(playerid, params[])
 		if(VehFacInfo[vehicleid][VehFacDBID])
 		{
 			new factionid = VehFacInfo[vehicleid][VehFacFaction];
+			new modelid = GetVehicleModel(vehicleid);
 			
 			if(FactionInfo[factionid][eFactionJob] != POLICE && FactionInfo[factionid][eFactionJob] != SHERIFF)
 				return SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
 			
 			if(PlayerInfo[playerid][pFaction] != factionid)
 				return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะแฟคชั่นอื่นได้");
+
+			if(modelid != 596 && modelid != 598 && modelid != 599 && modelid != 490 && modelid != 528 && modelid != 427 && modelid != 597 && modelid != 426 && modelid != 560)
+				return SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
 
 			switch(slotid)
 			{

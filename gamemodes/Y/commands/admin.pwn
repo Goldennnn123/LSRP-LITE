@@ -1216,6 +1216,45 @@ CMD:listweapons(playerid, params[])
 		playerb,
 		weapon_id[2][13]
 	;
+
+	if(PlayerInfo[playerid][pAdmin])
+	{
+		if(sscanf(params, "d(-1)", playerb))
+		{
+			SendClientMessageEx(playerid, COLOR_RED, "________** %s's Weapons **________", ReturnName(playerid));
+		
+			for(new i = 0; i < 13; i++)
+			{
+				GetPlayerWeaponData(playerid, i, weapon_id[0][i], weapon_id[1][i]); 
+				
+				if(!weapon_id[0][i])
+					continue;
+					
+				SendClientMessageEx(playerid, COLOR_GRAD1, "[%d] %s [Ammo: %d]",weapon_id[0][i], ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
+			}
+			return 1;
+		}
+	
+		if(!IsPlayerConnected(playerb))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+			
+		if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+			return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+		
+		
+		SendClientMessageEx(playerid, COLOR_RED, "________** %s's Weapons **________", ReturnName(playerb));
+		
+		for(new i = 0; i < 13; i++)
+		{
+			GetPlayerWeaponData(playerb, i, weapon_id[0][i], weapon_id[1][i]); 
+			
+			if(!weapon_id[0][i])
+				continue;
+				
+			SendClientMessageEx(playerid, COLOR_GRAD1, "[%d] %s [Ammo: %d]",weapon_id[0][i], ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
+		}
+		return 1;
+	}
 	
 	if(sscanf(params, "u", playerb))
 		return SendUsageMessage(playerid, "/listweapons [ชื่อบางส่วน/ไอดี]");
@@ -1236,7 +1275,7 @@ CMD:listweapons(playerid, params[])
 		if(!weapon_id[0][i])
 			continue;
 			
-		SendClientMessageEx(playerid, COLOR_GRAD1, "%s [Ammo: %d]", ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
+		SendClientMessageEx(playerid, COLOR_GRAD1, "[%d] %s [Ammo: %d]",weapon_id[0][i], ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
 	}
 		
 	return 1;

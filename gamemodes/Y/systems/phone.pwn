@@ -716,7 +716,7 @@ CMD:pickup(playerid, params[])
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_USECELLPHONE);
 	KillTimer(playerPhone[playerid]); 
 	
-	playerPhone[playerid] = 0; playerPhone[ PlayerInfo[playerid][pPhoneline] ] = 0;
+	playerPhone[playerid] = -1; playerPhone[ PlayerInfo[playerid][pPhoneline] ] = -1;
     StopAudioStreamForPlayer(playerid);
 	return 1;
 }
@@ -1021,17 +1021,11 @@ stock Send911Message(playerid, type)
 	}
 	
 
-	/*Player911Type[playerid] = 0;	
-	//cmd_hangup(playerid, ""); 
-    for(new i = 0; i < 2; i++) KillTimer(Player911Timer[i][playerid]); 
-	SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
-		
-	PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
-	PlayerInfo[playerid][pCalling] = 0;
-		
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USECELLPHONE){
-		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
-	}*/
+    Player911Type[playerid] = 0;
+    format(Player911Text[playerid][0], 128, " ");
+    format(Player911Text[playerid][1], 128, " ");
+    format(Player911Text[playerid][2], 128, " ");
+
     callcmd::hangup(playerid, "");
 	return 1;
 }

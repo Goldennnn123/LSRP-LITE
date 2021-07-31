@@ -618,11 +618,10 @@ CMD:hangup(playerid, params[])
 	
 	if(PlayerInfo[playerid][pPhoneline] == 999 || PlayerInfo[playerid][pPhoneline] == 911)
 	{
-		for(new i = 0; i < 2; i++)
-        {
-            KillTimer(Player911Timer[i][playerid]);
-            Player911Timer[i][playerid] = -1;
-        }
+        KillTimer(Player911Timer[0][playerid]);
+        KillTimer(Player911Timer[1][playerid]);
+        Player911Timer[0][playerid] = -1;
+        Player911Timer[1][playerid] = -1;
 
 		SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
 		

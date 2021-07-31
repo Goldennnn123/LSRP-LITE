@@ -2250,8 +2250,10 @@ public InsertVehicleFaction(playerid,newid, modelid, factionid, color1,color2)
 		VehFacInfo[vehicleid][VehFacColor][0] = color1;
 		VehFacInfo[vehicleid][VehFacColor][1] = color2;
 		VehicleInfo[vehicleid][eVehicleFuel] = 100;
+		SetVehicleToRespawn(vehicleid);
 	}
 
+	PutPlayerInVehicle(playerid, vehicleid, 0);
 	SendClientMessageEx(playerid, -1, "คุณได้สร้างรถเฟคชั่นให้กับ {FF5722}%s {FFFFFF}(%d)",FactionInfo[factionid][eFactionName],cache_insert_id());
 	return 1;
 }

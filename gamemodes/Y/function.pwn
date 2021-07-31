@@ -876,6 +876,14 @@ stock GivePlayerHealth(playerid, Float:amount)
 	return 1;
 }
 
+stock GivePlayerArmour(playerid, Float:amount)
+{
+	new Float:armour;
+	GetPlayerArmour(playerid, armour);
+	SetPlayerHealth(playerid, health + amount);
+	return 1;
+}
+
 stock UpDateRadioStats(playerid)
 {
 	new str[120];

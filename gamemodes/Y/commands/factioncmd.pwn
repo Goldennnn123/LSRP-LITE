@@ -60,10 +60,10 @@ CMD:headquarter(playerid, params[])
 	
 	if(strlen(params) > 100)
 	{
-		SendFactionMessage(playerid, 0x8D8DFFFF, "HQ: %s: %.100s", ReturnName(playerid, 0), params);
-		SendFactionMessage(playerid, 0x8D8DFFFF, "....%s", ReturnName(playerid, 0), params[100]);
+		SendFactionMessage(playerid, 0x8D8DFFFF, "HQ: %.100s", ReturnName(playerid, 0), params);
+		SendFactionMessage(playerid, 0x8D8DFFFF, "....", params[100]);
 	}
-	else SendFactionMessage(playerid, 0x8D8DFFFF, "HQ: %s: %s", ReturnName(playerid, 0), params);
+	else SendFactionMessage(playerid, 0x8D8DFFFF, "HQ: %s", params);
     return 1;
 }
 

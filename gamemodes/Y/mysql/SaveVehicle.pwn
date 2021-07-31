@@ -11,7 +11,7 @@ stock SaveVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 	mysql_str(query, "VehiclePlates",VehicleInfo[vehicleid][eVehiclePlates]);
 	mysql_int(query, "VehicleLocked",VehicleInfo[vehicleid][eVehicleLocked]);
 	mysql_int(query, "VehicleSirens",VehicleInfo[vehicleid][eVehicleSirens]);
-	mysql_int(query, "VehicleFuel",VehicleInfo[vehicleid][eVehicleFuel]);
+	mysql_flo(query, "VehicleFuel",VehicleInfo[vehicleid][eVehicleFuel]);
 	mysql_int(query, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);
 	mysql_int(query, "VehicleColor2",VehicleInfo[vehicleid][eVehicleColor2]);
 	

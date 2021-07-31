@@ -216,7 +216,7 @@ enum E_VEHICLE_SYSTEM
 	eVehicleWeapons[6], //5;
 	eVehicleWeaponsAmmo[6], //5;
 	
-	eVehicleFuel,
+	Float:eVehicleFuel,
 	eVehicleSirens,
 	
 	eVehicleLastDrivers[5], //4;

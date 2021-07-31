@@ -1891,7 +1891,7 @@ public Query_LoadPrivateVehicle(playerid)
 			cache_get_value_name_float(i, "VehicleImpoundPosZ", VehicleInfo[vehicleid][eVehicleImpoundPos][2]);
 			cache_get_value_name_float(i, "VehicleImpoundPosA", VehicleInfo[vehicleid][eVehicleImpoundPos][3]);
 			
-			cache_get_value_name_int(i, "VehicleFuel",VehicleInfo[vehicleid][eVehicleFuel]);
+			cache_get_value_name_float(i, "VehicleFuel",VehicleInfo[vehicleid][eVehicleFuel]);
 			
 			cache_get_value_name_int(i, "VehicleXMR",VehicleInfo[vehicleid][eVehicleHasXMR]);
 			cache_get_value_name_int(i, "VehicleTimesDestroyed",VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
@@ -2192,7 +2192,7 @@ hook OnPlayerUpdate(playerid)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 
-		format(str, sizeof(str), "~b~km/h: ~g~%d~n~~b~Fuel: ~g~%d", GetVehicleSpeed(vehicleid), VehicleInfo[vehicleid][eVehicleFuel]);
+		format(str, sizeof(str), "~b~km/h: ~g~%d~n~~b~Fuel: ~g~%.1f", GetVehicleSpeed(vehicleid), VehicleInfo[vehicleid][eVehicleFuel]);
 		PlayerTextDrawSetString(playerid, Statsvehicle[playerid], str);
 	}
 	return 1;
@@ -2444,11 +2444,16 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
+	if(HasNoEngine(vehicleid))
+	{
+		ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
+	}
 	if(VehicleInfo[vehicleid][eVehicleMusic])
 	{
 		StopAudioStreamForPlayer(playerid);
 		PlayAudioStreamForPlayer(playerid, VehicleInfo[vehicleid][eVehicleMusicLink]);
 	}
+
 	if(!ispassenger && VehFacInfo[vehicleid][VehFacFaction] && PlayerInfo[playerid][pFaction] != VehFacInfo[vehicleid][VehFacFaction])
 	{
 		SendErrorMessage(playerid, "คุณไม่สามารถขึ้นรถของแฟคชั่น");		

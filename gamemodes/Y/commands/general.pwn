@@ -1917,13 +1917,13 @@ CMD:togpm(playerid, params[])
 	if(PlayerInfo[playerid][pTogPm])
 	{
 		PlayerInfo[playerid][pTogPm] = false;
-		SendClientMessage(playerid, COLOR_ORANGE, "คุณได้ปิดการรับข้อความส่วนตัว");
+		SendClientMessage(playerid, COLOR_ORANGE, "คุณได้เปิดการรับข้อความส่วนตัว");
 		return 1;
 	}
 	else
 	{
 		PlayerInfo[playerid][pTogPm] = true;
-		SendClientMessage(playerid, COLOR_ORANGE, "คุณได้เปิดการรับข้อความส่วนตัว");
+		SendClientMessage(playerid, COLOR_ORANGE, "คุณได้ปิดการรับข้อความส่วนตัว");
 	}
 	return 1;
 }

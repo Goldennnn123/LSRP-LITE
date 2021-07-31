@@ -500,7 +500,7 @@ CMD:call(playerid, params[])
 		return SendErrorMessage(playerid, "คุณไม่สามารถโทรออกได้");
 
     if(PlayerInfo[playerid][pPhoneOff])
-		return SendErrorMessage(playerid, "โทรสัพท์ของคุณปิดเครื่องอยู่");
+		return SendErrorMessage(playerid, "โทรศัพท์ของคุณปิดเครื่องอยู่");
 
     /*if(PlayerInfo[playerid][pHandcuffed])
 		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมือ");*/
@@ -509,10 +509,10 @@ CMD:call(playerid, params[])
 		return SendErrorMessage(playerid, "คุณไม่สามารถโทรออกได้ในขณะนี้");
 		
 	if(sscanf(params, "i", phone_number))
-		return SendUsageMessage(playerid, "/call [หมายเลขโทรสัพท์]");
+		return SendUsageMessage(playerid, "/call [หมายเลขโทรศัพท์]");
 
     if(phone_number < 4)
-        return SendUsageMessage(playerid, "/call [หมายเลขโทรสัพท์ (5 ตัว)]");
+        return SendUsageMessage(playerid, "/call [หมายเลขโทรศัพท์ (5 ตัว)]");
 
     foreach(new i : Player)
     { 
@@ -525,7 +525,7 @@ CMD:call(playerid, params[])
         }
     }
 	
-	format(str, sizeof(str), "* %s กดหมายเลขโทรสัพท์และกดปุ่มโทรออก", ReturnName(playerid, 0));
+	format(str, sizeof(str), "* %s กดหมายเลขโทรศัพท์และกดปุ่มโทรออก", ReturnName(playerid, 0));
 	SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 3000);
 	SendClientMessage(playerid, COLOR_EMOTE, str); 
 	
@@ -565,7 +565,7 @@ CMD:call(playerid, params[])
 		return 1;
 	}
 	
-	SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "* %s มีเสียงกริ๊งโทรสัพท์ดังขึ้น", ReturnName(playerb, 0)); 
+	SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "* %s มีเสียงกริ๊งโทรศัพท์ดังขึ้น", ReturnName(playerb, 0)); 
 	SendClientMessageEx(playerb, COLOR_GREY, "[ ! ] คุณสามารถรับสายโดยการกดปุ่มรับสายโดยการพิมพ์ /p(ickup) เพื่อรับสายเรียกเข้า Phone: %i", PlayerInfo[playerid][pPhone]); 
 	
 	PlayerInfo[playerid][pCalling] = 1; PlayerInfo[playerb][pCalling] = 1;
@@ -583,7 +583,7 @@ alias:hangup("h")
 CMD:hangup(playerid, params[])
 {
 	if(PlayerInfo[playerid][pPhoneOff])
-		return SendErrorMessage(playerid, "โทรสัพท์ของคุณปิดเครื่องอยู่");
+		return SendErrorMessage(playerid, "โทรศัพท์ของคุณปิดเครื่องอยู่");
 		
 	if(PlayerInfo[playerid][pHandcuffed])
 		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมืออยู่");
@@ -697,7 +697,7 @@ alias:pickup("p")
 CMD:pickup(playerid, params[])
 {
 	if(PlayerInfo[playerid][pPhoneOff])
-		return SendErrorMessage(playerid, "โทรสัพท์ของคุณปิดอยู่");
+		return SendErrorMessage(playerid, "โทรศัพท์ของคุณปิดอยู่");
 		
 	if(PlayerInfo[playerid][pHandcuffed])
 		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมือ");
@@ -725,19 +725,19 @@ CMD:pickup(playerid, params[])
 CMD:loudspeaker(playerid, params[])
 {
 	if(PlayerInfo[playerid][pPhoneOff])
-		return SendErrorMessage(playerid, "โทรสัพท์ของคุณปิดเครื่องอยู่");
+		return SendErrorMessage(playerid, "โทรศัพท์ของคุณปิดเครื่องอยู่");
 		
 	/*if(PlayerInfo[playerid][pHandcuffed])
 		return SendErrorMessage(playerid, "คุณถูกใส่กุญแจมืออยู่"); */
 		
 	if(PlayerInfo[playerid][pPhonespeaker])
 	{
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ปิดลำโพงโทรสัพท์", ReturnName(playerid, 0));
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ปิดลำโพงโทรศัพท์", ReturnName(playerid, 0));
 		PlayerInfo[playerid][pPhonespeaker] = false;
 	}
 	else
 	{
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s เปิดลำโพงโทรสัพท์", ReturnName(playerid, 0));
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s เปิดลำโพงโทรศัพท์", ReturnName(playerid, 0));
 		PlayerInfo[playerid][pPhonespeaker] = true;
 	}
 	
@@ -833,7 +833,7 @@ hook OnPlayerText(playerid, text[])
 	{
 		if(PlayerInfo[playerid][pPhoneline] == 911)
 		{
-			format(string, sizeof(string), "%s พูดว่า (โทรสัพท์): %s", ReturnName(playerid, 0), text); 
+			format(string, sizeof(string), "%s พูดว่า (โทรศัพท์): %s", ReturnName(playerid, 0), text); 
 			LocalChat(playerid, 20.0, string, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4); 
 			
 			switch(Player911Type[playerid])
@@ -902,7 +902,7 @@ hook OnPlayerText(playerid, text[])
 		{
 			if(strlen(text) > 87)
 			{
-				format(string, sizeof(string), "%s พูดว่า (โทรสัพท์): %.87s...", ReturnName(playerid, 0), text); 
+				format(string, sizeof(string), "%s พูดว่า (โทรศัพท์): %.87s...", ReturnName(playerid, 0), text); 
 				LocalChat(playerid, 20.0, string, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4); 
 				
 				if(!PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pPhonespeaker])
@@ -910,7 +910,7 @@ hook OnPlayerText(playerid, text[])
 					
 				else LocalChat(PlayerInfo[playerid][pPhoneline], 6.0, string, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4); 
 				
-				format(string, sizeof(string), "%s พูดว่า (โทรสัพท์): ... %s", ReturnName(playerid, 0), text[87]); 
+				format(string, sizeof(string), "%s พูดว่า (โทรศัพท์): ... %s", ReturnName(playerid, 0), text[87]); 
 				LocalChat(playerid, 20.0, string, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4); 
 				
 				if(!PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pPhonespeaker])
@@ -920,7 +920,7 @@ hook OnPlayerText(playerid, text[])
 			}
 			else
 			{
-				format(string, sizeof(string), "%s พูดว่า (โทรสัพท์): %s", ReturnName(playerid, 0), text); 
+				format(string, sizeof(string), "%s พูดว่า (โทรศัพท์): %s", ReturnName(playerid, 0), text); 
 				LocalChat(playerid, 20.0, string, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4); 
 				
 				if(!PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pPhonespeaker])

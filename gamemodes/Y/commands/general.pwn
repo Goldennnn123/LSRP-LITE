@@ -769,6 +769,9 @@ CMD:place(playerid, params[])
 			}
 		}
 
+		if(!PlayerHasWeapon(playerid, weaponid))
+			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
+
 		HouseInfo[id][HouseWeapons][pid] = weaponid;
 		HouseInfo[id][HouseWeaponsAmmo][pid] = PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)];
 

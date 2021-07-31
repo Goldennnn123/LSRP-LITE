@@ -120,12 +120,11 @@ CMD:buy(playerid, params[])
     PlayerInfo[playerid][pGUI] = 6;
     SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
     MenuStore_AddItem(playerid, 1, 18919, "Mask", 5000, "Mask use /mask", 200);
-    MenuStore_AddItem(playerid, 2, 19942, "Radio", 2000, "Radio", 200);
-    MenuStore_AddItem(playerid, 3, 367, "Camera", 15000, "Cemara To Take Photo", 200);
-    MenuStore_AddItem(playerid, 4, 325, "Flower", 300, "Flower", 200);
-    MenuStore_AddItem(playerid, 5, 19897, "Cigarette", 150, "Flower", 200);
-    MenuStore_AddItem(playerid, 6, 2226, "BoomBox", 10000, "BoomBox use music staion", 200);
-    MenuStore_AddItem(playerid, 7, 336, "Baseball Bat", 1500, "Baseball Bat", 200);
+    MenuStore_AddItem(playerid, 2, 367, "Camera", 15000, "Cemara To Take Photo", 200);
+    MenuStore_AddItem(playerid, 3, 325, "Flower", 300, "Flower", 200);
+    MenuStore_AddItem(playerid, 4, 19897, "Cigarette", 150, "Flower", 200);
+    MenuStore_AddItem(playerid, 5, 2226, "BoomBox", 10000, "BoomBox use music staion", 200);
+    MenuStore_AddItem(playerid, 6, 336, "Baseball Bat", 1500, "Baseball Bat", 200);
     MenuStore_Show(playerid, Shop, "SHOP");
     return 1;
 }

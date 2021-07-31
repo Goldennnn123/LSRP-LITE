@@ -20,19 +20,13 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     }
     if(itemid == 2)
     {
-        PlayerInfo[playerid][pHasRadio] = true;
-        PlayerInfo[playerid][pMainSlot] = 0;
-        PlayerInfo[playerid][pRadio] = 0;
-    }
-    if(itemid == 3)
-    {
         if(BusinessInfo[id][BusinessS_Cemara] < 1)
             return SendErrorMessage(playerid, "สินค้าหมด");
 
         GivePlayerWeapon(playerid, 43, 500);
         BusinessInfo[id][BusinessS_Cemara]--;
     }
-    if(itemid == 4)
+    if(itemid == 3)
     {
         if(BusinessInfo[id][BusinessS_Flower] < 1)
             return SendErrorMessage(playerid, "สินค้าหมด");
@@ -40,7 +34,7 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
         GivePlayerWeapon(playerid, 14, 1);
         BusinessInfo[id][BusinessS_Flower]--;
     }
-    if(itemid == 5)
+    if(itemid == 4)
     {
         if(PlayerInfo[playerid][pCigare] >= 20)
             return SendErrorMessage(playerid, "คุณมีบุหรี่เต็มแล้ว");
@@ -49,7 +43,7 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
         PlayerInfo[playerid][pCigare]+= 20;
     }
 
-    if(itemid == 6)
+    if(itemid == 5)
     {
         if(PlayerInfo[playerid][pBoomBox])
             return SendErrorMessage(playerid, "คุณมี BoomBox อยู่แล้ว");
@@ -57,7 +51,7 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
         PlayerInfo[playerid][pBoomBox] = true;
     }
 
-    if(itemid == 7)
+    if(itemid == 6)
     {
         GivePlayerGun(playerid, 5, 1);
         

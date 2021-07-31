@@ -733,6 +733,9 @@ CMD:place(playerid, params[])
 				break;
 			}
 		}
+
+		if(!PlayerHasWeapon(playerid, weaponid))
+			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
 		
 		VehicleInfo[vehicleid][eVehicleWeapons][idx] = weaponid; 
 		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx] = PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)];

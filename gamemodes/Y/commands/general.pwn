@@ -669,6 +669,9 @@ CMD:place(playerid, params[])
 			if(PlayerInfo[playerid][pFaction] != factionid)
 				return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะแฟคชั่นอื่นได้");
 			
+			if(GetPlayerWeapon(playerid) != weaponid)
+				return SendErrorMessage(playerid, "คุณไมได้ถืออาวุธที่คุณเลือก");
+
 			RemovePlayerWeapon(playerid, weaponid);
 		
 			format(str, sizeof(str), "* %s ได้วาง %s ลงไปในรถ %s.", ReturnName(playerid, 0), ReturnWeaponName(weaponid), ReturnVehicleName(vehicleid));

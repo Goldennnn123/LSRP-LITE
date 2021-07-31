@@ -2456,4 +2456,16 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 }
 
 
+stock IsCheckBike(vehicleid)
+{
+	new modelid = GetVehicleModel(vehicleid);
+
+	switch(modelid)
+	{
+		case 581, 462, 521,463,522,461,448, 468,586,523: return 1;
+	}
+
+	return 0;
+}
+
 

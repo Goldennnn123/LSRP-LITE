@@ -558,7 +558,10 @@ CMD:check(playerid,params[])
 		;
 
 		if(HasNoEngine(vehicleid))
-			return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะไม่สามารถเก็บของได้"); 
+			return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะไม่สามารถเก็บของได้");
+
+		if(IsCheckBike(vehicleid))
+			return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับยานพาหนะที่เป็น มอเตอร์ไซต์ได้"); 
 
 		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn])
 			return SendServerMessage(playerid, "รถคันนี้เป็นรถส่วนบุคคนไม่สามารถใช้คำสั่ง /check ได้");
@@ -569,7 +572,7 @@ CMD:check(playerid,params[])
 		new engine, lights, alarm, doors, bonnet, boot, objective;
 		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 
-		if(!bonnet)
+		if(!boot)
 			return SendClientMessage(playerid, COLOR_YELLOWEX, "กระโปรงท้ายรถยังไม่ได้ถูกเปิด");
 		
 		for(new i = 1; i < 6; i++)
@@ -650,6 +653,12 @@ CMD:place(playerid, params[])
 			vehicleid = GetNearestVehicle(playerid)
 		;
 
+		if(HasNoEngine(vehicleid))
+			return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับยานพาหนะที่ไม่มีเครืองยนต์ได้");
+
+		if(IsCheckBike(vehicleid))
+			return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับยานพาหนะที่เป็น มอเตอร์ไซต์ได้");
+
 		if(VehFacInfo[vehicleid][VehFacDBID])
 		{
 			new factionid = VehFacInfo[vehicleid][VehFacFaction];
@@ -670,9 +679,7 @@ CMD:place(playerid, params[])
 
 		if(!PlayerHasWeapon(playerid, weaponid))
 			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
-		
 
-		
 		if(VehicleInfo[vehicleid][eVehicleFaction])
 			return SendClientMessage(playerid, COLOR_YELLOW, "รถคันนี้เป็นรถของเฟคชั่นไม่สามารถใช้คำสั่งนี้ได้");
 		
@@ -782,6 +789,9 @@ CMD:takegun(playerid, params[])
 
 		if(HasNoEngine(vehicleid))
 			return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะไม่สามารถเก็บของได้"); 
+		
+		if(IsCheckBike(vehicleid))
+			return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับยานพาหนะที่เป็น มอเตอร์ไซต์ได้"); 
 
 		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn] && !VehFacInfo[vehicleid][VehFacDBID])
 			return SendServerMessage(playerid, "รถคันนี้เป็นรถส่วนบุคคนไม่สามารถใช้คำสั่ง /takegun ได้");
@@ -796,12 +806,16 @@ CMD:takegun(playerid, params[])
 		if(VehFacInfo[vehicleid][VehFacDBID])
 		{
 			new factionid = VehFacInfo[vehicleid][VehFacFaction];
+			new modelid = GetVehicleModel(vehicleid);
 			
 			if(FactionInfo[factionid][eFactionJob] != POLICE && FactionInfo[factionid][eFactionJob] != SHERIFF)
 				return SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
 			
 			if(PlayerInfo[playerid][pFaction] != factionid)
 				return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะแฟคชั่นอื่นได้");
+
+			if(modelid != 596 || modelid != 598 || modelid != 599 || modelid != 490 || modelid != 528 || modelid != 427 || modelid != 597 || modelid != 426 || modelid != 560)
+				return SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
 
 			switch(slotid)
 			{
@@ -896,6 +910,9 @@ CMD:takegun(playerid, params[])
 
 		if(HasNoEngine(vehicleid))
 			return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะไม่สามารถเก็บของได้"); 
+		
+		if(IsCheckBike(vehicleid))
+			return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับยานพาหนะที่เป็น มอเตอร์ไซต์ได้"); 
 
 		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn] && !VehFacInfo[vehicleid][VehFacDBID])
 			return SendServerMessage(playerid, "รถคันนี้เป็นรถส่วนบุคคนไม่สามารถใช้คำสั่ง /takegun ได้");
@@ -906,7 +923,7 @@ CMD:takegun(playerid, params[])
 		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 
 		if(!boot)
-			SendErrorMessage(playerid, "ท้ายยานพาหนะยังไม่เปิด");
+			return SendErrorMessage(playerid, "ท้ายยานพาหนะยังไม่เปิด");
 
 		if(sscanf(params, "i", slotid))
 			return SendUsageMessage(playerid, "/takegun <1-5>");

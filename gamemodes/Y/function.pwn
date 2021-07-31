@@ -880,7 +880,7 @@ stock GivePlayerArmour(playerid, Float:amount)
 {
 	new Float:armour;
 	GetPlayerArmour(playerid, armour);
-	SetPlayerHealth(playerid, health + amount);
+	SetPlayerArmour(playerid, armour + amount);
 	return 1;
 }
 

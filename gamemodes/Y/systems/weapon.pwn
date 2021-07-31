@@ -180,619 +180,87 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		
 		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE)
 		{
-			if(weaponid == 23)
+			if(armor && bodypart == BODY_PART_CHEST)
 			{
-				if(PlayerInfo[issuerid][pTaser] == false)
+				switch(weaponid)
 				{
-					SendAdminMessageEx(COLOR_RED, 1, "%s ãªé Tazer â´Â·ÕèäÁèä´éÁÕ¡ÒÃ /tazer", ReturnRealName(issuerid, 0));
-					return 0;
+					case 0: amount = 1;
+					case 1: amount = 1;
+					case 2,3,4: amount = 3;
+					case 5,6,7,8,15: amount = 5;
+					case 11,12,13,14: amount = 0;
+					case 22: amount = 15;
+					case 23: amount = 0;
+					case 24: { amount_armour = 50; amount = 10; }
+					case 25: { amount_armour = 50; amount = 15; }
+					case 26: { amount_armour = 25; amount = 10; }
+					case 27: { amount_armour = 50; amount = 12; }
+					case 28,32: { amount_armour = 10; amount = 5; }
+					case 29: { amount_armour = 35; amount = 13; }
+					case 30: { amount_armour = 40; amount = 14; }
+					case 31: { amount_armour = 45; amount = 16; }
+					case 33,34: { amount_armour = 100; amount = 50; }
+					case 35,36,37,38,39,41,42,10: { amount_armour = 0; amount = 0; }
 				}
-				
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					TogglePlayerControllable(playerid, 0);
-					ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 0, 1, 1, 1, 0, 1);
-					
-					new str_msg[128];
-					format(str_msg, sizeof(str_msg), "ä´é¶Ù¡»×¹ªçÍµä¿¿éÒÂÔ§à¢éÒä»·ÕèÅÓµÑÇ¢Í§áÅÐ¹Í¹Å§ä»¡Ñº¾×é¹");
-					callcmd::me(playerid, str_msg);
 
-					SetTimerEx("PlayerTazer", 10000, false, "i", playerid);
+			}
+			else if(bodypart == BODY_PART_CHEST)
+			{
+				switch(weaponid)
+				{
+					case 0: amount = 2;
+					case 1: amount = 1;
+					case 2,3,4: amount = 3;
+					case 5,6,7,8,15: amount = 5;
+					case 9: amount = 50;
+					case 11,12,13,14: amount = 0;
+					case 22: amount = 15;
+					case 23: amount = 0;
+					case 24: {amount = 60; }
+					case 25: {amount = 65; }
+					case 26: {amount = 35; }
+					case 27: {amount = 62; }
+					case 28,32: {amount = 15; }
+					case 29: {amount = 48; }
+					case 30: {amount = 54; }
+					case 31: {amount = 61; }
+					case 33,34: {amount = 150; }
+					case 35,36,37,38,39,41,42,10: {amount = 0;}
 				}
 			}
-			else if(weaponid == 24)
+			else if(bodypart == BODY_PART_LEFT_ARM || bodypart == BODY_PART_RIGHT_ARM || bodypart == BODY_PART_LEFT_LEG || bodypart == BODY_PART_RIGHT_LEG)
 			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
+				switch(weaponid)
 				{
-					if(armor)
-					{
-						amount_armour = 35;
-						amount = 25;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 45;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor)
-					{
-						amount_armour = 15;
-						amount = 5;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 20;
-						SetPlayerHealth(playerid, health - amount);
-					}
+					case 0: amount = 2;
+					case 1: amount = 1;
+					case 2,3,4: amount = 3;
+					case 5,6,7,8,15: amount = 5;
+					case 9: amount = 50;
+					case 11,12,13,14,35,36,37,38,39,41,42,10,23: amount = 0;
+					case 22: amount = 15;
+					case 24: {amount = 20; }
+					case 25,26,27: {amount = 35; }
+					case 28,32: {amount = 15; }
+					case 29: {amount = 20; }
+					case 30: {amount = 25; }
+					case 31: {amount = 35; }
+					case 33,34: {amount = 60; }
 				}
 			}
-			else if(weaponid == 25)
+			else if(PlayerInfo[issuerid][pTaser] && weaponid == 23)
 			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 50;
-						amount = 26;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else if(bodypart == BODY_PART_HEAD)
-					{
-						amount = 100;
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 50;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 25;
-						amount = 15;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else if(bodypart == BODY_PART_HEAD)
-					{
-						amount = 100;
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 15;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == 31)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 45;
-						amount = 15;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else if(bodypart == BODY_PART_HEAD)
-					{
-						amount = 50;
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 35;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 22.5;
-						amount = 15;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 10;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == WEAPON_SNIPER)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 100;
-						amount = 50;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else if(bodypart == BODY_PART_HEAD)
-					{
-						amount = 100;
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 75;
-						SetPlayerHealth(playerid, health - amount);
-					}
+				if(!Player_IsNearPlayer(playerid, issuerid, 13))
+					return SendErrorMessage(issuerid, "¤Ø³ÂÔ§ã¹ÃÐÂÐ·Õèä¡Åà¡Ô¹ä» ä»ãËéã¡Åé¡ÇèÒ¹Õé");
 
-					if(bodypart == BODY_PART_HEAD)
-					{
-						amount = 100;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 100;
-						amount = 45;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 60;
-						SetPlayerHealth(playerid, health - amount);
-					}
+				ApplyAnimation(playerid, "PED","FLOOR_hit_f", 4.1, 0, 1, 1, 1, 1, 1);
+				SendNearbyMessage(playerid, 3.5, COLOR_EMOTE, "> %s ¶Ù¡ÂÔ§´éÇÂ»×¹ªçÍµä¿¿éÒáÅÐÅéÁÅ§ä»¡Ñº¾×é¹",ReturnName(playerid,0));
+				return 1;
+			}
+			else GivePlayerHealth(playerid, -3);
 
-					if(bodypart == BODY_PART_HEAD)
-					{
-						amount = 100;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == 0)
-			{
-				if(armor)
-				{
-					amount = 0;
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 5;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 1)
-			{
-				if(armor)
-				{
-					amount_armour = 10;
-					amount = 1;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid,health - amount);
-				}
-				else
-				{
-					amount = 10;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 2)
-			{
-				if(armor)
-				{
-					amount_armour = 5;
-					amount = 1;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 5;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 3)
-			{
-				if(armor)
-				{
-					amount_armour = 15;
-					amount = 2;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 20;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 4)
-			{
-				if(armor)
-				{
-					amount_armour = 0;
-					amount = 1;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 50;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 5)
-			{
-				if(armor)
-				{
-					amount_armour = 3;
-					amount = 3;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 5;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 6)
-			{
-				if(armor)
-				{
-					amount_armour = 25;
-					amount = 3;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 45;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 7)
-			{
-				if(armor)
-				{
-					amount_armour = 0;
-					amount = 0;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 2;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 8)
-			{
-				if(armor)
-				{
-					amount_armour = 0;
-					amount = 1;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 50;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 9)
-			{
-				if(armor)
-				{
-					amount_armour = 15;
-					amount = 5;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 50;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 15)
-			{
-				if(armor)
-				{
-					amount_armour = 0;
-					amount = 1;
-					SetPlayerArmour(playerid, armor - amount_armour);
-					SetPlayerHealth(playerid, health - amount);
-				}
-				else
-				{
-					amount = 15;
-					SetPlayerHealth(playerid, health - amount);
-				}
-			}
-			else if(weaponid == 22)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 10;
-						amount = 5;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 85;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 5;
-						amount = 2;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 45;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == 27)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 45;
-						amount = 15;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 90;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 35;
-						amount = 10;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 45;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == 28)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 10;
-						amount = 5;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 35;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 6;
-						amount = 3;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 25;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == 29)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 50;
-						amount = 10;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 65;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 25;
-						amount = 5;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 45;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == 30)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 45;
-						amount = 15;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 35;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 22.5;
-						amount = 15;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 10;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == 32)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 25;
-						amount = 15;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 45;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 15;
-						amount = 10;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 35;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == 33)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 50;
-						amount = 25;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 95;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 25;
-						amount = 15;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 85;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else if(weaponid == 38)
-			{
-				if(IsPlayerNearPlayer(playerid, issuerid, 15.0))
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 0;
-						amount = 0;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 0;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-				else
-				{
-					if(armor && bodypart == BODY_PART_CHEST)
-					{
-						amount_armour = 0;
-						amount = 0;
-						SetPlayerArmour(playerid, armor - amount_armour);
-						SetPlayerHealth(playerid, health - amount);
-					}
-					else
-					{
-						amount = 0;
-						SetPlayerHealth(playerid, health - amount);
-					}
-				}
-			}
-			else SetPlayerHealth(playerid, health - 3);
-			//SetPlayerHealth(playerid, health - amount); 
+			GivePlayerHealth(playerid, -amount);
+			GivePlayerArmour(playerid, -amount_armour);
 			CallbackDamages(playerid, issuerid, bodypart, weaponid, amount, amount_armour); 
 		}
 		

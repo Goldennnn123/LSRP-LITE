@@ -511,6 +511,7 @@ public SetPlayerHealth_Stap(playerid, type)
                 SetPlayerHealth(playerid, 170);
                 KillTimer(PlayerDrugUse[playerid]);
                 PlayerDrugUse[playerid] = -1;
+                return 1;
             }
 
             GivePlayerHealth(playerid, 2);
@@ -522,6 +523,7 @@ public SetPlayerHealth_Stap(playerid, type)
                 SetPlayerHealth(playerid, 150);
                 KillTimer(PlayerDrugUse[playerid]);
                 PlayerDrugUse[playerid] = -1;
+                return 1;
             }
             GivePlayerHealth(playerid, 2);
         }
@@ -532,6 +534,7 @@ public SetPlayerHealth_Stap(playerid, type)
                 SetPlayerHealth(playerid, 200);
                 KillTimer(PlayerDrugUse[playerid]);
                 PlayerDrugUse[playerid] = -1;
+                return 1;
             }
             GivePlayerHealth(playerid, 2);
         }

@@ -592,7 +592,7 @@ CMD:hangup(playerid, params[])
 		str[128]
 	;*/
 		
-	if(playerPhone[playerid])
+	/*if(playerPhone[playerid])
 	{
         KillTimer(playerPhone[playerid]);
         playerPhone[playerid] = -1;
@@ -612,9 +612,10 @@ CMD:hangup(playerid, params[])
         PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
 
         SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
+        print("1.");
         StopAudioStreamForPlayer(playerid);
 		return 1;
-	}
+	}*/
 	
 	if(PlayerInfo[playerid][pPhoneline] == 999 || PlayerInfo[playerid][pPhoneline] == 911)
 	{
@@ -632,6 +633,7 @@ CMD:hangup(playerid, params[])
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
 		}
         StopAudioStreamForPlayer(playerid);
+        print("2.");
 		return 1;
 	}
 	
@@ -641,7 +643,7 @@ CMD:hangup(playerid, params[])
     if(PlayerInfo[playerid][pCalling] && PlayerInfo[playerid][pPhoneline] != INVALID_PLAYER_ID)
 	{	
 		SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
-		SendClientMessage(PlayerInfo[playerid][pPhoneline], COLOR_GREY, "[ ! ] ไม่มีการตอบรับจากเลขหมายที่ท่านเรียก"); 
+		SendClientMessage(playerid, COLOR_GREY, "[ ! ] ไม่มีการตอบรับจากเลขหมายที่ท่านเรียก"); 
 		
 		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USECELLPHONE){
 			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_STOPUSECELLPHONE);
@@ -654,6 +656,7 @@ CMD:hangup(playerid, params[])
         StopAudioStreamForPlayer(PlayerInfo[playerid][pPhoneline]);
 		PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID; 
         StopAudioStreamForPlayer(playerid);
+        print("3.");
         
 		return 1;
 	}
@@ -661,6 +664,7 @@ CMD:hangup(playerid, params[])
 	if(!PlayerInfo[playerid][pCalling] && PlayerInfo[playerid][pPhoneline] != INVALID_PLAYER_ID)
 	{
 		SendClientMessage(playerid, COLOR_GREY, "[ ! ] คุณวางสาย"); 
+        SendClientMessage(PlayerInfo[playerid][pPhoneline], COLOR_GREY, "[ ! ] อีกฝ่ายวางสายจากคุณ");
 		//SendClientMessage(PlayerInfo[playerid][pPhoneline], COLOR_GREY, "[ ! ] ไม่มีการตอบรับจากเลขหมายที่ท่านเรียก"); 
 		
 		
@@ -685,6 +689,7 @@ CMD:hangup(playerid, params[])
 		PlayerInfo[ PlayerInfo[playerid][pPhoneline] ][pPhoneline] = INVALID_PLAYER_ID;
 		PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
         StopAudioStreamForPlayer(playerid);
+        print("4.");
 		return 1;
 	}
 	

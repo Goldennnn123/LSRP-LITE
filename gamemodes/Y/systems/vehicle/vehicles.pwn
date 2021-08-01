@@ -733,13 +733,13 @@ CMD:engine(playerid, params[])
 	
 	if(!VehicleInfo[vehicleid][eVehicleEngineStatus])
 	{
-		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s สตาร์ทเครื่องยนต์ของ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
+		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s สตาร์ทเครื่องยนต์ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
 		ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
 		TogglePlayerControllable(playerid, 1);
 	}
 	else
 	{
-		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s ดับเครื่องยนต์ของ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
+		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s ดับเครื่องยนต์ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
 		ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 		TogglePlayerControllable(playerid, 0);
 	}
@@ -787,7 +787,7 @@ CMD:unscramble(playerid, params[])
 			GameTextForPlayer(playerid, "~g~ENGINE TURNED ON", 2000, 3); 
 			CreateUnscrambleTextdraw(playerid, false);
 			
-			SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s สตาร์ทเครื่องยนต์ของ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
+			SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s สตาร์ทเครื่องยนต์ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
 			ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
 		}	
 	}
@@ -1075,7 +1075,7 @@ CMD:vehicle(playerid, params[])
 		if(!IsPlayerNearPlayer(playerid, playerb, 5.0))
 			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
 
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ได้ให้ชุดกุญแจสำรองกับ %s", ReturnName(playerid, 0), ReturnName(playerb, 0));
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s ได้ให้ชุดกุญแจสำรองกับ %s", ReturnName(playerid, 0), ReturnName(playerb, 0));
 		SendServerMessage(playerb, "%s ได้ให้ชุดกุญแจสำรองกับคุณ", ReturnName(playerid, 0));
 		
 		GiveMoney(playerid, -500);

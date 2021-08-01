@@ -223,7 +223,7 @@ CMD:givedrug(playerid, params[])
             if(PlayerInfo[playerid][pDrug][0] < amout)
                 return SendErrorMessage(playerid, "คุณมีจำนวนยาไม่เพียงพอต่อการให้");
 
-            SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s ยื่นบางอย่างให้กับ %s",ReturnName(playerid,0), ReturnName(tagetid,0));
+            SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s ยื่นบางอย่างให้กับ %s",ReturnName(playerid,0), ReturnName(tagetid,0));
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบ Cocaine ให้กับ %s จำนวน %.2f กรัม",ReturnName(tagetid,0), amout);
             
             format(str, sizeof(str), "[%s] %s Give Drug 'Cocaine' to %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
@@ -241,7 +241,7 @@ CMD:givedrug(playerid, params[])
             if(PlayerInfo[playerid][pDrug][1] < amout)
                 return SendErrorMessage(playerid, "คุณมีจำนวนยาไม่เพียงพอต่อการให้");
 
-            SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s ยื่นบางอย่างให้กับ %s",ReturnName(playerid,0), ReturnName(tagetid,0));
+            SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s ยื่นบางอย่างให้กับ %s",ReturnName(playerid,0), ReturnName(tagetid,0));
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบ Cannabis ให้กับ %s จำนวน %.2f กรัม",ReturnName(tagetid,0), amout);
             
             format(str, sizeof(str), "[%s] %s Give Drug 'Cannabis' to %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
@@ -258,7 +258,7 @@ CMD:givedrug(playerid, params[])
             if(PlayerInfo[playerid][pDrug][2] < amout)
                 return SendErrorMessage(playerid, "คุณมีจำนวนยาไม่เพียงพอต่อการให้");
 
-            SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s ยื่นบางอย่างให้กับ %s",ReturnName(playerid,0), ReturnName(tagetid,0));
+            SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s ยื่นบางอย่างให้กับ %s",ReturnName(playerid,0), ReturnName(tagetid,0));
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบ Heroin ให้กับ %s จำนวน %.2f กรัม",ReturnName(tagetid,0), amout);
             
             format(str, sizeof(str), "[%s] %s Give Drug 'Heroin' to %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);

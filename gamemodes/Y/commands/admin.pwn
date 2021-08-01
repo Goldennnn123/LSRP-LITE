@@ -1465,6 +1465,52 @@ CMD:setbit(playerid, params[])
 	Saveglobal();
 	return 1;
 }
+
+CMD:setidcar(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+
+	new tagerid, vehicleid;
+
+	if(sscanf(params, "ud", tagerid, vehicleid))
+		return SendUsageMessage(playerid, "/setidcar <ชื่อบางส่วน/ไอดี> <เปลี่ยนเป็น ไอดียานพาหนะที่ต้องการ ใส่ -1 หากต้องการให้เขาเป็น 0>");
+
+	if (!IsPlayerConnected(tagerid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้ทำการเชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+	if(vehicleid == -1)
+	{
+		if(PlayerInfo[tagerid][pVehicleSpawned] == true)
+		{
+			for(new v = 1; v < MAX_VEHICLES; v++)
+			{
+				if(PlayerInfo[tagerid][pVehicleSpawnedID] != v)
+					continue;
+				
+				ResetVehicleVars(v);
+				DestroyVehicle(v);
+			}
+
+			PlayerInfo[tagerid][pVehicleSpawned] = false;
+			PlayerInfo[tagerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+			SendClientMessage(playerid, COLOR_GREY, "ผู้ดูแล ได้ล้างการมียานพาหนะของ คุณออกจากตัวแล้ว");
+			return 1;
+		}
+		return 1;
+	}
+	
+	if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[tagerid][pDBID])
+		return SendErrorMessage(playerid, "ยานพาหนะไม่ใช่ของบุคคนนี้");
+		
+	PlayerInfo[tagerid][pVehicleSpawnedID] = vehicleid;
+	PlayerInfo[tagerid][pVehicleSpawned] = true;
+	SendClientMessageEx(playerid, COLOR_GREY, "ผู้ดูแลได้ปรับกุญแจยานพาหนะให้คุณไปที่ %s(%d)",ReturnVehicleName(vehicleid), vehicleid);
+	return 1;
+}
 /// Admin Level: 1;
 
 

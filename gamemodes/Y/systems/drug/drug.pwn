@@ -67,7 +67,7 @@ stock BuyDrug(playerid, Float:amout, type)
     if(type == 4)
     {
         SendClientMessage(playerid, COLOR_GREY, "คนขายยา พูดว่า: เอาล่ะฉันได้ยาและไม่รู้ว่าจะถูกใจแกหรือป่าวแต่ฉันขายมันราคาถูกให้แกนะ อย่าเอาไปบอกใครล่ะ..");
-        SendNearbyMessage(playerid, 2.5, COLOR_EMOTE, "* คนขายยา หยิบถุง ZipLock ออกมาและยื่นมันให้กับ %s",ReturnName(playerid,0));
+        SendNearbyMessage(playerid, 2.5, COLOR_EMOTE, "> คนขายยา หยิบถุง ZipLock ออกมาและยื่นมันให้กับ %s",ReturnName(playerid,0));
         GiveMoney(playerid, -1000);
 
         GiveDrug(playerid, newtype, amout);
@@ -84,7 +84,7 @@ stock BuyDrug(playerid, Float:amout, type)
             if(PlayerInfo[playerid][pCash] < 1200)
                 return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอต่อการซื้อ");
 
-            SendNearbyMessage(playerid, 2.5, COLOR_EMOTE, "* คนขายยา หยิบถุง ZipLock ออกมาและยื่นมันให้กับ %s",ReturnName(playerid,0));
+            SendNearbyMessage(playerid, 2.5, COLOR_EMOTE, "> คนขายยา หยิบถุง ZipLock ออกมาและยื่นมันให้กับ %s",ReturnName(playerid,0));
             GiveMoney(playerid, -1200);
             GiveDrug(playerid, 1, amout);
             format(str, sizeof(str), "[%s] %s Buy Drug 'Cocaine' Amount %.2f",ReturnDate(), ReturnName(playerid,0),amout);

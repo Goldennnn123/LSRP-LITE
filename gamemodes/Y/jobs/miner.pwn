@@ -174,7 +174,7 @@ CMD:giveore(playerid, params[])
         PlayerInfo[playerid][pOre] -= amount;
         SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Unprocessed Ores จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
         SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Unprocessed Ores จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
-        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Unprocessed Ores ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s หยิบ Unprocessed Ores ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
         return 1;
     }
     else if(!strcmp(type, "coal", true))
@@ -196,7 +196,7 @@ CMD:giveore(playerid, params[])
         PlayerInfo[playerid][pCoal] -= amount;
         SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Coal Ore จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
         SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Coal Ore จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
-        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Coal Ore ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s หยิบ Coal Ore ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
         return 1;
     }
     else if(!strcmp(type, "iron", true))
@@ -218,7 +218,7 @@ CMD:giveore(playerid, params[])
         PlayerInfo[playerid][pIron] -= amount;
         SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Iron Ore จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
         SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Iron Ore จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
-        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Iron Ore ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s หยิบ Iron Ore ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
         return 1;
     }
     else if(!strcmp(type, "copper", true))
@@ -240,7 +240,7 @@ CMD:giveore(playerid, params[])
         PlayerInfo[playerid][pCopper] -= amount;
         SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Copper Ore จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
         SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Copper Ore จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
-        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Copper Ore ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s หยิบ Copper Ore ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
         return 1;
     }
     else if(!strcmp(type, "kno3", true))
@@ -262,7 +262,7 @@ CMD:giveore(playerid, params[])
         PlayerInfo[playerid][pKNO3] -= amount;
         SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ให้ Potassium Nitrate จำนวน %d ก้อนกับ %s",amount,  ReturnName(tagetid,0));
         SendClientMessageEx(tagetid, COLOR_DARKGREEN, "คุณได้รับ Potassium Nitrate จำนวน %d ก้อนจาก %s",amount,  ReturnName(playerid,0));
-        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบ Potassium Nitrate ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
+        SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s หยิบ Potassium Nitrate ให้กับ %s", ReturnName(playerid,0), ReturnName(tagetid,0));
         return 1;
     }
     else SendErrorMessage(playerid, "ใส่ประเภทไม่ถูกต้อง");

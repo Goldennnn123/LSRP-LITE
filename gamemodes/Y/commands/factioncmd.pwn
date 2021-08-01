@@ -632,9 +632,9 @@ CMD:showbadge(playerid, params[])
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
 		
 	if(playerb == playerid)
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s หยิบตราประจำตัวขึ้นมาดู", ReturnName(playerid, 0));
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s หยิบตราประจำตัวขึ้นมาดู", ReturnName(playerid, 0));
 	
-	else SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s หยิบตราประจำตัวขึ้นมาและยื่นให้กับ %s ดู", ReturnName(playerid, 0), ReturnName(playerb, 0));
+	else SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s หยิบตราประจำตัวขึ้นมาและยื่นให้กับ %s ดู", ReturnName(playerid, 0), ReturnName(playerb, 0));
 	
 	SendClientMessage(playerb, COLOR_COP, "______________________________________");
 	

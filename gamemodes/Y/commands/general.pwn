@@ -1364,9 +1364,9 @@ CMD:pay(playerid, params[])
 	SendClientMessageEx(playerb, COLOR_GREY, " คุณได้รับเงิน จำนวน $%s จาก %s", MoneyFormat(amount), ReturnRealName(playerid, 0));
 
 	if(!strcmp(emote, "'None'", false))
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ได้ควักเงินบางส่วนออกมาจากกระเป๋าและมอบให้กับ %s", ReturnName(playerid, 0), ReturnName(playerb, 0)); 
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s ได้ควักเงินบางส่วนออกมาจากกระเป๋าและมอบให้กับ %s", ReturnName(playerid, 0), ReturnName(playerb, 0)); 
 
-	else SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s %s %s", ReturnName(playerid, 0), emote, ReturnName(playerb, 0));
+	else SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s %s %s", ReturnName(playerid, 0), emote, ReturnName(playerb, 0));
 
 	if(PlayerInfo[playerid][pLevel] <= 3 && PlayerInfo[playerb][pLevel] <= 3 || amount >= 50000)
 	{
@@ -1770,9 +1770,9 @@ CMD:license(playerid, params[])
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ"); 
 		
 	if(playerb != playerid)
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s หยิบบัตรประจำตัวบัตรประชาชนและยื่นให้ %s", ReturnName(playerid, 0), ReturnName(playerb, 0));
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s หยิบบัตรประจำตัวบัตรประชาชนและยื่นให้ %s", ReturnName(playerid, 0), ReturnName(playerb, 0));
 		
-	else SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s หยิบบัตรประจำตัวบัตรประชาชนขึ้นมาดู", ReturnName(playerid, 0));
+	else SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s หยิบบัตรประจำตัวบัตรประชาชนขึ้นมาดู", ReturnName(playerid, 0));
 	
 	ReturnLicenses(playerid, playerb); 	
 	return 1;
@@ -2032,7 +2032,7 @@ CMD:givecigare(playerid, params[])
 	PlayerInfo[playerid][pCigare]-= amount;
 	SendClientMessageEx(playerid, -1, "คุณได้ให้บุหรี่จำนวน %d ม้วนกับ %s",amount, ReturnName(tagerid,0));
 	SendClientMessageEx(tagerid, -1, "คุณได้รับบุหรี่จำนวน %d ม้วนจาก %s",amount, ReturnName(playerid,0));
-	SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s ได้หยิบซองบุหรี่ออกมาแล้วหยิบม้วนบุหรี่บางส่วนให้กับ %s", ReturnName(playerid,0),ReturnName(tagerid,0));
+	SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s ได้หยิบซองบุหรี่ออกมาแล้วหยิบม้วนบุหรี่บางส่วนให้กับ %s", ReturnName(playerid,0),ReturnName(tagerid,0));
 	return 1;
 }
 
@@ -2051,13 +2051,13 @@ CMD:smoke(playerid, params[])
 		{
 			ApplyAnimation(playerid,"SMOKING","M_smk_in",4.1, 0, 1, 1, 1, 1, 1);
 			PlayerInfo[playerid][pCigare]--;
-			SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "* %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
+			SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "> %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
 		}
 		case 2: 
 		{
 			ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 1, 1, 1, 1, 1, 1);
 			PlayerInfo[playerid][pCigare]--;
-			SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "* %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
+			SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "> %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
 		}
 		default: return SendUsageMessage(playerid,"/smoke [1-2]");
 	}
@@ -2169,7 +2169,7 @@ CMD:setstation(playerid, params[])
 
 			HouseInfo[id][HouseMusic] = true;
 			format(HouseInfo[id][HouseMusicLink], 150, "");
-			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "> %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
 			return 1;
 		}
 		if(GetPlayerVehicleID(playerid) != 0)
@@ -2184,7 +2184,7 @@ CMD:setstation(playerid, params[])
 			new vehicleid = GetPlayerVehicleID(playerid);
 			VehicleInfo[vehicleid][eVehicleMusic] = false;
 			format(VehicleInfo[vehicleid][eVehicleMusicLink],1,"");
-			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "> %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
 			return 1;
 		}
 		else if(PlayerInfo[playerid][pInsideBusiness])
@@ -2201,7 +2201,7 @@ CMD:setstation(playerid, params[])
 
 			BusinessInfo[id][BusinessMusic] = true;
 			format(BusinessInfo[id][BusinessMusicLink], 150, "");
-			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "> %s ได้ปิดเครื่องเล่นวิทยุ", ReturnName(playerid,0));
 			return 1;
 		}
 		else if(PlayerInfo[playerid][pBoomBoxSpawnID] && !PlayerInfo[playerid][pInsideBusiness] && !PlayerInfo[playerid][pInsideProperty])
@@ -2217,7 +2217,7 @@ CMD:setstation(playerid, params[])
 					StopAudioStreamForPlayer(i);
 				}
 			}
-			SendNearbyMessage(playerid, 15.5, COLOR_EMOTE, "* %s ได้ปิดสถานีวิทยุ", ReturnName(playerid,0));
+			SendNearbyMessage(playerid, 15.5, COLOR_EMOTE, "> %s ได้ปิดสถานีวิทยุ", ReturnName(playerid,0));
 		}
 		else SendErrorMessage(playerid, "คุณไมได้อยู่ใกล้ บ้าน / กิจการ / BoomBox");
 	}
@@ -2244,7 +2244,7 @@ CMD:setstation(playerid, params[])
 
 			HouseInfo[id][HouseMusic] = true;
 			format(HouseInfo[id][HouseMusicLink], 150, "%s",url);
-			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "> %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
 			return 1;
 		}
 		else if(GetPlayerVehicleID(playerid) != 0)
@@ -2269,7 +2269,7 @@ CMD:setstation(playerid, params[])
 			new vehicleid = GetPlayerVehicleID(playerid);
 			VehicleInfo[vehicleid][eVehicleMusic] = true;
 			format(VehicleInfo[vehicleid][eVehicleMusicLink], 150, "%s",url);
-			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "> %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
 			return 1;
 		}
 		else if(PlayerInfo[playerid][pInsideBusiness])
@@ -2294,7 +2294,7 @@ CMD:setstation(playerid, params[])
 
 			BusinessInfo[id][BusinessMusic] = true;
 			format(BusinessInfo[id][BusinessMusicLink], 150, "%s",url);
-			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
+			SendNearbyMessage(playerid, 30.5, COLOR_EMOTE, "> %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
 		}
 		else if(PlayerInfo[playerid][pBoomBoxSpawnID] && !PlayerInfo[playerid][pInsideBusiness] && !PlayerInfo[playerid][pInsideProperty])
 		{
@@ -2309,7 +2309,7 @@ CMD:setstation(playerid, params[])
 					StopAudioStreamForPlayer(i);
 					PlayAudioStreamForPlayer(i, url, BoomBoxInfo[id][BoomBoxPos][0], BoomBoxInfo[id][BoomBoxPos][1], BoomBoxInfo[id][BoomBoxPos][2], 35.0,1);
 				}
-				SendNearbyMessage(playerid, 15.5, COLOR_EMOTE, "* %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
+				SendNearbyMessage(playerid, 15.5, COLOR_EMOTE, "> %s ได้เปลี่ยนสถานีวิทยุ", ReturnName(playerid,0));
 				return 1;
 			}
 		}
@@ -2475,7 +2475,7 @@ CMD:tackle(playerid, params[]) {
 CMD:coin(playerid, params[])
 {
 	new str[128];
-	format(str, sizeof(str), "* %s พลิกเหรียญลงพื้นและมันออก%s", ReturnRealName(playerid), (random(2)) ? ("หัว") : ("ก้อย"));
+	format(str, sizeof(str), "> %s พลิกเหรียญลงพื้นและมันออก%s", ReturnRealName(playerid), (random(2)) ? ("หัว") : ("ก้อย"));
     SendNearbyMessage(playerid, 15.0, COLOR_EMOTE, str);
 	return 1;
 	
@@ -2642,7 +2642,7 @@ CMD:meal(playerid, params[])
 			RemovePlayerAttachedObject(playerid, 9);
 		
 		MealOder[playerid] = false;
-		SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s โยนถาดอาหารทิ้ง",ReturnName(playerid,0));
+		SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s โยนถาดอาหารทิ้ง",ReturnName(playerid,0));
 		return 1;
 	}
 	else SendErrorMessage(playerid, "พิพม์คำสั่งไม่ถูกต้อง");
@@ -2734,7 +2734,7 @@ public HelpUpPLayer(playerid, tagerid)
 	TogglePlayerControllable(tagerid, 1); 
 	SetPlayerWeather(tagerid, globalWeather);  
 	PlayerHelpUp[tagerid] = false;
-	SendNearbyMessage(playerid, 3.5, COLOR_EMOTE, "* %s ปฐมพยาบาลเบื่องต้นให้กับ %s",ReturnName(playerid,0), ReturnName(tagerid,0));
+	SendNearbyMessage(playerid, 3.5, COLOR_EMOTE, "> %s ปฐมพยาบาลเบื่องต้นให้กับ %s",ReturnName(playerid,0), ReturnName(tagerid,0));
 
 	new str[150];
 	format(str, sizeof(str), "%s Helpup %s", ReturnRealName(playerid,0), ReturnRealName(tagerid,0));
@@ -2830,7 +2830,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		{
 			if(GetPVarType(issuerid, "TacklingMode") && weaponid == 0) 
 			{
-				SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "* %s วิ่งไปที่ %s และพยายามที่จะเข้าปะทะให้ลงไปนอนกับพื้น", ReturnRealName(issuerid), ReturnRealName(playerid));
+				SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s วิ่งไปที่ %s และพยายามที่จะเข้าปะทะให้ลงไปนอนกับพื้น", ReturnRealName(issuerid), ReturnRealName(playerid));
 				ApplyAnimation(issuerid, "PED", "EV_dive",4.1,0,1,1,1,0);
 				ApplyAnimation(playerid, "PED", "FLOOR_hit_f",4.1,0,1,1,1,0);
 				return 0;

@@ -130,7 +130,7 @@ CMD:tazer(playerid, params[])
 		PlayerInfo[playerid][pTaser] = true;
 		GivePlayerGun(playerid, 23, 100); 
 		
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s หยิบปืนช็อตไฟฟ้าออกมาจากซองหนัง", ReturnName(playerid, 0)); 
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s หยิบปืนช็อตไฟฟ้าออกมาจากซองหนัง", ReturnName(playerid, 0)); 
 	}
 	else
 	{
@@ -140,7 +140,7 @@ CMD:tazer(playerid, params[])
 		GivePlayerGun(playerid, 24,160); 
 		PlayerInfo[playerid][pTaser] = false;
 		
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s เก็บปืนช็อตไฟฟ้าเข้าซองหนัง", ReturnName(playerid, 0)); 
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s เก็บปืนช็อตไฟฟ้าเข้าซองหนัง", ReturnName(playerid, 0)); 
 	}
 	
 	return 1;
@@ -181,13 +181,13 @@ CMD:take(playerid, params[])
 		{
 			PlayerInfo[playerb][pDriverLicenseRevoke] = false;
 
-			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"* %s ได้คืนใบขับขี่ของ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));
+			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"> %s ได้คืนใบขับขี่ของ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));
 			return 1;
 		}
 		else
 		{
 			PlayerInfo[playerb][pDriverLicenseRevoke] = true;
-			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"* %s ได้ยึดใบขับขี่ของ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));
+			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"> %s ได้ยึดใบขับขี่ของ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));
 		}
 		return 1;
 	}
@@ -199,13 +199,13 @@ CMD:take(playerid, params[])
 		if(PlayerInfo[playerb][pWeaponLicenseRevoke] == true)
 		{
 			PlayerInfo[playerb][pWeaponLicenseRevoke] = false;
-			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"* %s ได้คืนใบพกอาวุธ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));	
+			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"> %s ได้คืนใบพกอาวุธ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));	
 			return 1;
 		}
 		else
 		{
 			PlayerInfo[playerb][pWeaponLicenseRevoke] = true;
-			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"* %s ได้ยึดใบพกอาวุธของ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));
+			SendNearbyMessage(playerid,20.0,COLOR_EMOTE,"> %s ได้ยึดใบพกอาวุธของ %s",ReturnRealName(playerid,0),ReturnRealName(playerb,0));
 		}
 	}
 	return 1;
@@ -400,7 +400,7 @@ CMD:fine(playerid, params[])
 	format(FineInfo[idx][FineDate], FineInfo[idx][FineDate], "%s", ReturnDate());
 
 	SendClientMessageEx(playerid, COLOR_PURPLE, "[ ! ] คุณถูกปรับโดย %s เนื่องจาก '%s' ดูได้ที่ /fines", ReturnName(playerid,0), reason);
-	SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s เขียนค่าปรับ %s ให้กับ %s เนื่องจาก '%s'", ReturnName(playerid, 0), MoneyFormat(price), ReturnName(tagetid, 0), reason);
+	SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "> %s เขียนค่าปรับ %s ให้กับ %s เนื่องจาก '%s'", ReturnName(playerid, 0), MoneyFormat(price), ReturnName(tagetid, 0), reason);
 	return 1;
 }
 

@@ -218,10 +218,10 @@ public OnRepiarEle(playerid, Float:x, Float:y, Float:z)
     if(IsValidDynamicObject(PlayerObjectEle[playerid]))
         DestroyDynamicObject(PlayerObjectEle[playerid]);
 
-    SendClientMessage(playerid, COLOR_DARKGREEN, "คุณได้ทำการซ่อมเสาไฟฟ้าที่ชำรุดสำเร็จเสร็จสิ้นแล้ว ได้เงินมาจำนวน $500");
-    SendClientMessage(playerid, COLOR_DEPT, "เสียภาษีรายได้ ร้อยละ 0.07 ($35)");
-    GiveMoney(playerid, 465);
-    GlobalInfo[G_GovCash]+=35;
+    SendClientMessage(playerid, COLOR_DARKGREEN, "คุณได้ทำการซ่อมเสาไฟฟ้าที่ชำรุดสำเร็จเสร็จสิ้นแล้ว ได้เงินมาจำนวน $150");
+    SendClientMessage(playerid, COLOR_DEPT, "เสียภาษีรายได้ ร้อยละ 0.07 ($10)");
+    GiveMoney(playerid, 140);
+    GlobalInfo[G_GovCash]+=10;
     CharacterSave(playerid);
     return 1;
 }
@@ -255,7 +255,7 @@ stock GetStair(playerid)
     ApplyAnimation(playerid, "CARRY","liftup", 4.1, 0, 0, 0, 0, 0, 1);
     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
     SetPlayerAttachedObject(playerid, 9, 1437, 1, 0.014000, 0.357999, 0.405001, 179.600021, -9.899999, -90.200012, 1.0, 1.0, 1.0);
-    SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s หยิบบรรไดออกมาจากท้ายรถ และถือไว้ด้วยมือทั้งสองข้าง",ReturnName(playerid,0));
+    SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s หยิบบรรไดออกมาจากท้ายรถ และถือไว้ด้วยมือทั้งสองข้าง",ReturnName(playerid,0));
     return 1;
 }
 
@@ -264,7 +264,7 @@ stock PlaceStair(playerid)
     DeletePVar(playerid, "GetStair");
     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
     RemovePlayerAttachedObject(playerid, 9);
-    SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "* %s วางบรรไดเก็บไว้ที่ท้ายรถ",ReturnName(playerid,0));
+    SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s วางบรรไดเก็บไว้ที่ท้ายรถ",ReturnName(playerid,0));
     return 1;
 }
 

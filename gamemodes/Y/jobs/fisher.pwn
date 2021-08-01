@@ -222,7 +222,7 @@ CMD:fish(playerid, params[]) {
                         if(FishingPlace[playerid] != 1) Fishlbs = ((Fishcaught+1)*10) + (1 + random(10));
                         else Fishlbs = ((Fishcaught+1)*20) + (1 + random(10));
 
-                        SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "%s รอกม้วนคันเบ็ดขึ้นมาและพบว่าพวกเขาจับ%sได้", ReturnRealName(playerid), FishNames[Fishcaught]);
+                        SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s รอกม้วนคันเบ็ดขึ้นมาและพบว่าพวกเขาจับ%sได้", ReturnRealName(playerid), FishNames[Fishcaught]);
                         SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณจับ%s %d ปอนด์", FishNames[Fishcaught], Fishlbs);
         
                         PlayerInfo[playerid][pFishes]+=Fishlbs;
@@ -259,7 +259,7 @@ CMD:fish(playerid, params[]) {
                         if(FishingPlace[playerid] != 1) Fishlbs = ((Fishcaught+1)*10) + (1 + random(10));
                         else Fishlbs = ((Fishcaught+1)*20) + (1 + random(10));
 
-                        SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "%s รอกม้วนคันเบ็ดขึ้นมาและพบว่าพวกเขาจับ%sได้", ReturnRealName(playerid), FishNames[Fishcaught]);
+                        SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s รอกม้วนคันเบ็ดขึ้นมาและพบว่าพวกเขาจับ%sได้", ReturnRealName(playerid), FishNames[Fishcaught]);
                         SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณจับ%s %d ปอนด์", FishNames[Fishcaught], Fishlbs);
 
                         PlayerInfo[playerid][pFishes]+=Fishlbs;

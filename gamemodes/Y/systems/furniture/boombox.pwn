@@ -80,7 +80,7 @@ CMD:boombox(playerid, params[])
         BoomBoxInfo[id][BoomBoxSpawn] = false;
         PlayerInfo[playerid][pBoomBoxSpawnID] = 0;
         DestroyDynamicObject(BoomBoxInfo[id][BoomBoxObject]);
-        SendNearbyMessage(playerid, 5.5, COLOR_EMOTE, "* %s เก็บ BoomBox",ReturnName(playerid,0));
+        SendNearbyMessage(playerid, 5.5, COLOR_EMOTE, "> %s เก็บ BoomBox",ReturnName(playerid,0));
         return 1;
     }
     else SendErrorMessage(playerid,  "กรุณาพิพม์ให้ถูกต้อง");
@@ -118,7 +118,7 @@ stock PlaceBoomBox(playerid, id)
     BoomBoxInfo[id][BoomBoxWorld] = GetPlayerVirtualWorld(playerid);
 
     SendClientMessageEx(playerid, -1, "คุณได้มีการวาง BoomBox (%d)",id);
-    SendNearbyMessage(playerid, 5.5, COLOR_EMOTE, "* %s วาง BoomBox",ReturnName(playerid,0));
+    SendNearbyMessage(playerid, 5.5, COLOR_EMOTE, "> %s วาง BoomBox",ReturnName(playerid,0));
     PlayerEditBoomBox[playerid] = 0;
     PlayerEditObject[playerid] = false;
     return 1;
@@ -144,7 +144,7 @@ hook OP_EditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Floa
 
                 BoomBoxInfo[id][BoomBoxObject] = CreateDynamicObject(2226, x, y, z, rx,ry,rz, BoomBoxInfo[id][BoomBoxWorld], -1, -1);
                 SendClientMessageEx(playerid, -1, "คุณได้มีการวาง BoomBox (%d)",id);
-                SendNearbyMessage(playerid, 5.5, COLOR_EMOTE, "* %s วาง BoomBox",ReturnName(playerid,0));
+                SendNearbyMessage(playerid, 5.5, COLOR_EMOTE, "> %s วาง BoomBox",ReturnName(playerid,0));
 
                 PlayerEditBoomBox[playerid] = 0;
                 PlayerEditObject[playerid] = false;

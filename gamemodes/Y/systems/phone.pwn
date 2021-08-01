@@ -565,7 +565,7 @@ CMD:call(playerid, params[])
 		return 1;
 	}
 	
-	SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "* %s ¡’‡ ’¬ß°√‘Íß‚∑√»—æ∑Ï¥—ß¢÷Èπ", ReturnName(playerb, 0)); 
+	SendNearbyMessage(playerb, 20.0, COLOR_EMOTE, "> %s ¡’‡ ’¬ß°√‘Íß‚∑√»—æ∑Ï¥—ß¢÷Èπ", ReturnName(playerb, 0)); 
 	SendClientMessageEx(playerb, COLOR_GREY, "[ ! ] §ÿ≥ “¡“√∂√—∫ “¬‚¥¬°“√°¥ªÿË¡√—∫ “¬‚¥¬°“√æ‘¡æÏ /p(ickup) ‡æ◊ËÕ√—∫ “¬‡√’¬°‡¢È“ Phone: %i", PlayerInfo[playerid][pPhone]); 
 	
 	PlayerInfo[playerid][pCalling] = 1; PlayerInfo[playerb][pCalling] = 1;
@@ -736,12 +736,12 @@ CMD:loudspeaker(playerid, params[])
 		
 	if(PlayerInfo[playerid][pPhonespeaker])
 	{
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ª‘¥≈”‚æß‚∑√»—æ∑Ï", ReturnName(playerid, 0));
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s ª‘¥≈”‚æß‚∑√»—æ∑Ï", ReturnName(playerid, 0));
 		PlayerInfo[playerid][pPhonespeaker] = false;
 	}
 	else
 	{
-		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "* %s ‡ª‘¥≈”‚æß‚∑√»—æ∑Ï", ReturnName(playerid, 0));
+		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s ‡ª‘¥≈”‚æß‚∑√»—æ∑Ï", ReturnName(playerid, 0));
 		PlayerInfo[playerid][pPhonespeaker] = true;
 	}
 	

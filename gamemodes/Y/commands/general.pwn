@@ -692,7 +692,7 @@ CMD:place(playerid, params[])
 		new engine, lights, alarm, doors, bonnet, boot, objective;
 		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 		
-		if(!bonnet)
+		if(!boot)
 			return SendClientMessage(playerid, COLOR_YELLOWEX, "คุณไม่ได้เปิดฝากระโปรงท้ายรถ"); 
 			
 		for(new i = 1; i < 6; i++)

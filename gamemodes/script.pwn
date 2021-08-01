@@ -168,6 +168,7 @@ new globalWeather = 2;
 #include "Y/Map/ps.pwn"
 #include "Y/Map/map_fight.pwn"
 #include "Y/Map/carmeeting.pwn"
+#include "Y/Map/police_g.pwn"
 //#include "Y/Map/map_p_1.pwn"
 /*#include "Y/Map/slrp.pwn"
 #include "Y/Map/apartment.pwn"
@@ -630,6 +631,7 @@ public OnPlayerConnect(playerid) {
             PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/134nwjnrnmTd"); // Timber - Pitbull.
         }
     }
+
 
     new pname[MAX_PLAYER_NAME];
     GetPlayerName(playerid, pname, sizeof(pname));

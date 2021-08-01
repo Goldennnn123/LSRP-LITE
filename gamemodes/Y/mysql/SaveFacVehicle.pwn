@@ -2,19 +2,19 @@ stock SaveFacVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 {
 	new query[MAX_STRING];
 
-	mysql_init("vehicle_faction", "VehicleDBID", VehFacInfo[vehicleid][VehFacDBID], thread);
+	mysql_init("vehicles", "VehicleDBID", VehicleInfo[vehicleid][eVehicleDBID], thread);
 
-	mysql_int(query, "VehicleModel",VehFacInfo[vehicleid][VehFacModel]);
-	mysql_int(query, "VehicleFaction",VehFacInfo[vehicleid][VehFacFaction]);
+	mysql_int(query, "VehicleModel",VehicleInfo[vehicleid][eVehicleModel]);
+	mysql_int(query, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
 
-	mysql_flo(query, "VehicleParkPosX",VehFacInfo[vehicleid][VehFacPos][0]);
-	mysql_flo(query, "VehicleParkPosY",VehFacInfo[vehicleid][VehFacPos][1]);
-	mysql_flo(query, "VehicleParkPosZ",VehFacInfo[vehicleid][VehFacPos][2]);
-	mysql_flo(query, "VehicleParkPosA",VehFacInfo[vehicleid][VehFacPos][3]);
-	mysql_int(query, "VehicleParkWorld",VehFacInfo[vehicleid][VehFacPosWorld]);
+	mysql_flo(query, "VehicleParkPosX",VehicleInfo[vehicleid][eVehicleParkPos][0]);
+	mysql_flo(query, "VehicleParkPosY",VehicleInfo[vehicleid][eVehicleParkPos][1]);
+	mysql_flo(query, "VehicleParkPosZ",VehicleInfo[vehicleid][eVehicleParkPos][2]);
+	mysql_flo(query, "VehicleParkPosA",VehicleInfo[vehicleid][eVehicleParkPos][3]);
+	mysql_int(query, "VehicleParkWorld",VehicleInfo[vehicleid][eVehicleParkWorld]);
 
-	mysql_int(query, "VehicleColor1",VehFacInfo[vehicleid][VehFacColor][0]);
-	mysql_int(query, "VehicleColor2",VehFacInfo[vehicleid][VehFacColor][1]);
+	mysql_int(query, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);
+	mysql_int(query, "VehicleColor2",VehicleInfo[vehicleid][eVehicleColor2]);
 	mysql_finish(query);
     return 1;
 }

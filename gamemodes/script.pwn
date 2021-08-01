@@ -81,7 +81,6 @@ new globalWeather = 2;
 #include "Y/entities/fine.pwn"
 #include "Y/entities/helpme.pwn"
 #include "Y/entities/gps.pwn"
-#include "Y/entities/vehicle_faction.pwn"
 #include "Y/entities/global.pwn"
 #include "Y/entities/boombox.pwn"
 #include "Y/entities/clothing.pwn"
@@ -376,7 +375,7 @@ public OnGameModeInit() {
     mysql_tquery(dbCon, "SELECT * FROM Business ORDER BY BusinessDBID", "Query_LoadBusiness");
     mysql_tquery(dbCon, "SELECT * FROM phonebook ORDER BY PhoneDBID", "LoadPhoneBook");
     mysql_tquery(dbCon, "SELECT * FROM entrance ORDER BY EntranceDBID", "LoadEntrance");
-    mysql_tquery(dbCon, "SELECT * FROM vehicle_faction ORDER BY VehicleDBID", "LoadFactionVehicle");
+    mysql_tquery(dbCon, "SELECT * FROM vehicles WHERE VehicleFaction > 0", "LoadFactionVehicle");
     mysql_tquery(dbCon, "SELECT * FROM global ORDER BY ID", "LoadGlobal");
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน
 	ManualVehicleEngineAndLights();

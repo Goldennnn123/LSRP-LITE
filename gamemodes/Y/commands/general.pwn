@@ -659,9 +659,9 @@ CMD:place(playerid, params[])
 		if(IsCheckBike(vehicleid))
 			return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับยานพาหนะที่เป็น มอเตอร์ไซต์ได้");
 
-		if(VehFacInfo[vehicleid][VehFacDBID])
+		if(VehicleInfo[vehicleid][eVehicleFaction])
 		{
-			new factionid = VehFacInfo[vehicleid][VehFacFaction];
+			new factionid = VehicleInfo[vehicleid][eVehicleFaction];
 			
 			if(FactionInfo[factionid][eFactionJob] != POLICE && FactionInfo[factionid][eFactionJob] != SHERIFF)
 				return SendErrorMessage(playerid, "ไม่มีอะไรอยู่ที่นั้น..");
@@ -802,7 +802,7 @@ CMD:takegun(playerid, params[])
 		if(IsCheckBike(vehicleid))
 			return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับยานพาหนะที่เป็น มอเตอร์ไซต์ได้"); 
 
-		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn] && !VehFacInfo[vehicleid][VehFacDBID])
+		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn] && !VehicleInfo[vehicleid][eVehicleFaction])
 			return SendServerMessage(playerid, "รถคันนี้เป็นรถส่วนบุคคนไม่สามารถใช้คำสั่ง /takegun ได้");
 
 
@@ -812,9 +812,9 @@ CMD:takegun(playerid, params[])
 		if(slotid < 1 || slotid > 5)
 			return SendErrorMessage(playerid, "กรุณาใส่ สล็อตให้ถูกต้อง");
 
-		if(VehFacInfo[vehicleid][VehFacDBID])
+		if(VehicleInfo[vehicleid][eVehicleFaction])
 		{
-			new factionid = VehFacInfo[vehicleid][VehFacFaction];
+			new factionid = VehicleInfo[vehicleid][eVehicleFaction];
 			new modelid = GetVehicleModel(vehicleid);
 			
 			if(FactionInfo[factionid][eFactionJob] != POLICE && FactionInfo[factionid][eFactionJob] != SHERIFF)
@@ -923,7 +923,7 @@ CMD:takegun(playerid, params[])
 		if(IsCheckBike(vehicleid))
 			return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับยานพาหนะที่เป็น มอเตอร์ไซต์ได้"); 
 
-		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn] && !VehFacInfo[vehicleid][VehFacDBID])
+		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn] && !VehicleInfo[vehicleid][eVehicleFaction])
 			return SendServerMessage(playerid, "รถคันนี้เป็นรถส่วนบุคคนไม่สามารถใช้คำสั่ง /takegun ได้");
 
 		if(!IsPlayerInRangeOfPoint(playerid, 2.5, x, y, z))
@@ -940,9 +940,9 @@ CMD:takegun(playerid, params[])
 		if(slotid < 1 || slotid > 5)
 			return SendErrorMessage(playerid, "กรุณาใส่ สล็อตให้ถูกต้อง");
 
-		if(VehFacInfo[vehicleid][VehFacDBID])
+		if(VehicleInfo[vehicleid][eVehicleFaction])
 		{
-			new factionid = VehFacInfo[vehicleid][VehFacFaction];
+			new factionid = VehicleInfo[vehicleid][eVehicleFaction];
 			new modelid = GetVehicleModel(vehicleid);
 			
 			if(FactionInfo[factionid][eFactionJob] != POLICE && FactionInfo[factionid][eFactionJob] != SHERIFF)

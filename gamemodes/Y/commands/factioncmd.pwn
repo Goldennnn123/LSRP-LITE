@@ -765,20 +765,20 @@ CMD:park(playerid ,params[])
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 		return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
 
-	if(VehFacInfo[vehicleid][VehFacFaction] != factionid)
+	if(VehicleInfo[vehicleid][eVehicleFaction] != factionid)
 		return SendErrorMessage(playerid, "รถคันนี้ไม่ใช่รถเฟคชั่นของคุณ");
 
-	GetVehiclePos(vehicleid, VehFacInfo[vehicleid][VehFacPos][0], VehFacInfo[vehicleid][VehFacPos][1], VehFacInfo[vehicleid][VehFacPos][2]);
-	GetVehicleZAngle(vehicleid, VehFacInfo[vehicleid][VehFacPos][3]);
-	VehFacInfo[vehicleid][VehFacPosWorld] = GetPlayerVirtualWorld(playerid); 
+	GetVehiclePos(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2]);
+	GetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][3]);
+	VehicleInfo[vehicleid][eVehicleParkWorld] = GetPlayerVirtualWorld(playerid); 
 
-	SendFactionMessage(playerid, COLOR_FACTION, "**(( %s ได้เปลี่ยนจุดยานพาหนะ ไอดี %d ))**",ReturnRealName(playerid, 0), VehFacInfo[vehicleid][VehFacDBID]);
+	SendFactionMessage(playerid, COLOR_FACTION, "**(( %s ได้เปลี่ยนจุดยานพาหนะ ไอดี %d ))**",ReturnRealName(playerid, 0), VehicleInfo[vehicleid][eVehicleDBID]);
 
 	SaveFacVehicle(vehicleid);
 
 	DestroyVehicle(vehicleid);
 
-	vehicleid = CreateVehicle(VehFacInfo[vehicleid][VehFacModel], VehFacInfo[vehicleid][VehFacPos][0], VehFacInfo[vehicleid][VehFacPos][1], VehFacInfo[vehicleid][VehFacPos][2], VehFacInfo[vehicleid][VehFacPos][3], VehFacInfo[vehicleid][VehFacColor][0], VehFacInfo[vehicleid][VehFacColor][1], -1, 0);
+	vehicleid = CreateVehicle(VehicleInfo[vehicleid][eVehicleModel], VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], VehicleInfo[vehicleid][eVehicleParkPos][3], VehicleInfo[vehicleid][eVehicleColor1], VehicleInfo[vehicleid][eVehicleColor1], -1, 0);
 	ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 	PutPlayerInVehicle(playerid, vehicleid, 0);
 	return 1;
@@ -796,10 +796,10 @@ CMD:towcars(playerid, params[])
 
 	for(new v = 1; v< MAX_FACTION_VEHICLE; v++)
 	{
-		if(!VehFacInfo[v][VehFacFaction])
+		if(!VehicleInfo[v][eVehicleFaction])
 			continue;
 
-		if(VehFacInfo[v][VehFacFaction] != id)
+		if(VehicleInfo[v][eVehicleFaction] != id)
 			continue;
 
 		if(IsVehicleOccupied(v))
@@ -810,7 +810,7 @@ CMD:towcars(playerid, params[])
 		VehicleInfo[v][eVehicleEngineStatus] = false;
 
 		SetVehicleToRespawn(v);
-		SetVehicleVirtualWorld(v, VehFacInfo[v][VehFacPosWorld]);
+		SetVehicleVirtualWorld(v, VehicleInfo[v][eVehicleParkWorld]);
 		SetVehicleNumberPlate(v, FactionInfo[id][eFactionAbbrev]);
 		SetVehicleHp(v);
 

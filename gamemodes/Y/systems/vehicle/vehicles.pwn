@@ -659,24 +659,25 @@ CMD:engine(playerid, params[])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะคันนี้ไม่มีเครื่องยนต์"); 
 
 	GetVehicleHealth(vehicleid, health);
+	
 	if(health <= 300)
 		return SendErrorMessage(playerid, "ยานพหานะของคุณมีความเสียหายอย่างหนักจึงไม่สามารถ สตาร์ทเครื่องยนต์ได้");
 
-	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid) && !VehicleInfo[vehicleid][eVehicleFaction] && !VehFacInfo[vehicleid][VehFacDBID] && !IsElecVehicle(vehicleid))
+	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid) && !VehicleInfo[vehicleid][eVehicleFaction] && !IsElecVehicle(vehicleid))
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้สามารถใช้ได้เฉพาะยานพาหนะส่วนตัว แต่คุณอยู่ในยานพาหนะสาธารณะ (Static)");
 		
 	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะนี้ไม่มีเชื้อเพลิง!"); 
 
-	if(VehicleInfo[vehicleid][eVehicleEngine] < 1 && !VehFacInfo[vehicleid][VehFacFaction])
+	if(VehicleInfo[vehicleid][eVehicleEngine] < 1 && !VehicleInfo[vehicleid][eVehicleFaction])
 		return SendErrorMessage(playerid, "ยานพาหนะของคุณแบตตารี่หมด กรุณาไปเติมก่อน");
 
 	if(VehicleInfo[vehicleid][eVehicleImpounded])
 		return SendErrorMessage(playerid, "ยานพาหนะถูกยึด พิมพ์ /unimpound เพื่อนำรถคืน จะต้องเสียง $1,500");
 	
-	if(VehFacInfo[vehicleid][VehFacFaction] > 0)
+	if(VehicleInfo[vehicleid][eVehicleFaction] > 0)
 	{
-		if(PlayerInfo[playerid][pFaction] != VehFacInfo[vehicleid][VehFacFaction] && !PlayerInfo[playerid][pAdminDuty])
+		if(PlayerInfo[playerid][pFaction] != VehicleInfo[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty])
 		{
 			return SendClientMessage(playerid, COLOR_LIGHTRED, "คุณไม่มีกุญแจสำหรับยานพาหนะคันนี้"); 
 		}
@@ -687,7 +688,7 @@ CMD:engine(playerid, params[])
 	}
 
 	if(
-	!VehFacInfo[vehicleid][VehFacFaction] && 
+	!VehicleInfo[vehicleid][eVehicleFaction] && 
 	PlayerInfo[playerid][pDuplicateKey] != vehicleid && 
 	VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && 
 	!VehicleInfo[vehicleid][eVehicleAdminSpawn] && 
@@ -1180,7 +1181,7 @@ CMD:vehicle(playerid, params[])
 			}
 			if(foundCar == true)
 			{
-				if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pFaction] != VehFacInfo[vehicleid][VehFacFaction])
+				if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pFaction] != VehicleInfo[vehicleid][eVehicleFaction])
 					return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้");
 
 				new statusString[90]; 
@@ -1210,7 +1211,7 @@ CMD:vehicle(playerid, params[])
 		{
 			vehicleid = GetPlayerVehicleID(playerid);
 			
-			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pFaction] != VehFacInfo[vehicleid][VehFacFaction])
+			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pFaction] != VehicleInfo[vehicleid][eVehicleFaction])
 				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้");
 					
 			new statusString[90]; 
@@ -1787,28 +1788,28 @@ public LoadFactionVehicle()
 		{
 			//VehicleInfo[vehicleid][eVehicleExists] = true; 
 
-			cache_get_value_name_int(i, "VehicleDBID",VehFacInfo[vehicleid][VehFacDBID]);
+			cache_get_value_name_int(i, "VehicleDBID",VehicleInfo[vehicleid][eVehicleDBID]);
 
-			cache_get_value_name_int(i, "VehicleFaction",VehFacInfo[vehicleid][VehFacFaction]);
+			cache_get_value_name_int(i, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
 			
-			cache_get_value_name_int(i, "VehicleModel",VehFacInfo[vehicleid][VehFacModel]);
+			cache_get_value_name_int(i, "VehicleModel",VehicleInfo[vehicleid][eVehicleModel]);
 			
-			cache_get_value_name_int(i, "VehicleColor1",VehFacInfo[vehicleid][VehFacColor][0]);
-			cache_get_value_name_int(i, "VehicleColor2",VehFacInfo[vehicleid][VehFacColor][1]);
+			cache_get_value_name_int(i, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);
+			cache_get_value_name_int(i, "VehicleColor2",VehicleInfo[vehicleid][eVehicleColor2]);
 			
-			cache_get_value_name_float(i, "VehicleParkPosX", VehFacInfo[vehicleid][VehFacPos][0]);
-			cache_get_value_name_float(i, "VehicleParkPosY", VehFacInfo[vehicleid][VehFacPos][1]);
-			cache_get_value_name_float(i, "VehicleParkPosZ", VehFacInfo[vehicleid][VehFacPos][2]);
-			cache_get_value_name_float(i, "VehicleParkPosA", VehFacInfo[vehicleid][VehFacPos][3]);
+			cache_get_value_name_float(i, "VehicleParkPosX", VehicleInfo[vehicleid][eVehicleParkPos][0]);
+			cache_get_value_name_float(i, "VehicleParkPosY", VehicleInfo[vehicleid][eVehicleParkPos][1]);
+			cache_get_value_name_float(i, "VehicleParkPosZ", VehicleInfo[vehicleid][eVehicleParkPos][2]);
+			cache_get_value_name_float(i, "VehicleParkPosA", VehicleInfo[vehicleid][eVehicleParkPos][3]);
 			
-			cache_get_value_name_int(i, "VehicleParkWorld",VehFacInfo[vehicleid][VehFacPosWorld]);
+			cache_get_value_name_int(i, "VehicleParkWorld",VehicleInfo[vehicleid][eVehicleParkWorld]);
 
 			VehicleInfo[vehicleid][eVehicleFuel] = 100;
 		}
 
-		SetVehicleNumberPlate(vehicleid, FactionInfo[VehFacInfo[vehicleid][VehFacFaction]][eFactionAbbrev]);
+		SetVehicleNumberPlate(vehicleid, FactionInfo[VehicleInfo[vehicleid][eVehicleFaction]][eFactionAbbrev]);
 		
-		VehicleInfo[vehicleid][eVehiclePlates] = FactionInfo[VehFacInfo[vehicleid][VehFacFaction]][eFactionAbbrev];
+		VehicleInfo[vehicleid][eVehiclePlates] = FactionInfo[VehicleInfo[vehicleid][eVehicleFaction]][eFactionAbbrev];
 		SetVehicleToRespawn(vehicleid);
 		SetVehicleHp(vehicleid);
 		
@@ -1975,7 +1976,7 @@ public Query_LoadPrivateVehicle(playerid)
 	
 	PlayerInfo[playerid][pVehicleSpawned] = true;
 	PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
-	VehFacInfo[vehicleid][VehFacFaction] = 0;
+	VehicleInfo[vehicleid][eVehicleFaction] = 0;
 
 	
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้นำรถ %s ออกมาแล้ว", ReturnVehicleName(vehicleid));
@@ -2243,12 +2244,12 @@ public InsertVehicleFaction(playerid,newid, modelid, factionid, color1,color2)
 
 	if(vehicleid != INVALID_VEHICLE_ID)
 	{
-		VehFacInfo[vehicleid][VehFacDBID] = cache_insert_id();
-		VehFacInfo[vehicleid][VehFacModel] = modelid;
-		VehFacInfo[vehicleid][VehFacFaction] = factionid;
+		VehicleInfo[vehicleid][eVehicleDBID] = cache_insert_id();
+		VehicleInfo[vehicleid][eVehicleModel] = modelid;
+		VehicleInfo[vehicleid][eVehicleFaction] = factionid;
 
-		VehFacInfo[vehicleid][VehFacColor][0] = color1;
-		VehFacInfo[vehicleid][VehFacColor][1] = color2;
+		VehicleInfo[vehicleid][eVehicleColor1] = color1;
+		VehicleInfo[vehicleid][eVehicleColor2] = color2;
 		VehicleInfo[vehicleid][eVehicleFuel] = 100;
 		SetVehicleToRespawn(vehicleid);
 	}
@@ -2454,7 +2455,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		PlayAudioStreamForPlayer(playerid, VehicleInfo[vehicleid][eVehicleMusicLink]);
 	}
 
-	if(!ispassenger && VehFacInfo[vehicleid][VehFacFaction] && PlayerInfo[playerid][pFaction] != VehFacInfo[vehicleid][VehFacFaction])
+	if(!ispassenger && VehicleInfo[vehicleid][eVehicleFaction] && PlayerInfo[playerid][pFaction] != VehicleInfo[vehicleid][eVehicleFaction])
 	{
 		SendErrorMessage(playerid, "คุณไม่สามารถขึ้นรถของแฟคชั่น");		
 		return ClearAnimations(playerid);

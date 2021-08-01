@@ -2806,12 +2806,13 @@ CMD:createvehicle(playerid, params[])
 
 	for(new i = 1; i < MAX_FACTION_VEHICLE; i++)
 	{
-		if(!VehFacInfo[i][VehFacDBID])
+		if(!VehicleInfo[i][eVehicleDBID])
 		{
 			idx = i;
 			break;
 		}
 	}
+	
 	if(idx == 0) return SendErrorMessage(playerid, "Ã¶á¿¤ªÑè¹àµçÁáÅéÇ");
 
 	new Float:x,Float:y,Float:z,Float:a;
@@ -2821,7 +2822,8 @@ CMD:createvehicle(playerid, params[])
 
 	new thread[MAX_STRING]; 
 
-	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%f,%f,%f,%f,%d)",
+	mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicles (`VehicleOwnerDBID`, `VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%d,%f,%f,%f,%f,%d)",
+		PlayerInfo[playerid][pDBID],
 		modelid,
 		factionid,
 		color1,
@@ -2832,6 +2834,18 @@ CMD:createvehicle(playerid, params[])
 		a,
 		World);
 	mysql_tquery(dbCon, thread, "InsertVehicleFaction", "dddddd", playerid,idx, modelid, factionid, color1, color2);
+
+	/*mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%f,%f,%f,%f,%d)",
+		modelid,
+		factionid,
+		color1,
+		color2,
+		x,
+		y,
+		z,
+		a,
+		World);
+	mysql_tquery(dbCon, thread, "InsertVehicleFaction", "dddddd", playerid,idx, modelid, factionid, color1, color2);*/
 	return 1;
 }
 
@@ -2849,22 +2863,22 @@ CMD:deletevehicle(playerid, params[])
 	if(!IsValidVehicle(vehicleid))
 		return SendErrorMessage(playerid, "äÁèÁÕ ID ÂÒ¹¾ÒË¹Ð·ÕèµéÍ§¡ÒÃ");
 
-	if(!VehFacInfo[vehicleid][VehFacFaction])
+	if(!VehicleInfo[vehicleid][eVehicleFaction])
 		return SendErrorMessage(playerid, "ÂÒ¹¾ÒË¹Ð¤Ñ¹¹ÕéäÁèÁÕÍÂÙèã¹á¿¤ªÑè¹");
 
 
-	SendClientMessageEx(playerid, -1, "¤Ø³ä´éÅºÂÒ¹¾ÒË¹Ð¢Í§á¿¤ªÑè¹ %s äÍ´Õ %d",ReturnFactionNameEx(VehFacInfo[vehicleid][VehFacFaction]), vehicleid);
+	SendClientMessageEx(playerid, -1, "¤Ø³ä´éÅºÂÒ¹¾ÒË¹Ð¢Í§á¿¤ªÑè¹ %s äÍ´Õ %d",ReturnFactionNameEx(VehicleInfo[vehicleid][eVehicleFaction]), vehicleid);
 	new thread[MAX_STRING]; 
 
-	mysql_format(dbCon, thread, sizeof(thread), "DELETE FROM `vehicle_faction` WHERE `VehicleDBID` = '%d'", VehFacInfo[vehicleid][VehFacDBID]);
+	mysql_format(dbCon, thread, sizeof(thread), "DELETE FROM `vehicle_faction` WHERE `VehicleDBID` = '%d'", VehicleInfo[vehicleid][eVehicleDBID]);
 	mysql_tquery(dbCon, thread);
 
-	VehFacInfo[vehicleid][VehFacDBID] = 0;
-	VehFacInfo[vehicleid][VehFacModel] = 0;
-	VehFacInfo[vehicleid][VehFacFaction] = 0;
+	VehicleInfo[vehicleid][eVehicleDBID] = 0;
+	VehicleInfo[vehicleid][eVehicleModel] = 0;
+	VehicleInfo[vehicleid][eVehicleFaction] = 0;
 
-	VehFacInfo[vehicleid][VehFacColor][0] = 0;
-	VehFacInfo[vehicleid][VehFacColor][1] = 0;
+	VehicleInfo[vehicleid][eVehicleColor1] = 0;
+	VehicleInfo[vehicleid][eVehicleColor2] = 0;
 	VehicleInfo[vehicleid][eVehicleFuel] = 0;
 	DestroyVehicle(vehicleid);
 	ResetVehicleVars(vehicleid);

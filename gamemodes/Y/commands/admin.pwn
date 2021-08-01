@@ -2870,7 +2870,7 @@ CMD:deletevehicle(playerid, params[])
 	SendClientMessageEx(playerid, -1, "คุณได้ลบยานพาหนะของแฟคชั่น %s ไอดี %d",ReturnFactionNameEx(VehicleInfo[vehicleid][eVehicleFaction]), vehicleid);
 	new thread[MAX_STRING]; 
 
-	mysql_format(dbCon, thread, sizeof(thread), "DELETE FROM `vehicle_faction` WHERE `VehicleDBID` = '%d'", VehicleInfo[vehicleid][eVehicleDBID]);
+	mysql_format(dbCon, thread, sizeof(thread), "DELETE FROM `vehicles` WHERE `VehicleDBID` = '%d'", VehicleInfo[vehicleid][eVehicleDBID]);
 	mysql_tquery(dbCon, thread);
 
 	VehicleInfo[vehicleid][eVehicleDBID] = 0;

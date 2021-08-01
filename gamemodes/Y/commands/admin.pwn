@@ -1021,6 +1021,8 @@ CMD:gotocar(playerid, params[])
 		
 	new Float: fetchPos[3];
 	GetVehiclePos(vehicleid, fetchPos[0], fetchPos[1], fetchPos[2]);
+	SetPlayerVirtualWorld(playerid, GetVehicleVirtualWorld(vehicleid));
+	SetPlayerInterior(playerid, AntiCheatGetVehicleInterior(vehicleid));
 	
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 		SetVehiclePos(GetPlayerVehicleID(playerid), fetchPos[0], fetchPos[1], fetchPos[2] + 2);

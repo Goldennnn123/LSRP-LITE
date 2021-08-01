@@ -742,20 +742,16 @@ public OnPlayerSpawn(playerid) {
 	if (!BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
 		Kick(playerid);
 
-    
-    if(PlayerInfo[playerid][pWeaponsSpawned] == false)
+    for(new i = 0; i < 13; i ++)
     {
-        for(new i = 0; i < 13; i ++)
+        if(PlayerInfo[playerid][pWeapons][i] != 0)
         {
-            if(PlayerInfo[playerid][pWeapons][i] != 0)
-            {
-                GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
-            }
+            GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
         }
-
-        SetPlayerArmedWeapon(playerid, 0);
-        PlayerInfo[playerid][pWeaponsSpawned] = true;
     }
+
+    SetPlayerArmedWeapon(playerid, 0);
+    PlayerInfo[playerid][pWeaponsSpawned] = true;
 
     SetPlayerClothing(playerid);
 

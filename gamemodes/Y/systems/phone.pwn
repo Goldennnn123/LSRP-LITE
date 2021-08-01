@@ -502,10 +502,10 @@ CMD:call(playerid, params[])
     if(PlayerInfo[playerid][pPhoneOff])
 		return SendErrorMessage(playerid, "โทรศัพท์ของคุณปิดเครื่องอยู่");
 
-    /*if(PlayerInfo[playerid][pHandcuffed])
-		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมือ");*/
+    if(PlayerInfo[playerid][pHandcuffed])
+		return SendErrorMessage(playerid, "คุณถูกล็อคด้วยกุญแจมือ");
 		
-	if(PlayerInfo[playerid][pCalling])
+	if(PlayerInfo[playerid][pPhoneline] != INVALID_PLAYER_ID)
 		return SendErrorMessage(playerid, "คุณไม่สามารถโทรออกได้ในขณะนี้");
 		
 	if(sscanf(params, "i", phone_number))

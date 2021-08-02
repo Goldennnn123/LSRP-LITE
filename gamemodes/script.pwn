@@ -169,6 +169,7 @@ new globalWeather = 2;
 #include "Y/Map/map_fight.pwn"
 #include "Y/Map/carmeeting.pwn"
 #include "Y/Map/lspdhq_new.pwn"
+#include "Y/Map/police_g.pwn"
 //#include "Y/Map/map_p_1.pwn"
 /*#include "Y/Map/slrp.pwn"
 #include "Y/Map/apartment.pwn"

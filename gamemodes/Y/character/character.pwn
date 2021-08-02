@@ -302,6 +302,9 @@ public Query_LoadCharacter(playerid)
 		cache_get_value_name_int(0, "pInsideBusiness",PlayerInfo[playerid][pInsideBusiness]);
 		cache_get_value_name_int(0, "pInsideProperty",PlayerInfo[playerid][pInsideProperty]);
 
+		cache_get_value_name_int(0, "pVehicleSpawned",PlayerInfo[playerid][pVehicleSpawned]);
+		cache_get_value_name_int(0, "pVehicleSpawnedID",PlayerInfo[playerid][pVehicleSpawnedID]);
+
 	} else PlayerInfo[playerid][pTimeout] = 0;
 
 	if(PlayerInfo[playerid][pDonater])
@@ -410,9 +413,6 @@ public Query_LoadCharacter(playerid)
 
 	cache_get_value_name_int(0, "pWhitelist",PlayerInfo[playerid][pWhitelist]);
 	cache_get_value_name_int(0, "pCigare",PlayerInfo[playerid][pCigare]);
-
-	cache_get_value_name_int(0, "pVehicleSpawned",PlayerInfo[playerid][pVehicleSpawned]);
-	cache_get_value_name_int(0, "pVehicleSpawnedID",PlayerInfo[playerid][pVehicleSpawnedID]);
 
 	cache_get_value_name_int(0, "pBoomBox",PlayerInfo[playerid][pBoomBox]);
 

@@ -398,15 +398,6 @@ public OnGameModeInit() {
     allcmdlog = CreateLog("server/allcmdlog");
     DeathLog = CreateLog("server/deathlog");
     chatlog = CreateLog("server/chatlog");
-
-
-    new query_up[MAX_STRING];
-	for (new i = 1; i <= 264; i++)
-	{
-        mysql_format(dbCon, query_up, sizeof(query_up), "UPDATE `characters` SET `pVehicleSpawned` = '0', `pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d' ",i);
-        mysql_tquery(dbCon, query_up);
-	}
-
     return 1;
 }
 

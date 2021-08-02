@@ -7,6 +7,7 @@ hook OnPlayerConnect(playerid)
 }
 hook OnGameModeInit()
 {
+
     new jamiejjam;
     //LSPD HQ Text Exterior
 	jamiejjam = CreateDynamicObject(19482, 1539.538085, -1610.693237, 13.152813, 0.000000, 0.000000, 180.000000, 0, 0, -1, 300.00, 300.00);

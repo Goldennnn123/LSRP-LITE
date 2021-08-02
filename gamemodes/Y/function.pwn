@@ -628,7 +628,7 @@ public CallPaycheck()
 		
 		SendClientMessage(i, COLOR_WHITE, "|___ BANK STATEMENT ___|"); 
 		SendClientMessageEx(i, COLOR_GREY, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank])); 
-		SendClientMessageEx(i, COLOR_GREY, "   อัตราดอกเบี้ย: %.1f",interest_saving);
+		SendClientMessageEx(i, COLOR_GREY, "   อัตราดอกเบี้ย: %.2f",interest_saving);
 		SendClientMessageEx(i, COLOR_GREY, "   ได้รับดอกเบี้ย: $%s", MoneyFormat(interest_convert));
 		SendClientMessageEx(i, COLOR_GREY, "   ภาษี: $%s", MoneyFormat(total_tax)); 
 		SendClientMessage(i, COLOR_WHITE, "|________________________|");
@@ -640,6 +640,7 @@ public CallPaycheck()
 		PlayerInfo[i][pBank]-= total_tax;
 		GlobalInfo[G_GovCash]+= floatround(total_tax, floatround_round);
 		GlobalInfo[G_GovCash]-= floatround(total_paycheck, floatround_round);
+		GlobalInfo[G_GovCash]-= floatround(interest_convert, floatround_round);
 		
 		SendClientMessageEx(i, COLOR_WHITE, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank]));
 		

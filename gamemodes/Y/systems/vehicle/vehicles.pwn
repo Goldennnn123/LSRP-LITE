@@ -858,8 +858,21 @@ CMD:vehicle(playerid, params[])
 		if(sscanf(secString, "d", slotid))
 			return SendUsageMessage(playerid, "/vehicle get [สล็อตรถ]");
 
-		if(slotid < 1 || slotid > 5)
-			return SendErrorMessage(playerid, "ไม่มีส็อตที่ต้องการ");
+		if(PlayerInfo[playerid][pDonater] == 2)
+		{
+			if(slotid < 1 || slotid > 8)
+				return SendErrorMessage(playerid, "ไม่มีส็อตที่ต้องการ");
+		}
+		else if(PlayerInfo[playerid][pDonater] == 3)
+		{
+			if(slotid < 1 || slotid > 11)
+				return SendErrorMessage(playerid, "ไม่มีส็อตที่ต้องการ");
+		}
+		else
+		{
+			if(slotid < 1 || slotid > 5)
+				return SendErrorMessage(playerid, "ไม่มีส็อตที่ต้องการ");
+		}
 
 		if(!PlayerInfo[playerid][pOwnedVehicles][slotid])
 			return SendErrorMessage(playerid, "ไม่มีรถในสล็อตนี้");
@@ -954,6 +967,8 @@ CMD:vehicle(playerid, params[])
 		SendServerMessage(playerid, "คุณได้ซื้อพื้นที่จอดรถใหม่ในราคา $2,500.");
 		GiveMoney(playerid, -2500);
 		SaveVehicle(vehicleid);
+
+		callcmd::vehicle(playerid, "park");
 		return 1;
 	}
 	else if(!strcmp(oneString, "list"))
@@ -972,14 +987,41 @@ CMD:vehicle(playerid, params[])
 		if(BusinessInfo[id][BusinessType] != 2)
 			return SendErrorMessage(playerid,"คุณไม่ได้อยู่ร้านขายรถ");
 
-		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+
+		if(PlayerInfo[playerid][pDonater] == 2)
 		{
-			if(!PlayerInfo[playerid][pOwnedVehicles][i])
+			for(new i = 1; i < MAX_PLAYER_VEHICLES_V2; i++)
 			{
-				idx = i;
-				break;
+				if(!PlayerInfo[playerid][pOwnedVehicles][i])
+				{
+					idx = i;
+					break;
+				}
 			}
 		}
+		else if(PlayerInfo[playerid][pDonater] == 3)
+		{
+			for(new i = 1; i < MAX_PLAYER_VEHICLES_V3; i++)
+			{
+				if(!PlayerInfo[playerid][pOwnedVehicles][i])
+				{
+					idx = i;
+					break;
+				}
+			}
+		}
+		else
+		{
+			for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+			{
+				if(!PlayerInfo[playerid][pOwnedVehicles][i])
+				{
+					idx = i;
+					break;
+				}
+			}
+		}
+
 
 		if(idx == 0)
 			return SendErrorMessage(playerid,"คุณมีรถเต็มตัวแล้ว");
@@ -1587,12 +1629,37 @@ stock ShowVehicleList(playerid)
 
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "_________________Your vehicles(%i)_________________", CountPlayerVehicles(playerid));
 
-	for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+	if(PlayerInfo[playerid][pDonater] == 2)
 	{
-		if(PlayerInfo[playerid][pOwnedVehicles][i])
+		for(new i = 1; i < MAX_PLAYER_VEHICLES_V2; i++)
 		{
-			mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][i]);
-			mysql_tquery(dbCon, thread, "Query_ShowVehicleList", "ii", playerid, i);
+			if(PlayerInfo[playerid][pOwnedVehicles][i])
+			{
+				mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][i]);
+				mysql_tquery(dbCon, thread, "Query_ShowVehicleList", "ii", playerid, i);
+			}
+		}
+	}
+	else if(PlayerInfo[playerid][pDonater] == 3)
+	{
+		for(new i = 1; i < MAX_PLAYER_VEHICLES_V3; i++)
+		{
+			if(PlayerInfo[playerid][pOwnedVehicles][i])
+			{
+				mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][i]);
+				mysql_tquery(dbCon, thread, "Query_ShowVehicleList", "ii", playerid, i);
+			}
+		}
+	}
+	else
+	{
+		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+		{
+			if(PlayerInfo[playerid][pOwnedVehicles][i])
+			{
+				mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][i]);
+				mysql_tquery(dbCon, thread, "Query_ShowVehicleList", "ii", playerid, i);
+			}
 		}
 	}
 
@@ -1605,7 +1672,7 @@ stock CountPlayerVehicles(playerid)
 		count = 0
 	;
 	
-	for(new i = 1; i < 6; i++)
+	for(new i = 1; i < 12; i++)
 	{
 		if(PlayerInfo[playerid][pOwnedVehicles][i])
 		{

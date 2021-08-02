@@ -1976,14 +1976,40 @@ CMD:pcar(playerid, params[])
 	if(color1 < 0 || color2 < 0 || color1 > 255 || color2 > 255)
 		return SendErrorMessage(playerid, "โปรดเลือกสีให้ถูกต้อง"); 
 		
-	for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+	if(PlayerInfo[playerb][pDonater] == 2)
 	{
-		if(!PlayerInfo[playerb][pOwnedVehicles][i])
+		for(new i = 1; i < MAX_PLAYER_VEHICLES_V2; i++)
 		{
-			playerInsertID[playerb] = i;
-			break;
+			if(!PlayerInfo[playerb][pOwnedVehicles][i])
+			{
+				playerInsertID[playerb] = i;
+				break;
+			}
 		}
 	}
+	else if(PlayerInfo[playerb][pDonater] == 3)
+	{
+		for(new i = 1; i < MAX_PLAYER_VEHICLES_V3; i++)
+		{
+			if(!PlayerInfo[playerb][pOwnedVehicles][i])
+			{
+				playerInsertID[playerb] = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+		{
+			if(!PlayerInfo[playerb][pOwnedVehicles][i])
+			{
+				playerInsertID[playerb] = i;
+				break;
+			}
+		}
+	}
+
 	if(!playerInsertID[playerb])
 	{
 		SendErrorMessage(playerid, "%s รถในตัวของคุณเต็ม สล็อตแล้ว", ReturnName(playerb));
@@ -3156,6 +3182,80 @@ CMD:makeadmin(playerid, params[])
 
 
     return 1;
+}
+
+CMD:setdonater(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 1339)
+		return SendUnauthMessage(playerid);
+
+	
+	new tagetid, level, str[150];
+	if(sscanf(params, "ud", tagetid, level))
+	{
+		SendUsageMessage(playerid, "/setdonater <ชื่อบางส่วน/ไอดี> <เลเวล>");
+		SendClientMessage(playerid, -1, "{A44343}1.Copper {F2CC48}2.Gold {3DC5F1}3.Platinum");
+		return 1;
+	}
+
+	if(level == 0)
+	{
+		if(!PlayerInfo[tagetid][pDonater])
+			return SendErrorMessage(playerid, "คุณใส่ระดับ VIP ไม่ถูกต้อง");
+
+		SendClientMessageEx(tagetid, COLOR_LIGHTRED, "คุณได้ถูกผู้ดูแลระบบลบจากการเป็น Donater ระดับ %d แล้ว",PlayerInfo[tagetid][pDonater]);
+		SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณได้ลบ %s ออกจากการเป็น Donater ระดับ %d แล้ว",ReturnName(tagetid,0));
+		
+		format(str, sizeof(str), "Administrators: Delete %s Leave form Danater Level %d", PlayerInfo[tagetid][pDonater]);
+		SendDiscordMessageEx("848145977978126336", str);
+		PlayerInfo[tagetid][pDonater] = 0;
+		CharacterSave(tagetid);
+		return 1;
+	}
+
+	if(level < 1 || level > 3)
+		return SendErrorMessage(playerid, "คุณใส่ระดับ VIP ไม่ถูกต้อง");
+
+	switch(level)
+	{
+		case 1:
+		{
+			PlayerInfo[tagetid][pDonater] = level;
+			SendClientMessageEx(tagetid, COLOR_HELPME, "คุณได้ถูกผู้ดูแลเพิ่มคุณเข้ามาเป็น Donater ระดับที่ %d",level);
+			SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เพิ่มให้ %s เป็น Donater ระดับ",ReturnName(tagetid,0), level);
+			
+			format(str, sizeof(str), "Administrators: Delete %s Leave form Danater Level %d", ReturnName(tagetid, 0),level);
+			SendDiscordMessageEx("848145977978126336", str);
+			SendAdminMessage(3, str);
+			CharacterSave(tagetid);
+			return 1;
+		}
+		case 2:
+		{
+			PlayerInfo[tagetid][pDonater] = level;
+			SendClientMessageEx(tagetid, COLOR_HELPME, "คุณได้ถูกผู้ดูแลเพิ่มคุณเข้ามาเป็น Donater ระดับที่ %d",level);
+			SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เพิ่มให้ %s เป็น Donater ระดับ",ReturnName(tagetid,0), level);
+			
+			format(str, sizeof(str), "Administrators: Delete %s Leave form Danater Level %d", ReturnName(tagetid, 0),level);
+			SendDiscordMessageEx("848145977978126336", str);
+			SendAdminMessage(3, str);
+			CharacterSave(tagetid);
+			return 1;
+		}
+		case 3:
+		{
+			PlayerInfo[tagetid][pDonater] = level;
+			SendClientMessageEx(tagetid, COLOR_HELPME, "คุณได้ถูกผู้ดูแลเพิ่มคุณเข้ามาเป็น Donater ระดับที่ %d",level);
+			SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เพิ่มให้ %s เป็น Donater ระดับ",ReturnName(tagetid,0), level);
+			
+			format(str, sizeof(str), "Administrators: Delete %s Leave form Danater Level %d", ReturnName(tagetid, 0),level);
+			SendDiscordMessageEx("848145977978126336", str);
+			SendAdminMessage(3, str);
+			CharacterSave(tagetid);
+			return 1;
+		}
+	}
+	return 1;
 }
 
 hook OnRconLoginAttempt(ip[], password[], success)

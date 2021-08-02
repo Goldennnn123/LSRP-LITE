@@ -101,7 +101,7 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
             mysql_int(query, str,PlayerInfo[playerid][pWeaponsAmmo][i]);
 		}
 
-		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+		for(new i = 1; i < MAX_PLAYER_VEHICLES_V3; i++)
 		{
             format(str, sizeof(str), "pOwnedVehicles%d",i);
             mysql_int(query, str,PlayerInfo[playerid][pOwnedVehicles][i]);

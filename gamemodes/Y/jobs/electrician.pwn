@@ -218,10 +218,14 @@ public OnRepiarEle(playerid, Float:x, Float:y, Float:z)
     if(IsValidDynamicObject(PlayerObjectEle[playerid]))
         DestroyDynamicObject(PlayerObjectEle[playerid]);
 
-    SendClientMessage(playerid, COLOR_DARKGREEN, "คุณได้ทำการซ่อมเสาไฟฟ้าที่ชำรุดสำเร็จเสร็จสิ้นแล้ว ได้เงินมาจำนวน $150");
-    SendClientMessage(playerid, COLOR_DEPT, "เสียภาษีรายได้ ร้อยละ 0.07 ($10)");
-    GiveMoney(playerid, 140);
-    GlobalInfo[G_GovCash]+=10;
+
+    new money = Random(140, 1000);
+
+    SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ทำการซ่อมเสาไฟฟ้าที่ชำรุดสำเร็จเสร็จสิ้นแล้ว ได้เงินมาจำนวน $%s", MoneyFormat(money));
+    SendClientMessageEx(playerid, COLOR_DEPT, "เสียภาษีรายได้ ร้อยละ 0.07 ($%s)",MoneyFormat(floatround(money * 0.07, floatround_round)));
+
+    GiveMoney(playerid, money - floatround(money * 0.07, floatround_round));
+    GlobalInfo[G_GovCash]+=floatround(money * 0.07, floatround_round);
     CharacterSave(playerid);
     return 1;
 }

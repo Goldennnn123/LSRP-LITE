@@ -127,6 +127,11 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `pOwnedVehicles4` int(11) NOT NULL,
   `pOwnedVehicles5` int(11) NOT NULL,
   `pOwnedVehicles6` int(11) NOT NULL,
+  `pOwnedVehicles7` int(11) NOT NULL,
+  `pOwnedVehicles8` int(11) NOT NULL,
+  `pOwnedVehicles9` int(11) NOT NULL,
+  `pOwnedVehicles10` int(11) NOT NULL,
+  `pOwnedVehicles11` int(11) NOT NULL,
   `pVehicleSpawned` int(11) NOT NULL,
   `pVehicleSpawnedID` int(11) NOT NULL,
   PRIMARY KEY

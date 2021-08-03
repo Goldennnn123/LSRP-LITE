@@ -51,6 +51,14 @@ stock SaveVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 		mysql_int(query, str,VehicleInfo[vehicleid][eVehicleMod][i]);
 	}
 
+	for(new i = 0; i < 4; i++)
+	{
+		format(str, sizeof(str), "VehicleDamage%d",i);
+		mysql_int(query, str,VehicleInfo[vehicleid][eVehicleDamage][i]);
+	}
+
+	mysql_flo(query, "VehicleHealth",GetVehicleHealth(vehicleid, VehicleInfo[vehicleid][eVehicleHealth]));
+
 	mysql_int(query, "VehicleComp",VehicleInfo[vehicleid][eVehicleComp]);
 
 	mysql_flo(query, "VehicleDrug1",VehicleInfo[vehicleid][eVehicleDrug][0]);

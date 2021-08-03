@@ -199,6 +199,7 @@ enum E_VEHICLE_SYSTEM
 	eVehicleFaction,
 	
 	eVehicleModel, 
+	Float:eVehicleHealth,
 	eVehicleColor1,
 	eVehicleColor2,
 	eVehiclePaintjob,
@@ -269,6 +270,9 @@ enum E_VEHICLE_SYSTEM
 
 	eVehicleElmTimer,
 	eVehicleElmFlash,
+
+	eVehicleDamage[4],
+
 }
 
 new VehicleInfo[MAX_VEHICLES][E_VEHICLE_SYSTEM];

@@ -1998,6 +1998,14 @@ public Query_LoadPrivateVehicle(playerid)
 				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][j]);
 			}
 
+			for(new j = 0; j < 4; j++)
+			{
+				format(str, sizeof(str), "VehicleDamage%d",i);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleDamage][j]);
+			}
+
+			cache_get_value_name_float(i, "VehicleHealth",VehicleInfo[vehicleid][eVehicleHealth]);
+
 			//AddVehicleComponent(vehicleid, componentid);
 			
 			
@@ -2028,7 +2036,16 @@ public Query_LoadPrivateVehicle(playerid)
 			
 			
 			SetVehicleToRespawn(vehicleid); 
-			SetVehicleHp(vehicleid);
+			UpdateVehicleDamageStatus(vehicleid, VehicleInfo[vehicleid][eVehicleDamage][0], VehicleInfo[vehicleid][eVehicleDamage][1], VehicleInfo[vehicleid][eVehicleDamage][2], VehicleInfo[vehicleid][eVehicleDamage][3]);
+			
+			if(VehicleInfo[vehicleid][eVehicleHealth] < 0)
+			{
+				SetVehicleHp(vehicleid);
+			}
+			else
+			{
+				SetVehicleHealth(vehicleid, VehicleInfo[vehicleid][eVehicleHealth]);
+			}
 			
 			if(HasNoEngine(playerid))
 				ToggleVehicleEngine(vehicleid, true); 

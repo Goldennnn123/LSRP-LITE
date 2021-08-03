@@ -640,7 +640,7 @@ public CallPaycheck()
 		PlayerInfo[i][pBank]-= total_tax;
 		GlobalInfo[G_GovCash]+= floatround(total_tax, floatround_round);
 		GlobalInfo[G_GovCash]-= floatround(total_paycheck, floatround_round);
-		GlobalInfo[G_GovCash]-= floatround(interest_convert, floatround_round);
+		GlobalInfo[G_GovCash]-= floatround(interest_convert / 2, floatround_round);
 		
 		SendClientMessageEx(i, COLOR_WHITE, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank]));
 		

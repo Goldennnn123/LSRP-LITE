@@ -1173,7 +1173,7 @@ CMD:setname(playerid, params[])
 		SendClientMessageEx(tagerid, COLOR_HELPME, "คุณได้รับเปลี่ยนชื่อจากผู้ดูแล จาก %s เป็น %s",ReturnName(tagerid, 0), NewName);
 		SendAdminMessageEx(COLOR_YELLOWEX, 1, "[ADMIN:%d] %s เปลี่ยนชื่อ ให้กับ %s(%d) เป็น %s",PlayerInfo[playerid][pAdmin], ReturnName(playerid, 0), ReturnName(tagerid, 0), tagerid,NewName);
 		
-		SetPlayerName(playerid,NewName);
+		SetPlayerName(tagerid,NewName);
 		mysql_format(dbCon,query,sizeof(query), "UPDATE `characters` SET `char_name`= '%e' WHERE `char_dbid` = '%d'", NewName,PlayerInfo[tagerid][pDBID]);
 		mysql_tquery(dbCon, query);
 		cache_delete(cache);

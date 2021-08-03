@@ -1134,7 +1134,13 @@ CMD:aooc(playerid, params[])
 		SendClientMessageToAllEx(COLOR_RED, "[AOOC] ผู้ดูแลระบบ %s (%s): %s", ReturnName(playerid), e_pAccountData[playerid][mForumName], params);
 		
 	else SendClientMessageToAllEx(COLOR_RED, "[AOOC] ผู้ดูแลระบบ %s: %s", ReturnName(playerid), params);*/
-	SendClientMessageToAllEx(COLOR_RED, "{C2185B}[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %s", e_pAccountData[playerid][mForumName], params);
+	if(strlen(params) > 60)
+	{
+		SendClientMessageToAllEx(COLOR_RED, "{C2185B}[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %.60s", e_pAccountData[playerid][mForumName], params[60]);
+		SendClientMessageToAllEx(COLOR_RED, "...%s", params);
+		return 1;
+	}
+	else SendClientMessageToAllEx(COLOR_RED, "{C2185B}[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %s", e_pAccountData[playerid][mForumName], params);
 	return 1;
 }
 

@@ -2038,7 +2038,7 @@ public Query_LoadPrivateVehicle(playerid)
 			SetVehicleToRespawn(vehicleid); 
 			UpdateVehicleDamageStatus(vehicleid, VehicleInfo[vehicleid][eVehicleDamage][0], VehicleInfo[vehicleid][eVehicleDamage][1], VehicleInfo[vehicleid][eVehicleDamage][2], VehicleInfo[vehicleid][eVehicleDamage][3]);
 			
-			if(VehicleInfo[vehicleid][eVehicleHealth] < 0)
+			if(VehicleInfo[vehicleid][eVehicleHealth] < 250)
 			{
 				SetVehicleHp(vehicleid);
 			}
@@ -2050,10 +2050,10 @@ public Query_LoadPrivateVehicle(playerid)
 			if(HasNoEngine(playerid))
 				ToggleVehicleEngine(vehicleid, true); 
 			
-			for(new j = 0; j < 14; j++)
+			/*for(new j = 0; j < 14; j++)
 			{
 				AddVehicleComponent(vehicleid, VehicleInfo[vehicleid][eVehicleMod][j]);
-			}
+			}*/
 
 		}
 	}

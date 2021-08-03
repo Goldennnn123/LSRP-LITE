@@ -193,7 +193,7 @@ stock ReturnName(playerid, underScore = 1)
 	if(!underScore)
 	{
 		if(PlayerInfo[playerid][pMasked])
-			format(playersName, sizeof(playersName), "[Mask %i_%i]", PlayerInfo[playerid][pMaskID][0], PlayerInfo[playerid][pMaskID][1]); 
+			format(playersName, sizeof(playersName), "[Mask %i_%i%i]", PlayerInfo[playerid][pMaskID][0], PlayerInfo[playerid][pMaskID][1], playerid); 
 			
 		else
 		{

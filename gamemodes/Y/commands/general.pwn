@@ -183,7 +183,7 @@ CMD:mask(playerid, params[])
 	if(PlayerInfo[playerid][pLevel] < 3 && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "คุณเลเวลยังไม่พอที่จะสวมใส่ Mask ได้ (เลเวลต้องมากกว่า 3 ขึ้นไป)"); 
 		
-	if(!PlayerInfo[playerid][pHasMask] /*&& !PlayerInfo[playerid][pAdmin]*/)
+	if(!PlayerInfo[playerid][pHasMask] && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "คุณไม่มี Mask"); 
 	
 	if(!PlayerInfo[playerid][pMasked])

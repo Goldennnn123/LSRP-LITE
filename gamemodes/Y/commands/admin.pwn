@@ -1136,11 +1136,54 @@ CMD:aooc(playerid, params[])
 	else SendClientMessageToAllEx(COLOR_RED, "[AOOC] ผู้ดูแลระบบ %s: %s", ReturnName(playerid), params);*/
 	if(strlen(params) > 60)
 	{
-		SendClientMessageToAllEx(COLOR_RED, "{C2185B}[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %.60s", e_pAccountData[playerid][mForumName], params[60]);
-		SendClientMessageToAllEx(COLOR_RED, "...%s", params);
+		SendClientMessageToAllEx(0xC2185B, "[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %.60s", e_pAccountData[playerid][mForumName], params[60]);
+		SendClientMessageToAllEx(0xC2185B, "...%s", params);
 		return 1;
 	}
 	else SendClientMessageToAllEx(COLOR_RED, "{C2185B}[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %s", e_pAccountData[playerid][mForumName], params);
+	return 1;
+}
+
+CMD:setname(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+
+	new tagerid,NewName[32];
+	
+	if(sscanf(params, "ds[32]", tagerid,NewName))
+		return SendUsageMessage(playerid, "/setnamne <ชื่อบางส่วน> <ชื่อ-ใหม่>");
+
+	if(!IsPlayerConnected(tagerid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+		
+	if(!IsValidRoleplayName(NewName))
+		return SendErrorMessage(playerid, "ใส่ชื่อไม่ถูกหลักตาม Roleplay (Fristname_Lastname)");
+	
+	new query[MAX_STRING];
+	mysql_format(dbCon,query,sizeof(query), "SELECT * FROM `characters` WHERE `char_name` = '%e'",NewName);
+	new Cache:cache = mysql_query(dbCon, query);
+	
+	if(!cache_num_rows())
+	{
+		SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เปลี่ยนชื่อให้ ไอดี: %d จาก %s เป็น %s",tagerid, ReturnName(tagerid, 0),NewName);
+		SendClientMessageEx(tagerid, COLOR_HELPME, "คุณได้รับเปลี่ยนชื่อจากผู้ดูแล จาก %s เป็น %s",ReturnName(tagerid, 0), NewName);
+		SendAdminMessageEx(COLOR_YELLOWEX, 1, "[ADMIN:%d] %s เปลี่ยนชื่อ ให้กับ %s(%d) เป็น %s",PlayerInfo[playerid][pAdmin], ReturnName(playerid, 0), ReturnName(tagerid, 0), tagerid,NewName);
+		
+		SetPlayerName(playerid,NewName);
+		mysql_format(dbCon,query,sizeof(query), "UPDATE `characters` SET `char_name`= '%e' WHERE %d", NewName,PlayerInfo[tagerid][pDBID]);
+		mysql_tquery(dbCon, query);
+		cache_delete(cache);
+		return 1;
+	}
+	else
+	{
+		SendErrorMessage(playerid, "ชื่อตัวละครนี้มีอยู่แล้วในฐานข้อมูลระบบ");
+		cache_delete(cache);
+	}
 	return 1;
 }
 

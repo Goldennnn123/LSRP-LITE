@@ -198,6 +198,11 @@ CMD:startele(playerid, params[])
         return 1;
     }
 
+    new timestart =  GetPVarInt(playerid, "TimeDeley");
+
+    if(gettime() - timestart < 120)
+        return SendErrorMessage(playerid, "กรุณารอ 2 นาทีก่อนที่จะไปซ่อมไฟฟ้า");
+
     new randdom = Random(1, 50);
     FixElePos[playerid] = randdom;
     SendClientMessage(playerid, -1, "ไปตามจุดที่เราได้มาร์ากไว้ให้คุณแล้วพิพม์ /fixele เพื่อซ่อมเสาไฟฟ้าที่ชำรุดเสียหาย");
@@ -226,6 +231,7 @@ public OnRepiarEle(playerid, Float:x, Float:y, Float:z)
 
     GiveMoney(playerid, money - floatround(money * 0.07, floatround_round));
     GlobalInfo[G_GovCash]+=floatround(money * 0.07, floatround_round);
+    SetPVarInt(playerid, "TimeDeley",gettime());
     CharacterSave(playerid);
     return 1;
 }

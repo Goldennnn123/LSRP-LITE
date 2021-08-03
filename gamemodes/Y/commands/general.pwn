@@ -2679,7 +2679,11 @@ stock ShowInvPlayer(tagerid, playerid)
 
 	ReturnLicenses(playerid, tagerid);
 
-	SendClientMessageEx(tagerid, -1, "เงินภายในตัว: $%s",MoneyFormat(PlayerInfo[playerid][pCash]));
+	if(PlayerInfo[playerid][pCash] > 500)
+	{
+		SendClientMessage(tagerid, -1, "เงินภายในตัว: มากกว่า $500");
+	}
+	else SendClientMessage(tagerid, -1, "เงินภายในตัว: น้อยกว่า $500");
 
 	SendClientMessage(tagerid, COLOR_DARKGREEN, "______________WEAPONS_____________"); 
 	for(new i = 0; i < 13; i++)
@@ -2689,14 +2693,14 @@ stock ShowInvPlayer(tagerid, playerid)
 		if(!weapon_id[0][i])
 			continue;
 			
-		SendClientMessageEx(tagerid, COLOR_GRAD1, "%s [กระสุน: %d]", ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
+		SendClientMessageEx(tagerid, COLOR_GRAD1, "%s", ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
 	}
 
-	SendClientMessage(tagerid, COLOR_DARKGREEN, "__________DRUGS__________");
-    SendClientMessageEx(tagerid, -1, "Cocaine: %.2f",PlayerInfo[playerid][pDrug][0]);
-    SendClientMessageEx(tagerid, -1, "Cannabis: %.2f",PlayerInfo[playerid][pDrug][1]);
-    SendClientMessageEx(tagerid, -1, "Heroin: %.2f",PlayerInfo[playerid][pDrug][2]);
-	SendClientMessage(tagerid, COLOR_DARKGREEN, "___________________________________"); 
+	if(PlayerInfo[playerid][pDrug][0] || PlayerInfo[playerid][pDrug][1] || PlayerInfo[playerid][pDrug][2])
+	{
+		SendClientMessage(tagerid, COLOR_GREY, "มียาเสพติดภายในตัว");
+	}
+	else SendClientMessage(tagerid, COLOR_GREY, "ไม่มียาเสพติดภายในตัว");
 	return 1;
 }
 

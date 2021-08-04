@@ -18,7 +18,7 @@ CMD:factionhelp(playerid, params[])
     if(ReturnFactionType(playerid) == GOVERMENT)
     {
         SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty/showbadge, /m(egaphone), /(dep)artment,");
-		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign/impound, /mdc");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign ");
 		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /siren, /siren2, /siren3, /headquarter /setbadge /elm");
 
 		if(ReturnFactionJob(playerid) == POLICE && ReturnFactionJob(playerid) == SHERIFF)
@@ -35,7 +35,7 @@ CMD:factionhelp(playerid, params[])
 
 		if(ReturnFactionJob(playerid) == MEDIC)
 		{
-			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} ยังไม่มีคำสั่งสำหรับแฟคชั่นนี้");
+			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /revice /heal");
 		}
 		
 		if(PlayerInfo[playerid][pFactionRank] <= FactionInfo[PlayerInfo[playerid][pFaction]][eFactionTowRank])

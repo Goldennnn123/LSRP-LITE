@@ -1195,12 +1195,13 @@ CMD:revice(playerid, params[])
 {
 	new 
 		playerb,
-		str[128]
+		str[128],
+		factionid = PlayerInfo[playerid][pFaction]
 	;
 
-	if(!PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pTester] < 2)
+	if(!PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pTester] < 2 && FactionInfo[factionid][eFactionJob] != MEDIC)
 		return SendUnauthMessage(playerid);
-		
+	
 	if(sscanf(params, "u", playerb))
 		return SendUsageMessage(playerid, "/revive [ชื่อบางส่วน/ไอดี]"); 
 		
@@ -1209,6 +1210,31 @@ CMD:revice(playerid, params[])
 		
 	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+	
+	if(FactionInfo[factionid][eFactionJob] == MEDIC && !PlayerInfo[playerid][pAdmin])
+	{
+		if(!IsPlayerNearPlayer(playerid, playerb, 2.5))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+
+		if(GetPlayerTeam(playerb) == PLAYER_STATE_ALIVE)
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้รับบาดเจ็บ");
+		
+		
+		format(str, sizeof(str), "%s ทำให้ %s ฝื้นจากการบาดเจ็บ", ReturnName(playerid), ReturnName(playerb));
+		SendAdminMessage(1, str); 
+		
+		SetPlayerTeam(playerb, PLAYER_STATE_ALIVE); 
+		SetPlayerHealth(playerb, 15); 
+		
+		TogglePlayerControllable(playerb, 1); 
+		SetPlayerWeather(playerb, globalWeather);  
+		
+		SetPlayerChatBubble(playerb, "(( เกิด ))", COLOR_WHITE, 21.0, 3000); 
+		GameTextForPlayer(playerb, "~b~You were revived", 3000, 4);
+		
+		ClearDamages(playerb);
+		return 1;
+	}
 		
 	if(GetPlayerTeam(playerb) == PLAYER_STATE_ALIVE)
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้รับบาดเจ็บ");

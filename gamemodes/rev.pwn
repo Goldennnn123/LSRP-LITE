@@ -15832,6 +15832,16 @@ stock Send911Message(playerid, type)
 				SendClientMessageEx(i, COLOR_CYAN, "Service required: %s", Player911Text[playerid][0]);
 				SendClientMessageEx(i, COLOR_CYAN, "Situation: %s", Player911Text[playerid][1]);
 				SendClientMessageEx(i, COLOR_CYAN, "Location: %s", Player911Text[playerid][2]); 
+				
+				new str[120];
+				format(str, sizeof(str), "|____________Emergency Call____________|");
+				SendDiscordMessageEx("862581286656671754", str);
+				format(str, sizeof(str), "Caller: %s, Phone: %d, Trace: %s",ReturnName(playerid, 0), PlayerInfo[playerid][pPhone], ReturnLocation(playerid));
+				SendDiscordMessageEx("862581286656671754", str);
+				format(str, sizeof(str), "Service required: Police",ReturnName(playerid, 0), PlayerInfo[playerid][pPhone], ReturnLocation(playerid));
+				SendDiscordMessageEx("862581286656671754", str);
+				format(str, sizeof(str), "Location: %s",ReturnLocation(playerid));
+				SendDiscordMessageEx("862581286656671754", str);
 			}
 		}
 		case 800:
@@ -15846,9 +15856,8 @@ stock Send911Message(playerid, type)
 			}
 		}
 	}
-	
 
-	Player911Type[playerid] = 0;	
+	Player911Type[playerid] = 0;
 	cmd_hangup(playerid, ""); 
 	return 1;
 }

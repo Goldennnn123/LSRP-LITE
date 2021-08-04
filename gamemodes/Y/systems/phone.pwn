@@ -896,7 +896,7 @@ hook OnPlayerText(playerid, text[])
 						return SendErrorMessage(playerid, "โปรดบอกสถาณที่ให้ชัดเจนกว่านี้ครับ (3 ตัวอักษรขึ้นไป)"); 
 						
 					format(Player911Text[playerid][2], 128, "%s", text);
-					SendClientMessage(playerid, COLOR_YELLOWEX, "เจ้าหน้าที่ Fire DEP พูดว่า: างเราได้จัดการส่งเรื่องนี้ให้เจ้าหน้าที่ที่ปฏิบัตรหน้าที่อยู่ในตอนนี้แล้ว โปรดรอเจ้าหน้าที่ไปถึง"); 
+					SendClientMessage(playerid, COLOR_YELLOWEX, "เจ้าหน้าที่ Fire DEP พูดว่า: ทางเราได้จัดการส่งเรื่องนี้ให้เจ้าหน้าที่ที่ปฏิบัตรหน้าที่อยู่ในตอนนี้แล้ว โปรดรอเจ้าหน้าที่ไปถึง"); 
 					
 					Send911Message(playerid, 811); 
 				}
@@ -1010,6 +1010,13 @@ stock Send911Message(playerid, type)
 				SendClientMessageEx(i, COLOR_CYAN, "บริการที่ใช้: %s", Player911Text[playerid][0]);
 				SendClientMessageEx(i, COLOR_CYAN, "สถานการณ์: %s", Player911Text[playerid][1]);
 				SendClientMessageEx(i, COLOR_CYAN, "สถาณที่: %s", Player911Text[playerid][2]); 
+
+                new str[250];
+                format(str, sizeof(str), "|____________Emergency Call____________|\n\
+                Caller: %s, Phone: %d, Trace: %s\n\
+                Service required: Police\n\
+                Location: %s",ReturnName(playerid, 0), PlayerInfo[playerid][pPhone], ReturnLocation(playerid),ReturnLocation(playerid));
+				SendDiscordMessageEx("872542313426059294", str);
 			}
 		}
 		case 800:

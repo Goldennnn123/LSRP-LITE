@@ -290,7 +290,10 @@ CMD:setnumberphone(playerid, params[])
 CMD:showmain(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
-		return SendUnauthMessage(playerid); 
+	{
+		SendServerMessage(playerid, "%s(%d) UCP \"%s\" (DBID: %i).", ReturnRealName(playerid), PlayerInfo[playerid][pDBID], e_pAccountData[playerid][mAccName], e_pAccountData[playerid][mDBID]);	
+		return 1;
+	}
 		
 	new playerb;
 	
@@ -303,7 +306,7 @@ CMD:showmain(playerid, params[])
 	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 	
-	SendServerMessage(playerid, "%s' UCP \"%s\" (DBID: %i).", ReturnRealName(playerb), e_pAccountData[playerb][mAccName], e_pAccountData[playerb][mDBID]);	
+	SendServerMessage(playerid, "%s(%d) UCP \"%s\" (DBID: %i).", ReturnRealName(playerb),PlayerInfo[playerb][pDBID], e_pAccountData[playerb][mAccName], e_pAccountData[playerb][mDBID]);	
 	return 1;
 }
 
@@ -1140,7 +1143,7 @@ CMD:aooc(playerid, params[])
 		SendClientMessageToAllEx(0xC2185B, "...%s", params);
 		return 1;
 	}
-	else SendClientMessageToAllEx(COLOR_RED, "{C2185B}[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %s", e_pAccountData[playerid][mForumName], params);
+	else SendClientMessageToAllEx(0xC2185B, "[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %s", e_pAccountData[playerid][mForumName], params);
 	return 1;
 }
 

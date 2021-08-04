@@ -2036,7 +2036,7 @@ public Query_LoadPrivateVehicle(playerid)
 			
 			
 			SetVehicleToRespawn(vehicleid); 
-			UpdateVehicleDamageStatus(vehicleid, VehicleInfo[vehicleid][eVehicleDamage][0], VehicleInfo[vehicleid][eVehicleDamage][1], VehicleInfo[vehicleid][eVehicleDamage][2], VehicleInfo[vehicleid][eVehicleDamage][3]);
+			UpdateVehicleDamageStatus(vehicleid, VehicleInfo[vehicleid][eVehicleDamage][0], VehicleInfo[vehicleid][eVehicleDamage][1], VehicleInfo[vehicleid][eVehicleDamage][2],0);
 			
 			if(VehicleInfo[vehicleid][eVehicleHealth] < 250)
 			{

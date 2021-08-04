@@ -461,6 +461,10 @@ stock ClearDamages(playerid)
 forward OnPlayerLeaveWeapon(index);
 public OnPlayerLeaveWeapon(index)
 {
+	new str[120];
+	format(str, sizeof(str), "Weapons %s(Ammo:%d) of %s(%d) Time Out it Remove", ReturnWeaponName(WeaponDropInfo[index][eWeaponWepID]),WeaponDropInfo[index][eWeaponWepID], WeaponDropInfo[index][eWeaponWepAmmo],ReturnDBIDName(WeaponDropInfo[index][eWeaponDroppedBy]),WeaponDropInfo[index][eWeaponDroppedBy]);
+	SendDiscordMessageEx("862581286656671754", str);
+
 	WeaponDropInfo[index][eWeaponDropped] = false;
 	WeaponDropInfo[index][eWeaponDroppedBy] = 0;
 	
@@ -476,7 +480,7 @@ public OnPlayerLeaveWeapon(index)
 	{
 		DestroyDynamicObject(WeaponDropInfo[index][eWeaponObject]);
 	}
-	
+
 	return 1;
 }
 

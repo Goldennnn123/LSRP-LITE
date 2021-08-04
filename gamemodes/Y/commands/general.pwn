@@ -714,6 +714,9 @@ CMD:place(playerid, params[])
 		
 		format(str, sizeof(str), "* %s ได้วาง %s ลงไปในรถ %s.", ReturnName(playerid, 0), ReturnWeaponName(weaponid), ReturnVehicleName(vehicleid));
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4000);
+
+		format(str, sizeof(str), "%s place weapon incar %s(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(weaponid),weaponid,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx]);
+		SendDiscordMessageEx("862581286656671754", str);
 		SaveVehicle(vehicleid); 
 	}
 	else if(IsPlayerInAnyVehicle(playerid))
@@ -748,6 +751,9 @@ CMD:place(playerid, params[])
 		format(str, sizeof(str), "* %s ได้วาง %s ลงไปในรถ %s.", ReturnName(playerid, 0), ReturnWeaponName(weaponid), ReturnVehicleName(vehicleid));
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4000); 
 		SendClientMessage(playerid, COLOR_EMOTE, str);
+
+		format(str, sizeof(str), "%s place weapon incar %s(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(weaponid),weaponid,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx]);
+		SendDiscordMessageEx("862581286656671754", str);
 		SaveVehicle(vehicleid); 
 	}
 	else if(IsPlayerInHouse(playerid) != 0)
@@ -783,6 +789,10 @@ CMD:place(playerid, params[])
 		format(str, sizeof(str), "* %s ได้วาง %s ไว้ในตู้เซฟ", ReturnName(playerid, 0), ReturnWeaponName(weaponid));
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4000); 
 		SendClientMessage(playerid, COLOR_EMOTE, str);
+
+		format(str, sizeof(str), "%s place in house(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), id,ReturnWeaponName(weaponid),weaponid,HouseInfo[id][HouseWeaponsAmmo][pid]);
+		SendDiscordMessageEx("862581286656671754", str);
+
 		CharacterSave(playerid); Savehouse(id);
 	}
 	return 1;
@@ -899,11 +909,14 @@ CMD:takegun(playerid, params[])
 
 		GivePlayerGun(playerid, VehicleInfo[vehicleid][eVehicleWeapons][slotid], VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]); 
 				
-		format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]), 
+		format(str, sizeof(str), "> %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]), 
 		ReturnVehicleName(vehicleid));
-					
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
 		SendClientMessage(playerid, COLOR_EMOTE, str);
+
+		format(str, sizeof(str), "%s takegun leave vehicle %s(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]),VehicleInfo[vehicleid][eVehicleWeapons][slotid],VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]);
+		SendDiscordMessageEx("862581286656671754", str);
+				
 				
 		VehicleInfo[vehicleid][eVehicleWeapons][slotid] = 0; 
 		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid] = 0; 
@@ -1027,11 +1040,13 @@ CMD:takegun(playerid, params[])
 
 		GivePlayerGun(playerid, VehicleInfo[vehicleid][eVehicleWeapons][slotid], VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]); 
 				
-		format(str, sizeof(str), "* %s หยิบ %s ออกมาจากท้ายรถ %s", ReturnName(playerid, 0), ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]), 
+		format(str, sizeof(str), "> %s หยิบ %s ออกมาจากท้ายรถ %s", ReturnName(playerid, 0), ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]), 
 		ReturnVehicleName(vehicleid));
-					
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
 		SendClientMessage(playerid, COLOR_EMOTE, str);
+
+		format(str, sizeof(str), "%s takegun leave trunk vehicle %s(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]),VehicleInfo[vehicleid][eVehicleWeapons][slotid],VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]);
+		SendDiscordMessageEx("862581286656671754", str);
 				
 		VehicleInfo[vehicleid][eVehicleWeapons][slotid] = 0; 
 		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid] = 0; 
@@ -1056,9 +1071,12 @@ CMD:takegun(playerid, params[])
 		GivePlayerGun(playerid, HouseInfo[id][HouseWeapons][slotid], HouseInfo[id][HouseWeaponsAmmo][slotid]);
 
 		new str[255];	
-		format(str, sizeof(str), "* %s หยิบ %s ออกมาจากตู้เซฟ", ReturnName(playerid, 0), ReturnWeaponName(HouseInfo[id][HouseWeapons][slotid])); 
+		format(str, sizeof(str), "> %s หยิบ %s ออกมาจากตู้เซฟ", ReturnName(playerid, 0), ReturnWeaponName(HouseInfo[id][HouseWeapons][slotid])); 
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
 		SendClientMessage(playerid, COLOR_EMOTE, str); 
+
+		format(str, sizeof(str), "%s takegun leave house %d %s(%d) Ammo: %d", ReturnRealName(playerid,0), id,ReturnWeaponName(HouseInfo[id][HouseWeapons][slotid]),HouseInfo[id][HouseWeapons][slotid],HouseInfo[id][HouseWeaponsAmmo][slotid]);
+		SendDiscordMessageEx("862581286656671754", str);
 				
 		HouseInfo[id][HouseWeapons][slotid] = 0; 
 		HouseInfo[id][HouseWeaponsAmmo][slotid] = 0; 
@@ -1678,6 +1696,10 @@ CMD:leavegun(playerid, params[])
 		
 	WeaponDropInfo[idx][eWeaponTimer] = SetTimerEx("OnPlayerLeaveWeapon", 600000, false, "i", idx); 
 	SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} อาวุธของคุณจะยังคงอยู่บนพื้นได้ถึง 10 นาทีก่อนจะถูกลบออกจากเซืฟเวอร์");
+	
+	new str[120];
+	format(str, sizeof(str), "%s leavegun %s(%d) Ammo: %d", ReturnRealName(playerid,0),ReturnWeaponName(weaponid),weaponid, WeaponDropInfo[idx][eWeaponWepAmmo]);
+	SendDiscordMessageEx("862581286656671754", str);
 	return 1;
 }
 
@@ -1712,6 +1734,9 @@ CMD:grabgun(playerid, params[])
 		format(str, sizeof(str), "* %s หยิบ %s ขึ้นมาจากพื้น", ReturnName(playerid, 0), ReturnWeaponName(WeaponDropInfo[id][eWeaponWepID]));
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 3000);
 		SendClientMessage(playerid, COLOR_EMOTE, str);
+
+		format(str, sizeof(str), "%s grabgun %s(%d) Ammo: %d", ReturnRealName(playerid,0),ReturnWeaponName(WeaponDropInfo[id][eWeaponWepID]), WeaponDropInfo[id][eWeaponWepID], WeaponDropInfo[id][eWeaponWepAmmo]);
+		SendDiscordMessageEx("862581286656671754", str);
 		
 		WeaponDropInfo[id][eWeaponDropped] = false; 
 		WeaponDropInfo[id][eWeaponDroppedBy] = 0;

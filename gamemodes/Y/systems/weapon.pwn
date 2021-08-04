@@ -6,6 +6,10 @@
 #define BODY_PART_RIGHT_LEG (8)
 #define BODY_PART_HEAD (9)
 
+#define NORMAL_SKILL	1
+#define MEDIUM_SKILL	2
+#define FULL_SKILL		3
+
 stock ReturnWeaponName(weaponid)
 {
 	new weapon[22];
@@ -225,6 +229,30 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					case 30: {amount = 54; }
 					case 31: {amount = 61; }
 					case 33,34: {amount = 150; }
+					case 35,36,37,38,39,41,42,10: {amount = 0;}
+				}
+			}
+			else if(bodypart == BODY_PART_HEAD)
+			{
+				switch(weaponid)
+				{
+					case 0: amount = 2;
+					case 1: amount = 1;
+					case 2,3,4: amount = 3;
+					case 5,6,7,8,15: amount = 5;
+					case 9: amount = 50;
+					case 11,12,13,14: amount = 0;
+					case 22: amount = 35;
+					case 23: amount = 0;
+					case 24: {amount = 75; }
+					case 25: {amount = 150; }
+					case 26: {amount = 100; }
+					case 27: {amount = 100; }
+					case 28,32: {amount = 35; }
+					case 29: {amount = 50; }
+					case 30: {amount = 95; }
+					case 31: {amount = 90; }
+					case 33,34: {amount = 250; }
 					case 35,36,37,38,39,41,42,10: {amount = 0;}
 				}
 			}
@@ -582,4 +610,24 @@ stock ReturnWeaponsModel(weaponid)
         367, 368, 368, 371
     };
     return WeaponModels[weaponid];
+}
+
+SetPlayerWeaponSkill(playerid, skill) {
+	switch(skill) {
+	    case NORMAL_SKILL: {
+            for(new i = 0; i != 11;++i) SetPlayerSkillLevel(playerid, i, 200);
+            SetPlayerSkillLevel(playerid, 0, 40);
+            SetPlayerSkillLevel(playerid, 6, 50);
+	    }
+	    case MEDIUM_SKILL: {
+            for(new i = 0; i != 11;++i) SetPlayerSkillLevel(playerid, i, 500);
+            SetPlayerSkillLevel(playerid, 0, 500);
+            SetPlayerSkillLevel(playerid, 6, 500);
+	    }
+	    case FULL_SKILL: {
+            for(new i = 0; i != 11;++i) SetPlayerSkillLevel(playerid, i, 999);
+            SetPlayerSkillLevel(playerid, 0, 998);
+            SetPlayerSkillLevel(playerid, 6, 998);
+	    }
+	}
 }

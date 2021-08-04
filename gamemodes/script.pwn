@@ -435,6 +435,9 @@ public OnGameModeExit() {
 public OnPlayerConnect(playerid) {
 
     // เคลียร์ตัวแปรผู้เล่น
+
+    SetPlayerWeaponSkill(playerid, NORMAL_SKILL);
+
     gPlayerBitFlag[playerid] = PlayerFlags:0;
     e_pAccountData[playerid][mDBID] = 0;
     format(e_pAccountData[playerid][mForumName], e_pAccountData[playerid][mForumName], "");

@@ -243,7 +243,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
     }
     else if(code == 15)
     {
@@ -252,7 +251,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
     }
     else if(code == 18)
     {
@@ -261,7 +259,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
     }
     else if(code == 48)
     {
@@ -279,7 +276,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "Ping คุณมากเกินไปในการเข้าเล่นโปรดตรวจสอบการเชื่อมต่ออินเตอร์เน็ตอีกครั้ง");
-        KickEx(playerid);
     }
     else if(code == 47)
     {
@@ -288,7 +284,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
     }
     else if(code == 11)
     {
@@ -306,7 +301,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
     }
     else if(code == 12)
     {
@@ -315,7 +309,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
     }
     else if(code == 23)
     {
@@ -324,7 +317,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
     }
     else if(code == 10)
     {
@@ -333,7 +325,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
     }
     else if(code == 4)
     {
@@ -351,7 +342,6 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         //SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
     }
     else 
     {

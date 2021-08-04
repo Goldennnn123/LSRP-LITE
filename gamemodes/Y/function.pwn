@@ -717,9 +717,49 @@ public CallPaycheck()
 			}
 		}
 
-
+		//CheckVehicleNotOwner(i);
 		CharacterSave(i); 
 		Saveglobal();		
+	}
+	return 1;
+}
+
+stock CheckVehicleNotOwner(playerid)
+{
+	new bool:sucess;
+
+	for(new v = 1; v < MAX_VEHICLES; v++)
+	{
+		if(!VehicleInfo[v][eVehicleDBID])
+			continue;
+
+		if(VehicleInfo[v][eVehicleFaction])
+			continue;
+					
+		if(VehicleInfo[v][eVehicleOwnerDBID] == PlayerInfo[playerid][pDBID])
+		{
+			sucess = false;
+			break;
+
+		}
+		else
+		{
+			sucess = true;
+		}
+
+		if(sucess)
+		{			
+			new query[MAX_STRING];
+
+			mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0', `pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",VehicleInfo[v][eVehicleOwnerDBID]);
+			mysql_tquery(dbCon, query);
+			printf("%s",query);
+			ResetVehicleVars(v);
+			DestroyVehicle(v);
+
+		}
+		
+		
 	}
 	return 1;
 }

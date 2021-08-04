@@ -32,6 +32,7 @@ enum c_data {
 
 new const VehicleData[][c_data] =
 {
+	{1120.0}, //Vehicle ID 400
 	{1120.0}, //Vehicle ID 401
 	{900.0}, //Vehicle ID 402
 	{900.0}, //Vehicle ID 403

@@ -193,7 +193,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					case 2,3,4: amount = 3;
 					case 5,6,7,8,15: amount = 5;
 					case 11,12,13,14: amount = 0;
-					case 22: amount = 15;
+					case 22: { amount_armour = 15; amount = 5; }
 					case 23: amount = 0;
 					case 24: { amount_armour = 50; amount = 10; }
 					case 25: { amount_armour = 50; amount = 15; }

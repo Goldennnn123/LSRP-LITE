@@ -401,9 +401,6 @@ CMD:setdrug(playerid, params[])
     if(IsPlayerLogin(tagetid))
         return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-    if(!IsPlayerNearPlayer(playerid, tagetid, 2.5))
-        return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้ตัวของคุณ");
-
     if(amout < 0.00)
         return SendErrorMessage(playerid, "ใส่จำนวนน้อยเกินไป");
 
@@ -451,9 +448,6 @@ CMD:agivedrug(playerid, params[])
 
     if(IsPlayerLogin(tagetid))
         return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
-
-    if(!IsPlayerNearPlayer(playerid, tagetid, 2.5))
-        return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้ตัวของคุณ");
 
     if(amout < 0.01)
         return SendErrorMessage(playerid, "ใส่จำนวนน้อยเกินไป");

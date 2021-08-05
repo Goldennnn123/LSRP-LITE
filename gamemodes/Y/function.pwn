@@ -729,11 +729,13 @@ stock DelevehicleVar()
 
 	for(new v = 1; v < MAX_VEHICLES; v++) 
 	{
+		if(IsVehicleOccupied(v))
+			continue;
+		
 		respawn = true;
 
 		foreach (new i : Player) 
 		{
-
 				
             if(VehicleInfo[v][eVehicleOwnerDBID] == PlayerInfo[i][pDBID]) 
 			{

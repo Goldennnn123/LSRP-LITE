@@ -716,54 +716,42 @@ public CallPaycheck()
 				}
 			}
 		}
-
-		//CheckVehicleNotOwner(i);
+		DelevehicleVar();
 		CharacterSave(i); 
 		Saveglobal();		
 	}
 	return 1;
 }
 
-stock CheckVehicleNotOwner(playerid)
+stock DelevehicleVar()
 {
-	new bool:sucess;
+	new bool:respawn, query[MAX_STRING];
 
-	for(new v = 1; v < MAX_VEHICLES; v++)
+	for(new v = 1; v < MAX_VEHICLES; v++) 
 	{
-		if(!VehicleInfo[v][eVehicleDBID])
-			continue;
+		respawn = true;
 
-		if(VehicleInfo[v][eVehicleFaction])
-			continue;
-					
-		if(VehicleInfo[v][eVehicleOwnerDBID] == PlayerInfo[playerid][pDBID])
+		foreach (new i : Player) 
 		{
-			sucess = false;
-			break;
 
-		}
-		else
-		{
-			sucess = true;
-		}
+				
+            if(VehicleInfo[v][eVehicleOwnerDBID] == PlayerInfo[i][pDBID]) 
+			{
+				respawn = false;
+                break;
+            }
+        }
 
-		if(sucess)
-		{			
-			new query[MAX_STRING];
+		if (respawn) {
+			mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0',`pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",VehicleInfo[v][eVehicleOwnerDBID]);
+         	mysql_tquery(dbCon, query);
 
-			mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0', `pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",VehicleInfo[v][eVehicleOwnerDBID]);
-			mysql_tquery(dbCon, query);
-			printf("%s",query);
-			ResetVehicleVars(v);
 			DestroyVehicle(v);
-
+			ResetVehicleVars(v);
 		}
-		
-		
 	}
 	return 1;
 }
-
 stock AddPlayerCash(charid, amount)
 {
 	new query[MAX_STRING], Money;

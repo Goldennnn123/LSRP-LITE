@@ -680,20 +680,6 @@ public OnPlayerDisconnect(playerid, reason) {
 	if(reason == 0) {
 		PlayerInfo[playerid][pTimeout] = gettime();
     }
-    else
-    {
-        if(PlayerInfo[playerid][pVehicleSpawned])
-        {
-            new vehicleid = PlayerInfo[playerid][pVehicleSpawnedID];
-
-            SaveVehicle(vehicleid);
-            ResetVehicleVars(vehicleid);
-            DestroyVehicle(vehicleid);
-
-            PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
-            PlayerInfo[playerid][pVehicleSpawned] = false;
-        }
-    }
 
     for(new i = 0; i < 10; i++)
     {

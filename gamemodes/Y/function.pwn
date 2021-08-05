@@ -731,6 +731,14 @@ stock DelevehicleVar()
 	{
 		if(IsVehicleOccupied(v))
 			continue;
+
+		if(!VehicleInfo[v][eVehicleDBID])
+			continue;
+
+		if(VehicleInfo[v][eVehicleFaction])
+			continue;
+
+			
 		
 		respawn = true;
 
@@ -743,6 +751,7 @@ stock DelevehicleVar()
                 break;
             }
         }
+
 
 		if (respawn) {
 			mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0',`pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",VehicleInfo[v][eVehicleOwnerDBID]);

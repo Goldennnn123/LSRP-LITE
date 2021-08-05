@@ -184,6 +184,16 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		
 		if(GetPlayerTeam(playerid) == PLAYER_STATE_ALIVE)
 		{
+			if(PlayerInfo[issuerid][pTaser] && weaponid == 23)
+			{
+				if(!Player_IsNearPlayer(playerid, issuerid, 13))
+					return SendErrorMessage(issuerid, "คุณยิงในระยะที่ไกลเกินไป ไปให้ใกล้กว่านี้");
+
+				ApplyAnimation(playerid, "PED","FLOOR_hit_f", 4.1, 0, 1, 1, 1, 1, 1);
+				SendNearbyMessage(playerid, 3.5, COLOR_EMOTE, "> %s ถูกยิงด้วยปืนช็อตไฟฟ้าและล้มลงไปกับพื้น",ReturnName(playerid,0));
+				return 1;
+			}
+			
 			if(armor && bodypart == BODY_PART_CHEST)
 			{
 				switch(weaponid)
@@ -214,7 +224,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 				{
 					case 0: amount = 2;
 					case 1: amount = 1;
-					case 2,3,4: amount = 3;
+					case 2,3,4: amount = 5;
 					case 5,6,7,8,15: amount = 5;
 					case 9: amount = 50;
 					case 11,12,13,14: amount = 0;
@@ -275,15 +285,6 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 					case 31: {amount = 35; }
 					case 33,34: {amount = 60; }
 				}
-			}
-			else if(PlayerInfo[issuerid][pTaser] && weaponid == 23)
-			{
-				if(!Player_IsNearPlayer(playerid, issuerid, 13))
-					return SendErrorMessage(issuerid, "คุณยิงในระยะที่ไกลเกินไป ไปให้ใกล้กว่านี้");
-
-				ApplyAnimation(playerid, "PED","FLOOR_hit_f", 4.1, 0, 1, 1, 1, 1, 1);
-				SendNearbyMessage(playerid, 3.5, COLOR_EMOTE, "> %s ถูกยิงด้วยปืนช็อตไฟฟ้าและล้มลงไปกับพื้น",ReturnName(playerid,0));
-				return 1;
 			}
 			else GivePlayerHealth(playerid, -3);
 

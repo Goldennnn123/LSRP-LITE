@@ -1647,10 +1647,11 @@ CMD:givegun(playerid, params[])
 	if(PlayerInfo[playerb][pWeapons][idx])
 		SendServerMessage(playerid, "%s ได้ลบอาวุธ %s และกระสุน %d ออก", ReturnName(playerb), ReturnWeaponName(PlayerInfo[playerb][pWeapons][idx]), PlayerInfo[playerb][pWeaponsAmmo][idx]);
 	
-	GivePlayerWeapon(playerb, weaponid, ammo); 
+	//GivePlayerWeapon(playerb, weaponid, ammo); 
+	GivePlayerGun(playerb, weaponid, ammo);
 	
-	PlayerInfo[playerb][pWeapons][idx] = weaponid;
-	PlayerInfo[playerb][pWeaponsAmmo][idx] = ammo; 
+	/*PlayerInfo[playerb][pWeapons][idx] = weaponid;
+	PlayerInfo[playerb][pWeaponsAmmo][idx] = ammo; */
 	
 	format(str, sizeof(str), "%s เสกอาวุธให้กับ %s คือ %s พร้อมกับกระสุน %d ชุด", ReturnName(playerid), ReturnName(playerb), ReturnWeaponName(weaponid), ammo);
 	SendAdminMessage(2, str);

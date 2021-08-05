@@ -1005,7 +1005,7 @@ stock Send911Message(playerid, type)
 		{
 			foreach(new i : Player) if(FactionInfo[PlayerInfo[i][pFaction]][eFactionType] == GOVERMENT)
 			{
-				SendClientMessage(i, COLOR_CYAN, "|____________Emergency Call____________|");
+				SendClientMessage(i, COLOR_CYAN, "|________________________Emergency Call________________________|");
 				SendClientMessageEx(i, COLOR_CYAN, "Caller: %s, เบอร์: %d, จาก: %s", ReturnName(playerid, 0), PlayerInfo[playerid][pPhone], ReturnLocation(playerid));
 				SendClientMessageEx(i, COLOR_CYAN, "บริการที่ใช้: %s", Player911Text[playerid][0]);
 				SendClientMessageEx(i, COLOR_CYAN, "สถานการณ์: %s", Player911Text[playerid][1]);

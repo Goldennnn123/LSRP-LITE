@@ -233,7 +233,7 @@ CMD:givedrug(playerid, params[])
 
             PlayerInfo[playerid][pDrug][0]-=amout;
             PlayerInfo[tagetid][pDrug][0]+=amout;
-            GiveDrug(tagetid, type, amout);
+            //GiveDrug(tagetid, type, amout);
             CharacterSave(playerid);
         }
         case 2:
@@ -250,7 +250,7 @@ CMD:givedrug(playerid, params[])
             
             PlayerInfo[playerid][pDrug][1]-=amout;
             PlayerInfo[tagetid][pDrug][1]+=amout;
-            GiveDrug(tagetid, type, amout);
+            //GiveDrug(tagetid, type, amout);
             CharacterSave(playerid);
         }
         case 3:
@@ -267,7 +267,7 @@ CMD:givedrug(playerid, params[])
 
             PlayerInfo[playerid][pDrug][2]-=amout;
             PlayerInfo[tagetid][pDrug][2]+=amout;
-            GiveDrug(tagetid, type, amout);
+            //GiveDrug(tagetid, type, amout);
             CharacterSave(playerid);
         }
         default: SendErrorMessage(playerid, "ใส่ประเภทให้ถูกต้อง");

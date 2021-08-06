@@ -368,6 +368,7 @@ CMD:duty(playerid, params[])
 
 			if(!PlayerInfo[playerid][pAdminDuty])
 				SetPlayerColor(playerid, COLOR_COP);
+
 			return 1;
 		}
 		else

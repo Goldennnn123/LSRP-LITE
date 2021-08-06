@@ -1751,7 +1751,7 @@ Dialog:DIALOG_BUY_MUSCLE(playerid, response, listitem, inputtext[])
         case 0:
         {
             PlayerSeleteVehicle[playerid] = 402;
-            PLayerVehiclePrice[playerid] = 200000;
+            PLayerVehiclePrice[playerid] = 450000;
             PlayerVehicleColor1[playerid] = random(255);
             PlayerVehicleColor2[playerid] = random(255);
             SelectTextDraw(playerid, 0xFFFFFF95);

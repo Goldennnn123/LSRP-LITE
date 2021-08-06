@@ -128,6 +128,7 @@ AddCharModel( 280, 29109, "LSPD_SKIN/PD29.dff", "LSPD_SKIN/PD29.txd");
 AddCharModel( 280, 29110, "LSPD_SKIN/PD30.dff", "LSPD_SKIN/PD30.txd");
 AddCharModel( 280, 29116, "LSPD_SKIN/PD31.dff", "LSPD_SKIN/PD31.txd");
 AddCharModel( 280, 29117, "LSPD_SKIN/PD32.dff", "LSPD_SKIN/PD32.txd");
+AddCharModel( 280, 29118, "LSPD_SKIN/PD33.dff", "LSPD_SKIN/PD33.txd");
 
 
 //Skin LSFD & LSMD

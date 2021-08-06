@@ -193,6 +193,26 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 				SendNearbyMessage(playerid, 3.5, COLOR_EMOTE, "> %s ถูกยิงด้วยปืนช็อตไฟฟ้าและล้มลงไปกับพื้น",ReturnName(playerid,0));
 				return 1;
 			}
+
+			if(GetPVarInt(issuerid, "Rubberbullets") && weaponid == 25)
+			{
+				if(health < 25)
+				{
+					ApplyAnimation(playerid, "PED","FLOOR_hit_f", 4.1, 0, 1, 1, 1, 1, 1);
+					SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s ถูกยิงโดยเรมิงตันและล้มลงกับพื้น", ReturnRealName(playerid));
+					SendClientMessageEx(issuerid, COLOR_YELLOW, "SERVER: คุณยิง %s ด้วยกระสุนยาง", ReturnRealName(playerid));
+					SendClientMessage(playerid, COLOR_LIGHTRED, "ตอนนี้คุณถูกยิงด้วยกระสุนยางจนล้มลงกับพื้น หากคุณมีการขัดขืนโดยการลุกขึ้น คุณจะถูกส่งคุกแอดมินในทันที");
+					SendClientMessage(playerid, COLOR_LIGHTRED, "ซึ่งจะถูกส่งในข้อหา Powergaming ในทันทีหากคุณมีการ ลุกขึ้นวิ่งหนีได้");
+					SetPlayerDrunkLevel(playerid, 3500);
+					return 1;
+				}
+				
+				GivePlayerHealth(playerid, -20);
+				SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s ถูกยิงโดยเรมิงตัน", ReturnRealName(playerid));
+		      	SendClientMessageEx(issuerid, COLOR_YELLOW, "SERVER: คุณยิง %s ด้วยกระสุนยาง", ReturnRealName(playerid));
+				SetPlayerDrunkLevel(playerid, 2500);
+				return 1;
+			}
 			
 			if(armor && bodypart == BODY_PART_CHEST)
 			{

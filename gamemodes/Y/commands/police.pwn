@@ -146,6 +146,44 @@ CMD:tazer(playerid, params[])
 	return 1;
 }
 
+
+alias:rubberbullets("rbt")
+CMD:rubberbullets(playerid, params[])
+{
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงาน ตำรวจ/นายอำเภอ/ผู้คุมเรือนจำ"); 
+		
+    if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
+
+    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+        return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
+
+	if(GetPVarInt(playerid, "Rubberbullets"))
+	{
+		if(GetPlayerWeapon(playerid) != 25)
+			return SendErrorMessage(playerid, "คุณไม่ได้ถือ Shotgun");
+		
+		GivePlayerGun(playerid, 25,100);
+		DeletePVar(playerid, "Rubberbullets");
+
+		SendNearbyMessage(playerid, 15.0, COLOR_EMOTE, "> %s เก็บเรมิงตันไว้ด้านหลังของเขา", ReturnName(playerid, 0)); 
+		return 1;
+	}
+	else
+	{
+		if(GetPlayerWeapon(playerid) != 25)
+			return SendErrorMessage(playerid, "คุณไม่ได้ถือ Shotgun");
+		
+		GivePlayerGun(playerid, 25,20);
+		SetPVarInt(playerid, "Rubberbullets", 1);
+
+		SendNearbyMessage(playerid, 15.0, COLOR_EMOTE, "> %s คว้าเรมิงตัน 870 พร้อมบรรจุกระสุนยาง", ReturnName(playerid, 0));
+		SendServerMessage(playerid, "คุณเปลี่ยนเป็นกระสุนยางแล้ว");
+	}
+	return 1;
+}
+
 CMD:take(playerid, params[])
 {
 	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)

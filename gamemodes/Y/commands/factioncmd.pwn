@@ -25,7 +25,7 @@ CMD:factionhelp(playerid, params[])
 		{
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty, /cuff, /uncuff, /showbadge");
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign, /tazer, /impound, /mdc");
-			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /arrest /checkarrest");
+			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /arrest /checkarrest /rubberbullets");
 		}
 
 		if(ReturnFactionJob(playerid) == GOV)

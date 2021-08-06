@@ -44,7 +44,7 @@ ptask @2PlayerTimer[1000](playerid)
 
 new 
 	playerWeaponsSpecSave[MAX_PLAYERS][13][13],
-	playerWeaponsSpecSaveData[MAX_PLAYERS][13][13];
+	playerWeaponsSpecSaveData[MAX_PLAYERS][4][4];
 
 stock PlayerSpec(playerid, playerb)
 {
@@ -57,13 +57,20 @@ stock PlayerSpec(playerid, playerb)
 
 	new weapon[13][2];
 
-	for(new i = 0; i < 13; i++)
+	
+	for(new i = 0; i < 4; i++)
 	{
 		if(PlayerInfo[playerid][pWeapons][i])
 			playerWeaponsSpecSaveData[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
 	
-		if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pMedicDuty] || PlayerInfo[playerid][pSADCRDuty])
+	}
+
+	if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pMedicDuty] || PlayerInfo[playerid][pSADCRDuty])
+	{
+		for(new i = 0; i < 4; i++)
+		{
 			playerWeaponsSpecSave[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
+		}
 	}
 
 	if(PlayerInfo[playerb][pSpectating] != INVALID_PLAYER_ID)

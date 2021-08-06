@@ -1120,7 +1120,8 @@ CMD:checkweapons(playerid, params[])
 			}
 			new weapons[4][2];
 			SendClientMessage(playerid, -1, "-------------------------WEAPONS NOT IN DATABSE----------------------");
-			for (new i = 0; i <= 12; i++)
+			
+			for (new i = 0; i < 4; i++)
 			{	
 				GetPlayerWeaponData(playerb, i, weapons[i][0], weapons[i][1]);
 

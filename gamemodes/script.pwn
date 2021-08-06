@@ -724,10 +724,8 @@ public OnPlayerSpawn(playerid) {
 
     for(new i = 0; i < 13; i ++)
     {
-        if(PlayerInfo[playerid][pWeapons][i] != 0)
-        {
+        if(PlayerInfo[playerid][pWeapons][i])
             GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
-        }
     }
 
     SetPlayerArmedWeapon(playerid, 0);
@@ -789,7 +787,7 @@ public OnPlayerSpawn(playerid) {
         PlayerInfo[playerid][pSpectating] = INVALID_PLAYER_ID;
         StopAudioStreamForPlayer(playerid);
 
-        for(new i = 0; i < 12; i++)
+        for(new i = 0; i < 13; i++)
 		{
 			if(playerWeaponsSpecSave[playerid][i][i])
 				GivePlayerGun(playerid, playerWeaponsSpecSave[playerid][i][0],  playerWeaponsSpecSave[playerid][i][1]);

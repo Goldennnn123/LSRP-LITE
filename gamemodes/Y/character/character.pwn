@@ -284,7 +284,7 @@ public Query_LoadCharacter(playerid)
 
 	new diff = gettime() - PlayerInfo[playerid][pTimeout];
 
-	if (diff > 0 && diff <= 60 * TIMEOUT_CRASH_TIME) // diff = now - savetime
+	if (diff > 0 && diff <= 60 * 2) // diff = now - savetime
 	{
 		/* 
 			โหลดข้อมูลที่ต้องใช้ตอนหลุด
@@ -374,7 +374,7 @@ public Query_LoadCharacter(playerid)
 
 	new str[MAX_STRING];
 	
-	for(new i = 0; i < 13; i++)
+	for(new i = 0; i < 4; i++)
 	{
 		format(str, sizeof(str), "pWeapon%d", i);
 		cache_get_value_name_int(0, str,PlayerInfo[playerid][pWeapons][i]);
@@ -517,7 +517,6 @@ public LoadCharacter(playerid)
     format(str, sizeof(str), "[%s] %s : Connected to the Server", ReturnDate(),ReturnName(playerid,0));
     SendDiscordMessage(1, str);
 	UpDateRadioStats(playerid);
-
 	return 1;
 }
 

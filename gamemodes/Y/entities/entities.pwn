@@ -82,8 +82,8 @@ enum E_PLAYER_DATA
 
     bool:pWeaponsSpawned,
 	pWeaponsImmune,
-	pWeapons[13], 
-	pWeaponsAmmo[13],
+	pWeapons[4], 
+	pWeaponsAmmo[4],
 
     pOwnedVehicles[12],
 	bool:pVehicleSpawned,

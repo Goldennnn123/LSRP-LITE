@@ -91,10 +91,10 @@ public GivePlayerGun(playerid, weaponid, ammo)
 {
 	new idx = ReturnWeaponIDSlot(weaponid); 
 	
-	if(PlayerInfo[playerid][pWeapons][idx])
+	/*if(PlayerInfo[playerid][pWeapons][idx])
 	{
 		RemovePlayerWeapon(playerid, PlayerInfo[playerid][pWeapons][idx]);
-	}
+	}*/
 	
 	GivePlayerWeapon(playerid, weaponid, ammo); 
 	

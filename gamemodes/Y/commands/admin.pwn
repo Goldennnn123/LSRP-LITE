@@ -1647,16 +1647,16 @@ CMD:givegun(playerid, params[])
 	if(PlayerInfo[playerb][pWeapons][idx])
 		SendServerMessage(playerid, "%s ได้ลบอาวุธ %s และกระสุน %d ออก", ReturnName(playerb), ReturnWeaponName(PlayerInfo[playerb][pWeapons][idx]), PlayerInfo[playerb][pWeaponsAmmo][idx]);
 	
-	//GivePlayerWeapon(playerb, weaponid, ammo); 
-	GivePlayerGun(playerb, weaponid, ammo);
-	
-	/*PlayerInfo[playerb][pWeapons][idx] = weaponid;
-	PlayerInfo[playerb][pWeaponsAmmo][idx] = ammo; */
+	GivePlayerWeapon(playerb, weaponid, ammo); 
+	//GivePlayerGun(playerb, weaponid, ammo);
+	PlayerInfo[playerb][pWeapons][idx] = weaponid;
+	PlayerInfo[playerb][pWeaponsAmmo][idx] = ammo;
 	
 	format(str, sizeof(str), "%s เสกอาวุธให้กับ %s คือ %s พร้อมกับกระสุน %d ชุด", ReturnName(playerid), ReturnName(playerb), ReturnWeaponName(weaponid), ammo);
 	SendAdminMessage(2, str);
 	
-	SendServerMessage(playerb, "คุณได้มอบอาวุธ %s และกระสุน %d ชุด", ReturnWeaponName(weaponid), ammo);
+	SendServerMessage(playerb, "ผู้ดูแลได้มอบอาวุธ %s และกระสุน %d ชุด", ReturnWeaponName(weaponid), ammo);
+	CharacterSave(playerid);
 	return 1;
 }
 

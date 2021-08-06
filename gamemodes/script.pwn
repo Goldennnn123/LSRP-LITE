@@ -504,7 +504,7 @@ public OnPlayerConnect(playerid) {
 
     PlayerInfo[playerid][pWeaponsSpawned] = false;
 	
-	for(new i = 0; i < 13; i++){
+	for(new i = 0; i < 4; i++){
 		PlayerInfo[playerid][pWeapons][i] = 0;
 		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
 	}
@@ -722,7 +722,7 @@ public OnPlayerSpawn(playerid) {
 	if (!BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
 		Kick(playerid);
 
-    for(new i = 0; i < 13; i ++)
+    for(new i = 0; i < 4; i ++)
     {
         if(PlayerInfo[playerid][pWeapons][i])
             GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);

@@ -66,6 +66,12 @@ stock PlayerSpec(playerid, playerb)
 			playerWeaponsSpecSave[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
 	}
 
+	if(PlayerInfo[playerb][pSpectating] != INVALID_PLAYER_ID)
+	{
+		PlayerSpec(playerid, PlayerInfo[playerb][pSpectating]);
+		return 1;
+	}
+
 	if(GetPlayerState(playerb) == PLAYER_STATE_DRIVER || GetPlayerState(playerb) == PLAYER_STATE_PASSENGER)
 	{
 		new vehicleid = GetPlayerVehicleID(playerb);

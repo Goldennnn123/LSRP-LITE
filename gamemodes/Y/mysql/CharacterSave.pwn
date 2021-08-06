@@ -93,7 +93,7 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_int(query, "pPhonePower",PlayerInfo[playerid][pPhonePower]);
 
         new str[255];
-		for(new i = 0; i < 13; i++)
+		for(new i = 0; i < 4; i++)
 		{
             format(str, sizeof(str), "pWeapon%d",i);
             mysql_int(query, str,PlayerInfo[playerid][pWeapons][i]);

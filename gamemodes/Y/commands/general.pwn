@@ -1099,7 +1099,7 @@ CMD:checkweapons(playerid, params[])
 
 		if(playerb == -1)
 		{
-			for(new i = 0; i < 13; i++)
+			for(new i = 0; i < 4; i++)
 			{
 					if(!PlayerInfo[playerid][pWeapons][i])
 						format(longstr, sizeof(longstr), "%s%d. [ว่างเปล่า]\n", longstr, i);
@@ -1111,14 +1111,14 @@ CMD:checkweapons(playerid, params[])
 		}
 		else
 		{
-			for(new i = 0; i < 13; i++)
+			for(new i = 0; i < 4; i++)
 			{
 					if(!PlayerInfo[playerb][pWeapons][i])
 						format(longstr, sizeof(longstr), "%s%d. [ว่างเปล่า]\n", longstr, i);
 						
 					else format(longstr, sizeof(longstr), "%s%d. %s[กระสุน: %d]\n", longstr, i, ReturnWeaponName(PlayerInfo[playerb][pWeapons][i]), PlayerInfo[playerb][pWeaponsAmmo][i]); 
 			}
-			new weapons[13][2];
+			new weapons[4][2];
 			SendClientMessage(playerid, -1, "-------------------------WEAPONS NOT IN DATABSE----------------------");
 			for (new i = 0; i <= 12; i++)
 			{	
@@ -1143,7 +1143,7 @@ CMD:checkweapons(playerid, params[])
 	}
 	else
 	{
-		for(new i = 0; i < 13; i++)
+		for(new i = 0; i < 4; i++)
 		{
 				if(!PlayerInfo[playerid][pWeapons][i])
 					format(longstr, sizeof(longstr), "%s%d. [ว่างเปล่า]\n", longstr, i);

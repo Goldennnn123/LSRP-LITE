@@ -139,3 +139,13 @@ AddCharModel( 276, 29114, "LSFD_SKIN/FD04.dff", "LSFD_SKIN/FD04.txd");
 
 AddCharModel( 155, 29115, "GOV_SKIN/GO01.dff", "GOV_SKIN/GO01.txd");
 
+//Skin SOS
+AddCharModel( 248, 29119, "SOS/SOS01.dff", "SOS/SOS01.txd");
+AddCharModel( 47, 29120, "SOS/SOS02.dff", "SOS/SOS02.txd");
+AddCharModel( 42, 29121, "SOS/SOS03.dff", "SOS/SOS03.txd");
+AddCharModel( 291, 29122, "SOS/SOS04.dff", "SOS/SOS04.txd");
+AddCharModel( 124, 29123, "SOS/SOS05.dff", "SOS/SOS05.txd");
+AddCharModel( 179, 29124, "SOS/SOS06.dff", "SOS/SOS06.txd");
+AddCharModel( 217, 29125, "SOS/SOS07.dff", "SOS/SOS07.txd");
+AddCharModel( 100, 29126, "SOS/SOS08.dff", "SOS/SOS08.txd");
+

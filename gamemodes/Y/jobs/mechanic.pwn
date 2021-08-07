@@ -209,10 +209,10 @@ CMD:service(playerid, params[])
 
                 GetVehicleHealth(vehicleid, vehhp);
                 
-                if(vehhp == VehicleData[modelid_taget - 400][c_maxhp])
+                if(vehhp == VehicleData[modelid_taget - 400][c_max_health])
                     return SendErrorMessage(playerid, "ภายในของรถไม่ได้รับความเสียหาย");
                 
-                new Float:result = (VehicleData[modelid_taget - 400][c_maxhp] - vehhp) / 50 * 2;
+                new Float:result = (VehicleData[modelid_taget - 400][c_max_health] - vehhp) / 50 * 2;
                 
                 comp = floatround(result,floatround_round);
                 
@@ -634,7 +634,7 @@ public OnRepairVehicle(playerid, vehicleid, option)
             SendClientMessageEx(playerid, -1, "คุณได้ซ่อมรถ %s สำเร็จแล้วใช้อะไหล่ไป %d ชิ้น", ReturnVehicleName(vehicleid), ServiceCalls[playerid][S_SER_COMP]);
             
             VehicleInfo[ServiceCalls[playerid][S_SER_VID][0]][eVehicleComp] -= ServiceCalls[playerid][S_SER_COMP];
-            SetVehicleHealth(vehicleid, VehicleData[modelid - 400][c_maxhp]);
+            SetVehicleHealth(vehicleid, VehicleData[modelid - 400][c_max_health]);
             
             TogglePlayerControllable(playerid, 1);
             ApplyAnimation(playerid, "CARRY", "crry_prtial", 1.0, 0, 0, 0, 0, 0);

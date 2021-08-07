@@ -1855,7 +1855,7 @@ CMD:repair(playerid, params[])
 		SendAdminMessage(1, str);
 
 		RepairVehicle(veh);
-		SetVehicleHealth(veh, VehicleData[GetVehicleModel(veh) - 400][c_maxhp]);
+		SetVehicleHealth(veh, VehicleData[GetVehicleModel(veh) - 400][c_max_health]);
 
 		GetVehicleZAngle(veh, angle);
 		SetVehicleZAngle(veh, angle);
@@ -2399,13 +2399,19 @@ CMD:setcar(playerid, params[])
 	else if(!strcmp(a_str, "plates"))
 	{
 		new
-			plates[32]; 
+			plates[32], randset[3], Excamplae[32]; 
 			
+		randset[0] = random(sizeof(possibleVehiclePlates)); 
+		randset[1] = random(sizeof(possibleVehiclePlates)); 
+		randset[2] = random(sizeof(possibleVehiclePlates)); 
+
+        format(Excamplae, 32, "%d%s%s%s%d%d%d", random(9), possibleVehiclePlates[randset[0]], possibleVehiclePlates[randset[1]], possibleVehiclePlates[randset[2]], random(9), random(9));
+
 		if(sscanf(b_str, "s[32]", plates))
 			return SendUsageMessage(playerid, "/setcar vehicleid plates [plates]"); 
 			
 		if(strlen(plates) > 6 || strlen(plates) < 6)
-			return SendErrorMessage(playerid, "ป้ายทะเบียนต้องมีมากกว่า 6 ตัวอักษร (นี่คือตัวอย่างป้ายทะเบียนของ ประเทศ แคริสฟอเนีย: Q123Q1)");
+			return SendErrorMessage(playerid, "ป้ายทะเบียนต้องมีมากกว่า 6 ตัวอักษร (นี่คือตัวอย่างป้ายทะเบียนของ ประเทศ แคริสฟอเนีย: %s)",Excamplae);
 			
 		format(str, sizeof(str), "%s ตั้งค่ารถไอดี %i ให้ระบบ 'plates' ไปยังระดับ \"%s\". (จากเดิม %s)", ReturnName(playerid), vehicleid, plates, VehicleInfo[vehicleid][eVehiclePlates]);
 		SendAdminMessage(3, str);

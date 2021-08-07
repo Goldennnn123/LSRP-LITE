@@ -26,11 +26,11 @@ new rental_vehicles[15];
 new RentCarKey[MAX_PLAYERS];
 
 
-enum c_data {
-	Float:c_maxhp,
+enum c_max_health_hp {
+	Float:c_max_health,
 };
 
-new const VehicleData[][c_data] =
+new const VehicleData[][c_max_health_hp] =
 {
 	{1120.0}, //Vehicle ID 400
 	{1120.0}, //Vehicle ID 401
@@ -1030,9 +1030,7 @@ CMD:vehicle(playerid, params[])
 		
 		PlayerOwnerDBID[playerid] = idx;
 
-		ShowVehicleBuy(playerid);
-		SelectTextDraw(playerid, 0xFFFFFF95);
-		PlayerInfo[playerid][pGUI] = 2;
+		ShowVehicleMenu(playerid);
 		return 1;
 	}
 	else if(!strcmp(oneString, "sell"))
@@ -1750,7 +1748,7 @@ public OnVehicleSpawn(vehicleid)
 stock SetVehicleHp(vehicleid)
 {
 	new modelid = GetVehicleModel(vehicleid);
-	SetVehicleHealth(vehicleid, VehicleData[modelid - 400][c_maxhp]);
+	SetVehicleHealth(vehicleid, VehicleData[modelid - 400][c_max_health]);
 	return 1;
 }
 

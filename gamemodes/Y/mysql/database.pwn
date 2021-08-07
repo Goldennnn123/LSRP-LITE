@@ -12,6 +12,7 @@ hook OnGameModeInit() {
     mysql_log(ERROR | WARNING);
 
 	dbCon = mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
+
 	if (mysql_errno(dbCon)) {
 		print("[SQL] Connection failed! Please check the connection settings...\a");
 		SendRconCommand("exit");

@@ -3,14 +3,11 @@
 #
 
 
-filterscripts/ACBS.pwn
-
-
 # Compiled Bytecode, precompiled output and assembly
-*.amx
 *.lst
 *.asm
 *.dll
+*.amx
 .dist
 
 # Vendor directory for dependencies

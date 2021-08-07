@@ -65,9 +65,9 @@ stock PlayerSpec(playerid, playerb)
 	
 	}
 
-	if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pMedicDuty] || PlayerInfo[playerid][pSADCRDuty])
+	if(PlayerInfo[playerid][pPoliceDuty] && PlayerInfo[playerid][pSheriffDuty] && PlayerInfo[playerid][pMedicDuty] && PlayerInfo[playerid][pSADCRDuty])
 	{
-		for(new i = 0; i < 4; i++)
+		for(new i = 0; i < 13; i++)
 		{
 			playerWeaponsSpecSave[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
 		}

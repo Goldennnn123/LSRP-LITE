@@ -1009,14 +1009,7 @@ stock Send911Message(playerid, type)
 				SendClientMessageEx(i, COLOR_CYAN, "Caller: %s, เบอร์: %d, จาก: %s", ReturnName(playerid, 0), PlayerInfo[playerid][pPhone], ReturnLocation(playerid));
 				SendClientMessageEx(i, COLOR_CYAN, "บริการที่ใช้: %s", Player911Text[playerid][0]);
 				SendClientMessageEx(i, COLOR_CYAN, "สถานการณ์: %s", Player911Text[playerid][1]);
-				SendClientMessageEx(i, COLOR_CYAN, "สถาณที่: %s", Player911Text[playerid][2]); 
-
-                new str[250];
-                format(str, sizeof(str), "|____________Emergency Call____________|\n\
-                Caller: %s, Phone: %d, Trace: %s\n\
-                Service required: Police\n\
-                Location: %s",ReturnName(playerid, 0), PlayerInfo[playerid][pPhone], ReturnLocation(playerid),ReturnLocation(playerid));
-				SendDiscordMessageEx("872542313426059294", str);
+				SendClientMessageEx(i, COLOR_CYAN, "สถาณที่: %s", Player911Text[playerid][2]);
 			}
 		}
 		case 800:
@@ -1031,6 +1024,13 @@ stock Send911Message(playerid, type)
 			}
 		}
 	}
+
+    new str[250];
+    format(str, sizeof(str), "|____________Emergency Call____________|\n\
+    Caller: %s, Phone: %d, Trace: %s\n\
+    Service required: Police\n\
+    Location: %s",ReturnName(playerid, 0), PlayerInfo[playerid][pPhone], ReturnLocation(playerid),ReturnLocation(playerid));
+	SendDiscordMessageEx("872542313426059294", str);
 	
 
     Player911Type[playerid] = 0;

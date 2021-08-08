@@ -2037,7 +2037,7 @@ public Query_LoadPrivateVehicle(playerid)
 			SetVehicleToRespawn(vehicleid); 
 			UpdateVehicleDamageStatus(vehicleid, VehicleInfo[vehicleid][eVehicleDamage][0], VehicleInfo[vehicleid][eVehicleDamage][1], VehicleInfo[vehicleid][eVehicleDamage][2],0);
 			
-			if(VehicleInfo[vehicleid][eVehicleHealth] < 250)
+			if(VehicleInfo[vehicleid][eVehicleHealth] < 310)
 			{
 				SetVehicleHp(vehicleid);
 			}
@@ -2402,6 +2402,9 @@ IsDoorVehicle(vehicleid)
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
+	new Float:health;
+
+	GetVehicleHealth(vehicleid, health);
 	
 	if(vehicleid != 0)
 	{
@@ -2430,6 +2433,25 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				return 1;
 			}
 		}
+		if(health <= 300)
+		{
+			new RandomStart = Random(0, 1);
+			
+			if(!RandomStart)
+			{
+				GameTextForPlayer(playerid, "~r~ENGINE COULDN'T START DUE TO DAMAGE", 5000, 4);
+				return 1;
+			}
+			else
+			{
+				GameTextForPlayer(playerid, "~g~ENGINE TURNED ON", 2000, 3);
+				SetVehicleHealth(vehicleid, 300.0);
+				ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
+				return 1;
+			}
+
+		}
+
 	}
 	
 	if(SellVehData[playerid][S_BY] != INVALID_PLAYER_ID)
@@ -2504,12 +2526,16 @@ public OnVehicleUpdate()
 					SetVehicleHealth(vehicleid, 300.0);
 					ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
 
-					if(VehicleInfo[vehicleid][eVehicleDBID])
+					if(VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleFaction])
 					{
 						VehicleInfo[vehicleid][eVehicleBattery]--;
 						SendClientMessageEx(i, -1, "ยานพาหนะมีความเสียหาย ทำให้แบตตารี่ ลดลง เหลือ %f", VehicleInfo[vehicleid][eVehicleBattery]);
 					}
-					SendClientMessage(i, -1, "รถดับ");
+
+					GameTextForPlayer(i, "~r~ENGINE COULDN'T START DUE TO DAMAGE", 5000, 4);
+					SendClientMessage(i, COLOR_LIGHTRED, "SERVER: เครื่องยนต์เสียหายอย่างหนัก");
+					SendClientMessage(i, COLOR_YELLOW, "ข้อแนะ: กดปุ่ม "EMBED_WHITE"W"EMBED_YELLOW" เพื่อติดเครื่องยนต์");
+					SendClientMessage(i, COLOR_YELLOW, "ข้อแนะ: คุณมีเวลา "EMBED_WHITE"10"EMBED_YELLOW" วินาที เพื่อติดเครื่องยนต์");
 				}
 			}
 		}

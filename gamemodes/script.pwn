@@ -725,20 +725,12 @@ public OnPlayerSpawn(playerid) {
 	if (!BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
 		Kick(playerid);
 
-    for(new i = 0; i < 4; i ++)
-    {
-        if(PlayerInfo[playerid][pWeapons][i])
-            GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
-    }
-
-    SetPlayerArmedWeapon(playerid, 0);
-    PlayerInfo[playerid][pWeaponsSpawned] = true;
-
     SetPlayerClothing(playerid);
 
     SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
 	SetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
     PlayerTextDrawShow(playerid, RadioStats[playerid]);
+    
 
     if(PlayerInfo[playerid][pAdminjailed] == true)
     {
@@ -798,8 +790,33 @@ public OnPlayerSpawn(playerid) {
             if(PlayerInfo[playerid][pWeapons][i])
                 GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i],  PlayerInfo[playerid][pWeaponsAmmo][i]);
 		}
+
+
+        if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pSADCRDuty])
+        {
+            GivePlayerWeapon(playerid, 24, 100);
+			GivePlayerWeapon(playerid, 3, 1);
+			GivePlayerWeapon(playerid, 41, 350);
+        }
+        else if(PlayerInfo[playerid][pMedicDuty])
+        {
+            GivePlayerWeapon(playerid, 42, 500);
+        }
+
+        RemovePlayerWeapon(playerid, 1);
         return 1;
     }
+
+
+    for(new i = 0; i < 4; i ++)
+    {
+        if(PlayerInfo[playerid][pWeapons][i])
+            GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
+    }
+
+    SetPlayerArmedWeapon(playerid, 0);
+    PlayerInfo[playerid][pWeaponsSpawned] = true;
+    
     switch (PlayerInfo[playerid][pSpawnPoint]) {
         case SPAWN_AT_DEFAULT: {
             SetPlayerVirtualWorld(playerid, 0);

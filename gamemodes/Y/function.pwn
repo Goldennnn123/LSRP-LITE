@@ -65,7 +65,7 @@ stock PlayerSpec(playerid, playerb)
 	
 	}
 
-	if(PlayerInfo[playerid][pPoliceDuty] && PlayerInfo[playerid][pSheriffDuty] && PlayerInfo[playerid][pMedicDuty] && PlayerInfo[playerid][pSADCRDuty])
+	if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pMedicDuty] || PlayerInfo[playerid][pSADCRDuty])
 	{
 		for(new i = 0; i < 13; i++)
 		{

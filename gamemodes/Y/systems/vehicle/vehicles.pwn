@@ -170,9 +170,9 @@ new const VehicleData[][c_max_health_hp] =
 	{1100.0}, //Vehicle ID 534
 	{1350.0}, //Vehicle ID 535
 	{1100.0}, //Vehicle ID 536
-	{0.0}, //Vehicle ID 537
-	{0.0}, //Vehicle ID 538
-	{0.0}, //Vehicle ID 539
+	{1000.0}, //Vehicle ID 537
+	{1000.0}, //Vehicle ID 538
+	{1000.0}, //Vehicle ID 539
 	{1000.0}, //Vehicle ID 540
 	{790.0}, //Vehicle ID 541
 	{1100.0}, //Vehicle ID 542

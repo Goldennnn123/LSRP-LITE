@@ -158,6 +158,7 @@ new globalWeather = 2;
 #include "Y/Interior/bar2.pwn"
 #include "Y/Interior/House3.pwn"
 #include "Y/Interior/House5.pwn"
+#include "Y/Interior/House6.pwn"
 #include "Y/Interior/hq_hpsital.pwn"
 //#include "Y/Interior/init1.pwn"
 

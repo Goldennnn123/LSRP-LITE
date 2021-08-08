@@ -2653,7 +2653,19 @@ CMD:edithouse(playerid, params[])
 
 		Savehouse(id);
 		SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้เปลี่ยนจุดภายในบ้านแล้ว %d แล้ว",id);
-		
+
+		for(new c = 1; c < MAX_COMPUTER; c++)
+		{
+			if(!ComputerInfo[c][ComputerSpawn])
+				continue;
+			
+			if(ComputerInfo[c][ComputerHouseDBID] != HouseInfo[id][HouseDBID])
+				continue;
+
+			ComputerInfo[c][ComputerSpawn] = false;
+			DestroyDynamicObject(ComputerInfo[c][ComputerObject]);
+		}
+
 		foreach(new i : Player)
 		{
 			if(PlayerInfo[i][pInsideProperty] == id)

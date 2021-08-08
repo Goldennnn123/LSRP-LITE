@@ -227,7 +227,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
-        KickEx(playerid);
+
     }
     else if(code == 2)
     {
@@ -728,6 +728,19 @@ public OnPlayerSpawn(playerid) {
 	SetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
     PlayerTextDrawShow(playerid, RadioStats[playerid]);
     
+    if(PlayerInfo[playerid][pWeaponsSpawned] == false)
+	{
+		for(new i = 0; i < 4; i ++)
+		{
+			if(PlayerInfo[playerid][pWeapons][i] != 0)
+			{
+				GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
+			}
+		}
+			
+		SetPlayerArmedWeapon(playerid, 0);
+		PlayerInfo[playerid][pWeaponsSpawned] = true;
+	}
 
     if(PlayerInfo[playerid][pAdminjailed] == true)
     {
@@ -802,14 +815,14 @@ public OnPlayerSpawn(playerid) {
     }
 
 
-    for(new i = 0; i < 4; i ++)
+    /*for(new i = 0; i < 4; i ++)
     {
         if(PlayerInfo[playerid][pWeapons][i])
             GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
     }
 
     SetPlayerArmedWeapon(playerid, 0);
-    PlayerInfo[playerid][pWeaponsSpawned] = true;
+    PlayerInfo[playerid][pWeaponsSpawned] = true;*/
     
     switch (PlayerInfo[playerid][pSpawnPoint]) {
         case SPAWN_AT_DEFAULT: {

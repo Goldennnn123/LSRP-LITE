@@ -43,7 +43,7 @@ stock SendDiscordMessage(channel, const message[])
 		}
 		case 4:
 		{
-			HackerLog = DCC_FindChannelById("863094920281325608");
+			HackerLog = DCC_FindChannelById("873840389507940372");
 			DCC_SendChannelMessage(HackerLog, message);
 			return 1;
 		}

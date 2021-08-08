@@ -570,6 +570,8 @@ public CallPaycheck()
 			if(AFKCount[i] > 120)
 			{
 				SendClientMessageEx(i, COLOR_LIGHTRED, "คุณไม่ได้รับ PayCheck เนื่องจากคุณมีการ AFK ไป %s วินาที ซึ่งเรากำหนดให้แค่ไม่เกิน 120 วินาที",MoneyFormat(AFKCount[i]));
+				format(str, sizeof(str), "[%s] %s(DBID:%d) not paid PayCheck",ReturnDate(), ReturnRealName(i,0), PlayerInfo[i][pDBID]);
+				SendDiscordMessageEx("873794322720497706", str);
 				continue;
 			}
 		}

@@ -786,9 +786,6 @@ public OnPlayerSpawn(playerid) {
 		{
 			if(playerWeaponsSpecSave[playerid][i][i])
 				GivePlayerGun(playerid, playerWeaponsSpecSave[playerid][i][0],  playerWeaponsSpecSave[playerid][i][1]);
-
-            if(PlayerInfo[playerid][pWeapons][i])
-                GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i],  PlayerInfo[playerid][pWeaponsAmmo][i]);
 		}
 
 

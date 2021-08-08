@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `pTutorial` tinyint(1) NOT NULL DEFAULT 0,
   `pAdmin` int(11) NOT NULL,
   `pTester` int(11) NOT NULL,
+  `pRadioOn` int(11) NOT NULL,
   `pLevel` int(11) NOT NULL DEFAULT 0,
   `pExp` int(11) NOT NULL DEFAULT 0,
   `pLastSkin` int(11) NOT NULL DEFAULT 264,

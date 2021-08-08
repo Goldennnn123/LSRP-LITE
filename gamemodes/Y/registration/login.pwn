@@ -93,11 +93,9 @@ Auth_Register(playerid) {
 
 timer ShowLoginCamera[400](playerid)
 {
-	if(IsPlayerConnected(playerid) && BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED)) {
-		SetPlayerVirtualWorld(playerid, playerid + 8000);
-		SetPlayerCameraPos(playerid, 2071.3523,-1828.8336,21.8929);
-		SetPlayerCameraLookAt(playerid, 2071.3523,-1828.8336,21.8929, CAMERA_MOVE);
-	}
+	SetPlayerCameraPos(playerid, 2071.6313,-1828.9207,23.3445);
+	SetPlayerCameraLookAt(playerid, 2096.2373,-1794.2494,13.3889);
+	return 1;
 }
 
 Dialog:DIALOG_LOGIN(playerid, response, listitem, inputtext[])

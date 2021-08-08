@@ -389,6 +389,8 @@ public Query_LoadCharacter(playerid)
 		cache_get_value_name_int(0, str,PlayerInfo[playerid][pOwnedVehicles][i]);
 	}
 
+	cache_get_value_name_int(0, "pRadioOn",PlayerInfo[playerid][pRadioOn]);
+	
 	for(new i = 1; i < 3; i++)
 	{
 		format(str, sizeof(str), "pRadio%i", i);

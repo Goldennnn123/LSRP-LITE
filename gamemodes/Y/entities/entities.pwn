@@ -90,6 +90,7 @@ enum E_PLAYER_DATA
 	pVehicleSpawnedID,
 
 	bool:pHasRadio,
+	bool:pRadioOn,
 	pRadio[10],
 	pMainSlot,
 

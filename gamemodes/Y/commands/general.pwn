@@ -42,7 +42,50 @@ CMD:radiohelp(playerid, params[])
 	SendClientMessage(playerid, COLOR_WHITE,"/setslot - ตั้งค่าห้องของแชแนล");
 	SendClientMessage(playerid, COLOR_WHITE,"/r - พูดวิทยุ");
 	SendClientMessage(playerid, COLOR_WHITE,"/rlow - พูดวิทยุแบบเบา");
+	SendClientMessage(playerid, COLOR_WHITE,"/radioon - เปิด ปิดวิทยุ");
 	SendClientMessage(playerid, COLOR_GREEN,"|_____________________________________________________|");
+	return 1;
+}
+
+
+CMD:logout(playerid, params[])
+{
+	if(gettime() - PlayerInfo[playerid][pLastDamagetime] < 120)
+		return SendServerMessage(playerid, "คุณได้รับดาเมจอยู่");
+
+	SendNearbyMessage(playerid, 5.5, COLOR_GREY, "%s ได้ออกจากเกมส์ (Log-out)", ReturnRealName(playerid,0));
+
+	new str[120];
+	format(str, sizeof(str), "[%s] %s(DBID: %d) Log Out In Game", ReturnDate(),ReturnRealName(playerid,0), PlayerInfo[playerid][pDBID]);
+	SendDiscordMessageEx("873978832762314803", str);
+
+
+	CharacterSave(playerid);
+	SetPlayerName(playerid, e_pAccountData[playerid][mAccName]); 
+	TogglePlayerSpectating(playerid, true);
+
+	SetPlayerVirtualWorld(playerid, 0);
+	SetPlayerInterior(playerid, 0);
+	SetPlayerCameraPos(playerid, 2071.6313,-1828.9207,23.3445);
+	SetPlayerCameraLookAt(playerid, 2096.2373,-1794.2494,13.3889);
+	
+	new pname[MAX_PLAYER_NAME];
+    GetPlayerName(playerid, pname, sizeof(pname));
+	new maxname = strlen(pname);
+	new query[MAX_STRING];
+
+	for(new i=0; i<maxname; i++)
+	{
+		if(pname[i] == '_')
+		{
+			SendServerMessage(playerid, "คุณไม่ได้ใส่ชื่อ Username โปรดออกไปใส่ชื่อเป็น Username เพื่อเข้าสู่ระบบ");
+			return Dialog_Show(playerid, DIALOG_SET_USERNAME, DIALOG_STYLE_INPUT, "เปลี่ยนชื่อเป็น Username ที่คุณต้องการ", "ใส่ชื่อ Username ที่คุณต้องการเข้าสู่ระบบ หากมีชื่อผู้ใช้อยู่แล้วจะนำเข้าสู่ระบบต่อไป:", "ยืนยัน", "ยกเลิก");
+		}
+	}
+    
+	mysql_format(dbCon, query, sizeof(query), "SELECT COUNT(acc_name) FROM `masters` WHERE acc_name = '%e'", ReturnPlayerName(playerid));
+	mysql_tquery(dbCon, query, "OnPlayerJoin", "d", playerid);
+    SendClientMessage(playerid, -1, "ยินดีต้อนรับเข้าสู่ "EMBED_YELLOW"Los Santos Roleplay LITE");
 	return 1;
 }
 
@@ -1407,6 +1450,9 @@ CMD:setchannel(playerid, params[])
 	if(!PlayerInfo[playerid][pHasRadio])
 		return SendErrorMessage(playerid, "คุณไม่มี วิทยุ"); 
 	
+	if(!PlayerInfo[playerid][pRadioOn])
+		return SendErrorMessage(playerid, "คุณยังไม่ได้เปิดวิทยุ");
+
 	if(sscanf(params, "ii", channel, slot))
 		return SendUsageMessage(playerid, "/setchannel [แชลเเนว] [ส็อต]"); 
 		
@@ -1430,12 +1476,34 @@ CMD:setchannel(playerid, params[])
 	return 1;
 }
 
+CMD:radioon(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pHasRadio])
+		return SendErrorMessage(playerid, "คุณยังไม่มีวิทยุ");
+	
+	if(PlayerInfo[playerid][pRadioOn])
+	{
+		PlayerInfo[playerid][pRadioOn] = false;
+		SendClientMessage(playerid, COLOR_GREY, "คุณได้ปิดวิทยุ");
+		return 1;
+	}
+	else
+	{
+		PlayerInfo[playerid][pRadioOn] = true;
+		SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้เปิดวิทยุ");
+	}
+
+	return 1;
+}
 
 alias:radio("r")
 CMD:radio(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pHasRadio])
 		return SendErrorMessage(playerid, "คุณไม่มีวิทยุ");
+
+	if(!PlayerInfo[playerid][pRadioOn])
+		return SendErrorMessage(playerid, "คุณยังไม่ได้เปิดวิทยุ");
 
 	new
 		local,
@@ -1453,27 +1521,30 @@ CMD:radio(playerid, params[])
 		
 	foreach(new i : Player)
 	{
-		for(new r = 1; r < 3; r ++)
+		if(PlayerInfo[i][pRadioOn])
 		{
-			if(PlayerInfo[i][pRadio][r] == channel)
+			for(new r = 1; r < 3; r ++)
 			{
-				if(r != PlayerInfo[i][pMainSlot])
+				if(PlayerInfo[i][pRadio][r] == channel)
 				{
-					if(strlen(params) > 75)
+					if(r != PlayerInfo[i][pMainSlot])
 					{
-						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
-						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r],PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params[75]);
+						if(strlen(params) > 75)
+						{
+							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
+							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r],PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params[75]);
+						}
+						else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
 					}
-					else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
-				}
-				else 
-				{
-					if(strlen(params) > 75)
+					else 
 					{
-						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
-						SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params[75]);
+						if(strlen(params) > 75)
+						{
+							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
+							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params[75]);
+						}
+						else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
 					}
-					else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
 				}
 			}
 		}
@@ -1506,6 +1577,9 @@ CMD:rlow(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pHasRadio])
 		return SendErrorMessage(playerid, "คุณไม่มีวิทยุ");
+
+	if(!PlayerInfo[playerid][pRadioOn])
+		return SendErrorMessage(playerid, "คุณยังไม่ได้เปิดวิทยุ");
 
 	new
 		local,

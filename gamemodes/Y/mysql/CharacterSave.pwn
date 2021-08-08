@@ -108,6 +108,7 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 		}
 
 
+        mysql_int(query, "pRadioOn",PlayerInfo[playerid][pRadioOn]);
         mysql_int(query, "pHasRadio",PlayerInfo[playerid][pHasRadio]);
         mysql_int(query, "pMainSlot",PlayerInfo[playerid][pMainSlot]);
 		for(new i = 1; i < 3; i++)

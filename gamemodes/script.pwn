@@ -390,10 +390,6 @@ public OnGameModeInit() {
     allcmdlog = CreateLog("server/allcmdlog");
     DeathLog = CreateLog("server/deathlog");
     chatlog = CreateLog("server/chatlog");
-
-    SendDiscordMessageEx("848148148714209311","SERVER: RUN");
-
-
     new query[MAX_STRING];
     for(new v = 1; v < 260; v++)
     {

@@ -625,20 +625,24 @@ public Query_SelectCharacter(playerid)
 
 stock ResetPlayerCharacter(playerid)
 {
-	gPlayerBitFlag[playerid] = PlayerFlags:0;
+	SetPlayerWeaponSkill(playerid, NORMAL_SKILL);
+    gPlayerBitFlag[playerid] = PlayerFlags:0;
+    e_pAccountData[playerid][mDBID] = 0;
     format(e_pAccountData[playerid][mForumName], e_pAccountData[playerid][mForumName], "");
-
-	PlayerInfo[playerid][pDBID] = 0;
     PlayerInfo[playerid][pCMDPermission] = CMD_PLAYER;
-    PlayerInfo[playerid][pAdmin] = CMD_PLAYER;
-
-
+    PlayerInfo[playerid][pAdmin] = 0;
+    PlayerInfo[playerid][pTester] = 0;
+    PlayerInfo[playerid][pAdminDuty] = false;
+    PlayerInfo[playerid][pTesterDuty] = false;
+    PlayerInfo[playerid][pPoliceDuty] = false;
+    PlayerInfo[playerid][pSheriffDuty] = false;
+    PlayerInfo[playerid][pMedicDuty] = false;
+    PlayerInfo[playerid][pSADCRDuty] = false;
     PlayerInfo[playerid][pJob] = 0;
     PlayerInfo[playerid][pSideJob] = 0;
     PlayerInfo[playerid][pCareer] = 0;
     PlayerInfo[playerid][pJobRank] = 0;
     PlayerInfo[playerid][pJobExp] = 0;
-
     PlayerInfo[playerid][pPaycheck] = 0;
     PlayerInfo[playerid][pFishes] = 0;
     PlayerInfo[playerid][pCash] = 0;
@@ -649,87 +653,67 @@ stock ResetPlayerCharacter(playerid)
     PlayerInfo[playerid][pExp] = 0;
     PlayerInfo[playerid][pLastSkin] = 264;
     PlayerInfo[playerid][pTutorial] = false;
-
     PlayerInfo[playerid][pLastInterior] = 
     PlayerInfo[playerid][pLastWorld] = 
     PlayerInfo[playerid][pTimeout] = 
     PlayerInfo[playerid][pSpawnPoint] = 
     PlayerInfo[playerid][pSpawnHouse] = 0;
-
     PlayerInfo[playerid][pHealth] = 100.0;
     PlayerInfo[playerid][pArmour] = 
     PlayerInfo[playerid][pLastPosX] = 
     PlayerInfo[playerid][pLastPosY] = 
     PlayerInfo[playerid][pLastPosZ] = 0.0;
-
     PlayerInfo[playerid][pUnscrambleID] = 0;
     PlayerInfo[playerid][pUnscrambling] = false;
 	PlayerInfo[playerid][pScrambleFailed] = 0;
 	PlayerInfo[playerid][pScrambleSuccess] = 0; 
-
     PlayerInfo[playerid][pDuplicateKey] = 0;
     PlayerInfo[playerid][pUnscramblerTime] = 0;
-
     PlayerInfo[playerid][pInsideProperty] = 0;
     PlayerInfo[playerid][pInsideBusiness] = 0;
-
     PlayerInfo[playerid][pAdminjailed] = false;
 	PlayerInfo[playerid][pAdminjailTime] = 0;
-
     PlayerInfo[playerid][pSpectating] = INVALID_PLAYER_ID;
-
     PlayerInfo[playerid][pMaskID][0] = 200000+random(199991);
 	PlayerInfo[playerid][pMaskID][1] = 40+random(59);
 	PlayerInfo[playerid][pMasked] = false;
     PlayerInfo[playerid][pHasMask] = false;
-
     PlayerInfo[playerid][pWeaponsSpawned] = false;
-	
-	for(new i = 0; i < 13; i++){
+
+	for(new i = 0; i < 4; i++){
 		PlayerInfo[playerid][pWeapons][i] = 0;
 		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
 	}
-
     for(new i = 1; i < MAX_PLAYER_VEHICLES; i++) {
 		PlayerInfo[playerid][pOwnedVehicles][i] = 0; 
 	}
-
     PlayerInfo[playerid][pHasRadio] = false;
-	PlayerInfo[playerid][pMainSlot] = 1; 
-	
+	PlayerInfo[playerid][pMainSlot] = 1; 	
 	for(new i = 1; i < 3; i++){
 		PlayerInfo[playerid][pRadio][i] = 0;
 	}
-
     PlayerInfo[playerid][pLastDamagetime] = 0;
     PlayerInfo[playerid][pDeathFix] = 0;
     PlayerInfo[playerid][pRespawnTime] = 0;
-    
-
     PlayerInfo[playerid][pPhone] = 0;
     PlayerInfo[playerid][pPhonePower] = 100;
     PlayerInfo[playerid][pGUI] = 0;
     PlayerInfo[playerid][pPhoneline] = INVALID_PLAYER_ID;
     PlayerInfo[playerid][pCalling] = 0;
     PlayerInfo[playerid][pPhonespeaker] = false;
-
     PlayerInfo[playerid][pDriverLicense] = false;
     PlayerInfo[playerid][pDriverLicenseWarn] = 0;
     PlayerInfo[playerid][pDriverLicenseRevoke] = false;
     PlayerInfo[playerid][pDriverLicenseSus] = false;
-
     PlayerInfo[playerid][pWeaponLicense] = false;
     PlayerInfo[playerid][pWeaponLicenseType] = 0;
     PlayerInfo[playerid][pWeaponLicenseRevoke] = false;
     PlayerInfo[playerid][pWeaponLicenseSus] = false;
-
     PlayerInfo[playerid][pPilotLicense] = false;
     PlayerInfo[playerid][pPilotLicenseBlacklist] = false;
     PlayerInfo[playerid][pPilotLicenseRevoke] = false;
-
     PlayerInfo[playerid][pMedicLicense] = false;
     PlayerInfo[playerid][pMedicLicenseRevoke] = false;
-
     PlayerInfo[playerid][pTuckingLicense] = false;
     PlayerInfo[playerid][pTuckingLicenseRevoke] = false;
     PlayerInfo[playerid][pTuckingLicenseWarn] = 0;
@@ -737,14 +721,11 @@ stock ResetPlayerCharacter(playerid)
     PlayerInfo[playerid][pFactionChat] = false;
     PlayerInfo[playerid][pFactionInvite] = 0;
 	PlayerInfo[playerid][pFactionInvitedBy] = INVALID_PLAYER_ID;
-
     PlayerInfo[playerid][pHandcuffed] = false;
-
     PlayerInfo[playerid][pCPU] = 0;
     PlayerInfo[playerid][pGPU] = 0;
     PlayerInfo[playerid][pRAM] = 0;
     PlayerInfo[playerid][pStored] = 0;
-
     PlayerInfo[playerid][pArrest] = false;
     PlayerInfo[playerid][pArrestRoom] = 0;
     PlayerInfo[playerid][pArrestBy] = 0;
@@ -755,10 +736,29 @@ stock ResetPlayerCharacter(playerid)
 	PlayerInfo[playerid][pSkinClothing][2] = 0;
     PlayerInfo[playerid][pWhitelist] = false;
     PlayerInfo[playerid][pTester] = 0;
+    PlayerInfo[playerid][pBoomBox] = false;
+    PlayerInfo[playerid][pBoomBoxSpawnID] = 0;
+    PlayerInfo[playerid][pShakeOffer] = INVALID_PLAYER_ID;
 	// vehicles.pwn
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;
-
+    format(PlayerInfo[playerid][pTicket], PlayerInfo[playerid][pTicket], "");
+    SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
+    KillTimer(playerTowTimer[playerid]);
+    playerTowTimer[playerid] = -1;
+    playerTowingVehicle[playerid] = false;
+    KillTimer(PlayerDrugUse[playerid]);
+    PlayerDrugUse[playerid] = -1;
+    for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
+    {
+        PlayerInfo[playerid][pClothing][i-1] = 0;
+    }
+    for(new i = 0; i < 10; i++)
+    {
+        PlayerInfo[playerid][pObject][i] = INVALID_OBJECT_ID;
+    }
+    MealOder[playerid] = false;
+    PlayerInfo[playerid][pTogPm] = false;
     SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
 
 	return 1;

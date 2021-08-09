@@ -560,6 +560,48 @@ CMD:settime(playerid, params[])
 	return 1;
 }
 
+alias:setweather("setwth")
+CMD:setweather(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid); 
+
+	new weatherid;
+	if(sscanf(params, "d", weatherid))
+	{
+		SendClientMessage(playerid, COLOR_GREY, "ID 0 - EXTRASUNNY_LA");
+		SendClientMessage(playerid, COLOR_GREY, "ID 1 - SUNNY_LA");
+		SendClientMessage(playerid, COLOR_GREY, "ID 2 - EXTRASUNNY_SMOG_LA");
+		SendClientMessage(playerid, COLOR_GREY, "ID 3 - SUNNY_SMOG_LA");
+		SendClientMessage(playerid, COLOR_GREY, "ID 4 - CLOUDY_LA");
+		SendClientMessage(playerid, COLOR_GREY, "ID 5 - SUNNY_SF");
+		SendClientMessage(playerid, COLOR_GREY, "ID 6 - EXTRASUNNY_SF");
+		SendClientMessage(playerid, COLOR_GREY, "ID 7 - CLOUDY_SF");
+		SendClientMessage(playerid, COLOR_GREY, "ID 8 - RAINY_SF");
+		SendClientMessage(playerid, COLOR_GREY, "ID 9 - FOGGY_SF");
+		SendClientMessage(playerid, COLOR_GREY, "ID 10 - SUNNY_VEGAS");
+		SendClientMessage(playerid, COLOR_GREY, "ID 11 - EXTRASUNNY_VEGAS (คลื่นความร้อน)");
+		SendClientMessage(playerid, COLOR_GREY, "ID 12 - CLOUDY_VEGAS");
+		SendClientMessage(playerid, COLOR_GREY, "ID 13 - EXTRASUNNY_COUNTRYSIDE");
+		SendClientMessage(playerid, COLOR_GREY, "ID 14 - SUNNY_COUNTRYSIDE");
+		SendClientMessage(playerid, COLOR_GREY, "ID 15 - CLOUDY_COUNTRYSIDE");
+		SendClientMessage(playerid, COLOR_GREY, "ID 16 - RAINY_COUNTRYSIDE");
+		SendClientMessage(playerid, COLOR_GREY, "ID 17 - EXTRASUNNY_DESERT");
+		SendClientMessage(playerid, COLOR_GREY, "ID 18 - SUNNY_DESERT");
+		SendClientMessage(playerid, COLOR_GREY, "ID 19 - SANDSTORM_DESERT");
+		SendClientMessage(playerid, COLOR_GREY, "ID 20 - ใต้น้ำ (สีเขียว มีหมอก)");
+		SendUsageMessage(playerid, "/setweather <เวลา 0-20>");
+		return 1;
+	}
+
+	if(weatherid < 0 || weatherid > 20)
+		return SendErrorMessage(playerid, "ใส่ตัวเลขสภาพอากาศให้ถูกต้อง");
+
+	SetWeather(weatherid);
+	SendClientMessageToAll(COLOR_GREY, "ผู้ดูแลระบบ ปรับสภาพอากาศ");
+	return 1;
+}
+
 CMD:setskin(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
@@ -1137,9 +1179,9 @@ CMD:aooc(playerid, params[])
 		SendClientMessageToAllEx(COLOR_RED, "[AOOC] ผู้ดูแลระบบ %s (%s): %s", ReturnName(playerid), e_pAccountData[playerid][mForumName], params);
 		
 	else SendClientMessageToAllEx(COLOR_RED, "[AOOC] ผู้ดูแลระบบ %s: %s", ReturnName(playerid), params);*/
-	if(strlen(params) > 60)
+	if(strlen(params) > 89)
 	{
-		SendClientMessageToAllEx(0xC2185B, "[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %.60s", e_pAccountData[playerid][mForumName], params[60]);
+		SendClientMessageToAllEx(0xC2185B, "[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %.89s", e_pAccountData[playerid][mForumName], params[60]);
 		SendClientMessageToAllEx(0xC2185B, "...%s", params);
 		return 1;
 	}

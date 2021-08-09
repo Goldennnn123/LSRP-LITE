@@ -810,6 +810,10 @@ CMD:towcars(playerid, params[])
 		VehicleInfo[v][eVehicleHasCarsign] = false;
 		VehicleInfo[v][eVehicleEngineStatus] = false;
 
+
+		KillTimer(VehicleInfo[v][eVehicleElmTimer]);
+		VehicleInfo[v][eVehicleElmTimer] = -1;
+
 		SetVehicleToRespawn(v);
 		SetVehicleVirtualWorld(v, VehicleInfo[v][eVehicleParkWorld]);
 		SetVehicleNumberPlate(v, FactionInfo[id][eFactionAbbrev]);
@@ -976,8 +980,11 @@ CMD:siren3(playerid, params[])
 	}
 	else if(!strcmp(type, "ปิด"))
 	{
-	    if(VehicleSiren[vehicleid] != INVALID_OBJECT_ID) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ยังไม่ได้ติดไซเรน");
-		DestroyDynamicObject(VehicleSiren[vehicleid]);
+	    if(VehicleSiren[vehicleid] == INVALID_OBJECT_ID) return SendClientMessage(playerid, COLOR_GREY, "พาหนะคันนี้ยังไม่ได้ติดไซเรน");
+		
+		if(IsValidDynamicObject(VehicleSiren[vehicleid]))
+			DestroyDynamicObject(VehicleSiren[vehicleid]);
+
 		VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
 		return 1;
 	}

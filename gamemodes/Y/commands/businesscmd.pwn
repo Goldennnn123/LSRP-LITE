@@ -104,6 +104,7 @@ CMD:eat(playerid, params[])
     if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_RESTAURANT)
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ร้านขายอาหาร");
 
+    callcmd::meal(playerid, "");
     PlayerInfo[playerid][pGUI] = 5;
     ShowPlayerBuyFood(playerid);
     return 1;

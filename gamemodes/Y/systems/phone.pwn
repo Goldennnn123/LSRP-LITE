@@ -942,7 +942,6 @@ hook OnPlayerText(playerid, text[])
 				
 		format (string, sizeof(string), "%s ¾Ù´ÇèÒ: ... %s", ReturnName(playerid, 0), text[99]); 
 		LocalChat(playerid, 20.0, string, COLOR_FADE1, COLOR_FADE2, COLOR_FADE3, COLOR_FADE4);
-				
 	}
 	else 
 	{	

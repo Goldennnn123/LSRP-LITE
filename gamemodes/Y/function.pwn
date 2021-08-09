@@ -731,6 +731,7 @@ public CallPaycheck()
 				}
 			}
 		}
+		
 		DelevehicleVar();
 		CharacterSave(i); 
 		Saveglobal();		
@@ -772,8 +773,8 @@ stock DelevehicleVar()
 			mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0',`pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",VehicleInfo[v][eVehicleOwnerDBID]);
          	mysql_tquery(dbCon, query);
 
-			DestroyVehicle(v);
 			ResetVehicleVars(v);
+			DestroyVehicle(v);
 		}
 	}
 	return 1;

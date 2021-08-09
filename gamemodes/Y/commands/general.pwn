@@ -1189,9 +1189,9 @@ CMD:takegun(playerid, params[])
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้จุดตู้เซฟ");
 		
 		if(sscanf(params, "i", slotid))
-			return SendUsageMessage(playerid, "/takegun <1-22>");
+			return SendUsageMessage(playerid, "/takegun <1-21>");
 
-		if(slotid < 1 || slotid > 22)
+		if(slotid < 1 || slotid > 21)
 			return SendErrorMessage(playerid, "กรุณาใส่ สล็อตให้ถูกต้อง");
 
 		if(!HouseInfo[id][HouseWeapons][slotid])

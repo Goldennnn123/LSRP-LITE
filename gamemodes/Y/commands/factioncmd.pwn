@@ -331,17 +331,17 @@ CMD:duty(playerid, params[])
 	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล"); 
 
+	if(!IsPlayerInRangeOfPoint(playerid, 5.0, FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][0], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][1], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][2]))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
+
+	if(GetPlayerVirtualWorld(playerid) != FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawnWorld])
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
+
 	
 	if(ReturnFactionJob(playerid) == POLICE)
 	{
 		if(!PlayerInfo[playerid][pPoliceDuty])
 		{
-			if(!IsPlayerInRangeOfPoint(playerid, 5.0, FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][0], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][1], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][2]))
-				return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
-
-			if(GetPlayerVirtualWorld(playerid) != FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawnWorld])
-				return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
-
 			PlayerInfo[playerid][pPoliceDuty] = true;
 
 			for(new i = 0; i < 4; i++)

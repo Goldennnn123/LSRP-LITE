@@ -4,6 +4,7 @@ stock SaveVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 
 	mysql_init("vehicles", "VehicleDBID", VehicleInfo[vehicleid][eVehicleDBID], thread);
 
+	mysql_str(query, "VehicleName",VehicleInfo[vehicleid][eVehicleName]);
 	mysql_int(query, "VehicleOwnerDBID",VehicleInfo[vehicleid][eVehicleOwnerDBID]);
 	mysql_int(query, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
 	mysql_int(query, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);

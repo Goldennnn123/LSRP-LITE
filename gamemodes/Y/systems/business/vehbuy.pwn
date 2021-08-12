@@ -1059,7 +1059,7 @@ new g_aDealershipData[][VehiclePriceID] =
     {"Buffalo",402, 9,180000},//86
     {"Clover",542, 9,180000},//87
     {"Phoenix",603, 9,180000},//88
-    {"Sabre",475, 9,190000},//89
+    {"Sabre",475, 9,78000},//89
 
     ///// Street racers:
     {"Banshee",429, 10,450000},//90

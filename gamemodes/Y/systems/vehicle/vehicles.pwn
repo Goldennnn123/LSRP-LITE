@@ -197,7 +197,7 @@ new const VehicleData[][c_max_health_hp] =
 	{1300.0}, //Vehicle ID 561
 	{1100.0}, //Vehicle ID 562
 	{2400.0}, //Vehicle ID 563
-	{0.0}, //Vehicle ID 564
+	{1250.0}, //Vehicle ID 564
 	{1250.0}, //Vehicle ID 565
 	{1100.0}, //Vehicle ID 566
 	{1100.0}, //Vehicle ID 567
@@ -353,10 +353,17 @@ stock ReturnVehicleName(vehicleid)
 		model = GetVehicleModel(vehicleid),
 		name[32] = "None";
 
-    if (model < 400 || model > 611)
-	    return name;
+	if(!strcmp(VehicleInfo[vehicleid][eVehicleName], "None"))
+	{
+		if (model < 400 || model > 611)
+	    	return name;
 
-	format(name, sizeof(name), g_arrVehicleNames[model - 400]);
+		format(name, sizeof(name), g_arrVehicleNames[model - 400]);
+	}
+	else
+	{
+		format(name, sizeof(name), "%s", VehicleInfo[vehicleid][eVehicleName]);
+	}
 	return name;
 }
 
@@ -397,6 +404,7 @@ stock ResetVehicleVars(vehicleid)
 	if(vehicleid == INVALID_VEHICLE_ID)
 		return 0;
 		
+	format(VehicleInfo[vehicleid][eVehicleName], 60, "None");
 	VehicleInfo[vehicleid][eVehicleDBID] = 0; 
 	VehicleInfo[vehicleid][eVehicleExists] = false;
 	
@@ -898,6 +906,9 @@ CMD:vehicle(playerid, params[])
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในรถ");
+
+		if(PlayerTaxiDuty[playerid])
+			return SendErrorMessage(playerid, "คุณยังมีการทำงาน Taxi อยู่");
 			
 		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER) return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับรถ");
 
@@ -1622,6 +1633,54 @@ CMD:rollwindow(playerid, params[])
 	return 1;
 }
 
+CMD:sitin(playerid, params[])
+{
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(HasNoEngine(vehicleid))
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะนี้ได้");
+
+
+	new seatid = GetPlayerVehicleSeat(playerid);
+
+	PutPlayerInVehicle(playerid, vehicleid, seatid);
+	return 1;
+}
+
+alias:changevehiclename("changvehname")
+CMD:changevehiclename(playerid, params[])
+{
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(PlayerInfo[playerid][pTester] < 3 && !PlayerInfo[playerid][pAdmin])
+		return SendErrorMessage(playerid, "สำหรับผู้ดูแล โปรดติดต่อผู้ดูแลให้ทำการเปลี่ยนชื่อยานพาหนะให้คุณ");
+
+	if(VehicleInfo[vehicleid][eVehicleFaction])
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้กับยานพาหนะของแฟคชั่นได้");
+
+	new Newname[35];
+	if(sscanf(params, "s[35]", Newname))
+	{
+		SendClientMessage(playerid, COLOR_LIGHTRED, "คุณสามารถตั้งชื่อยานพาหนะของคุณได้แต่จำเป็นจะต้องคำนึงถึงสภาพความเป็นจริงของยานพาหนะด้วย");
+		SendClientMessage(playerid, COLOR_LIGHTRED, "หากมีการตั้งชื่อยานพาหนะที่ไม่เหมาะสมกับตัวของยานพาหนะ เราจะทำการลบชื่อของยานพาหนะและลงโทษตามกฎ");
+		SendUsageMessage(playerid, "/changevehiclename <name:>");
+	}
+
+	if(strlen(Newname) < 5 || strlen(Newname) > 35)
+		return SendErrorMessage(playerid, "คุณตั้งชื่อไม่ถูกต้องกรุณาตั้งชื่อใหม่");
+
+	format(VehicleInfo[vehicleid][eVehicleName], 35, "%s",Newname);
+	SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณได้เปลี่ยนชื่อยานพาหนะของคุณเป็น %s เรียบร้อยแล้ว",Newname);
+	SaveVehicle(vehicleid);
+	return 1;
+}
+
 stock ShowVehicleList(playerid)
 {
 	new thread[MAX_STRING];
@@ -1930,7 +1989,8 @@ public Query_LoadPrivateVehicle(playerid)
 		{
 			VehicleInfo[vehicleid][eVehicleExists] = true; 
 			cache_get_value_name_int(i, "VehicleDBID",VehicleInfo[vehicleid][eVehicleDBID]);
-
+			
+			cache_get_value_name(i, "VehicleName",VehicleInfo[vehicleid][eVehicleName]);
 			cache_get_value_name_int(i, "VehicleOwnerDBID",VehicleInfo[vehicleid][eVehicleOwnerDBID]);
 			cache_get_value_name_int(i, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
 			
@@ -2399,6 +2459,7 @@ IsDoorVehicle(vehicleid)
 	return 0;
 }
 
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
@@ -2451,7 +2512,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 
 		}
-
 	}
 	
 	if(SellVehData[playerid][S_BY] != INVALID_PLAYER_ID)

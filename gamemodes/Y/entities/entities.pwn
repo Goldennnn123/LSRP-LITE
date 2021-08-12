@@ -82,8 +82,8 @@ enum E_PLAYER_DATA
 
     bool:pWeaponsSpawned,
 	pWeaponsImmune,
-	pWeapons[13], 
-	pWeaponsAmmo[13],
+	pWeapons[4], 
+	pWeaponsAmmo[4],
 
     pOwnedVehicles[12],
 	bool:pVehicleSpawned,
@@ -136,6 +136,8 @@ enum E_PLAYER_DATA
 	pTuckingLicenseWarn,
 	bool:pTuckingLicenseRevoke,
 	bool:pTuckingLicenseSus,
+
+	bool:pTxaiLicense,
 
 	pCPU,
 	pGPU,
@@ -196,6 +198,7 @@ enum E_VEHICLE_SYSTEM
 	eVehicleDBID, 
 	bool:eVehicleExists,
 	
+	eVehicleName[60],
 	eVehicleOwnerDBID,
 	eVehicleFaction,
 	
@@ -278,6 +281,7 @@ enum E_VEHICLE_SYSTEM
 
 new VehicleInfo[MAX_VEHICLES][E_VEHICLE_SYSTEM];
 new VehicleSiren[MAX_VEHICLES];
+new bool:PlayerTaxiDuty[MAX_PLAYERS];
 
 
 enum G_REPORT_INFO

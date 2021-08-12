@@ -631,7 +631,7 @@ public CallPaycheck()
 		}
 		else
 		{
-			interest_saving = 0.10;
+			interest_saving = 0.07;
 			interest = PlayerInfo[i][pBank] * interest_saving; 
 		}
 
@@ -814,7 +814,8 @@ stock ReturnLicenses(playerid, playerb)
 	new
 		driver_str[60],
 		wep_str[60],
-		truck_str[60]
+		truck_str[60],
+		taxi_str[60]
 
 	;
 	
@@ -848,6 +849,12 @@ stock ReturnLicenses(playerid, playerb)
 
 	else truck_str = "{E2FFFF}Trucking License : Yes";
 
+	if(!PlayerInfo[playerid][pTxaiLicense])
+		taxi_str = "{FF6346}Txai License : No";
+		
+	else if(PlayerInfo[playerid][pTxaiLicense]) 
+		taxi_str = "{FF6346}Txai License : Yes";
+
 
 
 	
@@ -856,6 +863,7 @@ stock ReturnLicenses(playerid, playerb)
 	SendClientMessageEx(playerb, COLOR_GRAD2, "%s", driver_str);
 	SendClientMessageEx(playerb, COLOR_GRAD2, "%s", wep_str);
 	SendClientMessageEx(playerb, COLOR_GRAD2, "%s", truck_str);
+	SendClientMessageEx(playerb, COLOR_GRAD2, "%s", taxi_str);
 	SendClientMessage(playerb, COLOR_DARKGREEN, "___________________________"); 
 	return 1;
 }

@@ -7,7 +7,6 @@
 *.lst
 *.asm
 *.dll
-*.amx
 .dist
 
 # Vendor directory for dependencies

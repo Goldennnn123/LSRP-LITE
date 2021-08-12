@@ -135,12 +135,13 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 
         mysql_int(query, "pMedicLicense",PlayerInfo[playerid][pMedicLicense]);
         mysql_int(query, "pMedicLicenseRevoke",PlayerInfo[playerid][pMedicLicenseRevoke]);
-
-
+        
         mysql_int(query, "pTuckingLicense",PlayerInfo[playerid][pTuckingLicense]);
         mysql_int(query, "pTuckingLicenseWarn",PlayerInfo[playerid][pTuckingLicenseWarn]);
         mysql_int(query, "pTuckingLicenseSus",PlayerInfo[playerid][pTuckingLicenseSus]);
         mysql_int(query, "pTuckingLicenseRevoke",PlayerInfo[playerid][pTuckingLicenseRevoke]);
+
+        mysql_int(query, "pTxaiLicense",PlayerInfo[playerid][pTxaiLicense]);
 
 
         mysql_int(query, "pCPU",PlayerInfo[playerid][pCPU]);

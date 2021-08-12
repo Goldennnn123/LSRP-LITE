@@ -18,7 +18,7 @@ CMD:factionhelp(playerid, params[])
     if(ReturnFactionType(playerid) == GOVERMENT)
     {
         SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty/showbadge, /m(egaphone), /(dep)artment,");
-		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign ");
+		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign /cone /remove_rb");
 		SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /siren, /siren2, /siren3, /headquarter /setbadge /elm");
 
 		if(ReturnFactionJob(playerid) == POLICE && ReturnFactionJob(playerid) == SHERIFF)
@@ -65,6 +65,39 @@ CMD:headquarter(playerid, params[])
 	}
 	else SendFactionMessage(playerid, 0x8D8DFFFF, "HQ: %s", params);
     return 1;
+}
+
+
+
+alias:government("gov")
+CMD:government(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
+		
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ หน่วยงานที่ทำงานขึ้นตรงกับรัฐบาล");
+
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank])
+		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
+
+	if(isnull(params))
+		return SendUsageMessage(playerid, "/government <สิ่งที่จะประกาศ>");
+
+	if(strlen(params) > 89)
+	{
+		SendClientMessageToAllEx(-1, "----------Government %s ----------", FactionInfo[PlayerInfo[playerid][pFaction]][eFactionName]);
+		SendClientMessageToAllEx(COLOR_COP, "ประกาศ:{FFFFFF} %.89s", params);
+		SendClientMessageToAllEx(-1, "%s", params[89]);
+		SendClientMessageToAllEx(-1, "----------Government %s ----------", FactionInfo[PlayerInfo[playerid][pFaction]][eFactionName]);
+	}
+	else
+	{
+		SendClientMessageToAllEx(-1, "----------Government %s ----------", FactionInfo[PlayerInfo[playerid][pFaction]][eFactionName]);
+		SendClientMessageToAllEx(COLOR_COP, "ประกาศ:{FFFFFF} %s", params);
+		SendClientMessageToAllEx(-1, "----------Government %s ----------", FactionInfo[PlayerInfo[playerid][pFaction]][eFactionName]);
+	}
+	return 1;
 }
 
 CMD:f(playerid, params[])
@@ -1127,6 +1160,124 @@ CMD:elm(playerid, params[])
 	}
 }
 
+CMD:cone(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
+
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
+
+	new id, Float:x, Float:y, Float:z;
+	
+	if(sscanf(params, "d", id))
+		return SendUsageMessage(playerid, "/cone <slotid>");
+
+	if(id < 1 || id > 10)
+		return SendErrorMessage(playerid, "กรุณาใส่เลขให้ถูกต้อง");
+
+	if(PlayerInfo[playerid][pObject][id] != INVALID_OBJECT_ID)
+		return SendErrorMessage(playerid, "คุณได้ใช้ สล็อตช่องนี้ในการวาง Object อยู่แล้ว");
+
+	GetPlayerPos(playerid, x, y,z);
+	PlayerInfo[playerid][pObject][id] = CreateDynamicObject(1238, x, y, z, 0.0, 0.0, 0.0,-1,-1,-1);
+	EditDynamicObject(playerid,PlayerInfo[playerid][pObject][id]);
+	SetPVarInt(playerid, "EditObejctRB", id);
+	SetPVarInt(playerid, "ObjectID", 1238);
+	return 1;
+}
+
+CMD:remove_rb(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
+
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
+
+	new id;
+	
+	if(sscanf(params, "d", id))
+		return SendUsageMessage(playerid, "/remove_rb <slotid>");
+
+	if(id < 1 || id > 10)
+		return SendErrorMessage(playerid, "กรุณาใส่เลขให้ถูกต้อง");
+
+	if(PlayerInfo[playerid][pObject][id] == INVALID_OBJECT_ID)
+		return SendErrorMessage(playerid, "ช่อง นี้ไม่ได้มีการใช้งาน");
+	
+
+	if(IsValidDynamicObject(PlayerInfo[playerid][pObject][id]))
+        DestroyDynamicObject(PlayerInfo[playerid][pObject][id]);
+
+	SendClientMessageEx(playerid, -1, "คุณได้ลบวัตถุช่องที่ %d เรียบร้อยแล้ว", id);
+	PlayerInfo[playerid][pObject][id] = INVALID_OBJECT_ID;
+	return 1;
+}
+
+
+CMD:rb(playerid, params[])
+{
+	new slot, model, Float:x, Float:y, Float:z;
+
+	if(sscanf(params,"dd",slot,model))
+	{
+		SendSyntaxMessage(playerid, "/rb <slot(1-10)> <model-id>");
+		SendClientMessage(playerid, COLOR_GRAD2, "|_______________RoadBlocks types_______________|");
+		SendClientMessage(playerid, COLOR_GRAD3, "973,978,979,1422,1423,1424,1425,1427,1434,1459,19834");
+		return 1;
+	}
+
+	if(slot < 1 || slot > 10)
+		return SendErrorMessage(playerid, "กรุณาใส่เลขให้ถูกต้อง");
+
+	if(model != 973 && model != 978 && model != 979 && model != 1422 && model != 1423 && model != 1424 && model != 1425 && model != 1427 && model != 1434 && model != 1459 && model != 19834) 
+		return SendErrorMessage(playerid, "ใส่เลข Object ไม่ถูกต้อง");
+
+	GetPlayerPos(playerid, x, y,z);
+	PlayerInfo[playerid][pObject][slot] = CreateDynamicObject(model, x, y, z, 0.0, 0.0, 0.0,-1,-1,-1);
+	EditDynamicObject(playerid,PlayerInfo[playerid][pObject][slot]);
+	SetPVarInt(playerid, "EditObejctRB", slot);
+	SetPVarInt(playerid, "ObjectID", model);
+	return 1;
+}
+
+
+hook OP_EditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+{
+	if(GetPVarInt(playerid, "EditObejctRB"))
+	{
+		new id = GetPVarInt(playerid, "EditObejctRB");
+		new modelid = GetPVarInt(playerid, "ObjectID");
+
+		switch(response)
+		{
+			case EDIT_RESPONSE_FINAL:
+			{
+				if(IsValidDynamicObject(PlayerInfo[playerid][pObject][id]))
+                    DestroyDynamicObject(PlayerInfo[playerid][pObject][id]);
+
+				SendClientMessage(playerid, -1, "คุณได้วางกรวยลงบนพื้นแล้ว");
+				DeletePVar(playerid, "EditObejctRB");
+				PlayerInfo[playerid][pObject] = CreateDynamicObject(modelid, x, y, z, rx, ry, rz,-1,-1,-1);
+				return 1;
+			}
+			case EDIT_RESPONSE_CANCEL: 
+			{
+				if(IsValidDynamicObject(PlayerInfo[playerid][pObject][id]))
+                    DestroyDynamicObject(PlayerInfo[playerid][pObject][id]);
+				
+				DeletePVar(playerid, "EditObejctRB");
+				PlayerInfo[playerid][pObject][id] = INVALID_OBJECT_ID;
+				SendClientMessage(playerid, -1, "คุณได้ยกเลิกการวางกรวย");
+				return 1;
+			}
+
+		}
+	}
+	return 1;
+}
+
 forward OnLightFlash(vehicleid);
 public OnLightFlash(vehicleid)
 {
@@ -1157,6 +1308,12 @@ hook OnPlayerDisconnect(playerid, reason)
 			PlayerInfo[i][pFactionInvitedBy] = INVALID_PLAYER_ID;
 			SendClientMessage(i, COLOR_YELLOW, "คำเชิญเข้าร่วมของคุณถูกเพิกเฉย ผู้เชิญของคุณถูกยกเลิกการเชื่อมต่อ");
 		}
+	}
+
+	for(new i = 0; i < 10; i++)
+	{
+		if(IsValidDynamicObject(PlayerInfo[playerid][pObject][i]))
+        	DestroyDynamicObject(PlayerInfo[playerid][pObject][i]);
 	}
     return 1;
 }

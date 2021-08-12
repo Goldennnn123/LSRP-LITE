@@ -115,6 +115,7 @@ new globalWeather = 2;
 #include "Y/systems/global.pwn"
 #include "Y/systems/business/clothing.pwn"
 #include "Y/systems/drug/drug.pwn"
+#include "Y/systems/taxi.pwn"
 
 
 #include "Y/jobs/farmer.pwn"
@@ -382,7 +383,6 @@ public OnGameModeInit() {
     //Timer:
     SetTimer("OnPlayerNereHouseTime", 1000, true);
     SetTimer("OnPlayerNereBusinessTime", 3000, true);
-    SetTimer("OnWeaponsUpdate", 1000, true);
     SetTimer("OnVehicleUpdate", 100, true);
     SetTimer("FunctionPaychecks", 1000, true);
     //Timer:
@@ -392,7 +392,8 @@ public OnGameModeInit() {
     DeathLog = CreateLog("server/deathlog");
     chatlog = CreateLog("server/chatlog");
     new query[MAX_STRING];
-    for(new v = 1; v < 260; v++)
+
+    for(new v = 1; v < 280; v++)
     {
         mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0',`pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",v);
         mysql_tquery(dbCon, query);

@@ -129,6 +129,8 @@ AddCharModel( 280, 29110, "LSPD_SKIN/PD30.dff", "LSPD_SKIN/PD30.txd");
 AddCharModel( 280, 29116, "LSPD_SKIN/PD31.dff", "LSPD_SKIN/PD31.txd");
 AddCharModel( 280, 29117, "LSPD_SKIN/PD32.dff", "LSPD_SKIN/PD32.txd");
 AddCharModel( 280, 29118, "LSPD_SKIN/PD33.dff", "LSPD_SKIN/PD33.txd");
+AddCharModel( 280, 29127, "LSPD_SKIN/PD34.dff", "LSPD_SKIN/PD34.txd");
+AddCharModel( 280, 29128, "LSPD_SKIN/PD35.dff", "LSPD_SKIN/PD35.txd");
 
 
 //Skin LSFD & LSMD
@@ -148,4 +150,27 @@ AddCharModel( 124, 29123, "SOS/SOS05.dff", "SOS/SOS05.txd");
 AddCharModel( 179, 29124, "SOS/SOS06.dff", "SOS/SOS06.txd");
 AddCharModel( 217, 29125, "SOS/SOS07.dff", "SOS/SOS07.txd");
 AddCharModel( 100, 29126, "SOS/SOS08.dff", "SOS/SOS08.txd");
+
+
+//Skin TW
+AddCharModel( 107, 29129, "TW/TW01.dff", "TW/TW01.txd");
+AddCharModel( 107, 29130, "TW/TW02.dff", "TW/TW02.txd");
+AddCharModel( 106, 29131, "TW/TW03.dff", "TW/TW03.txd");
+AddCharModel( 106, 29132, "TW/TW04.dff", "TW/TW04.txd");
+AddCharModel( 107, 29133, "TW/TW05.dff", "TW/TW05.txd");
+AddCharModel( 106, 29134, "TW/TW06.dff", "TW/TW06.txd");
+AddCharModel( 107, 29135, "TW/TW07.dff", "TW/TW07.txd");
+AddCharModel( 107, 29136, "TW/TW08.dff", "TW/TW08.txd");
+AddCharModel( 106, 29137, "TW/TW09.dff", "TW/TW09.txd");
+AddCharModel( 107, 29138, "TW/TW10.dff", "TW/TW10.txd");
+AddCharModel( 106, 29139, "TW/TW11.dff", "TW/TW11.txd");
+AddCharModel( 107, 29140, "TW/TW12.dff", "TW/TW12.txd");
+AddCharModel( 106, 29141, "TW/TW13.dff", "TW/TW13.txd");
+AddCharModel( 107, 29142, "TW/TW14.dff", "TW/TW14.txd");
+AddCharModel( 107, 29143, "TW/TW15.dff", "TW/TW15.txd");
+AddCharModel( 106, 29144, "TW/TW16.dff", "TW/TW16.txd");
+AddCharModel( 107, 29145, "TW/TW17.dff", "TW/TW17.txd");
+AddCharModel( 107, 29146, "TW/TW18.dff", "TW/TW18.txd");
+AddCharModel( 106, 29147, "TW/TW19.dff", "TW/TW19.txd");
+AddCharModel( 195, 29148, "TW/TW20.dff", "TW/TW20.txd");
 

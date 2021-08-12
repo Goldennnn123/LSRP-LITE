@@ -133,34 +133,25 @@ stock PlayerHasWeapon(playerid, weaponid)
 }
 
 
-forward OnWeaponsUpdate();
-public OnWeaponsUpdate()
+ptask OnWeaponsUpdate[1000](playerid) 
 {
-	foreach(new i : Player)
+	if(!BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
+		return 1;
+			
+	for (new w = 0; w < 4; w++)
 	{
-		if(!BitFlag_Get(gPlayerBitFlag[i], IS_LOGGED))
-			continue;
-		
-		if(!PlayerHasWeapons(i))
-			continue;
+		new idx = WeaponDataSlot(PlayerInfo[playerid][pWeapons][w]); 
 			
-		for (new w = 0; w < 13; w++)
+		if(PlayerInfo[playerid][pWeapons][w] != 0 && PlayerInfo[playerid][pWeaponsAmmo][w] > 0)
 		{
-			new idx = WeaponDataSlot(PlayerInfo[i][pWeapons][w]); 
-			
-			if(PlayerInfo[i][pWeapons][w] != 0 && PlayerInfo[i][pWeaponsAmmo][w] > 0)
-			{
-				GetPlayerWeaponData(i, idx, PlayerInfo[i][pWeapons][w], PlayerInfo[i][pWeaponsAmmo][w]); 
-			}
-			
-			if(PlayerInfo[i][pWeapons][w] != 0 && PlayerInfo[i][pWeaponsAmmo][w] == 0)
-			{
-				PlayerInfo[i][pWeapons][w] = 0;
-				//Removing 0 ammo weapons;
-			}
+			GetPlayerWeaponData(playerid, idx, PlayerInfo[playerid][pWeapons][w], PlayerInfo[playerid][pWeaponsAmmo][w]); 
 		}
 			
-		return 1;
+		if(PlayerInfo[playerid][pWeapons][w] != 0 && PlayerInfo[playerid][pWeaponsAmmo][w] == 0)
+		{
+			PlayerInfo[playerid][pWeapons][w] = 0;
+			//Removing 0 ammo weapons;
+		}
 	}
 	return 1;
 }

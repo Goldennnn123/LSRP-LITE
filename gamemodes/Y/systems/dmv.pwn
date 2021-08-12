@@ -141,10 +141,10 @@ ptask PlayerLicenseTimeCount[1000](playerid)
             StopDriverstest(playerid);
             SendClientMessage(playerid, COLOR_RED, "คุณขับรถนานเกินไปกว่าเวลาที่กำหนด"); 
         }
-        if(GetVehicleSpeed(VehicleID[playerid]) > 60)
+        if(GetVehicleSpeed(VehicleID[playerid]) > 100)
         {
 			Speedveh[playerid]++;
-			SendClientMessageEx(playerid, COLOR_RED, "ขับเกิน 60 กิโลเมตรต่อชั่วโมง คุณอาจจะไม่ผ่านบททดสอบนี้ได้ (%d)", Speedveh[playerid]); 
+			SendClientMessageEx(playerid, COLOR_RED, "ขับเกิน 100 กิโลเมตรต่อชั่วโมง คุณอาจจะไม่ผ่านบททดสอบนี้ได้ (%d)", Speedveh[playerid]); 
         }
     }
 	return 1;
@@ -175,7 +175,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			SendClientMessage(playerid, -1, "{17A589}ตอนนี้คุณได้อยู่บนรถ ทดสอบใบขับขี่ คุณสามารถพิมพ์ {FFFF00}/licenseexam {17A589}เพื่อทำการทดสอบการขับรถของคุณ");
 			SendClientMessage(playerid, -1, "{F44336}---------------------------------{F4511E}Rule TestDriver{F44336}---------------------------------");
 			SendClientMessage(playerid, -1, "1.ห้ามขับรถแล้วทำให้รถ เสียหายแม้แต่นิดเดียว");
-			SendClientMessage(playerid, -1, "2.ห้ามขับด้วยความเร็วเกิน 60 กิโลเมตรต่อชั่วโมง");
+			SendClientMessage(playerid, -1, "2.ห้ามขับด้วยความเร็วเกิน 100 กิโลเมตรต่อชั่วโมง");
 			SendClientMessage(playerid, -1, "{F44336}---------------------------------{F4511E}Rule TestDriver{F44336}---------------------------------");
 			SendClientMessage(playerid, COLOR_RED, "ห้ามนำรถนี้ไปใช้ในการเล่นบทบาทอื่นๆที่ไม่มีความเกี่ยวข้องใดๆกับ การทดสอบขับรถนี้ หากพบเห็น จะทำการส่ง");
 			SendClientMessage(playerid, COLOR_RED, "คุกแอดมิน ตามกฎที่ได้ให้ไว้");

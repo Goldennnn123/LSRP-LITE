@@ -361,6 +361,8 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pTuckingLicenseWarn",PlayerInfo[playerid][pTuckingLicenseWarn]);
 	cache_get_value_name_int(0, "pTuckingLicenseSus",PlayerInfo[playerid][pTuckingLicenseSus]);
 
+	cache_get_value_name_int(0, "pTxaiLicense",PlayerInfo[playerid][pTxaiLicense]);
+
 	cache_get_value_name_int(0, "pCPU",PlayerInfo[playerid][pCPU]);
 	cache_get_value_name_int(0, "pGPU",PlayerInfo[playerid][pGPU]);
 	cache_get_value_name_int(0, "pRAM",PlayerInfo[playerid][pRAM]);
@@ -625,7 +627,7 @@ public Query_SelectCharacter(playerid)
 
 stock ResetPlayerCharacter(playerid)
 {
-	SetPlayerWeaponSkill(playerid, NORMAL_SKILL);
+	SetPlayerWeaponSkill(playerid, FULL_SKILL);
     gPlayerBitFlag[playerid] = PlayerFlags:0;
     e_pAccountData[playerid][mDBID] = 0;
     format(e_pAccountData[playerid][mForumName], e_pAccountData[playerid][mForumName], "");
@@ -718,6 +720,7 @@ stock ResetPlayerCharacter(playerid)
     PlayerInfo[playerid][pTuckingLicenseRevoke] = false;
     PlayerInfo[playerid][pTuckingLicenseWarn] = 0;
     PlayerInfo[playerid][pTuckingLicenseSus] = false;
+	PlayerInfo[playerid][pTxaiLicense] = false;
     PlayerInfo[playerid][pFactionChat] = false;
     PlayerInfo[playerid][pFactionInvite] = 0;
 	PlayerInfo[playerid][pFactionInvitedBy] = INVALID_PLAYER_ID;

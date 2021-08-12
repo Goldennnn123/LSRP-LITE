@@ -118,7 +118,7 @@ CMD:forumname(playerid, params[])
 
 CMD:goto(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pAdmin])
+	if(PlayerInfo[playerid][pTester] < 3 && !PlayerInfo[playerid][pAdmin])
 		return SendUnauthMessage(playerid); 
 		
 	new playerb;
@@ -1182,7 +1182,7 @@ CMD:aooc(playerid, params[])
 	if(strlen(params) > 89)
 	{
 		SendClientMessageToAllEx(0xC2185B, "[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %.89s", e_pAccountData[playerid][mForumName], params[60]);
-		SendClientMessageToAllEx(0xC2185B, "...%s", params);
+		SendClientMessageToAllEx(0xC2185B, "...%s", params[89]);
 		return 1;
 	}
 	else SendClientMessageToAllEx(0xC2185B, "[ANNOUNCEMENTS] ผู้ดูแลระบบ %s: %s", e_pAccountData[playerid][mForumName], params);

@@ -21,7 +21,7 @@ hook OnPlayerConnect(playerid)
 
 CMD:help(playerid, params[])
 {
-	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrp-lite.co___________");
+	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrplite.xyz___________");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines /frisk");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstation /boombox /clothing /buyclothing /takegun");
@@ -31,6 +31,27 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_GREEN,"_____________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
 	return 1; 
+}
+
+CMD:onduty(playerid, params[])
+{
+	new police, medic, sadcr, taxi;
+
+	foreach(new i : Player)
+	{
+		if(PlayerInfo[playerid][pPoliceDuty])
+			police++;
+		if(PlayerInfo[playerid][pSheriffDuty])
+			police++;
+		if(PlayerInfo[playerid][pMedicDuty])
+			medic++;
+		if(PlayerInfo[playerid][pSADCRDuty])
+			sadcr++;
+		if(PlayerTaxiDuty[i])
+			taxi++;
+	}
+	SendClientMessageEx(playerid, -1, "On duty: %d PD/SD, %d DOC, %d LSFD, %d Taxis", police, sadcr, medic, taxi);
+	return 1;
 }
 
 alias:radiohelp("rhelp")
@@ -141,6 +162,53 @@ CMD:opendoor(playerid, params[])
 			{
 				SetVehicleParamsCarDoors(vehicleid, -1, -1, -1, 1);
 				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s เปิดประตูรถ %s", ReturnRealName(playerid),ReturnVehicleName(vehicleid));		
+			}
+		}
+	}
+	else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกลเยานพาหนะหน่ะ");
+
+	return 1;
+}
+
+CMD:closedoor(playerid, params[])
+{
+	new vehicleid = GetNearestVehicle(playerid),
+	item[16];
+
+	if(HasNoEngine(vehicleid))
+		return SendErrorMessage(playerid, "ไม่สามารถเปิดประตูที่ยานพาหนะสิ่งนี้ได้");
+
+	if(IsCheckBike(vehicleid))
+		return SendErrorMessage(playerid, "ไม่สามารถเปิดประตูที่ยานพาหนะสิ่งนี้ได้");
+
+	
+	if(vehicleid != -1)
+	{
+	  	if(sscanf(params, "s[32]", item)) {
+	  	    //SendClientMessage(playerid, COLOR_LIGHTRED, "[ ! ]"EMBED_WHITE" TIP: เมื่อเป็นคนขับ คุณสามารถระบุหน้าต่างที่จะเปิดได้");
+			SendClientMessage(playerid, COLOR_LIGHTRED, "การใช้: "EMBED_WHITE"/closedoor [dr (driver) / pa (passenger) / bl (backleft) / br (backright)]");
+		}
+		else
+		{
+			if(strcmp(item, "driver", true) == 0 || strcmp(item, "dr", true) == 0)
+			{
+				SetVehicleParamsCarDoors(vehicleid, -1, -1, -1, -1);
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s ปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));
+			}
+			if(strcmp(item, "passenger", true) == 0 || strcmp(item, "pa", true) == 0)
+			{
+				SetVehicleParamsCarDoors(vehicleid, -1, -1, -1, -1);
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s ปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));		
+			}
+			if(strcmp(item, "backleft", true) == 0 || strcmp(item, "bl", true) == 0)
+			{
+				SetVehicleParamsCarDoors(vehicleid, -1, -1, 1, -1);
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s ปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));
+			}
+			if(strcmp(item, "backright", true) == 0 || strcmp(item, "br", true) == 0)
+			{
+				SetVehicleParamsCarDoors(vehicleid, -1, -1, -1, -1);
+				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s ปิดประตูรถ %s", ReturnRealName(playerid),ReturnVehicleName(vehicleid));		
 			}
 		}
 	}
@@ -466,6 +534,55 @@ CMD:enter(playerid,params[])
 
 	return 1;
 }
+
+CMD:ram(playerid,params[])
+{
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล"); 
+
+	new bool:checked = false;
+	for(new p = 1; p < MAX_HOUSE; p++)
+	{
+		if(!HouseInfo[p][HouseDBID])
+			continue;
+
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[p][HouseEntrance][0], HouseInfo[p][HouseEntrance][1], HouseInfo[p][HouseEntrance][2]))
+		{
+			if(GetPlayerVirtualWorld(playerid) != HouseInfo[p][HouseEntranceWorld])
+				continue;
+					
+			if(GetPlayerInterior(playerid) != HouseInfo[p][HouseEntranceInterior])
+				continue;
+
+			if(!HouseInfo[p][HouseInterior][0] || !HouseInfo[p][HouseInterior][1] || !HouseInfo[p][HouseInterior][2])
+				return GameTextForPlayer(playerid, "~r~Close", 3000, 1);
+
+			PlayerInfo[playerid][pInsideProperty] = p;
+			HouseInfo[p][HouseLock] = false;
+
+			SetPlayerPos(playerid, HouseInfo[p][HouseInterior][0], HouseInfo[p][HouseInterior][1], HouseInfo[p][HouseInterior][2] - 3);
+			
+			SetPlayerVirtualWorld(playerid, HouseInfo[p][HouseInteriorWorld]);
+			SetPlayerInterior(playerid, HouseInfo[p][HouseInteriorID]);
+			
+			TogglePlayerControllable(playerid, 0);
+			SetTimerEx("OnPlayerEnterProperty", 2000, false, "ii", playerid, p); 
+
+			if(HouseInfo[p][HouseMusic])
+			{
+				StopAudioStreamForPlayer(playerid);
+				PlayAudioStreamForPlayer(playerid, HouseInfo[p][HouseMusicLink]);
+			}
+		}
+		else checked = true;
+
+	}
+
+	if(checked) return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้บ้าน");
+
+	return 1;
+}
+
 
 CMD:exit(playerid, params[])
 {
@@ -1347,7 +1464,12 @@ CMD:respawnme(playerid, params[])
 	GiveMoney(playerid, -2000);
 	SetPlayerHealth(playerid, 100);
 	ClearDamages(playerid);
-	SpawnPlayer(playerid);	
+	
+	SetPlayerPos(playerid, 1172.3795,-1322.9852,15.4022);
+	SetPlayerFacingAngle(playerid, 268.8748);
+	SetPlayerVirtualWorld(playerid, 0);
+	SetPlayerInterior(playerid, 0);
+
 	return 1;
 }
 
@@ -2602,6 +2724,9 @@ CMD:frisk(playerid, params[])
 
 CMD:walkstyle(playerid, params[])
 {
+	if(!PlayerInfo[playerid][pDonater])
+		return SendErrorMessage(playerid, "คุณไม่ใช่ Donater");
+
 	new id;
 	if(sscanf(params, "d", id))
 		return SendUsageMessage(playerid, "/walkstyle <1-18>");
@@ -2857,6 +2982,104 @@ CMD:hidehud(playerid, params[])
 	return 1;
 }
 
+CMD:dice(playerid, params[])
+{
+	new str[128];
+	format(str, sizeof(str), "> %s ทอยลูกเต๋าและมันออก %d", ReturnRealName(playerid), random(6)+1);
+    SendNearbyMessage(playerid, 15.0, COLOR_EMOTE, str);
+	return 1;
+}
+
+CMD:rnumber(playerid, params[])
+{
+	new
+	    rmin,
+	    rmax,
+		emote[128],
+		str[128];
+
+	if (sscanf(params, "dds[128]", rmin, rmax, emote))
+	    return SendSyntaxMessage(playerid, "/rnumber <min> <max> [อารมณ์]");
+
+	if(rmin >= rmax) {
+	    return SendClientMessage(playerid, COLOR_LIGHTRED, "ตัวเลขต่ำสุดต้องน้อยกว่าตัวเลขสูงสุด");
+	}
+
+	format(str, sizeof(str), "> %s %s %d (( %d ถึง %d ))", ReturnRealName(playerid), emote, randomEx(rmin, rmax), rmin, rmax);
+    SendNearbyMessage(playerid, 30.0, COLOR_EMOTE, str);
+	return 1;
+}
+
+alias:whisper("w")
+CMD:whisper(playerid, params[])
+{
+	new tagerid, text[128];
+
+	if(sscanf(params, "us[128]", tagerid, text))
+	    return SendSyntaxMessage(playerid, "/(w)hisper <ไอดีผู้เล่น/ชื่อบางส่วน> <ข้อความ>");
+	
+	if(!IsPlayerConnected(tagerid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซิร์ฟเวอร์");
+	
+	if (!IsPlayerNearPlayer(playerid, tagerid, 3.0))
+	    return SendErrorMessage(playerid,"ผู้เล่นนั้นไม่ได้อยู่ใกล้คุณ");
+	
+	if (tagerid == playerid)
+		return SendErrorMessage(playerid, "คุณไม่สามารถกระซิบกับตัวเองได้");
+	
+
+	if (strlen(text) > 80) {
+	    SendClientMessageEx(tagerid, COLOR_YELLOW, "%s กระซิบ: %.80s", ReturnRealName(playerid), text);
+	    SendClientMessageEx(tagerid, COLOR_YELLOW, "... %s **", text[80]);
+
+	    SendClientMessageEx(playerid, COLOR_YELLOW, "กระซิบถึง %s", ReturnRealName(tagerid));
+	}
+	else {
+	    SendClientMessageEx(tagerid, COLOR_YELLOW, "%s กระซิบ: %s", ReturnRealName(playerid), text);
+	    SendClientMessageEx(playerid, COLOR_YELLOW, "กระซิบถึง %s", ReturnRealName(tagerid));
+	}
+	//format(text, sizeof(text), "กระซิบ %s: %s", ReturnPlayerName(userid), text);
+	//SQL_LogChat(playerid, "/w", text);
+	
+	format(text, sizeof(text), "%s พึมพำบางอย่าง", ReturnRealName(playerid));
+	SetPlayerChatBubble(playerid, text, COLOR_PURPLE, 30.0, 6000);
+	return 1;
+}
+
+
+CMD:cw(playerid, params[])
+{
+	new text[128], vehicle = GetPlayerVehicleID(playerid);
+
+    if (sscanf(params, "s[128]", text))
+	    return SendSyntaxMessage(playerid, "/(cw)hisper [ข้อความ]");
+
+	if (!IsPlayerInAnyVehicle(playerid))
+		return SendClientMessage(playerid, COLOR_GRAD1, "คุณไม่ได้อยู่บนรถ!");
+
+	foreach (new i : Player)
+	{
+	    if(IsPlayerInAnyVehicle(i) && GetPlayerVehicleID(i) == vehicle) {
+		    if (strlen(text) > 80) {
+			    SendClientMessageEx(i, 0xD7DFF3AA, "%s %s พูดว่า: %.80s", (GetPlayerState(playerid) == PLAYER_STATE_DRIVER) ? ("คนขับ"): ("ผู้โดยสาร"), ReturnRealName(playerid), text);
+			    SendClientMessageEx(i, 0xD7DFF3AA, "... %s", text[80]);
+			}
+			else {
+			    SendClientMessageEx(i, 0xD7DFF3AA, "%s %s พูดว่า: %s", (GetPlayerState(playerid) == PLAYER_STATE_DRIVER) ? ("คนขับ"): ("ผู้โดยสาร"), ReturnRealName(playerid), text);
+			}
+		}
+	}
+
+	//SQL_LogChat(playerid, "/cw", text);
+	return 1;
+}
+
+randomEx(min, max)
+{
+    new rand = random(max-min)+min;
+    return rand;
+}
+
 stock ShowInvPlayer(tagerid, playerid)
 {
 	new weapon_id[2][13];
@@ -2882,7 +3105,7 @@ stock ShowInvPlayer(tagerid, playerid)
 		SendClientMessageEx(tagerid, COLOR_GRAD1, "%s", ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
 	}
 
-	if(PlayerInfo[playerid][pDrug][0] && PlayerInfo[playerid][pDrug][1] && PlayerInfo[playerid][pDrug][2])
+	if(PlayerInfo[tagerid][pDrug][0] || PlayerInfo[tagerid][pDrug][1] || PlayerInfo[tagerid][pDrug][2])
 	{
 		SendClientMessage(tagerid, COLOR_GREY, "มียาเสพติดภายในตัว");
 	}

@@ -23,7 +23,7 @@ CMD:help(playerid, params[])
 {
 	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrplite.xyz___________");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines /frisk");
-	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps");
+	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps /cigarettes");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstation /boombox /clothing /buyclothing /takegun");
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp /drughelp /meal /dropgun");
@@ -2061,6 +2061,7 @@ CMD:levelup(playerid, params[])
 	return 1;
 }
 
+alias:license("lic", "บัตรประชาชน", "บัตร")
 CMD:license(playerid, params[])
 {
 	new playerb;
@@ -2311,36 +2312,84 @@ CMD:helpme(playerid, params[])
 	return 1;
 }
 
-CMD:givecigare(playerid, params[])
+
+CMD:cigarettes(playerid, params[])
 {
+	new option[11], secoption;
+
+	if(sscanf(params, "s[11]D(-1)", option, secoption)) 
+	{
+		SendClientMessageEx(playerid,  -1, "{7e98b6}[!] {a9c4e4}คุณมีบุหรี่จำนวน %d มวน", PlayerInfo[playerid][pCigare]);
+		SendClientMessage(playerid, -1, "{7e98b6}[!] การใช้งาน : {a9c4e4}/cigarettes use, give, drop & /passjoint");
+		return 1;
+	}
+
 	if(!PlayerInfo[playerid][pCigare])
-		return SendErrorMessage(playerid, "ไม่มีบุหรี่");
+		return SendErrorMessage(playerid, "คุณไม่มีบุหรี่");
 
-	new tagerid, amount;
+	if(CompareStrings(option, "use"))
+	{
+		if(IsPlayerInAnyVehicle(playerid)) return SendClientMessage(playerid, COLOR_GREY, "คุณต้องอยู่บนพื้น");
 
-	if(sscanf(params, "ud", tagerid, amount))
-		return SendUsageMessage(playerid, "/givecigare <ชื่อบางส่วน/ไอดี> <จำนวน>");
+		SetPlayerSpecialAction(playerid,SPECIAL_ACTION_SMOKE_CIGGY);
+		SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "> %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
+		SendClientMessage(playerid, -1, "{7e98b6}[!] {a9c4e4}กด ENTER เพื่อหยุดการสูบบุหรี่");
+		PlayerInfo[playerid][pCigare]--;
+		return 1;
+	}
+	else if(CompareStrings(option, "give"))
+	{
+		new userid, amount;
 
-	if(amount > PlayerInfo[playerid][pCigare])
-		return SendErrorMessage(playerid, "คุณมีบุหรี่ไม่เพียงพอ");
+		if(sscanf(params, "{s[7]}ud", userid, amount)) 
+			return SendClientMessage(playerid, -1, "{7e98b6}[!] การใช้งาน : {a9c4e4}/cigarettes give [ไอดีผู้เล่น/ชื่อบางส่วน] [จำนวน]");
 
-	if(!IsPlayerConnected(tagerid))
-		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ภายในเซืฟเวอร์");
+		if(!IsPlayerConnected(userid))
+			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซิร์ฟเวอร์");
+
+		if(amount < 1)
+			return SendErrorMessage(playerid, "คุณต้องระบุจำนวนมากกว่า 1");
+
+		if (PlayerInfo[playerid][pCigare] < amount)
+			return SendErrorMessage(playerid, "คุณมีบุหรี่ไม่เพียงพอ");
 		
-	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
-		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+		if (!IsPlayerNearPlayer(playerid, userid, 5.0))
+			return SendErrorMessage(playerid, "ผู้เล่นนั้นไม่ได้อยู่ใกล้คุณ");
 		
-	if(!IsPlayerNearPlayer(playerid, tagerid, 5.0))
-		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+		if (userid == playerid)
+			return SendErrorMessage(playerid, "คุณไม่สามารถให้บุหรี่กับตัวเองได้");
 
-	if(PlayerInfo[tagerid][pCigare] >= 20)
-		return SendErrorMessage(playerid, "ผู้เล่นมี บุหรี่เต็มแล้ว");
+		PlayerInfo[playerid][pCigare] -= amount;
+		PlayerInfo[userid][pCigare] += amount;
+		SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s ให้บุหรี่กับ %s", ReturnName(playerid, 0), ReturnName(userid, 0));
+		SendClientMessageEx(playerid, -1, "{7e98b6}[!] {a9c4e4}คุณให้บุหรี่กับ %s จำนวน {7e98b6}%d {a9c4e4}มวน", ReturnName(userid, 0), amount);
+		SendClientMessageEx(userid, -1, "{7e98b6}[!] {a9c4e4}คุณได้รับบุหรี่จาก %s จำนวน {7e98b6}%d {a9c4e4}มวน", ReturnName(playerid, 0), amount);
+		return 1;
+	}
+	else if(CompareStrings(option, "drop"))
+	{
+		new slot;
 
-	PlayerInfo[tagerid][pCigare]+= amount;
-	PlayerInfo[playerid][pCigare]-= amount;
-	SendClientMessageEx(playerid, -1, "คุณได้ให้บุหรี่จำนวน %d ม้วนกับ %s",amount, ReturnName(tagerid,0));
-	SendClientMessageEx(tagerid, -1, "คุณได้รับบุหรี่จำนวน %d ม้วนจาก %s",amount, ReturnName(playerid,0));
-	SendNearbyMessage(playerid, 3.0, COLOR_EMOTE, "> %s ได้หยิบซองบุหรี่ออกมาแล้วหยิบม้วนบุหรี่บางส่วนให้กับ %s", ReturnName(playerid,0),ReturnName(tagerid,0));
+		if (sscanf(params, "{s[7]}d", slot)) 
+			return SendClientMessage(playerid, -1, "{7e98b6}[!] การใช้งาน : {a9c4e4}/cigarettes drop [จำนวน]");
+		
+		if (PlayerInfo[playerid][pCigare] < slot)
+			return SendClientMessage(playerid, COLOR_LIGHTRED, "คุณไม่มีบุหรี่เพียงพอ");
+
+		if (slot < 1)
+			return SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องระบุจำนวนมากกว่า 1");
+
+		SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "> %s ทิ้งบุหรี่ลงที่พื้น", ReturnRealName(playerid));
+
+		SendClientMessageEx(playerid, -1, "{7e98b6}[!] {a9c4e4}คุณได้ทิ้งบุหรี่จำนวน %d มวน", slot);
+		SendClientMessage(playerid, -1, "{7e98b6}[!] Hint: {a9c4e4}คุณสามารถซื้อบุหรี่เพิ่มได้จาก 24/7 หากคุณต้องการ");
+
+		PlayerInfo[playerid][pCigare] -= slot;
+		CharacterSave(playerid);
+		return 1;
+	}
+	else SendErrorMessage(playerid, "คุณพิพม์คำสั่งไม่ถูกต้อง");
+
 	return 1;
 }
 
@@ -2358,14 +2407,10 @@ CMD:smoke(playerid, params[])
 		case 1: 
 		{
 			ApplyAnimation(playerid,"SMOKING","M_smk_in",4.1, 0, 1, 1, 1, 1, 1);
-			PlayerInfo[playerid][pCigare]--;
-			SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "> %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
 		}
 		case 2: 
 		{
 			ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 1, 1, 1, 1, 1, 1);
-			PlayerInfo[playerid][pCigare]--;
-			SendNearbyMessage(playerid, 3.2, COLOR_EMOTE, "> %s หยิบบุหรีออกมาหนึ่งม้วนพร้อมกับจุดแล้วคีบไว้ที่ปาก",ReturnName(playerid,0));
 		}
 		default: return SendUsageMessage(playerid,"/smoke [1-2]");
 	}

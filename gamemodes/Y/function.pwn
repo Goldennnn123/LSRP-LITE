@@ -482,6 +482,15 @@ stock ShowCharacterStats(playerid, playerb)
 	return 1;
 }
 
+
+stock CompareStrings(const string[], const string2[])
+{
+	if(!strcmp(string, string2, true))
+		return true;
+	else
+		return false;
+}
+
 stock ReturnLastOnline(playerid)
 {
 	new returnString[90]; 

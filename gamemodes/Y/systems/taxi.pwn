@@ -68,6 +68,8 @@ hook OnGameModeInit()
 {
     taxi_vehicles[0] = AddStaticVehicle(420,1270.5159,-1537.1450,13.3443,271.6486,6,6); SetVehicleNumberPlate(taxi_vehicles[0], "TAXI");
     taxi_vehicles[1] = AddStaticVehicle(420,1270.1414,-1530.0341,13.3438,271.2721,6,6); SetVehicleNumberPlate(taxi_vehicles[1], "TAXI");
+	VehicleInfo[taxi_vehicles[0]][eVehicleFuel] = 100.0;
+	VehicleInfo[taxi_vehicles[1]][eVehicleFuel] = 100.0;
 	return 1;
 }
 

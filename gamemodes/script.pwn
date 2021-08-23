@@ -85,6 +85,8 @@ new globalWeather = 2;
 #include "Y/entities/boombox.pwn"
 #include "Y/entities/clothing.pwn"
 #include "Y/entities/customskin.pwn"
+#include "Y/entities/fuel.pwn"
+#include "Y/entities/furniture.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -94,6 +96,7 @@ new globalWeather = 2;
 #include "Y/mysql/database.pwn"
 
 #include "Y/systems/vehicle/vehicles.pwn"
+#include "Y/systems/vehicle/fuel.pwn"
 #include "Y/systems/cooldown.pwn"
 #include "Y/systems/job.pwn"
 #include "Y/systems/report.pwn"
@@ -110,6 +113,7 @@ new globalWeather = 2;
 #include "Y/systems/anim.pwn"
 #include "Y/systems/furniture/computer.pwn"
 #include "Y/systems/furniture/boombox.pwn"
+#include "Y/systems/furniture/spike.pwn"
 #include "Y/systems/fine.pwn"
 #include "Y/systems/gps.pwn"
 #include "Y/systems/global.pwn"
@@ -124,6 +128,7 @@ new globalWeather = 2;
 #include "Y/jobs/mechanic.pwn"
 #include "Y/jobs/miner.pwn"
 #include "Y/jobs/electrician.pwn"
+#include "Y/jobs/fuel.pwn"
 
 #include "Y/mysql/CharacterSave.pwn"
 #include "Y/mysql/SaveVehicle.pwn"
@@ -136,6 +141,7 @@ new globalWeather = 2;
 #include "Y/mysql/SaveGps.pwn"
 #include "Y/mysql/SaveClothing.pwn"
 #include "Y/mysql/SaveGlobal.pwn"
+#include "Y/mysql/SaveFuel.pwn"
 
 #include "Y/registration/login.pwn"
 #include "Y/character/character.pwn"
@@ -157,6 +163,7 @@ new globalWeather = 2;
 #include "Y/Interior/house3.pwn"
 #include "Y/Interior/pizza.pwn"
 #include "Y/Interior/bar2.pwn"
+//#include "Y/Interior/bar3.pwn"
 #include "Y/Interior/House3.pwn"
 #include "Y/Interior/House5.pwn"
 #include "Y/Interior/House6.pwn"
@@ -172,7 +179,9 @@ new globalWeather = 2;
 #include "Y/Map/map_fight.pwn"
 #include "Y/Map/carmeeting.pwn"
 #include "Y/Map/lspdhq_new.pwn"
-#include "Y/Map/police_g.pwn"
+//#include "Y/Map/police_g.pwn"
+#include "Y/Map/pump.pwn"
+#include "Y/Map/mapnaigun.pwn"
 //#include "Y/Map/map_p_1.pwn"
 /*#include "Y/Map/slrp.pwn"
 #include "Y/Map/apartment.pwn"
@@ -253,6 +262,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Weapons",e_pAccountData[playerid][mDBID] ,PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
 	    SendDiscordMessage(4, str);
         SetPlayerArmour(playerid,0);
+        RemovePlayerWeapon(playerid, GetPlayerWeapon(playerid));
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
     }
     else if(code == 18)
@@ -391,13 +401,14 @@ public OnGameModeInit() {
     allcmdlog = CreateLog("server/allcmdlog");
     DeathLog = CreateLog("server/deathlog");
     chatlog = CreateLog("server/chatlog");
-    new query[MAX_STRING];
+    
+    /*new query[MAX_STRING];
 
-    for(new v = 1; v < 280; v++)
+    for(new v = 1; v < 290; v++)
     {
         mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0',`pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",v);
         mysql_tquery(dbCon, query);
-    }
+    }*/
     
     return 1;
 }
@@ -516,6 +527,14 @@ public OnPlayerDisconnect(playerid, reason) {
     // บันทึกว่าหลุด
 	if(reason == 0) {
 		PlayerInfo[playerid][pTimeout] = gettime();
+
+
+        if(PlayerInfo[playerid][pPoliceDuty])
+        {
+            new query[255];
+            mysql_format(dbCon, query, sizeof(query), "INSERT INTO `cache`(`C_DBID`, `C_DUTY`) VALUES ('%d','%d')",PlayerInfo[playerid][pDBID], PlayerInfo[playerid][pPoliceDuty]);
+            mysql_tquery(dbCon, query);
+        }
     }
 
     for(new i = 0; i < 10; i++)
@@ -554,16 +573,23 @@ public OnPlayerSpawn(playerid) {
 
     SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
 	SetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
+    
     PlayerTextDrawShow(playerid, RadioStats[playerid]);
     
     if(PlayerInfo[playerid][pWeaponsSpawned] == false)
 	{
 		for(new i = 0; i < 4; i ++)
 		{
+            if(!PlayerInfo[playerid][pWeapons][i])
+                continue;
+            
 			if(PlayerInfo[playerid][pWeapons][i] != 0)
 			{
 				GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
-			}
+                //printf("Give Weapons: %s Ammo: %d",ReturnWeaponName(PlayerInfo[playerid][pWeapons][i]), PlayerInfo[playerid][pWeaponsAmmo][i]);
+                PlayerInfo[playerid][pWeapons][i] = PlayerInfo[playerid][pWeapons][i];
+                PlayerInfo[playerid][pWeaponsAmmo][i] = PlayerInfo[playerid][pWeaponsAmmo][i];
+            }
 		}
 			
 		SetPlayerArmedWeapon(playerid, 0);
@@ -582,7 +608,7 @@ public OnPlayerSpawn(playerid) {
         StopAudioStreamForPlayer(playerid);
         return 1;
     }
-
+    
     if(PlayerInfo[playerid][pArrest] == true)
     {
         ArrestConecterJail(playerid, PlayerInfo[playerid][pArrestTime], PlayerInfo[playerid][pArrestRoom]);
@@ -608,8 +634,18 @@ public OnPlayerSpawn(playerid) {
 
         GameTextForPlayer(playerid, "~r~crashed. ~w~returning to last position", 1000, 1);
         StopAudioStreamForPlayer(playerid);
+
+        new query[255];
+		mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `cache` WHERE C_DBID = '%d'",PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query, "OnplayerCache", "d",playerid);
+
+    
         return 1;
     }
+
+    new query[255];
+	mysql_format(dbCon, query, sizeof(query), "DELETE FROM `cache` WHERE `C_DBID` = '%d'",PlayerInfo[playerid][pDBID]);
+	mysql_tquery(dbCon, query);
 
     if(PlayerInfo[playerid][pSpectating] != INVALID_PLAYER_ID)
     {
@@ -752,10 +788,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 
 
 public OnPlayerUpdate(playerid)
-{
-    if(PlayerInfo[playerid][pAdminDuty])
-		SetPlayerHealth(playerid, 250);
-		
+{		
 	//PlayerInfo[playerid][pPauseCheck] = GetTickCount(); 
 	
 	new
@@ -773,6 +806,34 @@ public OnPlayerUpdate(playerid)
 		SetPlayerChatBubble(playerid, "(( ผู้เล่นคนนี้เสียชีวิตแล้ว ))", COLOR_RED, 30.0, 2500); 
         ApplyAnimation(playerid, "WUZI", "CS_Dead_Guy", 4.1, 0, 1, 1, 1, 0, 1);	
 	}
+
+    if(GetPlayerWeapon(playerid) != 0 && GetPlayerWeapon(playerid) != 5 && GetPlayerWeapon(playerid) != 4 && GetPlayerWeapon(playerid) != WEAPON_CAMERA && !GetPVarInt(playerid, "CheckKickPlayerWeaponsTime"))
+    {   
+        if(PlayerInfo[playerid][pTimeplayed] < 30)
+		{
+            SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณกำลังจะถูกเตะออกจากเซิร์ฟเวอร์ในข้อหา ครอบครองอาวุธโดยชั่วโมงออนไลน์ยังไม่ถึง 30 ชั่มโมง");
+            SendClientMessageEx(playerid, COLOR_LIGHTRED, "ขอให้คุณรีบติดต่อผู้ดูแลระบบหรือนำอาวุธของคุณไปเก็บก่อนที่จะโดนเดะ คุณต้องรีบดำเนินการภายใน 60 วินาที");
+            SetTimerEx("KickPlayerWeaponsTime", 60000, false, "d",playerid);
+            SetPVarInt(playerid, "CheckKickPlayerWeaponsTime",1);
+		}
+    }
+    return 1;
+}
+
+forward KickPlayerWeaponsTime(playerid);
+public KickPlayerWeaponsTime(playerid)
+{
+    if(PlayerInfo[playerid][pTimeplayed] < 30)
+    {
+        if(GetPlayerWeapon(playerid) != 0 && GetPlayerWeapon(playerid) != 5 && GetPlayerWeapon(playerid) != 4 && GetPlayerWeapon(playerid) != WEAPON_CAMERA)
+        {
+            SendAdminMessageEx(COLOR_LIGHTRED, 1, "%s ถูกเตะออกจากเซิร์ฟเวอร์ใน สาเหตุ ถือครองอาวุธ เมื่อออนไลน์ยังไม่ครบ 30 ชั่วโมง",ReturnRealName(playerid, 0));
+            SendClientMessageEx(playerid, COLOR_LIGHTRED, "%s ถูกเตะออกจากเซิร์ฟเวอร์ใน สาเหตุ ถือครองอาวุธ เมื่อออนไลน์ยังไม่ครบ 30 ชั่วโมง",ReturnRealName(playerid, 0));
+            ResetPlayerWeapons(playerid);
+            KickEx(playerid);
+        }
+    }
+    DeletePVar(playerid, "CheckKickPlayerWeaponsTime");
     return 1;
 }
 

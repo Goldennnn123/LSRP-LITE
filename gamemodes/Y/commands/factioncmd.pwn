@@ -25,7 +25,7 @@ CMD:factionhelp(playerid, params[])
 		{
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /duty, /cuff, /uncuff, /showbadge");
 			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /carsign, /remove_carsign, /tazer, /impound, /mdc");
-			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /arrest /checkarrest /rubberbullets");
+			SendClientMessage(playerid, COLOR_RED, "[ ! ]{FFFFFF} /arrest /checkarrest /rubberbullets /spike_add /spike_del");
 		}
 
 		if(ReturnFactionJob(playerid) == GOV)
@@ -113,7 +113,7 @@ CMD:f(playerid, params[])
 
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionChatStatus] == true)
 	{			
-		if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank])
+		if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
 			return SendErrorMessage(playerid, "ระบบแชทกลุ่มถูกปิดการใช้งานอยู้ในขณะนี้");  
 			
 		if(strlen(params) > 79)
@@ -139,7 +139,7 @@ CMD:nofam(playerid, params[])
 	if(!PlayerInfo[playerid][pFaction])
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
 		
-	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank])
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
 		
 	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionChatStatus] == true)
@@ -399,7 +399,7 @@ CMD:duty(playerid, params[])
 			GivePlayerWeapon(playerid, 3, 1);
 			GivePlayerWeapon(playerid, 41, 350);
 
-			if(!PlayerInfo[playerid][pAdminDuty])
+			if(!PlayerInfo[playerid][pAdminDuty] && !PlayerInfo[playerid][pTesterDuty])
 				SetPlayerColor(playerid, COLOR_COP);
 
 			return 1;
@@ -430,7 +430,7 @@ CMD:duty(playerid, params[])
 			SetPlayerColor(playerid, COLOR_WHITE);
 
 			if(GetPlayerSkin(playerid) != PlayerInfo[playerid][pLastSkin])
-			SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
+				SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
 			return 1;
 		}
 	}
@@ -465,7 +465,7 @@ CMD:duty(playerid, params[])
             GivePlayerWeapon(playerid, 3, 1);
             GivePlayerWeapon(playerid, 41, 350);
  
-            if(!PlayerInfo[playerid][pAdminDuty])
+            if(!PlayerInfo[playerid][pAdminDuty] && !PlayerInfo[playerid][pTesterDuty])
                 SetPlayerColor(playerid, COLOR_COP);
  
             return 1;
@@ -497,7 +497,7 @@ CMD:duty(playerid, params[])
             SetPlayerColor(playerid, COLOR_WHITE);
  
             if(GetPlayerSkin(playerid) != PlayerInfo[playerid][pLastSkin])
-            SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
+            	SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
  
             return 1;
         }
@@ -532,7 +532,7 @@ CMD:duty(playerid, params[])
 
 			GivePlayerWeapon(playerid, 42, 500);
 
-			if(!PlayerInfo[playerid][pAdminDuty])
+			if(!PlayerInfo[playerid][pAdminDuty] && !PlayerInfo[playerid][pTesterDuty])
 				SetPlayerColor(playerid, COLOR_PINK);
 
             return 1;
@@ -602,7 +602,7 @@ CMD:duty(playerid, params[])
 			GivePlayerWeapon(playerid, 3, 1);
 			GivePlayerWeapon(playerid, 41, 350);
 
-			if(!PlayerInfo[playerid][pAdminDuty])
+			if(!PlayerInfo[playerid][pAdminDuty] && !PlayerInfo[playerid][pTesterDuty])
 				SetPlayerColor(playerid, COLOR_PINK);
 
             return 1;
@@ -839,24 +839,8 @@ CMD:towcars(playerid, params[])
 		if(IsVehicleOccupied(v))
 			continue;
 
-		Delete3DTextLabel(VehicleInfo[v][eVehicleCarsign]); 
-		VehicleInfo[v][eVehicleHasCarsign] = false;
-		VehicleInfo[v][eVehicleEngineStatus] = false;
-
-
-		KillTimer(VehicleInfo[v][eVehicleElmTimer]);
-		VehicleInfo[v][eVehicleElmTimer] = -1;
-
-		SetVehicleToRespawn(v);
-		SetVehicleVirtualWorld(v, VehicleInfo[v][eVehicleParkWorld]);
+		SetVehicleToRespawnEx(v);
 		SetVehicleNumberPlate(v, FactionInfo[id][eFactionAbbrev]);
-		SetVehicleHp(v);
-
-		if(IsValidDynamicObject(VehicleSiren[v]))
-		{
-			DestroyDynamicObject(VehicleSiren[v]);
-			VehicleSiren[v] = INVALID_OBJECT_ID;
-		}
 	}
 
 	SendFactionMessageEx(playerid, COLOR_FACTION, "**(( %s ได้ส่งยานพาหนะที่ไม่มีคนนั่งของกลุ่มกลับจุดเกิดทั้งหมด ))**", ReturnName(playerid, 0));
@@ -1200,7 +1184,7 @@ CMD:remove_rb(playerid, params[])
 	if(sscanf(params, "d", id))
 		return SendUsageMessage(playerid, "/remove_rb <slotid>");
 
-	if(id < 1 || id > 10)
+	if(id < 1 || id > 9)
 		return SendErrorMessage(playerid, "กรุณาใส่เลขให้ถูกต้อง");
 
 	if(PlayerInfo[playerid][pObject][id] == INVALID_OBJECT_ID)
@@ -1222,17 +1206,20 @@ CMD:rb(playerid, params[])
 
 	if(sscanf(params,"dd",slot,model))
 	{
-		SendSyntaxMessage(playerid, "/rb <slot(1-10)> <model-id>");
+		SendSyntaxMessage(playerid, "/rb <slot(1-9)> <model-id>");
 		SendClientMessage(playerid, COLOR_GRAD2, "|_______________RoadBlocks types_______________|");
 		SendClientMessage(playerid, COLOR_GRAD3, "973,978,979,1422,1423,1424,1425,1427,1434,1459,19834");
 		return 1;
 	}
 
-	if(slot < 1 || slot > 10)
+	if(slot < 1 || slot > 9)
 		return SendErrorMessage(playerid, "กรุณาใส่เลขให้ถูกต้อง");
 
 	if(model != 973 && model != 978 && model != 979 && model != 1422 && model != 1423 && model != 1424 && model != 1425 && model != 1427 && model != 1434 && model != 1459 && model != 19834) 
 		return SendErrorMessage(playerid, "ใส่เลข Object ไม่ถูกต้อง");
+
+	if(PlayerInfo[playerid][pObject][slot] != INVALID_OBJECT_ID)
+		return SendErrorMessage(playerid, "คุณได้ใช้ สล็อตช่องนี้ในการวาง Object อยู่แล้ว");
 
 	GetPlayerPos(playerid, x, y,z);
 	PlayerInfo[playerid][pObject][slot] = CreateDynamicObject(model, x, y, z, 0.0, 0.0, 0.0,-1,-1,-1);

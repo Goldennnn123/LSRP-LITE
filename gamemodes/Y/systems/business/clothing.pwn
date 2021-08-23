@@ -155,6 +155,12 @@ CMD:buyclothing(playerid, params[])
         PlayerSeClo[playerid] = 0;
         return 1;
     }
+    else if(IsPlayerInRangeOfPoint(playerid, 3.5, 1103.5233,-1457.8855,15.7969))
+    {
+        Dialog_Show(playerid, D_CLOTHING_BUY_ID, DIALOG_STYLE_INPUT, "BUY CLOTHING:", "ใส่เลขที่คุณต้องการลงไป", "ยืนยัน", "ยกเลิก");
+        PlayerSeClo[playerid] = 0;
+        return 1;
+    }
     else SendErrorMessage(playerid, "คุณไมได้อยู่จุดซื้อ Clothing");
 
     return 1;
@@ -533,7 +539,7 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
             PlayerCloID[playerid] = ClothingData[id][C_ID];
             SetPVarInt(playerid, "PlayerClothing", ClothingData[id][C_ID]);
 
-            Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยืนยัน");
+            Dialog_Show(playerid, D_CLOTHING_SELECT, DIALOG_STYLE_LIST, "การแต่งตัว:", longstr, "เลือก", "ยกเลิก");
             return 1;
         }
         case 1:
@@ -835,6 +841,19 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
         }
     }
 
+    return 1;
+}
+
+Dialog:D_CLOTHING_BUY_ID(playerid, response, listitem, inputtext[])
+{
+    if(!response)
+        return 1;
+
+    new id = strval(inputtext);
+
+    PlayerSeCloBuy[playerid] = id;
+    SetPlayerAttachedObject(playerid, 6, id, 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
+    EditAttachedObject(playerid, 6);
     return 1;
 }
 

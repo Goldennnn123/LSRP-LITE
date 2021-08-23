@@ -524,6 +524,10 @@ CMD:call(playerid, params[])
             playerb = i;
         }
     }
+
+
+    if(playerb == playerid)
+        return SendErrorMessage(playerid, "คุณไม่สามารถโทรหาตัวเองได้");
 	
 	format(str, sizeof(str), "* %s กดหมายเลขโทรศัพท์และกดปุ่มโทรออก", ReturnName(playerid, 0));
 	SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 3000);

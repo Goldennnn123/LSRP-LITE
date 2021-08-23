@@ -151,6 +151,80 @@ CMD:goto(playerid, params[])
 	return 1;
 }
 
+CMD:setcom(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid); 
+
+	new id, option[11], secoption;
+
+	if(sscanf(params, "ds[11]D(-1)", id,option, secoption)) 
+	{
+		return SendUsageMessage(playerid, "/setcom <ID:> <spawn, chekc>");
+	}
+
+	if(CompareStrings(option, "spawn"))
+	{
+		if(ComputerInfo[id][ComputerSpawn])
+		{
+			ComputerInfo[id][ComputerSpawn] = false;
+			SendClientMessageEx(playerid, COLOR_LIGHTRED, "DELE SPAWN : %d", id);
+
+			if(IsValidDynamicObject(ComputerInfo[id][ComputerObject]))
+				DestroyDynamicObject(ComputerInfo[id][ComputerObject]);
+			return 1;
+		}
+		else SendErrorMessage(playerid, "คอมไม่ได้ถูกวาง");
+
+	}
+	else if(CompareStrings(option, "check"))
+	{
+		new str[255], longstr[255];
+
+		format(str, sizeof(str), "ID: %d\n",ComputerInfo[id][ComputerDBID]);
+		strcat(longstr, str);
+
+		format(str, sizeof(str), "เจ้าของ: %s\n",ReturnDBIDName(ComputerInfo[id][ComputerOwnerDBID]));
+		strcat(longstr, str);
+
+		format(str, sizeof(str), "บิตภายในเครื่อง: %.5f\n",ComputerInfo[id][ComputerBTC]);
+		strcat(longstr, str);
+
+		format(str, sizeof(str), "CPU: %s\n",ReturnCPUNames(ComputerInfo[id][ComputerCPU]));
+		strcat(longstr, str);
+
+		format(str, sizeof(str), "GPU 1: %s\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][0]));
+		strcat(longstr, str);
+		format(str, sizeof(str), "GPU 2: %s\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][1]));
+		strcat(longstr, str);
+		format(str, sizeof(str), "GPU 3: %s\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][2]));
+		strcat(longstr, str);
+		format(str, sizeof(str), "GPU 4: %s\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][3]));
+		strcat(longstr, str);
+		format(str, sizeof(str), "GPU 5: %s\n",ReturnGPUNames(ComputerInfo[id][ComputerGPU][4]));
+		strcat(longstr, str);
+
+		format(str, sizeof(str), "RAM: %s\n",ReturnRams(ComputerInfo[id][ComputerRAM]));
+		strcat(longstr, str);
+
+		format(str, sizeof(str), "STORED: %s\n",ReturnStoreds(ComputerInfo[id][ComputerStored]));
+		strcat(longstr, str);
+
+
+		Dialog_Show(playerid, D_COMPUTER_VIEW, DIALOG_STYLE_LIST, "COMPUTER VIEW", longstr, "ยืนยัน", "ยกเลิก");
+
+		SetPVarInt(playerid, "D_SELECT_EDITCOM", id);
+		return 1;
+	}
+	else if(CompareStrings(option, "open"))
+	{
+		ComputerInfo[id][ComputerOpen] = INVALID_PLAYER_ID;
+		return 1;
+	}
+	else SendErrorMessage(playerid, "พิพม์ให้ถูกต้อง");
+	return 1;
+}
+
 
 CMD:gotojob(playerid, params[])
 {
@@ -282,7 +356,7 @@ CMD:setnumberphone(playerid, params[])
 	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-	PlayerInfo[playerid][pPhone] = number;
+	PlayerInfo[tagerid][pPhone] = number;
 	SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เปลี่ยน เบอร์โทรศัพท์ให้ %s", ReturnRealName(tagerid,0));
 	return 1;
 }
@@ -336,6 +410,57 @@ CMD:kick(playerid, params[])
 		SendClientMessageToAllEx(COLOR_RED, "AdmCmd: ...%s", reason[56]); 
 	}
 	else SendClientMessageToAllEx(COLOR_RED, "AdmCmd: %s ถูกเตะออกจากเซืฟเวอร์โดย %s สาเหตุ: %s", ReturnRealName(playerb), e_pAccountData[playerid][mForumName], reason);
+	
+	new insertLog[256];
+	
+	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
+	{
+		SendServerMessage(playerid, "ผู้เล่น (%s) ถูกเตะออกจากเซืฟเวอร์ขณะเข้าสู่ระบบ", ReturnRealName(playerb));
+	}
+	
+	mysql_format(dbCon, insertLog, sizeof(insertLog), "INSERT INTO kick_logs (`KickedDBID`, `KickedName`, `Reason`, `KickedBy`, `Date`) VALUES(%i, '%e', '%e', '%e', '%e')",
+		PlayerInfo[playerid][pDBID], ReturnName(playerb), reason, ReturnName(playerid), ReturnDate()); 
+		
+	mysql_tquery(dbCon, insertLog); 
+
+	KickEx(playerb);
+	return 1;
+}
+
+CMD:idlekick(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pTester] < 2)
+		return SendUnauthMessage(playerid); 
+
+
+	if(!e_pAccountData[playerid][mForumName])
+		return SendErrorMessage(playerid, "กรุณาตั้งชื่อฟอรั่มของคุณก่อน");
+		
+	new playerb, reason[120];
+	
+	if (sscanf(params, "us[120]", playerb, reason)) 
+		return SendUsageMessage(playerid, "/idlekick [ชื่อบางส่วน/ไอดี] [reason]"); 
+	
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(PlayerInfo[playerb][pAdmin] > PlayerInfo[playerid][pAdmin])
+		return SendErrorMessage(playerid, "คุณไม่ได้สามารถเตะ ผู้ดูแลระบบที่มีต่ำแหน่งสูงกว่าคุณได้", ReturnRealName(playerb)); 
+		
+	if(strlen(reason) > 56)
+	{		
+		SendAdminMessageEx(COLOR_RED, 1, "AdmCmd: %s ถูกเตะออกจากเซืฟเวอร์โดย %s สาเหตุ: %.56s", ReturnRealName(playerb), e_pAccountData[playerid][mForumName], reason);
+		SendAdminMessageEx(COLOR_RED, 1, "AdmCmd: ...%s", reason[56]);
+
+		SendClientMessageEx(playerb, COLOR_RED, "AdmCmd: %s ถูกเตะออกจากเซืฟเวอร์โดย %s สาเหตุ: %.56s", ReturnRealName(playerb), e_pAccountData[playerid][mForumName], reason);
+		SendClientMessageEx(playerb, COLOR_RED, "AdmCmd: ...%s", reason[56]);
+
+	}
+	else 
+	{
+		SendAdminMessageEx(COLOR_RED, 1, "AdmCmd: %s ถูกเตะออกจากเซืฟเวอร์โดย %s สาเหตุ: %s", ReturnRealName(playerb), e_pAccountData[playerid][mForumName], reason);
+		SendClientMessageEx(playerb, COLOR_RED, "AdmCmd: %s ถูกเตะออกจากเซืฟเวอร์โดย %s สาเหตุ: %s", ReturnRealName(playerb), e_pAccountData[playerid][mForumName], reason);
+	}
 	
 	new insertLog[256];
 	
@@ -651,6 +776,7 @@ CMD:sethp(playerid, params[])
 		return SendErrorMessage(playerid, "คุณไม่สามารถเซ็ตเลือดได้เกิน 200"); 
 		
 	SetPlayerHealth(playerb, health);
+	PlayerInfo[playerb][pHealth] = health;
 	
 	format(str, sizeof(str), "%s เซ็ตเลือดให้ %s เป็น %d", ReturnName(playerid), ReturnName(playerb), health);
 	SendAdminMessage(1, str);
@@ -677,6 +803,7 @@ CMD:setarmour(playerid, params[])
 		return SendErrorMessage(playerid, "คุณไม่สามารถเซ็ตเกราะได้เกิน 200"); 
 		
 	SetPlayerArmour(playerb, armour);
+	PlayerInfo[playerb][pArmour] = armour;
 	
 	format(str, sizeof(str), "%s เซ็ตเกราะให้ %s เป็น %d", ReturnName(playerid), ReturnName(playerb), armour);
 	SendAdminMessage(1, str);
@@ -990,17 +1117,8 @@ CMD:respawncar(playerid, params[])
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		vehicleid = GetPlayerVehicleID(playerid);
-		SetVehicleToRespawn(vehicleid);
-		SetVehicleHp(vehicleid);
 
-		if(IsValidDynamicObject(VehicleSiren[vehicleid]))
-		{
-			DestroyDynamicObject(VehicleSiren[vehicleid]);
-			VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
-		}
-
-		Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
-		VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
+		SetVehicleToRespawnEx(vehicleid);
 
 		foreach(new i : Player)
 		{
@@ -1022,18 +1140,7 @@ CMD:respawncar(playerid, params[])
 	if(!IsValidVehicle(vehicleid))
 		return SendErrorMessage(playerid, "ไม่มีไอดีรถที่ต้องการ");
 		
-	SetVehicleToRespawn(vehicleid);
-	SetVehicleHp(vehicleid);
-	
-	if(IsValidDynamicObject(VehicleSiren[vehicleid]))
-	{
-		DestroyDynamicObject(VehicleSiren[vehicleid]);
-		VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
-	}
-
-	Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
-	VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
-	VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+	SetVehicleToRespawnEx(vehicleid);
 	
 	foreach(new i : Player)
 	{
@@ -1689,14 +1796,14 @@ CMD:givegun(playerid, params[])
 	if(PlayerInfo[playerb][pWeapons][idx])
 		SendServerMessage(playerid, "%s ได้ลบอาวุธ %s และกระสุน %d ออก", ReturnName(playerb), ReturnWeaponName(PlayerInfo[playerb][pWeapons][idx]), PlayerInfo[playerb][pWeaponsAmmo][idx]);
 	
-	GivePlayerWeapon(playerb, weaponid, ammo); 
-	//GivePlayerGun(playerb, weaponid, ammo);
-	PlayerInfo[playerb][pWeapons][idx] = weaponid;
-	PlayerInfo[playerb][pWeaponsAmmo][idx] = ammo;
+	GivePlayerGun(playerb, weaponid, ammo);
 	
 	format(str, sizeof(str), "%s เสกอาวุธให้กับ %s คือ %s พร้อมกับกระสุน %d ชุด", ReturnName(playerid), ReturnName(playerb), ReturnWeaponName(weaponid), ammo);
 	SendAdminMessage(2, str);
 	
+	format(str, sizeof(str), "%s Give Weapons to %s is %s and Ammo %d", ReturnRealName(playerid, 0), ReturnRealName(playerb, 0), ReturnWeaponName(weaponid), ammo);
+	SendDiscordMessageEx("871080526260346941", str);
+
 	SendServerMessage(playerb, "ผู้ดูแลได้มอบอาวุธ %s และกระสุน %d ชุด", ReturnWeaponName(weaponid), ammo);
 	CharacterSave(playerid);
 	return 1;
@@ -1923,8 +2030,7 @@ CMD:repair(playerid, params[])
 	format(str, sizeof(str), "%s repaired vehicle ID %i.", ReturnName(playerid), vehicleid);
 	SendAdminMessage(1, str);
 	
-	RepairVehicle(vehicleid);
-	SetVehicleHealth(vehicleid, 900); 
+	SetVehicleHealth(vehicleid, VehicleData[GetVehicleModel(vehicleid) - 400][c_max_health]);
 	
 	GetVehicleZAngle(vehicleid, angle);
 	SetVehicleZAngle(vehicleid, angle);
@@ -2162,7 +2268,7 @@ CMD:setstats(playerid, params[])
 	{
 		SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] [stat code] [value]"); 
 		SendClientMessage(playerid, COLOR_WHITE, "1. Faction Rank, 2. Mask, 3. Radio, 4. Bank Money, 5. Level,");
-		SendClientMessage(playerid, COLOR_WHITE, "6. EXP, 7. Paycheck");
+		SendClientMessage(playerid, COLOR_WHITE, "6. EXP, 7. Paycheck, 8.เวลาออนไลน์");
 		return 1;
 	}
 
@@ -2204,7 +2310,11 @@ CMD:setstats(playerid, params[])
 			if(!PlayerInfo[playerb][pHasRadio])
 				PlayerInfo[playerb][pHasRadio] = true;
 				
-			else PlayerInfo[playerb][pHasRadio] = false;
+			else 
+			{
+				PlayerInfo[playerb][pHasRadio] = false;
+				PlayerInfo[playerb][pRadioOn] = false;
+			}
 			
 			format(str, sizeof(str), "%s %s %s's Radio.", ReturnName(playerid), (PlayerInfo[playerb][pHasRadio] != true) ? ("took") : ("set"), ReturnName(playerb));
 			SendAdminMessage(3, str);
@@ -2256,6 +2366,22 @@ CMD:setstats(playerid, params[])
 			PlayerInfo[playerb][pPaycheck] = value; 
 			CharacterSave(playerb);
 		}
+		case 8:
+		{
+			if(value == -1)
+				return SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] 8 [value required]"); 
+		
+			if(value < 1 && value != -1)
+				return SendErrorMessage(playerid, "เวลาออนไลน์ควรตั้งให้เหมาะสมกับในเกมส์ปกติ");
+
+			format(str, sizeof(str), "%s ตั้งค่า %s ให้เวลาออนไลน์: %i (จากเดิม %i)", ReturnName(playerid), ReturnName(playerb), value, PlayerInfo[playerb][pLevel]);
+			SendAdminMessage(3, str); 
+			
+			PlayerInfo[playerb][pTimeplayed] = value;
+			CharacterSave(playerb);
+			return 1;
+		}
+		default: return SendErrorMessage(playerid, "ใส่ไม่ถูกต้อง");
 	}
 	return 1;
 }
@@ -3363,7 +3489,7 @@ CMD:setdonater(playerid, params[])
 			SendClientMessageEx(tagetid, COLOR_HELPME, "คุณได้ถูกผู้ดูแลเพิ่มคุณเข้ามาเป็น Donater ระดับที่ %d",level);
 			SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เพิ่มให้ %s เป็น Donater ระดับ",ReturnName(tagetid,0), level);
 			
-			format(str, sizeof(str), "Administrators: Delete %s Leave form Danater Level %d", ReturnName(tagetid, 0),level);
+			format(str, sizeof(str), "Administrators: Give Donater Level %d for %s %d", level, ReturnName(tagetid, 0));
 			SendDiscordMessageEx("848145977978126336", str);
 			SendAdminMessage(3, str);
 			CharacterSave(tagetid);
@@ -3375,7 +3501,7 @@ CMD:setdonater(playerid, params[])
 			SendClientMessageEx(tagetid, COLOR_HELPME, "คุณได้ถูกผู้ดูแลเพิ่มคุณเข้ามาเป็น Donater ระดับที่ %d",level);
 			SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เพิ่มให้ %s เป็น Donater ระดับ",ReturnName(tagetid,0), level);
 			
-			format(str, sizeof(str), "Administrators: Delete %s Leave form Danater Level %d", ReturnName(tagetid, 0),level);
+			format(str, sizeof(str), "Administrators: Give Donater Level %d for %s %d", level, ReturnName(tagetid, 0));
 			SendDiscordMessageEx("848145977978126336", str);
 			SendAdminMessage(3, str);
 			CharacterSave(tagetid);
@@ -3387,7 +3513,7 @@ CMD:setdonater(playerid, params[])
 			SendClientMessageEx(tagetid, COLOR_HELPME, "คุณได้ถูกผู้ดูแลเพิ่มคุณเข้ามาเป็น Donater ระดับที่ %d",level);
 			SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เพิ่มให้ %s เป็น Donater ระดับ",ReturnName(tagetid,0), level);
 			
-			format(str, sizeof(str), "Administrators: Delete %s Leave form Danater Level %d", ReturnName(tagetid, 0),level);
+			format(str, sizeof(str), "Administrators: Give Donater Level %d for %s %d", level, ReturnName(tagetid, 0));
 			SendDiscordMessageEx("848145977978126336", str);
 			SendAdminMessage(3, str);
 			CharacterSave(tagetid);
@@ -3593,3 +3719,39 @@ Dialog:DIALOG_CALLPAYCHECK(playerid, response, listitem, inputtext[])
 	return 1;
 }
 
+
+Dialog:D_COMPUTER_VIEW(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		return 1;
+
+	switch(listitem)
+	{
+		case 0: {DeletePVar(playerid, "D_SELECT_EDITCOM"); return 1;}
+		case 1: return Dialog_Show(playerid, D_COMPUTER_SETOWNER, DIALOG_STYLE_INPUT, "COMPUTER EDIT: Owner", "ใส่ ID ผู้เล่น ลงไปเพื่อทำการแก้ไขเจ้าของ", "ยืนยัน", "ยกเลิก");
+		case 2: {DeletePVar(playerid, "D_SELECT_EDITCOM"); return 1;}
+		
+	}
+	return 1;
+}
+
+Dialog:D_COMPUTER_SETOWNER(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		return callcmd::setcom(playerid, "check");
+
+	new tagerid = strval(inputtext);
+	new id = GetPVarInt(playerid, "D_SELECT_EDITCOM");
+
+	if(!IsPlayerConnected(tagerid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+	ComputerInfo[id][ComputerOwnerDBID] = PlayerInfo[tagerid][pDBID];
+	SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณได้ทำการแก้ไขเจ้าของให้กับ %s",ReturnRealName(playerid,0));
+	DeletePVar(playerid, "D_SELECT_EDITCOM");
+	callcmd::setcom(playerid, "check");
+	return 1;
+}

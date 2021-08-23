@@ -149,7 +149,7 @@ CMD:exitvehicle(playerid, params[])
 	return 1;
 }
 
-task rental_vehiclesalTimer[300000]() {
+task rental_vehiclesalTimer[3600000]() {
 	new bool:respawn;
 	for(new c = 0; c < sizeof rental_vehicles; c++) {
 		respawn = true;

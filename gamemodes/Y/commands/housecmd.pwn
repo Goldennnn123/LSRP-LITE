@@ -525,9 +525,6 @@ CMD:editcom(playerid, params[])
     {
         if(!ComputerInfo[id][ComputerDBID])
             return SendErrorMessage(playerid,"ไม่มีคอมที่คุณเลือก");
-    
-        if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
-            return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
 
         if(!ComputerInfo[id][ComputerSpawn])
             return SendErrorMessage(playerid, "คอมพิวเตอร์ไม่ได้ถูกวาง");
@@ -545,9 +542,6 @@ CMD:editcom(playerid, params[])
     {
         if(!ComputerInfo[id][ComputerDBID])
             return SendErrorMessage(playerid,"ไม่มีคอมที่คุณเลือก");
-    
-        if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
-            return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
 
         if(!ComputerInfo[id][ComputerSpawn])
             return SendErrorMessage(playerid, "คอมพิวเตอร์ไม่ได้ถูกวาง");

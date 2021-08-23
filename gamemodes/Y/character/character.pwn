@@ -284,7 +284,7 @@ public Query_LoadCharacter(playerid)
 
 	new diff = gettime() - PlayerInfo[playerid][pTimeout];
 
-	if (diff > 0 && diff <= 60 * 2) // diff = now - savetime
+	if (diff > 0 && diff <= 60 * 10) // diff = now - savetime
 	{
 		/* 
 			โหลดข้อมูลที่ต้องใช้ตอนหลุด
@@ -304,9 +304,13 @@ public Query_LoadCharacter(playerid)
 
 	} else PlayerInfo[playerid][pTimeout] = 0;
 
+	cache_get_value_name_int(0, "pDonater",PlayerInfo[playerid][pDonater]);
+	
 	if(PlayerInfo[playerid][pDonater])
 	{
 		cache_get_value_name_int(0, "pHasMask", PlayerInfo[playerid][pHasMask]);
+		cache_get_value_name_int(0, "pFight",PlayerInfo[playerid][pFight]);
+		cache_get_value_name_int(0, "pWalk",PlayerInfo[playerid][pWalk]);
 	}
 
 	cache_get_value_name_int(0, "pVehicleSpawned",PlayerInfo[playerid][pVehicleSpawned]);
@@ -407,7 +411,6 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pSkinClothing1", PlayerInfo[playerid][pSkinClothing][0]);
 	cache_get_value_name_int(0, "pSkinClothing2", PlayerInfo[playerid][pSkinClothing][1]);
 	cache_get_value_name_int(0, "pSkinClothing3", PlayerInfo[playerid][pSkinClothing][2]);
-	cache_get_value_name_int(0, "pDonater",PlayerInfo[playerid][pDonater]);
 
 	cache_get_value_name_int(0, "pOre",PlayerInfo[playerid][pOre]);
 	cache_get_value_name_int(0, "pCoal",PlayerInfo[playerid][pCoal]);
@@ -432,13 +435,78 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pAddicted",PlayerInfo[playerid][pAddicted]);
 	cache_get_value_name_int(0, "pAddictedCount",PlayerInfo[playerid][pAddictedCount]);
 
-	cache_get_value_name_int(0, "pWalk",PlayerInfo[playerid][pWalk]);
 	cache_get_value_name_int(0, "pTogPm",PlayerInfo[playerid][pTogPm]);
 
 	new CheckAccount[MAX_STRING];
 	mysql_format(dbCon, CheckAccount, sizeof(CheckAccount), "SELECT * FROM `bannedlist` WHERE `MasterDBID` = '%d'",e_pAccountData[playerid][mDBID]);
 	mysql_tquery(dbCon, CheckAccount, "CheckBanAccount", "d",playerid);
 
+	return 1;
+}
+
+forward OnplayerCache(playerid);
+public OnplayerCache(playerid)
+{
+	new rows; cache_get_row_count(rows);
+
+	new C_DBID, C_DUTY;
+
+	for (new i = 0; i < rows; i ++)
+	{
+		cache_get_value_name_int(i,"C_DBID",C_DBID);
+		cache_get_value_name_int(i,"C_DUTY",C_DUTY);
+	}
+
+	if(C_DUTY)
+	{
+		if(ReturnFactionJob(playerid) == POLICE)
+		{
+			PlayerInfo[playerid][pPoliceDuty] = true;
+			SendPoliceMessage(0x8D8DFFFF, "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			
+			SetPlayerColor(playerid, COLOR_COP);
+			SetPlayerHealth(playerid, 100);
+			SetPlayerArmour(playerid, 100);
+
+			TakePlayerGuns(playerid);
+
+			GivePlayerWeapon(playerid, 24, 100);
+			GivePlayerWeapon(playerid, 3, 1);
+			GivePlayerWeapon(playerid, 41, 350);
+		}
+		else if(ReturnFactionJob(playerid) == SHERIFF)
+		{
+			PlayerInfo[playerid][pSheriffDuty] = true;
+			SendSheriffMessage(0x8D8DFFFF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้ (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+
+			SetPlayerHealth(playerid, 100);
+			SetPlayerArmour(playerid, 100);
+
+			TakePlayerGuns(playerid);
+
+			GivePlayerWeapon(playerid, 24, 100);
+			GivePlayerWeapon(playerid, 3, 1);
+			GivePlayerWeapon(playerid, 41, 350);
+		}
+		else if(ReturnFactionJob(playerid) == MEDIC)
+		{
+			SendMedicMessage(0xFF8282FF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้ (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+
+			SetPlayerColor(playerid, 0xFF8282FF);
+			SetPlayerHealth(playerid, 100);
+			SetPlayerArmour(playerid, 100);
+
+			TakePlayerGuns(playerid);
+
+			GivePlayerWeapon(playerid, 42, 500);
+		}
+	}
+
+
+	new query[255];
+	mysql_format(dbCon, query, sizeof(query), "DELETE FROM `cache` WHERE `C_DBID` = '%d'",PlayerInfo[playerid][pDBID]);
+	mysql_tquery(dbCon, query);
+	
 	return 1;
 }
 
@@ -504,6 +572,7 @@ public LoadCharacter(playerid)
 
 	SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
 	SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
+	SetPlayerFightingStyle(playerid, PlayerInfo[playerid][pFight]);
 
 	PlayerInfo[playerid][pLastOnline] = ReturnDate();
 	for(new i = 0; i < 10; i++)
@@ -517,9 +586,32 @@ public LoadCharacter(playerid)
 	}
 	else SendClientMessage(playerid, -1, "คุณเข้าสู่ระบบด้วยอุปกรณ์ PC");
 
+
+	if(PlayerInfo[playerid][pVehicleSpawned] == true)
+	{
+		new vehicleid = PlayerInfo[playerid][pVehicleSpawnedID];
+		
+		if(!IsValidVehicle(PlayerInfo[playerid][pVehicleSpawnedID]))
+		{
+			PlayerInfo[playerid][pVehicleSpawned] = false;
+			PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+		}
+		else if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+		{
+			PlayerInfo[playerid][pVehicleSpawned] = false;
+			PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+		}
+		else if(VehicleInfo[vehicleid][eVehicleFaction])
+		{
+			PlayerInfo[playerid][pVehicleSpawned] = false;
+			PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
+		}
+	}
+
 	new str[120];
     format(str, sizeof(str), "[%s] %s : Connected to the Server", ReturnDate(),ReturnName(playerid,0));
     SendDiscordMessage(1, str);
+	
 	UpDateRadioStats(playerid);
 	return 1;
 }
@@ -760,9 +852,14 @@ stock ResetPlayerCharacter(playerid)
     {
         PlayerInfo[playerid][pObject][i] = INVALID_OBJECT_ID;
     }
+	
     MealOder[playerid] = false;
     PlayerInfo[playerid][pTogPm] = false;
     SetPlayerTeam(playerid, PLAYER_STATE_ALIVE);
+
+	PlayerInfo[playerid][pWalk] = 0;
+	PlayerInfo[playerid][pFight] = FIGHT_STYLE_NORMAL;
+
 
 	return 1;
 }

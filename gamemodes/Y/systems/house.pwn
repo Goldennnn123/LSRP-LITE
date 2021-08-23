@@ -82,6 +82,12 @@ public Query_LoadHouse()
         cache_get_value_name_int(i,"HouseRentPrice",HouseInfo[i+1][HouseRentPrice]);
 
         cache_get_value_name_int(i,"HouseEle",HouseInfo[i+1][HouseEle]);
+
+
+        cache_get_value_name_float(i,"HousePlacePosX",HouseInfo[i+1][HousePlacePos][0]);
+        cache_get_value_name_float(i,"HousePlacePosY",HouseInfo[i+1][HousePlacePos][1]);
+        cache_get_value_name_float(i,"HousePlacePosZ",HouseInfo[i+1][HousePlacePos][2]);
+
         for(new w = 1; w < 22; w++)
         {
             format(str, sizeof(str), "HouseWeapons%i",w);

@@ -14439,7 +14439,7 @@ stock SaveVehicle(vehicleid)
 {
 	new query[256];
 	
-	mysql_format(ourConnection, query, sizeof(query), "UPDATE vehicles SET VehicleOwnerDBID = %i, VehicleFaction = %i, VehicleColor1 = %i, VehicleColor2 = %i, VehiclePaintjob = %i, VehiclePlates = '%e', VehicleLocked = %i, VehicleSirens = %i, VehicleFuel = %i WHERE VehicleDBID = %i",
+	mysql_format(ourConnection, query, sizeof(query), "UPDATE vehicles SET VehicleOwnerDBID = %i, VehicleFaction = %i, VehicleColor1 = %i, VehicleColor2 = %i, VehiclePaintjob = %i, VehiclePlates = '%e', VehicleLocked = %i, VehicleSirens = %i, VehicleFuel = %f WHERE VehicleDBID = %i",
 		VehicleInfo[vehicleid][eVehicleOwnerDBID], 
 		VehicleInfo[vehicleid][eVehicleFaction],
 		VehicleInfo[vehicleid][eVehicleColor1],
@@ -15663,7 +15663,7 @@ stock ShowPlayerDamages(damageid, playerid, adminView)
 	{
 		case 0:
 		{
-			for(new i = 0; i < 100; i ++)
+			for(new i = 0; i < 150; i ++)
 			{
 				if(!DamageInfo[damageid][i][eDamageTaken])
 					continue;
@@ -15676,9 +15676,12 @@ stock ShowPlayerDamages(damageid, playerid, adminView)
 		}
 		case 1:
 		{
-			for(new i = 0; i < 100; i ++)
+			for(new i = 0; i < 150; i ++)
 			{
 				if(!DamageInfo[damageid][i][eDamageTaken])
+					continue;
+
+				if(gettime() - DamageInfo[damageid][i][eDamageTime] > 1000)
 					continue;
 					
 				format(str, sizeof(str), "{FF6346}(%s){FFFFFF} %d dmg from %s to %s (Kevlarhit: %d) %d s ago\n", ReturnDBIDName(DamageInfo[damageid][i][eDamageBy]), DamageInfo[damageid][i][eDamageTaken], ReturnWeaponName(DamageInfo[damageid][i][eDamageWeapon]), ReturnBodypartName(DamageInfo[damageid][i][eDamageBodypart]), DamageInfo[damageid][i][eDamageArmor], gettime() - DamageInfo[damageid][i][eDamageTime]); 

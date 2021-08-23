@@ -407,6 +407,7 @@ stock ResetVehicleVars(vehicleid)
 	format(VehicleInfo[vehicleid][eVehicleName], 60, "None");
 	VehicleInfo[vehicleid][eVehicleDBID] = 0; 
 	VehicleInfo[vehicleid][eVehicleExists] = false;
+	VehicleInfo[vehicleid][eVehicleLights] = false;
 	
 	VehicleInfo[vehicleid][eVehicleOwnerDBID] = 0;
 	VehicleInfo[vehicleid][eVehicleFaction] = 0;
@@ -444,6 +445,14 @@ stock ResetVehicleVars(vehicleid)
 	VehicleInfo[vehicleid][eVehiclePrice] = 0;
 
 	VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
+
+	if(IsValidDynamicObject(VehicleSiren[vehicleid]))
+		DestroyDynamicObject(VehicleSiren[vehicleid]);
+
+	VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
+
+	Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
+	VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
 	return 1;
 }
 
@@ -675,7 +684,7 @@ CMD:engine(playerid, params[])
 	if(!VehicleInfo[vehicleid][eVehicleDBID] && !VehicleInfo[vehicleid][eVehicleAdminSpawn] && !IsRentalVehicle(vehicleid) && !VehicleInfo[vehicleid][eVehicleFaction] && !IsElecVehicle(vehicleid))
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้สามารถใช้ได้เฉพาะยานพาหนะส่วนตัว แต่คุณอยู่ในยานพาหนะสาธารณะ (Static)");
 		
-	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
+	if(VehicleInfo[vehicleid][eVehicleFuel] <= 0.0 && !VehicleInfo[vehicleid][eVehicleAdminSpawn])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะนี้ไม่มีเชื้อเพลิง!"); 
 
 	if(VehicleInfo[vehicleid][eVehicleEngine] < 1 && !VehicleInfo[vehicleid][eVehicleFaction])
@@ -1528,7 +1537,7 @@ CMD:rollwindow(playerid, params[])
 					SetVehicleParamsCarWindows(vehicleid, 0, 0, 0, 0);
 				}
 			}
-			if(strcmp(item, "frontleft", true) == 0 || strcmp(item, "fl", true) == 0)
+			else if(strcmp(item, "frontleft", true) == 0 || strcmp(item, "fl", true) == 0)
 			{
 			    if(wdriver == VEHICLE_PARAMS_OFF)
 			    {
@@ -1541,7 +1550,7 @@ CMD:rollwindow(playerid, params[])
 					SetVehicleParamsCarWindows(vehicleid, 0, wpassenger, wbackleft, wbackright);
 				}
 			}
-			if(strcmp(item, "frontright", true) == 0 || strcmp(item, "fr", true) == 0)
+			else if(strcmp(item, "frontright", true) == 0 || strcmp(item, "fr", true) == 0)
 			{
 			    if(wpassenger == VEHICLE_PARAMS_OFF)
 			    {
@@ -1554,7 +1563,7 @@ CMD:rollwindow(playerid, params[])
 					SetVehicleParamsCarWindows(vehicleid, wdriver, 0, wbackleft, wbackright);
 				}
 			}
-			if(strcmp(item, "rearleft", true) == 0 || strcmp(item, "rl", true) == 0)
+			else if(strcmp(item, "rearleft", true) == 0 || strcmp(item, "rl", true) == 0)
 			{
 	      		if(wbackleft == VEHICLE_PARAMS_OFF)
 			    {
@@ -1567,7 +1576,7 @@ CMD:rollwindow(playerid, params[])
 					SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, 0, wbackright);
 				}
 			}
-			if(strcmp(item, "rearright", true) == 0 || strcmp(item, "rr", true) == 0)
+			else if(strcmp(item, "rearright", true) == 0 || strcmp(item, "rr", true) == 0)
 			{
 			    if(wbackright == VEHICLE_PARAMS_OFF)
 			    {
@@ -1580,6 +1589,7 @@ CMD:rollwindow(playerid, params[])
 					SetVehicleParamsCarWindows(vehicleid, wdriver, wpassenger, wbackleft, 0);
 				}
 			}
+			else SendErrorMessage(playerid, "คุณพิพม์ไม่ถูกต้อง");
 		}
 	}
 	else if(GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)
@@ -1630,6 +1640,7 @@ CMD:rollwindow(playerid, params[])
 			}
 		}
 	}
+	else SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
 	return 1;
 }
 
@@ -1887,7 +1898,7 @@ public LoadFactionVehicle()
 	new rows; cache_get_row_count(rows);
 	new vehicleid = INVALID_VEHICLE_ID, amout_veh;
 
-	new VehicleModel,Float:VehicleParkPos[4],VehicleColor1,VehicleColor2;
+	new VehicleModel,Float:VehicleParkPos[4],VehicleColor1,VehicleColor2, VehicleFaction;
 
 	for (new i = 0; i < rows && i < MAX_FACTION_VEHICLE; i++)
 	{
@@ -1899,7 +1910,12 @@ public LoadFactionVehicle()
 		cache_get_value_name_int(i, "VehicleColor1", VehicleColor1);
 		cache_get_value_name_int(i, "VehicleColor2", VehicleColor2);
 
-		vehicleid = CreateVehicle(VehicleModel, 
+
+		cache_get_value_name_int(i, "VehicleFaction",VehicleFaction);
+
+		if(FactionInfo[VehicleFaction][eFactionType] != 2)
+		{
+			vehicleid = CreateVehicle(VehicleModel, 
 			VehicleParkPos[0],
 			VehicleParkPos[1],
 			VehicleParkPos[2],
@@ -1908,6 +1924,19 @@ public LoadFactionVehicle()
 			VehicleColor2,
 			-1,
 			0);
+		}
+		else
+		{
+			vehicleid = CreateVehicle(VehicleModel, 
+			VehicleParkPos[0],
+			VehicleParkPos[1],
+			VehicleParkPos[2],
+			VehicleParkPos[3],
+			VehicleColor1,
+			VehicleColor2,
+			-1,
+			1);
+		}
 
 		if(vehicleid != INVALID_VEHICLE_ID)
 		{
@@ -2095,6 +2124,7 @@ public Query_LoadPrivateVehicle(playerid)
 			
 			
 			SetVehicleToRespawn(vehicleid); 
+			SetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][3]);
 			UpdateVehicleDamageStatus(vehicleid, VehicleInfo[vehicleid][eVehicleDamage][0], VehicleInfo[vehicleid][eVehicleDamage][1], VehicleInfo[vehicleid][eVehicleDamage][2],0);
 			
 			if(VehicleInfo[vehicleid][eVehicleHealth] < 310)
@@ -2109,10 +2139,10 @@ public Query_LoadPrivateVehicle(playerid)
 			if(HasNoEngine(playerid))
 				ToggleVehicleEngine(vehicleid, true); 
 			
-			/*for(new j = 0; j < 14; j++)
+			for(new j = 0; j < 14; j++)
 			{
 				AddVehicleComponent(vehicleid, VehicleInfo[vehicleid][eVehicleMod][j]);
-			}*/
+			}
 
 		}
 	}
@@ -2645,4 +2675,137 @@ stock IsCheckBike(vehicleid)
 	return 0;
 }
 
+CMD:setfuel(playerid, params[])
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+	VehicleInfo[vehicleid][eVehicleFuel] = 0.2;
+	return 1;
+}
+
+task ServerVehicleFuelTimer[20000]()
+{
+	for(new i = 1; i < MAX_VEHICLES; i++)
+	{
+		if(HasNoEngine(i))
+			continue;
+
+		if(!VehicleInfo[i][eVehicleEngineStatus])
+			continue;
+
+		if(VehicleInfo[i][eVehicleFuel] <= 0.0)
+		{
+			VehicleInfo[i][eVehicleFuel] = 0.0;
+			VehicleInfo[i][eVehicleEngineStatus] = false;
+			ToggleVehicleEngine(i, false);
+			SaveVehicle(i);
+			continue;
+		}
+
+		VehicleInfo[i][eVehicleFuel] -= 0.1;
+	}
+	return 1;
+}
+
+IsVehicleSeatUsed(vehicleid, seat)
+{
+	foreach (new i : Player) if (IsPlayerInVehicle(i, vehicleid) && GetPlayerVehicleSeat(i) == seat) {
+	    return 1;
+	}
+	return 0;
+}
+
+GetAvailableSeat(vehicleid, start = 1)
+{
+	new seats = GetVehicleMaxSeats(vehicleid);
+
+	for (new i = start; i < seats; i ++) if (!IsVehicleSeatUsed(vehicleid, i)) {
+	    return i;
+	}
+	return -1;
+}
+
+
+GetVehicleMaxSeats(vehicleid)
+{
+    new const g_arrMaxSeats[] = {
+		4, 2, 2, 2, 4, 4, 1, 2, 2, 4, 2, 2, 2, 4, 2, 2, 4, 2, 4, 2, 4, 4, 2, 2, 2, 1, 4, 4, 4, 2,
+		1, 7, 1, 2, 2, 0, 2, 7, 4, 2, 4, 1, 2, 2, 2, 4, 1, 2, 1, 0, 0, 2, 1, 1, 1, 2, 2, 2, 4, 4,
+		2, 2, 2, 2, 1, 1, 4, 4, 2, 2, 4, 2, 1, 1, 2, 2, 1, 2, 2, 4, 2, 1, 4, 3, 1, 1, 1, 4, 2, 2,
+		4, 2, 4, 1, 2, 2, 2, 4, 4, 2, 2, 1, 2, 2, 2, 2, 2, 4, 2, 1, 1, 2, 1, 1, 2, 2, 4, 2, 2, 1,
+		1, 2, 2, 2, 2, 2, 2, 2, 2, 4, 1, 1, 1, 2, 2, 2, 2, 7, 7, 1, 4, 2, 2, 2, 2, 2, 4, 4, 2, 2,
+		4, 4, 2, 1, 2, 2, 2, 2, 2, 2, 4, 4, 2, 2, 1, 2, 4, 4, 1, 0, 0, 1, 1, 2, 1, 2, 2, 1, 2, 4,
+		4, 2, 4, 1, 0, 4, 2, 2, 2, 2, 0, 0, 7, 2, 2, 1, 4, 4, 4, 2, 2, 2, 2, 2, 4, 2, 0, 0, 0, 4,
+		0, 0
+	};
+	new
+	    model = GetVehicleModel(vehicleid);
+
+	if (400 <= model <= 611)
+	    return g_arrMaxSeats[model - 400];
+
+	return 0;
+}
+
+stock SetVehicleToRespawnEx(vehicleid)
+{
+	////ลบ Carsign 
+	Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
+	VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
+	VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+
+	//ปิดไฟ
+	VehicleInfo[vehicleid][eVehicleLights] = false;
+	ToggleVehicleLights(vehicleid, false);
+
+
+	////ดับเครื่องยนต์
+	ToggleVehicleEngine(vehicleid, false); 
+	VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+
+	///ลบ ELM
+	KillTimer(VehicleInfo[vehicleid][eVehicleElmTimer]);
+	VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
+	VehicleInfo[vehicleid][eVehicleFuel] = 100.0;
+
+
+	DestroyDynamicObject(VehicleSiren[vehicleid]);
+	VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
+
+	////ส่งยานพาหนะเกิด พร้อมกับ Sethp ยานพาหนะ
+	SetVehicleToRespawn(vehicleid);
+	SetVehicleVirtualWorld(vehicleid, VehicleInfo[vehicleid][eVehicleParkWorld]);
+	SetVehicleHp(vehicleid);
+	return 1;
+}
+
+
+
+
+public OnEnterExitModShop(playerid, enterexit, interiorid)
+{	
+	if(enterexit == 0)
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		SetPVarInt(playerid, "OnplayerModShopVeh", vehicleid);
+		
+		SendClientMessage(playerid, COLOR_HELPME, "คุณได้ทำการแต่งยานพาหนะของคุณเสร็จแล้ว คุณรีบออกมาข้างนอกและโปรดรอ สักครู่.....");
+		SetTimerEx("GetPlayerPosVehmod", 5000, false, "dd",playerid, vehicleid);
+		return 1;
+	}
+	return 1;
+}
+
+forward GetPlayerPosVehmod(playerid, vehicleid);
+public GetPlayerPosVehmod(playerid, vehicleid)
+{
+	new Float:x, Float:y, Float:z, Float:a;
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, a);
+	SetVehiclePos(vehicleid, x, y, z);
+	SetVehicleZAngle(vehicleid, a);
+
+
+	PutPlayerInVehicle(playerid, vehicleid, 0);
+	return 1;
+}
 

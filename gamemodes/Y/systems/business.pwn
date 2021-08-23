@@ -635,34 +635,21 @@ Dialog:DIALOG_SELL_BU(playerid, response, listitem, inputtext[])
 stock ShowPlayerBusiness(playerid, id)
 {
     new str[MAX_STRING],  longstr[MAX_STRING];
-        
-    format(str, sizeof(str), "ชื่อกิจการ: %s\n\
-                              ค่าทางเข้ากิจการ: %s\n\
-                              เงินในกิจการ: %s\n\
-                              กล้อง: %d\n\
-                              OOC Mask: %d\n\
-                              Flower: %d\n\
-                              ",BusinessInfo[id][BusinessName],
-                              MoneyFormat(BusinessInfo[id][BusinessEntrancePrice]),
-                              MoneyFormat(BusinessInfo[id][BusinessCash]),
-                              BusinessInfo[id][BusinessS_Cemara],
-                              BusinessInfo[id][BusinessS_Mask],
-                              BusinessInfo[id][BusinessS_Flower]);
 
-    format(str, sizeof(str), "ชื่อกิจการ: %s", BusinessInfo[id][BusinessName]);
+    format(str, sizeof(str), "ชื่อกิจการ: %s\n", BusinessInfo[id][BusinessName]);
     strcat(longstr,  str);
-    format(str, sizeof(str), "ค่าทางเข้ากิจการ: %s", MoneyFormat(BusinessInfo[id][BusinessEntrancePrice]));
+    format(str, sizeof(str), "ค่าทางเข้ากิจการ: %s\n", MoneyFormat(BusinessInfo[id][BusinessEntrancePrice]));
     strcat(longstr,  str);
-    format(str, sizeof(str), "เงินในกิจการ: %s", MoneyFormat(BusinessInfo[id][BusinessCash]));
+    format(str, sizeof(str), "เงินในกิจการ: %s\n", MoneyFormat(BusinessInfo[id][BusinessCash]));
     strcat(longstr,  str);
 
     if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_STORE)
     {
-        format(str, sizeof(str), "กล้อง: %d", BusinessInfo[id][BusinessS_Cemara]);
+        format(str, sizeof(str), "กล้อง: %d\n", BusinessInfo[id][BusinessS_Cemara]);
         strcat(longstr,  str);
-        format(str, sizeof(str), " OOC Mask: %d", BusinessInfo[id][BusinessS_Mask]);
+        format(str, sizeof(str), "OOC Mask: %d\n", BusinessInfo[id][BusinessS_Mask]);
         strcat(longstr,  str);
-        format(str, sizeof(str), " Flower: %d", BusinessInfo[id][BusinessS_Flower]);
+        format(str, sizeof(str), "Flower: %d\n", BusinessInfo[id][BusinessS_Flower]);
         strcat(longstr,  str);
     }
 

@@ -38,7 +38,17 @@ hook OnGameModeInit()
     dmv_vehicles[1] = AddStaticVehicle(405,1270.4249,-1554.2535,13.4394,269.7206,1,1); SetVehicleNumberPlate(dmv_vehicles[1], "DMV");
     dmv_vehicles[2] = AddStaticVehicle(405,1270.3258,-1551.0619,13.4829,271.6855,1,1); SetVehicleNumberPlate(dmv_vehicles[2], "DMV");
     dmv_vehicles[3] = AddStaticVehicle(405,1270.4993,-1547.6730,13.4389,270.6118,1,1); SetVehicleNumberPlate(dmv_vehicles[3], "DMV");
-    return 1;
+    
+
+	for(new c = 0; c < sizeof dmv_vehicles; c++) {
+    	SetVehicleNumberPlate(dmv_vehicles[c], "DMV");
+		format(VehicleInfo[dmv_vehicles[c]][eVehiclePlates], 32, "DMV");
+		SetVehicleParamsEx(dmv_vehicles[c], 0, 0, 0, 0, 0, 0, 0);
+		VehicleInfo[dmv_vehicles[c]][eVehicleFuel] = 100;
+        VehicleInfo[dmv_vehicles[c]][eVehicleEngine] = 100;
+	}
+	
+	return 1;
 }
 
 

@@ -30,6 +30,8 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 
         GetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
 		GetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
+
+        
         mysql_flo(query, "pHealth",PlayerInfo[playerid][pHealth]);
         mysql_flo(query, "pArmour",PlayerInfo[playerid][pArmour]);
 
@@ -92,11 +94,13 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_int(query, "pPhone",PlayerInfo[playerid][pPhone]);
         mysql_int(query, "pPhonePower",PlayerInfo[playerid][pPhonePower]);
 
-        new str[255];
+        new str[MAX_STRING];
+
 		for(new i = 0; i < 4; i++)
 		{
             format(str, sizeof(str), "pWeapon%d",i);
             mysql_int(query, str,PlayerInfo[playerid][pWeapons][i]);
+            
             format(str, sizeof(str), "pWeaponsAmmo%d",i);
             mysql_int(query, str,PlayerInfo[playerid][pWeaponsAmmo][i]);
 		}
@@ -165,6 +169,11 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 
         mysql_int(query, "pDonater",PlayerInfo[playerid][pDonater]);
 
+        if(PlayerInfo[playerid][pDonater])
+        {
+            mysql_bool(query, "pHasMask",PlayerInfo[playerid][pHasMask]);
+        }
+
         mysql_int(query, "pOre",PlayerInfo[playerid][pOre]);
         mysql_int(query, "pCoal",PlayerInfo[playerid][pCoal]);
         mysql_int(query, "pIron",PlayerInfo[playerid][pIron]);
@@ -195,6 +204,7 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 	    mysql_int(query, "pAddictedCount",PlayerInfo[playerid][pAddictedCount]);
 
         mysql_int(query, "pWalk",PlayerInfo[playerid][pWalk]);
+        mysql_int(query, "pFight",PlayerInfo[playerid][pFight]);
         mysql_bool(query, "pTogPm",PlayerInfo[playerid][pTogPm]);
 
 		mysql_finish(query);

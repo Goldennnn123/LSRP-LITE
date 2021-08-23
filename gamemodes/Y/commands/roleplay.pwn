@@ -33,10 +33,10 @@ CMD:do(playerid, params[])
 	    return SendSyntaxMessage(playerid, "/do [action]");
 
 	if (strlen(params) > 80) {
-	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %.80s", params);
-	    SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "... %s (( %s ))", params[80],ReturnName(playerid, 0));
+	    SendNearbyMessage(playerid, 15.0, COLOR_YELLOW, "* %.80s", params);
+	    SendNearbyMessage(playerid, 15.0, COLOR_YELLOW, "... %s (( %s ))", params[80],ReturnName(playerid, 0));
 	}
-	else SendNearbyMessage(playerid, 15.0, COLOR_PURPLE, "* %s (( %s ))", params, ReturnName(playerid, 0));
+	else SendNearbyMessage(playerid, 15.0, COLOR_YELLOW, "* %s (( %s ))", params, ReturnName(playerid, 0));
 	Log(chatlog, WARNING, "[DO] * %s (( %s ))",params, ReturnName(playerid, 0));
 	return 1;
 }
@@ -47,10 +47,10 @@ CMD:dolow(playerid, params[])
 	    return SendSyntaxMessage(playerid, "/dolow [action]");
 
 	if (strlen(params) > 80) {
-	    SendNearbyMessage(playerid, 4.0, COLOR_PURPLE, "* %.80s", params);
-	    SendNearbyMessage(playerid, 4.0, COLOR_PURPLE, "... %s (( %s ))", params[80], ReturnName(playerid, 0));
+	    SendNearbyMessage(playerid, 4.0, COLOR_YELLOW, "* %.80s", params);
+	    SendNearbyMessage(playerid, 4.0, COLOR_YELLOW, "... %s (( %s ))", params[80], ReturnName(playerid, 0));
 	}
-	else SendNearbyMessage(playerid, 4.0, COLOR_PURPLE, "* %s (( %s ))", params, ReturnName(playerid, 0));
+	else SendNearbyMessage(playerid, 4.0, COLOR_YELLOW, "* %s (( %s ))", params, ReturnName(playerid, 0));
 	Log(chatlog, WARNING, "[DO-LOW] * %s (( %s ))",params, ReturnName(playerid, 0));
 	return 1;
 }

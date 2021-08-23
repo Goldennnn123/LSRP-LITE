@@ -142,6 +142,9 @@ CMD:helpmes(playerid, params[])
                 return SendErrorMessage(playerid, "helpmeid not fond.");
             
             SendClientMessageEx(playerid, -1, "คุณได้ยืนยัน helpme id %d",helpmeid);
+
+			DeletePVar(HelpmeData[helpmeid][hHelpmeBy], "HelpmeNows");
+
             SendClientMessage(HelpmeData[helpmeid][hHelpmeBy], -1, "{DC7633}ขอบคุณที่ส่งรายงานมาให้เรา ได้มีผู้ดูแลรับเรื่องของคุณแล้ว! กรุณารอผู้ดูแลตอบกลับคุณมาอีกที");
             SendTesterMessageEx(COLOR_YELLOWEX, "[%s: %d] %s: ได้รับการขอความช่วยเหลือของ %s", PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mAccName],ReturnRealName(HelpmeData[helpmeid][hHelpmeBy]));
             
@@ -164,7 +167,7 @@ CMD:helpmes(playerid, params[])
                 return SendErrorMessage(playerid, "helpmeid not fond.");
 
 			SendTesterMessageEx(COLOR_YELLOW2, "[%s: %d] %s ได้ลบการขอความช่วยเหลือของ %s",PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mAccName],ReturnRealName(HelpmeData[helpmeid][hHelpmeBy]));
-            
+            DeletePVar(HelpmeData[helpmeid][hHelpmeBy], "HelpmeNows");
 			new str[120];
 			format(str, sizeof(str), "[%s] %s Disregard Helpme %s",ReturnDate(), ReturnRealName(playerid,0), ReturnRealName(HelpmeData[helpmeid][hHelpmeBy],0));
 			SendDiscordMessageEx("848148148714209311",str);

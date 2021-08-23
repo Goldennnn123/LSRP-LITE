@@ -1,14 +1,5 @@
 #include <YSI_Coding\y_hooks>
 
-hook function SetPlayerHealth(playerid, Float:health)
-{
-	if(PlayerInfo[playerid][pHealth] > 200)
-		health = 200;
-
-	PlayerInfo[playerid][pHealth] = health;
-    return continue(playerid, health);
-}
-
 stock GiveMoney(playerid, amount)
 {
 	PlayerInfo[playerid][pCash] += amount;
@@ -18,6 +9,9 @@ stock GiveMoney(playerid, amount)
 	new str[120];
 	
 	new string[128]; 
+
+	if(amount == 0)
+		return 1;
 	
 	if(amount < 0) {
 		format(string, sizeof(string), "~r~$%d", amount);

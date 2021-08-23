@@ -8,7 +8,9 @@ stock SaveVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 	mysql_int(query, "VehicleOwnerDBID",VehicleInfo[vehicleid][eVehicleOwnerDBID]);
 	mysql_int(query, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
 	mysql_int(query, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);
+
 	mysql_int(query, "VehiclePaintjob",VehicleInfo[vehicleid][eVehiclePaintjob]);
+
 	mysql_str(query, "VehiclePlates",VehicleInfo[vehicleid][eVehiclePlates]);
 	mysql_int(query, "VehicleLocked",VehicleInfo[vehicleid][eVehicleLocked]);
 	mysql_int(query, "VehicleSirens",VehicleInfo[vehicleid][eVehicleSirens]);
@@ -28,6 +30,7 @@ stock SaveVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 	mysql_flo(query, "VehicleParkPosX",VehicleInfo[vehicleid][eVehicleParkPos][0]);
 	mysql_flo(query, "VehicleParkPosY",VehicleInfo[vehicleid][eVehicleParkPos][1]);
 	mysql_flo(query, "VehicleParkPosZ",VehicleInfo[vehicleid][eVehicleParkPos][2]);
+	mysql_flo(query, "VehicleParkPosA",VehicleInfo[vehicleid][eVehicleParkPos][3]);
 	mysql_int(query, "VehicleParkInterior",VehicleInfo[vehicleid][eVehicleParkInterior]);
 	mysql_int(query, "VehicleParkWorld",VehicleInfo[vehicleid][eVehicleParkWorld]);
 	
@@ -49,6 +52,8 @@ stock SaveVehicle(vehicleid, thread = MYSQL_TYPE_THREAD)
 	for(new i = 0; i < 14; i++)
 	{
 		format(str, sizeof(str), "VehicleMod%d",i);
+
+		VehicleInfo[vehicleid][eVehicleMod][i] = GetVehicleComponentInSlot(vehicleid, i);
 		mysql_int(query, str,VehicleInfo[vehicleid][eVehicleMod][i]);
 	}
 

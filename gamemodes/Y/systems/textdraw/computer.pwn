@@ -426,9 +426,21 @@ stock ShowTD_Computer_BTC(playerid)
 	PlayerTextDrawSetString(playerid,PL_Computer[playerid][20], str);
 	return 1;
 }
+
 hook OnPlayerDisconnect@036(playerid, reason)
 {
     DesTD_Computer(playerid);
+
+	for(new i = 1; i < MAX_COMPUTER; i++)
+	{
+		if(!ComputerInfo[i][ComputerDBID])
+			continue;
+		
+		if(ComputerInfo[i][ComputerOpen] == playerid)
+		{
+			ComputerInfo[i][ComputerOpen] = INVALID_PLAYER_ID;
+		}
+	}
     return 1;
 }
 
@@ -513,30 +525,46 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
     return 1;
 }
 
+hook OnPlayerClickTextDraw(playerid, Text:clickedid)
+{
+    if(PlayerInfo[playerid][pGUI] == 3)
+    {
+        if(clickedid == Text:INVALID_TEXT_DRAW)
+        {
+            Dialog_Show(playerid, D_COMPUTER_CLOSE, DIALOG_STYLE_MSGBOX, "คุณจะปิดคอม?", "คุณเลือกที่จะปิดคอมหรือจะไม่ปิด", "ปิด", "ไม่ปิด");
+			return 1;
+        }
+        return 1;
+    }
+    return 1;
+}
+
 Dialog:D_COMPUTER_CLOSE(playerid, response, listitem, inputtext[])
 {
+	new id = IsPlayerNearComputer(playerid);
+
+	if(!id)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้คอมพิวเตอร์ หรือ แล็ปท็อปของคุณ");
+
     if(!response)
     {
         DesTD_Computer(playerid);
         CancelSelectTextDraw(playerid);
         SendClientMessage(playerid, -1, "คุณยังไม่ได้ปิดคอม");
+		ComputerInfo[id][ComputerOpen] = INVALID_PLAYER_ID;
         return 1;
-    }
-    
-    new id = IsPlayerNearComputer(playerid);
-
-    if(!id)
-        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้คอมพิวเตอร์ หรือ แล็ปท็อปของคุณ");
-
+	}
 
 	if(ComputerInfo[id][ComputerStartBTC])
 	{
 		ComputerInfo[id][ComputerStartBTC] = false;
 		SendClientMessage(playerid, COLOR_LIGHTRED, "คุณได้ปิดคอม การขุด BTC ของคุณหยุดทำการขุดแล้วตอนนี้...");
 		KillTimer(ComputerInfo[id][ComputerTimer]);
+		ComputerInfo[id][ComputerOpen] = INVALID_PLAYER_ID;
 	}
 	
     ComputerInfo[id][ComputerOn] = false;
+	ComputerInfo[id][ComputerOpen] = INVALID_PLAYER_ID;
     DesTD_Computer(playerid);
     CancelSelectTextDraw(playerid);
     SendClientMessage(playerid, -1, "คุณได้ปิดคอมของคุณแล้ว");

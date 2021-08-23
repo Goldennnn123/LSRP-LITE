@@ -51,6 +51,7 @@ stock WeaponDataSlot(weaponid)
 		case 16 .. 18: slot = 8;
 		case 41, 43: slot = 9; 
 		case 24: slot = 2;
+		case 22: slot = 2;
 		case 25: slot = 3;
 		case 28, 29, 32: slot = 4;
 		case 30, 31: slot = 5;
@@ -66,6 +67,7 @@ stock RemovePlayerWeapon(playerid, weaponid)
 	new saveweapon[13], saveammo[13];
 	for(new slot = 0; slot < 13; slot++)
 	    GetPlayerWeaponData(playerid, slot, saveweapon[slot], saveammo[slot]);
+		
 	ResetPlayerWeapons(playerid);
 	for(new slot; slot < 13; slot++)
 	{
@@ -91,10 +93,8 @@ public GivePlayerGun(playerid, weaponid, ammo)
 {
 	new idx = ReturnWeaponIDSlot(weaponid); 
 	
-	/*if(PlayerInfo[playerid][pWeapons][idx])
-	{
+	if(PlayerInfo[playerid][pWeapons][idx])
 		RemovePlayerWeapon(playerid, PlayerInfo[playerid][pWeapons][idx]);
-	}*/
 	
 	GivePlayerWeapon(playerid, weaponid, ammo); 
 	
@@ -110,7 +110,7 @@ stock PlayerHasWeapons(playerid)
 {
 	new countWeapons = 0;
 	
-	for(new i = 0; i < 13; i ++)
+	for(new i = 0; i < 4; i ++)
 	{
 		if(PlayerInfo[playerid][pWeapons][i] != 0)
 			countWeapons++;
@@ -137,6 +137,10 @@ ptask OnWeaponsUpdate[1000](playerid)
 {
 	if(!BitFlag_Get(gPlayerBitFlag[playerid], IS_LOGGED))
 		return 1;
+
+	if(!PlayerHasWeapons(playerid))
+		return 1;
+		
 			
 	for (new w = 0; w < 4; w++)
 	{
@@ -155,6 +159,8 @@ ptask OnWeaponsUpdate[1000](playerid)
 	}
 	return 1;
 }
+
+
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
@@ -182,6 +188,9 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 
 				ApplyAnimation(playerid, "PED","FLOOR_hit_f", 4.1, 0, 1, 1, 1, 1, 1);
 				SendNearbyMessage(playerid, 3.5, COLOR_EMOTE, "> %s ถูกยิงด้วยปืนช็อตไฟฟ้าและล้มลงไปกับพื้น",ReturnName(playerid,0));
+				
+				SetTimerEx("PlayerTazer", 10000, false, "d", playerid);
+				TogglePlayerControllable(playerid, 0);
 				return 1;
 			}
 
@@ -311,6 +320,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 				if(IsPlayerInAnyVehicle(playerid))
 					ClearAnimations(playerid); 
 				
+				SetPlayerTeam(playerid, PLAYER_STATE_WOUNDED);
 				CallLocalFunction("OnPlayerWounded", "iii", playerid, issuerid, weaponid); 
 				return 0;
 			}
@@ -428,6 +438,9 @@ stock ShowPlayerDamages(damageid, playerid, adminView)
 			for(new i = 0; i < 100; i ++)
 			{
 				if(!DamageInfo[damageid][i][eDamageTaken])
+					continue;
+					
+				if(gettime() - DamageInfo[damageid][i][eDamageTime] > 1000)
 					continue;
 					
 				format(str, sizeof(str), "%d ดาเมจ จาก %s โดย %s (เกราะ: %d) %d วินาทีที่แล้ว\n", DamageInfo[damageid][i][eDamageTaken], ReturnWeaponName(DamageInfo[damageid][i][eDamageWeapon]), ReturnBodypartName(DamageInfo[damageid][i][eDamageBodypart]), DamageInfo[damageid][i][eDamageArmor], gettime() - DamageInfo[damageid][i][eDamageTime]); 

@@ -56,3 +56,8 @@ gamemodes/Y/configuration/database.pwn
 
 scriptfiles/ntd
 scriptfiles/AC-BS
+
+*dff
+*txd
+
+models/

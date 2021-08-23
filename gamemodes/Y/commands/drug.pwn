@@ -162,9 +162,6 @@ CMD:checkdrug(playerid, params[])
     {
         new id = PlayerInfo[playerid][pInsideProperty];
 
-        if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
-            return SendErrorMessage(playerid, "นี่ไม่ใช่บ้านของคุณ");
-
         if(!IsPlayerInRangeOfPoint(playerid, 3.0, HouseInfo[id][HousePlacePos][0], HouseInfo[id][HousePlacePos][1], HouseInfo[id][HousePlacePos][2]))
             return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุด Place Pos");
 
@@ -485,7 +482,7 @@ public SetPlayerHealth_Stap(playerid, type)
 
     GetPlayerHealth(playerid, health);
 
-    if(GetPlayerState(playerid) != PLAYER_STATE_ALIVE)
+    if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE)
     {
         KillTimer(PlayerDrugUse[playerid]);
         PlayerDrugUse[playerid] = -1;

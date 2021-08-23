@@ -90,6 +90,7 @@ AddCharModel( 20, 29077, "bmyri.dff", "bmyri.txd");
 AddCharModel( 286, 29078, "random.dff", "random.txd");
 AddCharModel( 286, 29079, "andre.dff", "andre.txd");
 AddCharModel( 286, 29080, "model/hmycr.dff", "model/hmycr.txd");
+AddCharModel( 280, 29150, "people043.dff", "people043.txd");
 
 
 
@@ -130,14 +131,10 @@ AddCharModel( 280, 29116, "LSPD_SKIN/PD31.dff", "LSPD_SKIN/PD31.txd");
 AddCharModel( 280, 29117, "LSPD_SKIN/PD32.dff", "LSPD_SKIN/PD32.txd");
 AddCharModel( 280, 29118, "LSPD_SKIN/PD33.dff", "LSPD_SKIN/PD33.txd");
 AddCharModel( 280, 29127, "LSPD_SKIN/PD34.dff", "LSPD_SKIN/PD34.txd");
-AddCharModel( 280, 29128, "LSPD_SKIN/PD35.dff", "LSPD_SKIN/PD35.txd");
+AddCharModel( 280, 29149, "LSPD_SKIN/PD36.dff", "LSPD_SKIN/PD36.txd");
 
 
 //Skin LSFD & LSMD
-AddCharModel( 276, 29111, "LSFD_SKIN/FD01.dff", "LSFD_SKIN/FD01.txd");
-AddCharModel( 276, 29112, "LSFD_SKIN/FD02.dff", "LSFD_SKIN/FD02.txd");
-AddCharModel( 276, 29113, "LSFD_SKIN/FD03.dff", "LSFD_SKIN/FD03.txd");
-AddCharModel( 276, 29114, "LSFD_SKIN/FD04.dff", "LSFD_SKIN/FD04.txd");
 
 AddCharModel( 155, 29115, "GOV_SKIN/GO01.dff", "GOV_SKIN/GO01.txd");
 

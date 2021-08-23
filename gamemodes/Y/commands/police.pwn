@@ -578,6 +578,94 @@ CMD:checkarrest(playerid, params[])
 	return 1;
 }
 
+CMD:spike_add(playerid, params[])
+{
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงาน ตำรวจ/นายอำเภอ/ผู้คุมเรือนจำ"); 
+		
+    if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
+
+    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+        return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
+
+	if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE)
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้ได้หากร่างกายคุณอยู่ในสถานะไม่ปกติ");
+
+	new idx = 0;
+
+	for(new i = 1; i < MAX_SPIKES; i++)
+    {
+        if(!SpikeData[i][SpikeID])
+		{
+			idx = i;
+			break;
+		}
+    }
+
+	if(idx == 0)
+		return SendErrorMessage(playerid, "การสร้าง Spike ถึงขีดจำกัดแล้วโปรดลบแล้วสร้างใหม่");
+
+	new Float:x, Float:y, Float:z, Float:a;
+	GetPlayerPos(playerid, x, y,z);
+	GetPlayerFacingAngle(playerid, a);
+	
+	SpikeData[idx][SpikeID] = idx;
+	SpikeData[idx][SpikeObjet] = CreateDynamicObject(2892, x, y,z- 0.8, 0.0, 0.0, a, -1, -1, -1);
+	SpikeData[idx][SpikePos][0] = x;
+	SpikeData[idx][SpikePos][1] = y;
+	SpikeData[idx][SpikePos][2] = z;
+	SpikeData[idx][SpikePos][3] = 0.0;
+	SpikeData[idx][SpikePos][4] = a;
+	SpikeData[idx][SpikePos][5] = 0.0;
+	SendFactionMessageEx(playerid, COLOR_COP, "*HQ-SPIKE: %s ได้วาง Spike ในพื้นที่ %s แล้ว", ReturnRealName(playerid), ReturnLocation(playerid));
+	return 1;
+}
+
+CMD:spike_del(playerid, params[])
+{
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงาน ตำรวจ/นายอำเภอ/ผู้คุมเรือนจำ"); 
+		
+    if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
+
+    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+        return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
+
+	if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE)
+		return SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งนี้ได้หากร่างกายคุณอยู่ในสถานะไม่ปกติ");
+
+	new idx = 0;
+	for(new i = 1; i < MAX_SPIKES; i++)
+    {
+        if(!SpikeData[i][SpikeID])
+            continue;
+        
+        if(IsPlayerInRangeOfPoint(playerid, 3.0, SpikeData[i][SpikePos][0], SpikeData[i][SpikePos][1], SpikeData[i][SpikePos][2]))
+        {
+			idx = i;
+			break;
+        }
+    }
+
+	if(!idx)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้จุดเก็บ Spike");
+
+	SpikeData[idx][SpikeID] = 0;
+	
+	if(IsValidDynamicObject(SpikeData[idx][SpikeObjet]))
+		DestroyDynamicObject(SpikeData[idx][SpikeObjet]);
+
+	SpikeData[idx][SpikePos][0] = 0.0;
+	SpikeData[idx][SpikePos][1] = 0.0;
+	SpikeData[idx][SpikePos][2] = 0.0;
+	SpikeData[idx][SpikePos][3] = 0.0;
+	SpikeData[idx][SpikePos][4] = 0.0;
+	SpikeData[idx][SpikePos][5] = 0.0;
+	return 1;
+}
+
 
 
 Dialog:DIALOG_FINES_LIST(playerid, response, listitem, inputtext[])

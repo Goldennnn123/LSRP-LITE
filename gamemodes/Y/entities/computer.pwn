@@ -6,6 +6,7 @@ enum COMPUTER_DATA
     ComputerOwnerDBID,
     ComputerHouseDBID,
     bool:ComputerOn,
+    ComputerOpen,
 
     ComputerCPU,
     ComputerRAM,

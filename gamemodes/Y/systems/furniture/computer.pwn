@@ -81,6 +81,7 @@ public LoadComputer()
 
         ComputerInfo[i+1][ComputerOn] = false;
         ComputerInfo[i+1][ComputerStartBTC] = false;
+        ComputerInfo[i+1][ComputerOpen] = INVALID_PLAYER_ID;
 
         countcomputer++;
     }
@@ -182,9 +183,6 @@ CMD:opencom(playerid, params[])
 
     new id = IsPlayerNearComputer(playerid), id_h = IsPlayerInHouse(playerid);
 
-    if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
-        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
-
     if(id_h == 0)
         return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในบ้าน");
 
@@ -193,6 +191,9 @@ CMD:opencom(playerid, params[])
 
     /*if(PlayerInfo[playerid][pGUI])
         return SendErrorMessage(playerid, "มีการใช้ UI อยู่");*/
+    
+    if(ComputerInfo[id][ComputerOpen] != INVALID_PLAYER_ID)
+        return SendErrorMessage(playerid, "มีการเปิดใช้คอมพิวเตอร์จากผู้เล่นคนอื่นอยุ่");
 
     if(!ComputerInfo[id][ComputerCPU])
         return SendErrorMessage(playerid, "คุณไม่ได้มี "EMBED_LIGHTRED"CPU"EMBED_WHITE" อยู่ในเครื่องคอมพิวเตอร์ของคุณไม่สามารถเปิดคอมพิวเตอร์ได้");
@@ -206,6 +207,7 @@ CMD:opencom(playerid, params[])
     {
         LoadTD_Computer(playerid);
         ShowTD_Computer(playerid);
+        ComputerInfo[id][ComputerOpen] = playerid;
         PlayerInfo[playerid][pGUI] = 3;
     }
     else
@@ -220,6 +222,7 @@ forward OpenComputer(playerid, id);
 public OpenComputer(playerid, id)
 {
     ComputerInfo[id][ComputerOn] = true;
+    ComputerInfo[id][ComputerOpen] = playerid;
     LoadTD_Computer(playerid);
     ShowTD_Computer(playerid);
     SendClientMessage(playerid, COLOR_DARKGREEN, "ระบบ Windows เริ่มต้น");
@@ -879,6 +882,11 @@ stock IsPlayerNearComputer(playerid)
         if(!ComputerInfo[i][ComputerSpawn])
             continue;
         
+        if(ComputerInfo[i][ComputerPosWorld] != GetPlayerVirtualWorld(playerid))
+            continue;
+
+        if(ComputerInfo[i][ComputerPosInterior] != GetPlayerInterior(playerid))
+            continue;
         
         if(IsPlayerInRangeOfPoint(playerid, 2.0, ComputerInfo[i][ComputerPos][0], ComputerInfo[i][ComputerPos][1], ComputerInfo[i][ComputerPos][2]))
             return i;
@@ -904,6 +912,7 @@ public OnplayerBuyComputerSucess(playerid, newid, CPU, GPU1, GPU2, GPU3, GPU4, G
     ComputerInfo[newid][ComputerGPU][4] = GPU5;
     ComputerInfo[newid][ComputerRAM] = RAM;
     ComputerInfo[newid][ComputerStored] = Stored;
+    ComputerInfo[newid][ComputerOpen] = INVALID_PLAYER_ID;
 
     SendClientMessageEx(playerid, -1, "คุณได้ซื้อคอมเรียบร้อยแล้ว %d ",newid);
     return 1;

@@ -53,6 +53,19 @@ CMD:buybiz(playerid,params[])
                                                                                                         ซึ่งคุณจะได้รับประสบการณ์ต่างๆมากมายจากการเปิดกิจการนี้ แต่อย่างอื่นอย่างใด คุณควรอัพเดทบทบาทของคุณที่มีต่อ กิจการของคุณ ลงในฟอรั่ม\n\
                                                                                                         เพื่อที่จะได้ แสดงให้ผู้คนที่สนใจเข้าไปอ่านนั้น รู้จักและสนใจในกิจการของคุณ ซึ่งขอให้กิจการของคุณเติบโตไปได้ด้วยดี\n\
                                                                                                         หากมีคำข้อสงในกิจการของคุณ ลองพิมพ์ {FF0000}/bizcmd {F4511E}เพื่อดูคำสั่งต่างๆในกิจการของคุณ", "รับทราบ","");                              
+        
+        for(new i = 1; i < MAX_FUELS; i++)
+        {
+            if(!FuelInfo[i][F_ID])
+                continue;
+
+            if(FuelInfo[i][F_Business] == BusinessInfo[b_id][BusinessDBID])
+            {
+                FuelInfo[i][F_OwnerDBID] = PlayerInfo[playerid][pDBID];
+                SaveFuel(i);
+            }
+        }
+        
         GiveMoney(playerid, -BusinessInfo[b_id][BusinessPrice]);
         CharacterSave(playerid);
         SaveBusiness(b_id);
@@ -120,7 +133,7 @@ CMD:buy(playerid, params[])
 
     PlayerInfo[playerid][pGUI] = 6;
     SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
-    MenuStore_AddItem(playerid, 1, 18919, "Mask", 5000, "Mask use /mask", 200);
+    MenuStore_AddItem(playerid, 1, 18919, "OOC Mask", 5000, "OOC Mask use /mask", 200);
     MenuStore_AddItem(playerid, 2, 367, "Camera", 15000, "Cemara To Take Photo", 200);
     MenuStore_AddItem(playerid, 3, 325, "Flower", 300, "Flower", 200);
     MenuStore_AddItem(playerid, 4, 19897, "Cigarette", 150, "Flower", 200);
@@ -187,8 +200,6 @@ CMD:saving(playerid, params[])
         return SendErrorMessage(playerid, "คุณจะต้องฝากเงินขั้นต่ำ $2,000 และไม่เกิน $1,000,000");
 
     PlayerSavingAdd[playerid] = money;
-
-    
 
     new str[1000];
     format(str, sizeof(str), "ข้อตกลงในการทำบัญชีออมทรัพย์ของคุณนั้น เป็นข้อตกลงระหว่างคุณกับธนาคาร โดย\n\
@@ -261,9 +272,8 @@ CMD:withdraw(playerid, params[])
     if(amount < 1 || amount > PlayerInfo[playerid][pBank])
 		return SendErrorMessage(playerid, "คุณมีเงินในบัญชีธนาคารไม่เพียงพอ"); 
 
-    if(PlayerInfo[playerid][pSaving])
+    if(PlayerInfo[playerid][pSaving] && PlayerInfo[playerid][pBank] < 20000000)
     {
-
         PlayerInfo[playerid][pBank] = PlayerInfo[playerid][pBank] / 2;
         PlayerInfo[playerid][pSaving] = false;
         SendClientMessage(playerid, -1, "[BANK] คุณได้ทำยื่นเรื่องถอนเงินออกจากธนาคารในระหว่างที่ฝากออมทรัพย์อยู่ทำให้สัญญาของคุณกับธนาคารขาด");

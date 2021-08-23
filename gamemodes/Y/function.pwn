@@ -75,6 +75,9 @@ stock PlayerSpec(playerid, playerb)
 
 	if(PlayerInfo[playerb][pSpectating] != INVALID_PLAYER_ID)
 	{
+		if(PlayerInfo[playerb][pSpectating] == playerid)
+			return SendErrorMessage(playerid, "คุณไม่สามารถส่องตัวเองได้");
+		
 		PlayerSpec(playerid, PlayerInfo[playerb][pSpectating]);
 		return 1;
 	}
@@ -91,8 +94,8 @@ stock PlayerSpec(playerid, playerb)
 			PlayerInfo[playerid][pLastWorld] = GetPlayerVirtualWorld(playerid);
 			//SendServerMessage(playerid, "ตอนนี้คุณกำลังส่องผู้เล่น %s  /specoff เพื่ออยุดส่อง", ReturnName(playerb));
 		}
-		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
 		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerb));
+		SetPlayerInterior(playerid, GetPlayerInterior(playerb));
 
 		
 		TogglePlayerSpectating(playerid, true); 
@@ -186,7 +189,7 @@ stock MoneyFormat(integer)
  *  เรียกชื่อ Roleplay จากผู้เล่น ไม่มีขีดเส้นใต้ (Underscore)
  * @param {number} ไอดีผู้เล่น
  */
-stock ReturnRealName(playerid, underScore = 1)
+stock ReturnRealName(playerid, underScore = 0)
 {
     new pname[MAX_PLAYER_NAME];
     GetPlayerName(playerid, pname, MAX_PLAYER_NAME);
@@ -198,7 +201,7 @@ stock ReturnRealName(playerid, underScore = 1)
     return pname;
 }
 
-stock ReturnName(playerid, underScore = 1)
+stock ReturnName(playerid, underScore = 0)
 {
 	new playersName[MAX_PLAYER_NAME + 2];
 	GetPlayerName(playerid, playersName, sizeof(playersName)); 
@@ -454,6 +457,9 @@ stock ShowCharacterStats(playerid, playerb)
 		if(BusinessInfo[i][BusinessOwnerDBID] == PlayerInfo[playerid][pDBID])
 			format(business_key, 20, "%d", BusinessInfo[i][BusinessDBID]); 
 	}
+
+	GetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
+	GetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
 	
 	SendClientMessageEx(playerb, COLOR_DARKGREEN, "|__________________%s [%s]__________________|", ReturnRealName(playerid, 0), ReturnDate());
 
@@ -640,7 +646,13 @@ public CallPaycheck()
 		}
 		else
 		{
-			interest_saving = 0.07;
+			if(PlayerInfo[i][pBank] >= 20000000)
+			{
+				PlayerInfo[i][pSaving] = false;
+				SendClientMessage(i, COLOR_ORANGE, "ขอแสดงความยินดีด้วยคุณได้มียอดเงินฝากออมทรัพ ถึงยอดที่กำหนดแล้วสามารถไปถอนเงินได้ที่ธนาคารของคุณ");
+			}
+
+			interest_saving = 0.06;
 			interest = PlayerInfo[i][pBank] * interest_saving; 
 		}
 
@@ -859,10 +871,10 @@ stock ReturnLicenses(playerid, playerb)
 	else truck_str = "{E2FFFF}Trucking License : Yes";
 
 	if(!PlayerInfo[playerid][pTxaiLicense])
-		taxi_str = "{FF6346}Txai License : No";
+		taxi_str = "{FF6346}TAXI License : No";
 		
 	else if(PlayerInfo[playerid][pTxaiLicense]) 
-		taxi_str = "{FF6346}Txai License : Yes";
+		taxi_str = "{E2FFFF}TAXI License : Yes";
 
 
 

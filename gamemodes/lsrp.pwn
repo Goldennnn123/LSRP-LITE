@@ -49305,7 +49305,7 @@ CMD:cockgun(playerid, params[])
 	return 1;
 }
 
-/*CMD:bar(playerid, params[])
+CMD:bar(playerid, params[])
 {
 	new choice;
 	if(sscanf(params, "d", choice))
@@ -49329,7 +49329,7 @@ CMD:cockgun(playerid, params[])
 		case 12: ApplyAnimation(playerid, "BAR","dnk_stndM_loop", 4.1, 0, 1, 1, 1, 1, 1);
 	}
 	return 1;
-}*/
+}
 
 CMD:camera(playerid, params[])
 {

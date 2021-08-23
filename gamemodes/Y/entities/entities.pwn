@@ -1,6 +1,6 @@
 #define MAX_FACTION_RANKS       	(21)
 #define MAX_FACTIONS				(30)
-#define MAX_HOUSE					(30)
+#define MAX_HOUSE					(300)
 #define MAX_BUSINESS				(150)
 #define MAX_PHONEBOOK				(700)
 #define MAX_ENTRANCE				(700)
@@ -148,7 +148,7 @@ enum E_PLAYER_DATA
 	bool:pHandcuffed,
 
 	bool:pTaser,
-	bool:pSaving,
+	pSaving,
 
 	bool:pArrest,
 	pArrestBy,
@@ -173,12 +173,13 @@ enum E_PLAYER_DATA
 	pAddictedCount,
 
 	pWalk,
+	pFight,
 
 	pShakeOffer,
 	pShakeType,
 
 	pObject[10],
-	bool:pTogPm,
+	bool:pTogPm
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];
@@ -222,6 +223,7 @@ enum E_VEHICLE_SYSTEM
 	eVehicleWeaponsAmmo[6], //5;
 	
 	Float:eVehicleFuel,
+	eVehicleFuelTimer,
 	eVehicleSirens,
 	
 	eVehicleLastDrivers[5], //4;
@@ -276,6 +278,8 @@ enum E_VEHICLE_SYSTEM
 	eVehicleElmFlash,
 
 	eVehicleDamage[4],
+
+	eVehicleFuelStock,
 
 }
 

@@ -28,6 +28,7 @@ CMD:help(playerid, params[])
 	SendClientMessage(playerid, COLOR_GRAD2,"[CHAT] (/s)hout /(w)hisper /(o)oc /b /pm(ooc) (/l)ocal /me /ame /do(low) /low /radiohelp(/rhelp) ");
 	SendClientMessage(playerid, COLOR_GRAD1,"[HELP] /jobhelp /fishhelp  /minerhelp /stats /report /helpme /computerhelp /drughelp /meal /dropgun");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ANIMATION] /anim /animlist /sa(stopanimation) /walkstyle /shakehand");
+	SendClientMessage(playerid, COLOR_GRAD2,"[VEHICLE] /cw");
 	SendClientMessage(playerid, COLOR_GREEN,"_____________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
 	return 1; 
@@ -39,16 +40,21 @@ CMD:onduty(playerid, params[])
 
 	foreach(new i : Player)
 	{
-		if(PlayerInfo[playerid][pPoliceDuty])
+		if(PlayerInfo[i][pPoliceDuty])
 			police++;
-		if(PlayerInfo[playerid][pSheriffDuty])
+
+		if(PlayerInfo[i][pSheriffDuty])
 			police++;
-		if(PlayerInfo[playerid][pMedicDuty])
+
+		if(PlayerInfo[i][pMedicDuty])
 			medic++;
-		if(PlayerInfo[playerid][pSADCRDuty])
+
+		if(PlayerInfo[i][pSADCRDuty])
 			sadcr++;
+
 		if(PlayerTaxiDuty[i])
 			taxi++;
+
 	}
 	SendClientMessageEx(playerid, -1, "On duty: %d PD/SD, %d DOC, %d LSFD, %d Taxis", police, sadcr, medic, taxi);
 	return 1;
@@ -125,97 +131,51 @@ CMD:logout(playerid, params[])
 
 CMD:opendoor(playerid, params[])
 {
-	new vehicleid = GetNearestVehicle(playerid),
-	item[16];
-
-	if(HasNoEngine(vehicleid))
-		return SendErrorMessage(playerid, "ไม่สามารถเปิดประตูที่ยานพาหนะสิ่งนี้ได้");
-
-	if(IsCheckBike(vehicleid))
-		return SendErrorMessage(playerid, "ไม่สามารถเปิดประตูที่ยานพาหนะสิ่งนี้ได้");
-
-	
-	if(vehicleid != -1)
+	new item[16];
+	if(sscanf(params, "s[32]", item)) 
 	{
-	  	if(sscanf(params, "s[32]", item)) {
 	  	    //SendClientMessage(playerid, COLOR_LIGHTRED, "[ ! ]"EMBED_WHITE" TIP: เมื่อเป็นคนขับ คุณสามารถระบุหน้าต่างที่จะเปิดได้");
 			SendClientMessage(playerid, COLOR_LIGHTRED, "การใช้: "EMBED_WHITE"/opendoor [dr (driver) / pa (passenger) / bl (backleft) / br (backright)]");
-		}
-		else
-		{
-			if(strcmp(item, "driver", true) == 0 || strcmp(item, "dr", true) == 0)
-			{
-				SetVehicleParamsCarDoors(vehicleid, 1, -1, -1, -1);
-				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s เปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));
-			}
-			if(strcmp(item, "passenger", true) == 0 || strcmp(item, "pa", true) == 0)
-			{
-				SetVehicleParamsCarDoors(vehicleid, -1, 1, -1, -1);
-				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s เปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));		
-			}
-			if(strcmp(item, "backleft", true) == 0 || strcmp(item, "bl", true) == 0)
-			{
-				SetVehicleParamsCarDoors(vehicleid, -1, -1, 1, -1);
-				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s เปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));
-			}
-			if(strcmp(item, "backright", true) == 0 || strcmp(item, "br", true) == 0)
-			{
-				SetVehicleParamsCarDoors(vehicleid, -1, -1, -1, 1);
-				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s เปิดประตูรถ %s", ReturnRealName(playerid),ReturnVehicleName(vehicleid));		
-			}
-		}
 	}
-	else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกลเยานพาหนะหน่ะ");
 
-	return 1;
-}
-
-CMD:closedoor(playerid, params[])
-{
-	new vehicleid = GetNearestVehicle(playerid),
-	item[16];
-
-	if(HasNoEngine(vehicleid))
-		return SendErrorMessage(playerid, "ไม่สามารถเปิดประตูที่ยานพาหนะสิ่งนี้ได้");
-
-	if(IsCheckBike(vehicleid))
-		return SendErrorMessage(playerid, "ไม่สามารถเปิดประตูที่ยานพาหนะสิ่งนี้ได้");
-
-	
-	if(vehicleid != -1)
+	if(!IsPlayerInAnyVehicle(playerid) && GetNearestVehicle(playerid) != INVALID_VEHICLE_ID)
 	{
-	  	if(sscanf(params, "s[32]", item)) {
-	  	    //SendClientMessage(playerid, COLOR_LIGHTRED, "[ ! ]"EMBED_WHITE" TIP: เมื่อเป็นคนขับ คุณสามารถระบุหน้าต่างที่จะเปิดได้");
-			SendClientMessage(playerid, COLOR_LIGHTRED, "การใช้: "EMBED_WHITE"/closedoor [dr (driver) / pa (passenger) / bl (backleft) / br (backright)]");
-		}
-		else
-		{
-			if(strcmp(item, "driver", true) == 0 || strcmp(item, "dr", true) == 0)
-			{
-				SetVehicleParamsCarDoors(vehicleid, -1, -1, -1, -1);
-				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s ปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));
-			}
-			if(strcmp(item, "passenger", true) == 0 || strcmp(item, "pa", true) == 0)
-			{
-				SetVehicleParamsCarDoors(vehicleid, -1, -1, -1, -1);
-				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s ปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));		
-			}
-			if(strcmp(item, "backleft", true) == 0 || strcmp(item, "bl", true) == 0)
-			{
-				SetVehicleParamsCarDoors(vehicleid, -1, -1, 1, -1);
-				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s ปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));
-			}
-			if(strcmp(item, "backright", true) == 0 || strcmp(item, "br", true) == 0)
-			{
-				SetVehicleParamsCarDoors(vehicleid, -1, -1, -1, -1);
-				SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "* %s ปิดประตูรถ %s", ReturnRealName(playerid),ReturnVehicleName(vehicleid));		
-			}
-		}
-	}
-	else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกลเยานพาหนะหน่ะ");
+		new vehicleid = GetNearestVehicle(playerid);
 
+		if(HasNoEngine(vehicleid))
+			return SendErrorMessage(playerid, "ไม่สามารถเปิดประตูที่ยานพาหนะสิ่งนี้ได้");
+
+		if(IsCheckBike(vehicleid))
+			return SendErrorMessage(playerid, "ไม่สามารถเปิดประตูที่ยานพาหนะสิ่งนี้ได้");
+
+		if(strcmp(item, "driver", true) == 0 || strcmp(item, "dr", true) == 0)
+		{
+			SetVehicleParamsCarDoors(vehicleid, 1, -1, -1, -1);
+			SendNearbyMessage(playerid, 30.0, COLOR_EMOTE, "* %s เปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));
+		}
+		else if(strcmp(item, "passenger", true) == 0 || strcmp(item, "pa", true) == 0)
+		{
+			SetVehicleParamsCarDoors(vehicleid, -1, 1, -1, -1);
+			SendNearbyMessage(playerid, 30.0, COLOR_EMOTE, "* %s เปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));		
+		}
+		else if(strcmp(item, "backleft", true) == 0 || strcmp(item, "bl", true) == 0)
+		{
+			SetVehicleParamsCarDoors(vehicleid, -1, -1, 1, -1);
+			SendNearbyMessage(playerid, 30.0, COLOR_EMOTE, "* %s เปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));
+		}
+		else if(strcmp(item, "backright", true) == 0 || strcmp(item, "br", true) == 0)
+		{
+			SetVehicleParamsCarDoors(vehicleid, -1, -1, -1, 1);
+			SendNearbyMessage(playerid, 30.0, COLOR_EMOTE, "* %s เปิดประตูรถ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid));		
+		}
+		else SendErrorMessage(playerid, "พิพม์ให้ถูกต้องด้วย");
+
+		return 1;
+	}
+	else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ยานพาหนะ");
 	return 1;
 }
+
 
 CMD:dropgun(playerid, params[])
 {
@@ -336,6 +296,7 @@ CMD:buybit(playerid, params[])
 	GlobalInfo[G_BitStock]-= bit;
 	CharacterSave(playerid);
 	Saveglobal();
+	SendClientMessageToAll(COLOR_YELLOWEX, "มีการเปลี่ยนแปลงทางราคาตลาด");
 	return 1;
 }
 
@@ -371,6 +332,7 @@ CMD:sellbit(playerid, params[])
 	Saveglobal();
 	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ขาย BITSMAP ได้เงินมาจำนวน $%s", MoneyFormat(floatround(result,floatround_round)));
 	SendClientMessageEx(playerid, COLOR_GREY, "เหลือ: %.5f",PlayerInfo[playerid][pBTC]);
+	SendClientMessageToAll(COLOR_YELLOWEX, "มีการเปลี่ยนแปลงทางราคาตลาด");
 	return 1;
 }
 
@@ -387,8 +349,7 @@ CMD:mask(playerid, params[])
 	{
 		foreach(new i : Player)
 		{
-			if(!PlayerInfo[i][pAdminDuty])
-				ShowPlayerNameTagForPlayer(i, playerid, 0);
+			ShowPlayerNameTagForPlayer(i, playerid, 0);
 		}
 		
 		PlayerInfo[playerid][pMasked] = true;
@@ -426,6 +387,21 @@ CMD:global(playerid, params[])
 
 CMD:enter(playerid,params[])
 {
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		if(IsPlayerInRangeOfPoint(playerid, 3.0, -2706.9470,215.1062,3.8854))
+		{
+			if(GetPlayerInterior(playerid) != 0)
+				return 1;
+
+
+			new vehicleid = GetPlayerVehicleID(playerid);
+			SetVehiclePos(vehicleid, -2722.9558,217.4294,4.0583);
+			PutPlayerInVehicle(playerid, vehicleid, 0);
+			return 1;
+		}
+		return 1;
+	}
 	for(new p = 1; p < MAX_HOUSE; p++)
 	{
 		if(!HouseInfo[p][HouseDBID])
@@ -532,6 +508,11 @@ CMD:enter(playerid,params[])
 		}
 	}
 
+	return 1;
+}
+
+CMD:door(playerid, params[])
+{
 	return 1;
 }
 
@@ -829,7 +810,7 @@ CMD:check(playerid,params[])
 			else
 				format(principal_str, sizeof(principal_str), "%s%i. [ว่างเปล่า]\n", principal_str, i);
 		}
-		Dialog_Show(playerid, DIALOG_VEHICLE_WEAPONS, DIALOG_STYLE_LIST, "Trunk:", principal_str, "ตกลง", "<<");
+		Dialog_Show(playerid, DIALOG_DEFAULT, DIALOG_STYLE_LIST, "Trunk:", principal_str, "ตกลง", "<<");
 	}
 	else if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -849,7 +830,7 @@ CMD:check(playerid,params[])
 				format(principal_str, sizeof(principal_str), "%s%i. [ว่างเปล่า]\n", principal_str, i);
 		}
 			 
-		Dialog_Show(playerid, DIALOG_VEHICLE_WEAPONS, DIALOG_STYLE_LIST, "Trunk:", principal_str, "ตกลง", "<<");
+		Dialog_Show(playerid, DIALOG_DEFAULT, DIALOG_STYLE_LIST, "Trunk:", principal_str, "ตกลง", "<<");
 	}
 	else if(PlayerInfo[playerid][pInsideProperty])
 	{
@@ -869,7 +850,7 @@ CMD:check(playerid,params[])
 			else format(longstr, sizeof(longstr), "%s%d. %s[กระสุน: %d]\n", longstr, i, ReturnWeaponName(HouseInfo[id][HouseWeapons][i]), HouseInfo[id][HouseWeaponsAmmo][i]); 
 		}
 		
-		Dialog_Show(playerid, DIALOG_HOUSE_WEAPONS, DIALOG_STYLE_LIST, "Weapons:", longstr, "ตกลง", "ยกเลิก");		
+		Dialog_Show(playerid, DIALOG_DEFAULT, DIALOG_STYLE_LIST, "Weapons:", longstr, "ตกลง", "ยกเลิก");		
 	}
 	return 1;
 }
@@ -1054,9 +1035,6 @@ CMD:takegun(playerid, params[])
 
 		if(HasNoEngine(vehicleid))
 			return SendClientMessage(playerid, COLOR_LIGHTRED, "ยานพาหนะไม่สามารถเก็บของได้"); 
-		
-		if(IsCheckBike(vehicleid))
-			return SendErrorMessage(playerid, "ไม่สามารถใช้คำสั่งนี้กับยานพาหนะที่เป็น มอเตอร์ไซต์ได้"); 
 
 		if(!VehicleInfo[vehicleid][eVehicleDBID] && VehicleInfo[vehicleid][eVehicleAdminSpawn] && !VehicleInfo[vehicleid][eVehicleFaction])
 			return SendServerMessage(playerid, "รถคันนี้เป็นรถส่วนบุคคนไม่สามารถใช้คำสั่ง /takegun ได้");
@@ -1469,7 +1447,6 @@ CMD:respawnme(playerid, params[])
 	SetPlayerFacingAngle(playerid, 268.8748);
 	SetPlayerVirtualWorld(playerid, 0);
 	SetPlayerInterior(playerid, 0);
-
 	return 1;
 }
 
@@ -1740,7 +1717,7 @@ CMD:radio(playerid, params[])
 						if(strlen(params) > 75)
 						{
 							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
-							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r],PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params[75]);
+							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s", PlayerInfo[i][pRadio][r],PlayerInfo[playerid][pMainSlot], params[75]);
 						}
 						else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
 					}
@@ -1749,7 +1726,7 @@ CMD:radio(playerid, params[])
 						if(strlen(params) > 75)
 						{
 							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %.75s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
-							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] ...%s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params[75]);
+							SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], params[75]);
 						}
 						else SendClientMessageEx(i, COLOR_RADIO, "**[CH: %d, S: %d] %s พูดว่า: %s", PlayerInfo[i][pRadio][r], PlayerInfo[playerid][pMainSlot], ReturnName(playerid, 0), params);
 					}
@@ -1915,6 +1892,10 @@ CMD:setspawn(playerid, params[])
 alias:leavegun("lg")
 CMD:leavegun(playerid, params[])
 {
+
+	if(GetPlayerState(playerid) != PLAYER_STATE_ALIVE)
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในสถานะปกติทำให้ไม่สามารถใช้คำสั่งนี้ได้");
+
 	new 
 		weaponid, 
 		idx,
@@ -2167,7 +2148,7 @@ CMD:pm(playerid, params[])
 		text[144]
 	;
 
-	if(PlayerInfo[playerid][pTogPm])
+	if(PlayerInfo[playerid][pTogPm] && !PlayerInfo[playerid][pAdmin] && !PlayerInfo[playerid][pTester])
 		return SendErrorMessage(playerid, "คุณได้ปิดการรับ ข้อความส่วนตัว");
 		
 	if(sscanf(params, "us[144]", playerb, text))
@@ -2287,16 +2268,14 @@ CMD:fines(playerid, params[])
 
 CMD:helpme(playerid, params[])
 {
+	if(GetPVarInt(playerid, "HelpmeNows"))
+		return SendErrorMessage(playerid, "คุณได้มีการ Helpme ไปแล้ว");
+
+	
 	if(isnull(params) || strlen(params) < 3)
 		return SendUsageMessage(playerid, "/helpme <ข้อความ>"); 
 
 	format(PlayerHelpme[playerid], 120, "%s",params);
-
-	SendClientMessage(playerid, COLOR_LIGHTRED, "SERVER: คำขอความช่วยเหลือของคุณได้ถูกส่งไปยังผู้ดูแลทุกคนที่ออนไลน์");
-	
-	new str[60];
-	format(str, sizeof(str), "[%s] %s Helpme now", ReturnDate(),ReturnRealName(playerid,0));
-	SendDiscordMessageEx("848148148714209311", str);
 	new idx;
 	
 	for (new i = 1; i < sizeof(HelpmeData); i ++)
@@ -2307,8 +2286,92 @@ CMD:helpme(playerid, params[])
 			break; 
 		}
 	}
+
+
+
+
+	SendClientMessage(playerid, COLOR_LIGHTRED, "SERVER: คำขอความช่วยเหลือของคุณได้ถูกส่งไปยังผู้ดูแลทุกคนที่ออนไลน์");
+	SetPVarInt(playerid, "HelpmeNows", 1);
+	
+	new str[60];
+	format(str, sizeof(str), "[%s] %s Helpme now", ReturnDate(),ReturnRealName(playerid,0));
+	SendDiscordMessageEx("848148148714209311", str);
 			
 	OnPlayerHelpme(playerid, idx, PlayerHelpme[playerid]);
+	return 1;
+}
+
+CMD:setstyle(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pDonater] && !PlayerInfo[playerid][pAdmin] && !PlayerInfo[playerid][pTester])
+		return SendErrorMessage(playerid, "คุณไม่ใช่ Donater");
+
+	new fightid;
+
+	if(sscanf(params, "d", fightid))
+		return SendUsageMessage(playerid, "/setstyle (1-6)");
+	
+	if(fightid < 1 || fightid > 6)
+		return SendErrorMessage(playerid, "กรุณาใส่เลขให้ถูกต้อง (1-6)");
+
+	switch(fightid)
+	{
+		case 1:
+		{
+			PlayerInfo[playerid][pFight] = FIGHT_STYLE_NORMAL;
+			SetPlayerFightingStyle(playerid, FIGHT_STYLE_NORMAL);
+			SendClientMessage(playerid, COLOR_GREY, "คุณได้เปลี่ยนท่าทางการสู้ของคุณเป็น ปกติ");
+			CharacterSave(playerid);
+			return 1;
+		}
+		case 2:
+		{
+			PlayerInfo[playerid][pFight] = FIGHT_STYLE_BOXING;
+			SetPlayerFightingStyle(playerid, FIGHT_STYLE_BOXING);
+			SendClientMessage(playerid, COLOR_GREY, "คุณได้เปลี่ยนท่าทางการสู้ของคุณเป็น นักมวย");
+			CharacterSave(playerid);
+			return 1;
+		}
+		case 3:
+		{
+			PlayerInfo[playerid][pFight] = FIGHT_STYLE_ELBOW;
+			SetPlayerFightingStyle(playerid, FIGHT_STYLE_ELBOW);
+			SendClientMessage(playerid, COLOR_GREY, "คุณได้เปลี่ยนท่าทางการสู้ของคุณเป็น ใช้ศอก");
+			CharacterSave(playerid);
+			return 1;
+		}
+		case 4:
+		{
+			PlayerInfo[playerid][pFight] = FIGHT_STYLE_GRABKICK;
+			SetPlayerFightingStyle(playerid, FIGHT_STYLE_GRABKICK);
+			SendClientMessage(playerid, COLOR_GREY, "คุณได้เปลี่ยนท่าทางการสู้ของคุณเป็น แกร๊บคิก");
+			CharacterSave(playerid);
+			return 1;
+		}
+		case 5:
+		{
+			PlayerInfo[playerid][pFight] = FIGHT_STYLE_KNEEHEAD;
+			SetPlayerFightingStyle(playerid, FIGHT_STYLE_KNEEHEAD);
+			SendClientMessage(playerid, COLOR_GREY, "คุณได้เปลี่ยนท่าทางการสู้ของคุณเป็น หัวเข่า");
+			return 1;
+		}
+		case 6:
+		{
+			PlayerInfo[playerid][pFight] = FIGHT_STYLE_KUNGFU;
+			SetPlayerFightingStyle(playerid, FIGHT_STYLE_KUNGFU);
+			SendClientMessage(playerid, COLOR_GREY, "คุณได้เปลี่ยนท่าทางการสู้ของคุณเป็น กังฟู");
+			CharacterSave(playerid);
+			return 1;
+		}
+		default:
+		{
+			PlayerInfo[playerid][pFight] = FIGHT_STYLE_NORMAL;
+			SetPlayerFightingStyle(playerid, FIGHT_STYLE_NORMAL);
+			SendClientMessage(playerid, COLOR_GREY, "คุณได้เปลี่ยนท่าทางการสู้ของคุณเป็น ปกติ");
+			CharacterSave(playerid);
+			return 1;
+		}
+	}
 	return 1;
 }
 
@@ -2410,7 +2473,7 @@ CMD:smoke(playerid, params[])
 		}
 		case 2: 
 		{
-			ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 1, 1, 1, 1, 1, 1);
+			ApplyAnimation(playerid,"SMOKING","M_smklean_loop",4.1, 0, 1, 1, 1, 1, 1);
 		}
 		default: return SendUsageMessage(playerid,"/smoke [1-2]");
 	}
@@ -2431,9 +2494,11 @@ CMD:checkcom(playerid, params[])
 		count++;
 		SendClientMessageEx(playerid, COLOR_GREY, "COMPUTER ID %d: Spawn: %s",ComputerInfo[i][ComputerDBID], (ComputerInfo[i][ComputerSpawn] != 0) ? (""EMBED_GREENMONEY"วางอยู่") : ("ยังไม่ได้วาง"));
 	}
+
 	if(!count)
 		return SendClientMessage(playerid, COLOR_GREY, "คุณยังไม่มีการซื้อคอมพิวเตอร์");
 
+	
 	return 1;
 }
 
@@ -3119,6 +3184,74 @@ CMD:cw(playerid, params[])
 	return 1;
 }
 
+
+CMD:pullincar(playerid, params[])
+{
+	new
+		userid,
+		seatname[16],
+		vehicleid = GetNearestVehicle(playerid);
+
+	if (sscanf(params, "us[16]", userid, seatname))
+	    return SendSyntaxMessage(playerid, "/pullincar [ไอดีผู้เล่น/ชื่อบางส่วน] [fr (หน้าขวา) / bl (หลังซ้าย) / br (หลังขวา)]");
+
+	if(!IsPlayerConnected(userid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ในเซิร์ฟเวอร์");
+	
+	if(userid == playerid) return SendClientMessage(playerid, COLOR_GRAD2, "คุณไม่สามารถโยนตัวเองได้");
+
+	if (vehicleid == INVALID_VEHICLE_ID)
+	    return SendClientMessage(playerid, COLOR_GRAD2, "คุณไม่ได้อยู่ใกล้ยานพาหนะใด ๆ");
+	    
+    if (!IsPlayerNearPlayer(playerid, userid, 5.0))
+	    return SendClientMessage(playerid, COLOR_GRAD2, "คุณไม่ได้อยู่ใกล้ผู้เล่นนั้น");
+
+	if (GetVehicleMaxSeats(vehicleid) < 2)
+  	    return SendClientMessage(playerid, COLOR_LIGHTRED, "คุณไม่สามารถดึงตัวผู้เล่นนั้นในยานพาหนะนี้ได้");
+
+	new seatid = -1;
+	if(!strcmp(seatname, "หน้าขวา", true) || !strcmp(seatname, "fr", true)) {
+	    if ((seatid = GetAvailableSeat(vehicleid, 1)) == -1) return SendClientMessage(playerid, COLOR_LIGHTRED, "ที่นั่งนี้ไม่ว่าง");
+	}
+	else if(!strcmp(seatname, "หลังซ้าย", true) || !strcmp(seatname, "bl", true)) {
+	    if ((seatid = GetAvailableSeat(vehicleid, 2)) == -1) return SendClientMessage(playerid, COLOR_LIGHTRED, "ที่นั่งนี้ไม่ว่าง");
+	}
+	else if(!strcmp(seatname, "หลังขวา", true) || !strcmp(seatname, "br", true)) {
+	    if ((seatid = GetAvailableSeat(vehicleid, 3)) == -1) return SendClientMessage(playerid, COLOR_LIGHTRED, "ที่นั่งนี้ไม่ว่าง");
+	}
+	else {
+		return SendSyntaxMessage(playerid, "/pullincar [ไอดีผู้เล่น/ชื่อบางส่วน] [fr (หน้าขวา) / bl (หลังซ้าย) / br (หลังขวา)]");
+	}
+
+	PutPlayerInVehicle(userid, vehicleid, seatid);
+	return 1;
+}
+
+CMD:eject(playerid, params[]) {
+	new
+		targetID;
+
+	if(sscanf(params, "u", targetID))
+		return SendSyntaxMessage(playerid, "/eject [ไอดีผู้เล่น/ชื่อบางส่วน]");
+
+	if(!IsPlayerConnected(targetID))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ในเซิร์ฟเวอร์");
+
+	if(targetID == playerid) return SendClientMessage(playerid, COLOR_GRAD2, "คุณไม่สามารถไล่ตัวเองได้");
+	    
+	if(GetPlayerState(playerid) == 2) {
+		if(GetPlayerVehicleID(playerid) == GetPlayerVehicleID(targetID)) {
+
+			SendNearbyMessage(playerid, 30.0, COLOR_PURPLE, "** %s ได้ผลัก %s ออกจากพาหนะ", ReturnRealName(playerid), ReturnRealName(targetID));
+			RemovePlayerFromVehicle(targetID);
+		}
+		else SendClientMessage(playerid, COLOR_LIGHTRED, "ผู้เล่นนี้ไม่ได้อยู่ภายในพาหนะ");
+	}
+	else SendClientMessage(playerid, COLOR_LIGHTRED, "คุณต้องอยู่ในสถานะผู้ขับรถ");
+	
+	return 1;
+}
+
 randomEx(min, max)
 {
     new rand = random(max-min)+min;
@@ -3150,7 +3283,7 @@ stock ShowInvPlayer(tagerid, playerid)
 		SendClientMessageEx(tagerid, COLOR_GRAD1, "%s", ReturnWeaponName(weapon_id[0][i]), weapon_id[1][i]); 
 	}
 
-	if(PlayerInfo[tagerid][pDrug][0] || PlayerInfo[tagerid][pDrug][1] || PlayerInfo[tagerid][pDrug][2])
+	if(PlayerInfo[playerid][pDrug][0] && PlayerInfo[playerid][pDrug][1] && PlayerInfo[playerid][pDrug][2])
 	{
 		SendClientMessage(tagerid, COLOR_GREY, "มียาเสพติดภายในตัว");
 	}
@@ -3222,7 +3355,7 @@ stock OnPlayerHelpme(playerid, reportid, text[])
 	format(HelpmeData[reportid][hHelpmeDetel], 90, "%s", text);
 	HelpmeData[reportid][hHelpmeBy] = playerid;
 		
-	SendTesterMessageEx(COLOR_YELLOWEX, "มีการขอความช่วยเหลือเข้ามาพิมพ์ /helpmes l เพื่อตรวจสอบ");
+	SendTesterMessageEx(COLOR_YELLOWEX, "%s(ID: %d) ขอความช่วยเหลือ: %.40s... สามารถรับได้โดยการ /helpmes accept %d เพื่อรับ", ReturnRealName(playerid,0), playerid, HelpmeData[reportid][hHelpmeDetel], HelpmeData[reportid][hHelpmeDBID]);
 		
 	if(strfind(text, "hack", true) != -1 || strfind(text, "cheat", true) != -1)
 	{
@@ -3272,6 +3405,7 @@ hook OnPlayerDisconnect(playerid, reason)
 
 				format(str, sizeof(str), "[%s] %s Disconnect Helpme therefore deleted %s",ReturnDate(),ReturnRealName(playerid,0));
 				SendDiscordMessageEx("848148148714209311",str);
+				DeletePVar(playerid, "HelpmeNows");
 			}
         }
     }

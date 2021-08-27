@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "*.md": "markdown",
+        "*.inc": "pawn",
+        "*.pwn": "pawn",
+        "*.template": "pawn"
+    },
+    "[md]": {
+        "files.encoding": "utf8"
+    },
+    "[pawn]": {
+        "files.encoding": "windows874"
+    },
+    "[template]": {
+        "files.encoding": "windows874"
+    }
+}

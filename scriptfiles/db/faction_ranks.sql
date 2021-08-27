@@ -1,0 +1,25 @@
+CREATE TABLE IF NOT EXISTS `faction_ranks` (
+  `factionid` int(11) NOT NULL,
+  `FactionRank1` varchar(60) CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL DEFAULT 'NotSet',
+  `FactionRank2` varchar(60) CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL DEFAULT 'NotSet',
+  `FactionRank3` varchar(60) CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL DEFAULT 'NotSet',
+  `FactionRank4` varchar(60) CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL DEFAULT 'NotSet',
+  `FactionRank5` varchar(60) CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL DEFAULT 'NotSet',
+  `FactionRank6` varchar(60) CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL DEFAULT 'NotSet',
+  `FactionRank7` varchar(60) CHARACTER SET utf8 COLLATE utf8_croatian_ci NOT NULL DEFAULT 'NotSet',
+  `FactionRank8` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank9` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank10` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank11` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank12` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank13` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank14` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank15` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank16` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank17` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank18` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank19` varchar(60) NOT NULL DEFAULT 'NotSet',
+  `FactionRank20` varchar(60) NOT NULL DEFAULT 'NotSet',
+    PRIMARY KEY
+      (factionid)
+);

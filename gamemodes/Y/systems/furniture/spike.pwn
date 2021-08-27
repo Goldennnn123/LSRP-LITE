@@ -11,7 +11,7 @@ enum S_SPIKE_DATA
 new SpikeData[MAX_SPIKES][S_SPIKE_DATA];
 
 
-ptask PlayerTakeSpike[1000](playerid) 
+ptask PlayerTakeSpike[100](playerid) 
 {
     for(new i = 1; i < MAX_SPIKES; i++)
     {
@@ -27,8 +27,14 @@ ptask PlayerTakeSpike[1000](playerid)
             else
             {
                 new vehicleid = GetPlayerVehicleID(playerid);
+                GetVehicleDamageStatus(vehicleid, VehicleInfo[vehicleid][eVehicleDamage][0],VehicleInfo[vehicleid][eVehicleDamage][1],VehicleInfo[vehicleid][eVehicleDamage][2], VehicleInfo[vehicleid][eVehicleDamage][3]);
+                
+                if(VehicleInfo[vehicleid][eVehicleDamage][3]  >= 15)
+                    return 1;
+
                 UpdateVehicleDamageStatus(vehicleid,VehicleInfo[vehicleid][eVehicleDamage][0],VehicleInfo[vehicleid][eVehicleDamage][1],VehicleInfo[vehicleid][eVehicleDamage][2],15);
-                SaveVehicle(vehicleid);  
+                SaveVehicle(vehicleid);
+                SendNearbyMessage(playerid, 15.0, COLOR_YELLOW, "%s ถูก Spike ทำให้ยางแตกทั้งหมด (( %s ))", ReturnVehicleName(vehicleid), ReturnName(playerid,0));
                 return 1;
             }
         }

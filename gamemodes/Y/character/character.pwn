@@ -826,6 +826,7 @@ stock ResetPlayerCharacter(playerid)
     PlayerInfo[playerid][pArrestBy] = 0;
     PlayerInfo[playerid][pArrestTime] = 0;
     PlayerInfo[playerid][pDonater] = 0;
+	PlayerInfo[playerid][pDonaterTime] = 0;
 	PlayerInfo[playerid][pSkinClothing][0] = 0;
 	PlayerInfo[playerid][pSkinClothing][1] = 0;
 	PlayerInfo[playerid][pSkinClothing][2] = 0;
@@ -835,6 +836,7 @@ stock ResetPlayerCharacter(playerid)
     PlayerInfo[playerid][pBoomBoxSpawnID] = 0;
     PlayerInfo[playerid][pShakeOffer] = INVALID_PLAYER_ID;
 	// vehicles.pwn
+	
 	gLastCar[playerid] = 0;
 	gPassengerCar[playerid] = 0;
     format(PlayerInfo[playerid][pTicket], PlayerInfo[playerid][pTicket], "");
@@ -859,8 +861,9 @@ stock ResetPlayerCharacter(playerid)
 
 	PlayerInfo[playerid][pWalk] = 0;
 	PlayerInfo[playerid][pFight] = FIGHT_STYLE_NORMAL;
+	PlayerInfo[playerid][pAnimation] = 0;
 
-
+	ResetPlayerWeapons(playerid);
 	return 1;
 }
 

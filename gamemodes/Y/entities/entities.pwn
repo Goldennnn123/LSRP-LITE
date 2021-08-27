@@ -156,7 +156,9 @@ enum E_PLAYER_DATA
 	pArrestRoom,
 
 	pSkinClothing[3],
+	
 	pDonater,
+	pDonaterTime,
 
 	pOre,
 	pCoal,
@@ -179,7 +181,8 @@ enum E_PLAYER_DATA
 	pShakeType,
 
 	pObject[10],
-	bool:pTogPm
+	bool:pTogPm,
+	pAnimation
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];

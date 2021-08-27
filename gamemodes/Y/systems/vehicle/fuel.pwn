@@ -318,7 +318,7 @@ Dialog:D_FUEL_ADD(playerid, response, listitem, inputtext[])
 
     new id = GetPVarInt(playerid, "SetIdFuel");
 
-    if(fuel < 0.0 || fuel > 1000.0)
+    if(fuel < 0.0 || fuel > 50000.0)
         return SendErrorMessage(playerid, "ใส่จำนวนให้ถูกต้อง");
 
     FuelInfo[id][F_Fuel] = fuel;
@@ -337,7 +337,7 @@ Dialog:D_FUEL_CHANG_PRICE(playerid, response, listitem, inputtext[])
 
     new id = GetPVarInt(playerid, "SetIdFuel");
 
-    if(price < 1 || price > 20000)
+    if(price < 1 || price > 50000)
         return SendErrorMessage(playerid, "ใส่จำนวนให้ถูกต้อง");
 
     FuelInfo[id][F_Price] = price;
@@ -356,7 +356,7 @@ Dialog:D_FUEL_CHANG_PRICEBUY(playerid, response, listitem, inputtext[])
 
     new id = GetPVarInt(playerid, "SetIdFuel");
 
-    if(price < 2000 || price > 100000)
+    if(price < 200 || price > 100000)
         return SendErrorMessage(playerid, "ใส่จำนวนให้ถูกต้อง");
 
     FuelInfo[id][F_PriceBuy] = price;

@@ -41,6 +41,17 @@ ptask @2PlayerTimer[1000](playerid)
     return 1;
 }
 
+/*ptask PlayerDonater[1000](playerid) 
+{
+	if(PlayerInfo[playerid][pDonater] && PlayerInfo[playerid][pDonaterTime] > 0)
+	{
+		if(!PlayerInfo[playerid][pDonaterTime])
+		PlayerInfo[playerid][pDonaterTime]--;
+		
+	}
+	return 1;
+}*/
+
 
 new 
 	playerWeaponsSpecSave[MAX_PLAYERS][13][13],
@@ -985,4 +996,139 @@ stock UpDateRadioStats(playerid)
 		}
 	}
 	return 1;
+}
+
+ChatAnimation(playerid, length)
+{
+	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && !PlayerInfo[playerid][pAnimation])
+	{
+		ApplyAnimation(playerid,"PED","IDLE_CHAT",4.1,1,0,0,1,1);
+		SetTimerEx("StopChatting", floatround(length)*100, 0, "i", playerid);
+	}
+	return 1;
+}
+
+forward StopChatting(playerid);
+public StopChatting(playerid) ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0);
+
+
+
+stock SetPlayerSpawn(playerid)
+{
+    PlayerTextDrawShow(playerid, RadioStats[playerid]);
+
+    if(PlayerInfo[playerid][pAdminjailed] == true)
+    {
+        SendClientMessageEx(playerid, COLOR_REDEX, "[ADMIN JAIL:] เวลาที่อยู่ในคุกแอดมินของคุณยังไม่หมดจำเป็นต้องอยู่ในคุกอีก %d วินาที",PlayerInfo[playerid][pAdminjailTime]);
+        ClearAnimations(playerid); 
+	
+        SetPlayerPos(playerid, 2687.3630, 2705.2537, 22.9472);
+        SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 1338);
+        SetPlayerWeapons(playerid);
+
+        CharacterSave(playerid);
+        StopAudioStreamForPlayer(playerid);
+        return 1;
+    }
+    else if(PlayerInfo[playerid][pArrest] == true)
+    {
+        ArrestConecterJail(playerid, PlayerInfo[playerid][pArrestTime], PlayerInfo[playerid][pArrestRoom]);
+        ClearAnimations(playerid);
+        CharacterSave(playerid);
+        StopAudioStreamForPlayer(playerid);
+        return 1;
+    }
+
+    else if (PlayerInfo[playerid][pTimeout]) {
+
+        // ตั้งค่าผู้เล่นให้กลับที่เดิมและสถานะบางอย่างเหมือนเดิม
+
+        SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld]);
+        SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInterior]);
+
+        SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+
+        SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
+        SetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
+
+        PlayerInfo[playerid][pTimeout] = 0;
+
+        GameTextForPlayer(playerid, "~r~crashed. ~w~returning to last position", 1000, 1);
+        StopAudioStreamForPlayer(playerid);
+
+        new query[255];
+		mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `cache` WHERE C_DBID = '%d'",PlayerInfo[playerid][pDBID]);
+		mysql_tquery(dbCon, query, "OnplayerCache", "d",playerid);
+
+    
+        return 1;
+    }
+
+    else if(PlayerInfo[playerid][pSpectating] != INVALID_PLAYER_ID)
+    {
+        SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld]);
+        SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInterior]);
+
+        SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
+        PlayerInfo[playerid][pSpectating] = INVALID_PLAYER_ID;
+        StopAudioStreamForPlayer(playerid);
+
+        if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pSADCRDuty])
+        {
+            GivePlayerWeapon(playerid, 24, 100);
+			GivePlayerWeapon(playerid, 3, 1);
+			GivePlayerWeapon(playerid, 41, 350);
+        }
+        else if(PlayerInfo[playerid][pMedicDuty])
+        {
+            GivePlayerWeapon(playerid, 42, 500);
+        }
+
+        RemovePlayerWeapon(playerid, 1);
+        return 1;
+    }
+    else 
+    {
+        switch (PlayerInfo[playerid][pSpawnPoint]) {
+            case SPAWN_AT_DEFAULT: {
+                SetPlayerVirtualWorld(playerid, 0);
+                SetPlayerInterior(playerid, 0);
+                SetPlayerPos(playerid, DEFAULT_SPAWN_LOCATION_X, DEFAULT_SPAWN_LOCATION_Y, DEFAULT_SPAWN_LOCATION_Z);
+                SetPlayerFacingAngle(playerid, DEFAULT_SPAWN_LOCATION_A);
+            }
+            case SPAWN_AT_FACTION: {
+                new id = PlayerInfo[playerid][pFaction];
+
+                SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0], FactionInfo[id][eFactionSpawn][1], FactionInfo[id][eFactionSpawn][2]-2);
+                
+                SetPlayerVirtualWorld(playerid, FactionInfo[id][eFactionSpawnWorld]);
+                SetPlayerInterior(playerid, FactionInfo[id][eFactionSpawnInt]);
+                TogglePlayerControllable(playerid, 0);
+                SetTimerEx("SpawnFaction", 2000, false, "dd",playerid,id);
+            }
+            case SPAWN_AT_HOUSE: {
+                
+                new id = PlayerInfo[playerid][pSpawnHouse];
+
+                SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseInteriorWorld]);
+                SetPlayerInterior(playerid, HouseInfo[id][HouseInteriorID]);
+                SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]-2);
+                TogglePlayerControllable(playerid, 0);
+                SetTimerEx("OnPlayerEnterProperty", 2000, false, "ii", playerid, id); 
+
+                PlayerInfo[playerid][pInsideProperty] = id;
+            }
+            case SPAWN_AT_LASTPOS: 
+            {
+                PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_DEFAULT;
+                SpawnPlayer(playerid);
+            }
+
+        }
+    }
+
+    new query[255];
+	mysql_format(dbCon, query, sizeof(query), "DELETE FROM `cache` WHERE `C_DBID` = '%d'",PlayerInfo[playerid][pDBID]);
+	mysql_tquery(dbCon, query);
+    return 1;
 }

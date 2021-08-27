@@ -133,10 +133,10 @@ CMD:fuel(playerid, params[])
         if(!IsPlayerInRangeOfPoint(playerid, 3.0, -1024.2225,-688.4048,32.0078) && !IsPlayerInRangeOfPoint(playerid, 3.0, -1030.3638,-688.3743,32.0126) && !IsPlayerInRangeOfPoint(playerid, 3.0, -1037.9266,-688.1974,32.0126))
             return SendErrorMessage(playerid,"คุณไม่ได้อยู่ในจุดรับน้ำมัน");
 
-        if(PlayerInfo[playerid][pCash] < 1500)
-            return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ");
+        if(PlayerInfo[playerid][pCash] < 100)
+            return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ ($100)");
         
-        GiveMoney(playerid, -1500);
+        GiveMoney(playerid, -100);
         GetPlayerFuel(playerid);
         return 1;
     }
@@ -168,7 +168,7 @@ CMD:fuel(playerid, params[])
             return SendErrorMessage(playerid, "เงินภายในกิจการนี้หมดแล้ว");
         
 
-        if(FuelInfo[id][F_Fuel] >= 200.0)
+        if(FuelInfo[id][F_Fuel] >= 99999.0)
             return SendErrorMessage(playerid, "ถังนี้ได้มีน้ำมันที่เต็มแล้ว");
 
         FuelInfo[id][F_Fuel] += 50.0;

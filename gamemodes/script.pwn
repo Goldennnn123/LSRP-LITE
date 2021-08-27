@@ -167,7 +167,9 @@ new globalWeather = 2;
 #include "Y/Interior/House3.pwn"
 #include "Y/Interior/House5.pwn"
 #include "Y/Interior/House6.pwn"
+#include "Y/Interior/house7.pwn"
 #include "Y/Interior/hq_hpsital.pwn"
+#include "Y/Interior/pd_hq.pwn"
 //#include "Y/Interior/init1.pwn"
 
 
@@ -176,9 +178,9 @@ new globalWeather = 2;
 #include "Y/Map/garagegas.pwn"
 #include "Y/Map/Hospital.pwn"
 #include "Y/Map/ps.pwn"
+//#include "Y/Map/Piszza.pwn"
 #include "Y/Map/map_fight.pwn"
 #include "Y/Map/carmeeting.pwn"
-#include "Y/Map/lspdhq_new.pwn"
 //#include "Y/Map/police_g.pwn"
 #include "Y/Map/pump.pwn"
 #include "Y/Map/mapnaigun.pwn"
@@ -550,11 +552,11 @@ public OnPlayerDisconnect(playerid, reason) {
 	
 	PlayerInfo[playerid][pLastOnlineTime] = secondsConnection;
     CharacterSave(playerid);
-    ResetPlayerCharacter(playerid);
-
 
     PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
 	PlayerTextDrawDestroy(playerid, RadioStats[playerid]);
+    ResetPlayerWeapons(playerid);
+    ResetPlayerCharacter(playerid);
     return 1;
 }
 
@@ -573,160 +575,13 @@ public OnPlayerSpawn(playerid) {
 
     SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
 	SetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
-    
-    PlayerTextDrawShow(playerid, RadioStats[playerid]);
-    
-    if(PlayerInfo[playerid][pWeaponsSpawned] == false)
-	{
-		for(new i = 0; i < 4; i ++)
-		{
-            if(!PlayerInfo[playerid][pWeapons][i])
-                continue;
-            
-			if(PlayerInfo[playerid][pWeapons][i] != 0)
-			{
-				GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
-                //printf("Give Weapons: %s Ammo: %d",ReturnWeaponName(PlayerInfo[playerid][pWeapons][i]), PlayerInfo[playerid][pWeaponsAmmo][i]);
-                PlayerInfo[playerid][pWeapons][i] = PlayerInfo[playerid][pWeapons][i];
-                PlayerInfo[playerid][pWeaponsAmmo][i] = PlayerInfo[playerid][pWeaponsAmmo][i];
-            }
-		}
-			
-		SetPlayerArmedWeapon(playerid, 0);
-		PlayerInfo[playerid][pWeaponsSpawned] = true;
-	}
 
-    if(PlayerInfo[playerid][pAdminjailed] == true)
-    {
-        SendClientMessageEx(playerid, COLOR_REDEX, "[ADMIN JAIL:] เวลาที่อยู่ในคุกแอดมินของคุณยังไม่หมดจำเป็นต้องอยู่ในคุกอีก %d วินาที",PlayerInfo[playerid][pAdminjailTime]);
-        ClearAnimations(playerid); 
-	
-        SetPlayerPos(playerid, 2687.3630, 2705.2537, 22.9472);
-        SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 1338);
+    StopAudioStreamForPlayer(playerid);
 
-        CharacterSave(playerid);
-        StopAudioStreamForPlayer(playerid);
-        return 1;
-    }
-    
-    if(PlayerInfo[playerid][pArrest] == true)
-    {
-        ArrestConecterJail(playerid, PlayerInfo[playerid][pArrestTime], PlayerInfo[playerid][pArrestRoom]);
-        ClearAnimations(playerid);
-        CharacterSave(playerid);
-        StopAudioStreamForPlayer(playerid);
-        return 1;
-    }
+    ResetPlayerWeapons(playerid);
+    SetPlayerWeapons(playerid);
 
-    if (PlayerInfo[playerid][pTimeout]) {
-
-        // ตั้งค่าผู้เล่นให้กลับที่เดิมและสถานะบางอย่างเหมือนเดิม
-
-        SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld]);
-        SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInterior]);
-
-        SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-
-        SetPlayerHealth(playerid, PlayerInfo[playerid][pHealth]);
-        SetPlayerArmour(playerid, PlayerInfo[playerid][pArmour]);
-
-        PlayerInfo[playerid][pTimeout] = 0;
-
-        GameTextForPlayer(playerid, "~r~crashed. ~w~returning to last position", 1000, 1);
-        StopAudioStreamForPlayer(playerid);
-
-        new query[255];
-		mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `cache` WHERE C_DBID = '%d'",PlayerInfo[playerid][pDBID]);
-		mysql_tquery(dbCon, query, "OnplayerCache", "d",playerid);
-
-    
-        return 1;
-    }
-
-    new query[255];
-	mysql_format(dbCon, query, sizeof(query), "DELETE FROM `cache` WHERE `C_DBID` = '%d'",PlayerInfo[playerid][pDBID]);
-	mysql_tquery(dbCon, query);
-
-    if(PlayerInfo[playerid][pSpectating] != INVALID_PLAYER_ID)
-    {
-        SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld]);
-        SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInterior]);
-
-        SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
-        PlayerInfo[playerid][pSpectating] = INVALID_PLAYER_ID;
-        StopAudioStreamForPlayer(playerid);
-
-        for(new i = 0; i < 13; i++)
-		{
-			if(playerWeaponsSpecSave[playerid][i][i])
-				GivePlayerGun(playerid, playerWeaponsSpecSave[playerid][i][0],  playerWeaponsSpecSave[playerid][i][1]);
-		}
-
-
-        if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pSADCRDuty])
-        {
-            GivePlayerWeapon(playerid, 24, 100);
-			GivePlayerWeapon(playerid, 3, 1);
-			GivePlayerWeapon(playerid, 41, 350);
-        }
-        else if(PlayerInfo[playerid][pMedicDuty])
-        {
-            GivePlayerWeapon(playerid, 42, 500);
-        }
-
-        RemovePlayerWeapon(playerid, 1);
-        return 1;
-    }
-
-
-    /*for(new i = 0; i < 4; i ++)
-    {
-        if(PlayerInfo[playerid][pWeapons][i])
-            GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
-    }
-
-    SetPlayerArmedWeapon(playerid, 0);
-    PlayerInfo[playerid][pWeaponsSpawned] = true;*/
-    
-    switch (PlayerInfo[playerid][pSpawnPoint]) {
-        case SPAWN_AT_DEFAULT: {
-            SetPlayerVirtualWorld(playerid, 0);
-            SetPlayerInterior(playerid, 0);
-            SetPlayerPos(playerid, DEFAULT_SPAWN_LOCATION_X, DEFAULT_SPAWN_LOCATION_Y, DEFAULT_SPAWN_LOCATION_Z);
-            SetPlayerFacingAngle(playerid, DEFAULT_SPAWN_LOCATION_A);
-        }
-        case SPAWN_AT_FACTION: {
-            new id = PlayerInfo[playerid][pFaction];
-
-            SetPlayerPos(playerid, FactionInfo[id][eFactionSpawn][0], FactionInfo[id][eFactionSpawn][1], FactionInfo[id][eFactionSpawn][2]-2);
-            
-            SetPlayerVirtualWorld(playerid, FactionInfo[id][eFactionSpawnWorld]);
-            SetPlayerInterior(playerid, FactionInfo[id][eFactionSpawnInt]);
-            TogglePlayerControllable(playerid, 0);
-            SetTimerEx("SpawnFaction", 2000, false, "dd",playerid,id);
-        }
-        case SPAWN_AT_HOUSE: {
-            
-            new id = PlayerInfo[playerid][pSpawnHouse];
-
-            SetPlayerVirtualWorld(playerid, HouseInfo[id][HouseInteriorWorld]);
-            SetPlayerInterior(playerid, HouseInfo[id][HouseInteriorID]);
-            SetPlayerPos(playerid, HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2]-2);
-            TogglePlayerControllable(playerid, 0);
-            SetTimerEx("OnPlayerEnterProperty", 2000, false, "ii", playerid, id); 
-
-            PlayerInfo[playerid][pInsideProperty] = id;
-        }
-        case SPAWN_AT_LASTPOS: 
-        {
-            PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_DEFAULT;
-            SpawnPlayer(playerid);
-        }
-
-    }
-
-    StopAudioStreamForPlayer(playerid); //หยุดเพลงเข้าเซิฟ
-
+    SetPlayerSpawn(playerid);
     return 1;
 }
 

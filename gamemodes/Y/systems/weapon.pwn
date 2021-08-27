@@ -350,7 +350,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		if(GetPlayerTeam(hitid) == PLAYER_STATE_WOUNDED && !PlayerInfo[hitid][pDeathFix])
 		{	
 			CallLocalFunction("OnPlayerDead", "iii", hitid, playerid, weaponid);
-			return 0;
+			return 0; 
 		} 
 		else if(GetPlayerTeam(hitid) != PLAYER_STATE_ALIVE)
 			return 0; 
@@ -531,7 +531,8 @@ public OnPlayerWounded(playerid, killerid, reason)
 	//SetPlayerWeather(playerid, 250); 
 	
 	//GiveMoney(playerid, -200); 
-	SetPlayerTeam(playerid, PLAYER_STATE_WOUNDED); 
+	SetPlayerTeam(playerid, PLAYER_STATE_WOUNDED);
+	ResetPlayerWeapons(playerid);
 
 
 	SendClientMessage(playerid, COLOR_RED, "ตอนนี้คุณบาดเจ็บสาหัสคุณยังไม่ตาย");
@@ -660,3 +661,44 @@ SetPlayerWeaponSkill(playerid, skill) {
 	    }
 	}
 }
+
+stock SetPlayerWeapons(playerid)
+{
+	if(PlayerInfo[playerid][pWeapons][0] > 0)
+	{
+		GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][0], PlayerInfo[playerid][pWeaponsAmmo][0]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pWeapons][0]), PlayerInfo[playerid][pWeaponsAmmo][0]);
+	}
+	if(PlayerInfo[playerid][pWeapons][1] > 0)
+	{
+		GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][1], PlayerInfo[playerid][pWeaponsAmmo][1]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pWeapons][1]), PlayerInfo[playerid][pWeaponsAmmo][1]);
+	}
+	if(PlayerInfo[playerid][pWeapons][2] > 0)
+	{
+		GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][2], PlayerInfo[playerid][pWeaponsAmmo][2]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pWeapons][2]), PlayerInfo[playerid][pWeaponsAmmo][2]);
+	}
+	if(PlayerInfo[playerid][pWeapons][3] > 0)
+	{
+		
+		GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][3], PlayerInfo[playerid][pWeaponsAmmo][3]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pWeapons][3]), PlayerInfo[playerid][pWeaponsAmmo][3]);
+	}		
+	SetPlayerArmedWeapon(playerid, 0);
+	return 1;
+}
+
+
+stock ResetWeapons(playerid)
+{
+	ResetPlayerWeapons(playerid);
+
+	for (new i = 0; i < 4; i ++) {
+		PlayerInfo[playerid][pWeapons][i] = 0;
+		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
+	}
+	return 1;
+}
+
+

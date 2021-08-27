@@ -1080,12 +1080,37 @@ CMD:vehicle(playerid, params[])
 
 		new idx = 0;
 
-		for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+		if(PlayerInfo[tagetid][pDonater] == 2)
 		{
-			if(!PlayerInfo[tagetid][pOwnedVehicles][i])
+			for(new i = 1; i < MAX_PLAYER_VEHICLES_V2; i++)
 			{
-				idx = i;
-				break;
+				if(!PlayerInfo[tagetid][pOwnedVehicles][i])
+				{
+					idx = i;
+					break;
+				}
+			}
+		}
+		else if(PlayerInfo[tagetid][pDonater] == 3)
+		{
+			for(new i = 1; i < MAX_PLAYER_VEHICLES_V3; i++)
+			{
+				if(!PlayerInfo[tagetid][pOwnedVehicles][i])
+				{
+					idx = i;
+					break;
+				}
+			}
+		}
+		else
+		{
+			for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+			{
+				if(!PlayerInfo[tagetid][pOwnedVehicles][i])
+				{
+					idx = i;
+					break;
+				}
 			}
 		}
 
@@ -1383,9 +1408,6 @@ CMD:trunk(playerid, params[])
 		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 			return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");
 			
-		if(PlayerInfo[playerid][pDBID] != VehicleInfo[vehicleid][eVehicleOwnerDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid)
-			return SendErrorMessage(playerid, "คุณไม่ได้มีกุญแจ"); 
-			
 		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 			
 		if(!boot)
@@ -1469,9 +1491,6 @@ CMD:hood(playerid, params[])
 		new
 			vehicleid = GetPlayerVehicleID(playerid)
 		;
-			
-		if(PlayerInfo[playerid][pDBID] != VehicleInfo[vehicleid][eVehicleOwnerDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid)
-			return SendErrorMessage(playerid, "คุณไม่มีกุญแจรถ"); 
 				
 		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 			return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับ");

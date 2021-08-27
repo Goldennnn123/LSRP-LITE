@@ -1724,7 +1724,7 @@ CMD:setidcar(playerid, params[])
 
 			PlayerInfo[tagerid][pVehicleSpawned] = false;
 			PlayerInfo[tagerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
-			SendClientMessage(playerid, COLOR_GREY, "ผู้ดูแล ได้ล้างการมียานพาหนะของ คุณออกจากตัวแล้ว");
+			SendClientMessage(tagerid, COLOR_GREY, "ผู้ดูแล ได้ล้างการมียานพาหนะของ คุณออกจากตัวแล้ว");
 			return 1;
 		}
 		return 1;
@@ -3279,26 +3279,9 @@ CMD:restart(playerid, params[])
 	
 	foreach (new i : Player)
 	{
-		
-		PlayerInfo[i][pVehicleSpawned] = false;
-		PlayerInfo[i][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
-
 		CharacterSave(i);
 		SetPlayerName(i, e_pAccountData[i][mAccName]);
 	}
-
-	new query[150];
-	for (new i = 1; i < 1000; i++)
-	{
-        mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0', `pVehicleSpawnedID` = '0', `RentCarKey` = '0' WHERE `char_dbid` = '%d' ",i);
-        mysql_tquery(dbCon, query);
-	}
-
-	//Saving systems:
-	/*SaveFactions();
-	SaveProperties();
-	SaveBusinesses();*/
-
 	//Closing database:
 	
 	SendRconCommand("gmx");

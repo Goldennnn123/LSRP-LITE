@@ -52,6 +52,8 @@ public OnPlayerLogin(playerid/*, race_check*/)
         }
         else {
 
+
+
 			if(loginAttempt[playerid] == DEFAULT_PLAYER_LOGIN_ATTEMPT) {
 				SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: "EMBED_WHITE"คุณกรอกรหัสผ่านผิดมากเกินไป");
 				KickEx(playerid);

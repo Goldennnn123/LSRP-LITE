@@ -663,6 +663,7 @@ CMD:stopanimation(playerid, params[])
 
 	ApplyAnimation(playerid, "CARRY", "crry_prtial", 4.0, 0, 0, 0, 0, 0);
     SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+	PlayerInfo[playerid][pAnimation] = 0;
 	return 1;
 }
 
@@ -1498,13 +1499,9 @@ CMD:admins(playerid, params[])
 		
 		foreach(new i : Player)
 		{
-			if(PlayerInfo[i][pAdmin] && PlayerInfo[i][pAdmin] < 5)
+			if(PlayerInfo[i][pAdminDuty] && PlayerInfo[i][pAdmin] < 5)
 			{
-				if(PlayerInfo[i][pAdminDuty])
-				{
-					SendClientMessageEx(playerid, COLOR_DARKGREEN, "(Level: %d) %s (%s) - On Duty: Yes", PlayerInfo[i][pAdmin], ReturnRealName(i, 0), e_pAccountData[i][mForumName]);
-				}
-				else SendClientMessageEx(playerid, COLOR_GREY, "(Level: %d) %s (%s) - On Duty: No", PlayerInfo[i][pAdmin], ReturnRealName(i, 0), e_pAccountData[i][mForumName]);
+				SendClientMessageEx(playerid, COLOR_DARKGREEN, "(Level: %d) %s - On Duty: Yes", PlayerInfo[i][pAdmin], e_pAccountData[i][mForumName]);
 			}
 		}
 	}
@@ -1548,13 +1545,12 @@ CMD:testers(playerid, params[])
 		
 		foreach(new i : Player)
 		{
-			if(PlayerInfo[i][pTester])
+			if(PlayerInfo[i][pTesterDuty])
 			{
 				if(PlayerInfo[i][pTesterDuty])
 				{
-					SendClientMessageEx(playerid, COLOR_DARKGREEN, "(Level: %d) %s (%s) - On Duty: Yes", PlayerInfo[i][pTester], ReturnRealName(i, 0), e_pAccountData[i][mForumName]);
+					SendClientMessageEx(playerid, COLOR_DARKGREEN, "(Level: %d) %s - On Duty: Yes", PlayerInfo[i][pTester], e_pAccountData[i][mForumName]);
 				}
-				else SendClientMessageEx(playerid, COLOR_GREY, "(Level: %d) %s (%s) - On Duty: No", PlayerInfo[i][pTester], ReturnRealName(i, 0), e_pAccountData[i][mForumName]);
 			}
 		}
 	}
@@ -2162,6 +2158,7 @@ CMD:pm(playerid, params[])
 	
 	if(PlayerInfo[playerid][pAdminDuty])
 	{
+		
 		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {FF9900}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
 		Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 

@@ -124,6 +124,7 @@ CMD:sethouse(playerid, params[])
 
 CMD:renthouse(playerid, params[])
 {
+    new bool:Check;
     for(new p = 1; p < MAX_HOUSE; p++)
 	{
 		if(!HouseInfo[p][HouseDBID])
@@ -177,11 +178,16 @@ CMD:renthouse(playerid, params[])
             Savehouse(p);
             Saveglobal();
 
+            Check = true;
 
             return 1;
         }
-        else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้บ้านที่เปิดให้เช่า");
+        else Check = false;
     }
+
+    if(!Check)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้บ้านที่เปิดให้เช่า");
+    
     return 1;
 }
 
@@ -468,10 +474,7 @@ CMD:placecom(playerid, params[])
     new id = PlayerInfo[playerid][pInsideProperty];
 
     if(!PlayerInfo[playerid][pInsideProperty])
-        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} คุณไม่ได้อยู่ในบ้าน");
-
-    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
-        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} บ้านหลังนี้ไม่ใช่บ้านของคุณ");
+        return SendClientMessage(playerid,-1,"คุณไม่ได้อยู่ในบ้าน");
 
     if(PlayerEditObject[playerid])
         return SendErrorMessage(playerid, "คุณกำลังแก้ไข Object อยู่");
@@ -500,10 +503,10 @@ CMD:editcom(playerid, params[])
         return SendErrorMessage(playerid, "ระบบนี้บนแพล็ตฟอร์มของคุณยังไม่รองรับ");
 
     if(!PlayerInfo[playerid][pInsideProperty])
-        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} คุณไม่ได้อยู่ในบ้าน");
+        return SendClientMessage(playerid,-1,"คุณไม่ได้อยู่ในบ้าน");
 
-    if(HouseInfo[PlayerInfo[playerid][pInsideProperty]][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
-        return SendClientMessage(playerid,-1,"{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} บ้านหลังนี้ไม่ใช่บ้านของคุณ");
+    if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
 
     if(PlayerEditObject[playerid])
         return SendErrorMessage(playerid, "คุณกำลังแก้ไข Object อยู่");
@@ -516,7 +519,7 @@ CMD:editcom(playerid, params[])
     if(sscanf(params, "s[32]", option))
     {
         SendUsageMessage(playerid, "/editcom < option >");
-        SendClientMessageEx(playerid, COLOR_GREY, "pos upgrade");
+        SendClientMessageEx(playerid, COLOR_GREY, "pos upgrade get");
         return 1;
     }  
 

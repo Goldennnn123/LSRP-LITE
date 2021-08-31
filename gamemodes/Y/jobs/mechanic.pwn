@@ -391,7 +391,7 @@ CMD:changcolorvehicle(playerid, params[])
     return 1;
 }
 
-CMD:trun(playerid, params[])
+CMD:tune(playerid, params[])
 {
     if(PlayerInfo[playerid][pJob] != JOB_MECHANIC)
         return SendErrorMessage(playerid, "คุณไม่ใช่อาชีพช่างยนต์");
@@ -423,7 +423,9 @@ CMD:trun(playerid, params[])
     if(componentid < 1000 || componentid > 1193)
         return SendErrorMessage(playerid, "คุณใส่เลข componentid ไม่ถูกต้อง");
 
-
+    if(!CheckVehicleModel(playerid, GetPlayerVehicleID(tagetid), componentid))
+        return 1;
+    
     new vehicleid_taget = GetPlayerVehicleID(tagetid);
     new vehicleid_my = GetPlayerVehicleID(playerid);
     new comp = floatround(componentid / 50, floatround_round);
@@ -703,6 +705,8 @@ stock ResetService(playerid)
     ServiceCalls[playerid][S_SER_COMPONENT] = -1;
     return 1;
 }
+
+
 
 
 

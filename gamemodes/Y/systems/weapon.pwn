@@ -10,6 +10,12 @@
 #define MEDIUM_SKILL	2
 #define FULL_SKILL		3
 
+
+new const g_aWeaponSlots[] = {
+	0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 10, 10, 10, 10, 10, 10, 8, 8, 8, 0, 0, 0, 2, 2, 2, 3, 3, 3, 4, 4, 5, 5, 4, 6, 6, 7, 7, 7, 7, 8, 12, 9, 9, 9, 11, 11, 11, 0, 0
+};
+
+
 stock ReturnWeaponName(weaponid)
 {
 	new weapon[22];
@@ -36,6 +42,7 @@ stock ReturnWeaponIDSlot(weaponid)
 		case 22 .. 24: returnID = 2;
 		case 25, 27 .. 34: returnID = 3;
 	}
+
 	return returnID;
 }
 
@@ -93,15 +100,12 @@ public GivePlayerGun(playerid, weaponid, ammo)
 {
 	new idx = ReturnWeaponIDSlot(weaponid); 
 	
-	if(PlayerInfo[playerid][pWeapons][idx])
-		RemovePlayerWeapon(playerid, PlayerInfo[playerid][pWeapons][idx]);
+	if(PlayerInfo[playerid][pGun][idx])
+		RemovePlayerWeapon(playerid, PlayerInfo[playerid][pGun][idx]);
 	
 	GivePlayerWeapon(playerid, weaponid, ammo); 
-	
-	PlayerInfo[playerid][pWeapons][idx] = weaponid;
-	PlayerInfo[playerid][pWeaponsAmmo][idx] = ammo;
-	
-	PlayerInfo[playerid][pWeaponsImmune] = gettime();
+	PlayerInfo[playerid][pGun][idx] = weaponid;
+	PlayerInfo[playerid][pGunAmmo][idx] = ammo;
 	return 1;
 }
 
@@ -112,7 +116,7 @@ stock PlayerHasWeapons(playerid)
 	
 	for(new i = 0; i < 4; i ++)
 	{
-		if(PlayerInfo[playerid][pWeapons][i] != 0)
+		if(PlayerInfo[playerid][pGun][i] != 0)
 			countWeapons++;
 	}
 	if(countWeapons == 0)
@@ -126,7 +130,7 @@ stock PlayerHasWeapons(playerid)
 
 stock PlayerHasWeapon(playerid, weaponid)
 {
-	if(PlayerInfo[playerid][pWeapons][ReturnWeaponIDSlot(weaponid)] != weaponid)
+	if(PlayerInfo[playerid][pGun][ReturnWeaponIDSlot(weaponid)] != weaponid)
 		return 0;
 
 	return 1;
@@ -144,16 +148,16 @@ ptask OnWeaponsUpdate[1000](playerid)
 			
 	for (new w = 0; w < 4; w++)
 	{
-		new idx = WeaponDataSlot(PlayerInfo[playerid][pWeapons][w]); 
+		new idx = WeaponDataSlot(PlayerInfo[playerid][pGun][w]); 
 			
-		if(PlayerInfo[playerid][pWeapons][w] != 0 && PlayerInfo[playerid][pWeaponsAmmo][w] > 0)
+		if(PlayerInfo[playerid][pGun][w] != 0 && PlayerInfo[playerid][pGunAmmo][w] > 0)
 		{
-			GetPlayerWeaponData(playerid, idx, PlayerInfo[playerid][pWeapons][w], PlayerInfo[playerid][pWeaponsAmmo][w]); 
+			GetPlayerWeaponData(playerid, idx, PlayerInfo[playerid][pGun][w], PlayerInfo[playerid][pGunAmmo][w]); 
 		}
 			
-		if(PlayerInfo[playerid][pWeapons][w] != 0 && PlayerInfo[playerid][pWeaponsAmmo][w] == 0)
+		if(PlayerInfo[playerid][pGun][w] != 0 && PlayerInfo[playerid][pGunAmmo][w] == 0)
 		{
-			PlayerInfo[playerid][pWeapons][w] = 0;
+			PlayerInfo[playerid][pGun][w] = 0;
 			//Removing 0 ammo weapons;
 		}
 	}
@@ -329,7 +333,7 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 		}
 		
 		if(GetPlayerTeam(playerid) == PLAYER_STATE_WOUNDED)
-		{			
+		{	
 			CallLocalFunction("OnPlayerDead", "iiii", playerid, issuerid, weaponid, 1);
 			return 0;
 		}
@@ -582,11 +586,11 @@ stock ShowPlayerWeapons(playerid, slotid)
 		{
 			new str_1slot[60];
 			
-			if(!PlayerInfo[playerid][pWeapons][0])
+			if(!PlayerInfo[playerid][pGun][0])
 				str_1slot = "ไม่มี"; 
 				
 			else
-				format(str_1slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pWeapons][0]));
+				format(str_1slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pGun][0]));
 				
 			returnStr = str_1slot;
 		}
@@ -594,11 +598,11 @@ stock ShowPlayerWeapons(playerid, slotid)
 		{
 			new str_2slot[60];
 			
-			if(!PlayerInfo[playerid][pWeapons][1])
+			if(!PlayerInfo[playerid][pGun][1])
 				str_2slot = "ไม่มี"; 
 				
 			else
-				format(str_2slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pWeapons][1]));
+				format(str_2slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pGun][1]));
 				
 			returnStr = str_2slot;
 		}
@@ -606,11 +610,11 @@ stock ShowPlayerWeapons(playerid, slotid)
 		{
 			new str_3slot[60];
 			
-			if(!PlayerInfo[playerid][pWeapons][2])
+			if(!PlayerInfo[playerid][pGun][2])
 				str_3slot = "ไม่มี"; 
 				
 			else
-				format(str_3slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pWeapons][2]));
+				format(str_3slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pGun][2]));
 				
 			returnStr = str_3slot;
 		}
@@ -618,11 +622,11 @@ stock ShowPlayerWeapons(playerid, slotid)
 		{
 			new str_4slot[60];
 			
-			if(!PlayerInfo[playerid][pWeapons][3])
+			if(!PlayerInfo[playerid][pGun][3])
 				str_4slot = "ไม่มี"; 
 				
 			else
-				format(str_4slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pWeapons][3]));
+				format(str_4slot, 60, "%s", ReturnWeaponName(PlayerInfo[playerid][pGun][3]));
 				
 			returnStr = str_4slot;
 		}
@@ -664,26 +668,26 @@ SetPlayerWeaponSkill(playerid, skill) {
 
 stock SetPlayerWeapons(playerid)
 {
-	if(PlayerInfo[playerid][pWeapons][0] > 0)
+	if(PlayerInfo[playerid][pGun][0] > 0)
 	{
-		GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][0], PlayerInfo[playerid][pWeaponsAmmo][0]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pWeapons][0]), PlayerInfo[playerid][pWeaponsAmmo][0]);
+		GivePlayerGun(playerid, PlayerInfo[playerid][pGun][0], PlayerInfo[playerid][pGunAmmo][0]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pGun][0]), PlayerInfo[playerid][pGunAmmo][0]);
 	}
-	if(PlayerInfo[playerid][pWeapons][1] > 0)
+	if(PlayerInfo[playerid][pGun][1] > 0)
 	{
-		GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][1], PlayerInfo[playerid][pWeaponsAmmo][1]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pWeapons][1]), PlayerInfo[playerid][pWeaponsAmmo][1]);
+		GivePlayerGun(playerid, PlayerInfo[playerid][pGun][1], PlayerInfo[playerid][pGunAmmo][1]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pGun][1]), PlayerInfo[playerid][pGunAmmo][1]);
 	}
-	if(PlayerInfo[playerid][pWeapons][2] > 0)
+	if(PlayerInfo[playerid][pGun][2] > 0)
 	{
-		GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][2], PlayerInfo[playerid][pWeaponsAmmo][2]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pWeapons][2]), PlayerInfo[playerid][pWeaponsAmmo][2]);
+		GivePlayerGun(playerid, PlayerInfo[playerid][pGun][2], PlayerInfo[playerid][pGunAmmo][2]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pGun][2]), PlayerInfo[playerid][pGunAmmo][2]);
 	}
-	if(PlayerInfo[playerid][pWeapons][3] > 0)
+	if(PlayerInfo[playerid][pGun][3] > 0)
 	{
 		
-		GivePlayerGun(playerid, PlayerInfo[playerid][pWeapons][3], PlayerInfo[playerid][pWeaponsAmmo][3]);
-		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pWeapons][3]), PlayerInfo[playerid][pWeaponsAmmo][3]);
+		GivePlayerGun(playerid, PlayerInfo[playerid][pGun][3], PlayerInfo[playerid][pGunAmmo][3]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pGun][3]), PlayerInfo[playerid][pGunAmmo][3]);
 	}		
 	SetPlayerArmedWeapon(playerid, 0);
 	return 1;
@@ -695,10 +699,88 @@ stock ResetWeapons(playerid)
 	ResetPlayerWeapons(playerid);
 
 	for (new i = 0; i < 4; i ++) {
-		PlayerInfo[playerid][pWeapons][i] = 0;
-		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
+		PlayerInfo[playerid][pGun][i] = 0;
+		PlayerInfo[playerid][pGunAmmo][i] = 0;
 	}
 	return 1;
+}
+
+
+stock IsMelee(weaponid)
+{
+    if(weaponid >= 1 && weaponid <= 15) return true;
+	//switch(weaponid) { case 1..8,10..13,43: { return 1; } }
+	return 0;
+}
+
+
+stock IsPrimary(weaponid)
+{
+    if(weaponid >= 25 && weaponid <= 33) return true;
+	//switch(weaponid) { case 25,27,29..34: { return 1; } }
+	return 0;
+}
+
+stock IsSecondary(weaponid)
+{
+    if(weaponid >= 22 && weaponid <= 24) return true;
+	//switch(weaponid) { case 22..24: { return 1; } }
+	return 0;
+}
+
+
+stock GivePlayerValidWeapon(playerid, weaponid, ammo, license=0)
+{
+	#pragma unused license
+
+	if (weaponid < 0 || weaponid > 46)
+	    return 0;
+
+    RemoveWeapon(playerid, weaponid);
+
+	if(!IsInvalidWeapon(weaponid))
+	{
+		if(IsMelee(weaponid))
+		{
+		    PlayerInfo[playerid][pGun][0] = weaponid;
+		    PlayerInfo[playerid][pGunAmmo][0] = ammo;
+		    SendClientMessageEx(playerid, COLOR_GREEN, "[Melee] คุณจะเกิดด้วย %s", ReturnWeaponName(weaponid));
+		}
+		else if(IsPrimary(weaponid))
+		{
+		    PlayerInfo[playerid][pGun][3] = weaponid;
+		    PlayerInfo[playerid][pGunAmmo][3] = ammo;
+		    SendClientMessageEx(playerid, COLOR_GREEN, "[Primary weapon] คุณจะเกิดด้วย %s", ReturnWeaponName(weaponid));
+
+		    
+		}
+		else if(IsSecondary(weaponid))
+		{
+		    PlayerInfo[playerid][pGun][2] = weaponid;
+		    PlayerInfo[playerid][pGunAmmo][2] = ammo;
+		    SendClientMessageEx(playerid, COLOR_GREEN, "[Secondary weapon] คุณจะเกิดด้วย %s", ReturnWeaponName(weaponid));
+
+		}
+	}
+
+	PlayerInfo[playerid][pWeapons][g_aWeaponSlots[weaponid]] = weaponid;
+	PlayerInfo[playerid][pWeaponsAmmo][g_aWeaponSlots[weaponid]] = ammo;
+
+	GivePlayerWeapon(playerid, weaponid, ammo);
+	return license;
+}
+
+
+stock GivePlayerWeaponEx(playerid, weaponid, ammo)
+{
+	if (weaponid < 0 || weaponid > 46)
+	    return 0;
+
+
+	PlayerInfo[playerid][pWeapons][g_aWeaponSlots[weaponid]] = weaponid;
+	PlayerInfo[playerid][pWeaponsAmmo][g_aWeaponSlots[weaponid]] = ammo;
+
+	return GivePlayerWeapon(playerid, weaponid, ammo);
 }
 
 

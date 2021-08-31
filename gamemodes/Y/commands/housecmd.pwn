@@ -6,7 +6,7 @@ CMD:housecmds(playerid, params[])
 
     SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /house /buyhouse /sellhouse /lock /placepos /switch /knock /ddo /ds");
 
-    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /renthouse /sethouse");
+    SendClientMessage(playerid, COLOR_GRAD2,"[HOUSE] /renthouse /sethouse /givehousekey");
 
     SendClientMessage(playerid, COLOR_GREEN,"________________________________________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
@@ -1193,5 +1193,108 @@ Dialog:D_COM_UPGRAD_STORED(playerid, response, listitem, inputtext[])
             return 1;
         }
     }
+    return 1;
+}
+
+
+alias:givehousekey("ให้กุญแจบ้าน")
+CMD:givehousekey(playerid, params[])
+{
+    if(!IsPlayerInHouse(playerid))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในบ้าน");
+
+    new id = PlayerInfo[playerid][pInsideProperty];
+
+    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คุณไม่ได้เป็นเจ้าของบ้านหลังนี้");
+
+    new tagetid;
+    
+    if(sscanf(params, "u", tagetid))
+        return SendUsageMessage(playerid, "/givehousekey <ชื่อบางส่วน/ไอดี>");
+
+    if(playerid == tagetid)
+        return SendErrorMessage(playerid, "ไม่สามารถให้กุญแจบ้านสำรองกับตัวเองได้");
+    
+    if(!IsPlayerConnected(tagetid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[tagetid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+    if(!IsPlayerNearPlayer(playerid, tagetid, 2.0))
+        return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
+
+    if(PlayerInfo[tagetid][pHouseKey] == id)
+    {
+        PlayerInfo[tagetid][pHouseKey] = 0;
+        SendServerMessage(playerid, "คุณได้ยึดกุญแจบ้านของ %s เรียบร้อยแล้ว", ReturnName(tagetid));
+        SendServerMessage(tagetid, "คุณได้ถูกยึดกุญแจบ้านโดย %s", ReturnName(playerid));
+
+        CharacterSave(tagetid);
+        CharacterSave(playerid);
+        return 1;
+    }
+    else 
+    {
+        PlayerInfo[tagetid][pHouseKey] = id;
+        SendServerMessage(playerid, "คุณได้ให้คุณแจบ้านสำรองกับ %s แล้ว เสียเงิน ($500)", ReturnName(tagetid));
+        SendServerMessage(tagetid, "คุณได้รับกุญแจสำรองของบ้าน %d  จาก %s แล้ว", ReturnName(playerid));
+
+        CharacterSave(tagetid);
+        CharacterSave(playerid);
+    }
+    return 1;
+}
+
+
+CMD:bareswitch(playerid, params[])
+{
+    if(!IsPlayerInHouse(playerid))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในบ้าน");
+
+    new id = PlayerInfo[playerid][pInsideProperty];
+    
+    if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pHouseKey] != id)
+        return SendErrorMessage(playerid, "คุณไม่ได้เป็นเจ้าของบ้านหลังนี้");
+
+    new Float:x, Float:y, Float:z;
+
+    if(HouseInfo[id][HouseStatus])
+    {
+        HouseInfo[id][HouseStatus]=0;
+	    SendClientMessage(playerid, COLOR_WHITE, "คุณปิดโหมด Bareswitch");
+	    //HouseInfo[id][HouseInterior][2]+=100.0;
+
+        foreach(new i : Player)
+		{
+			if(PlayerInfo[i][pInsideProperty] == id)
+     		{
+				GetPlayerPos(i, x, y, z);
+				//SetPlayerPos(i, x, y, z+100.5);
+            }
+        }
+    
+    }
+    else
+    {
+        HouseInfo[id][HouseStatus]=1;
+	    SendClientMessage(playerid, COLOR_WHITE, "คุณได้เปิดโหมด Bareswitch");
+		//HouseInfo[id][HouseInterior][2]-=100.0;
+
+        foreach(new i : Player)
+		{
+			if(PlayerInfo[i][pInsideProperty] == id)
+     		{
+				GetPlayerPos(i, x, y, z);
+				//SetPlayerPos(i, x, y, z+100.5);
+            }
+        }
+    }
+
+    DestroyDynamicArea(HouseInfo[id][HouseAreaID]);
+	HouseInfo[id][HouseAreaID] = CreateDynamicSphere(HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2], 3.0, HouseInfo[id][HouseInteriorWorld], HouseInfo[id][HouseInteriorID]); // The house interior.	
+	Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[id][HouseAreaID], E_STREAMER_EXTRA_ID, id);
+    Savehouse(id);
     return 1;
 }

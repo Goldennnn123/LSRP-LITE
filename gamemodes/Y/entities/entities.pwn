@@ -85,6 +85,9 @@ enum E_PLAYER_DATA
 	pWeapons[13], 
 	pWeaponsAmmo[13],
 
+	pGun[4],
+	pGunAmmo[4],
+
     pOwnedVehicles[12],
 	bool:pVehicleSpawned,
 	pVehicleSpawnedID,
@@ -182,7 +185,9 @@ enum E_PLAYER_DATA
 
 	pObject[10],
 	bool:pTogPm,
-	pAnimation
+	pAnimation,
+
+	pHouseKey
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];
@@ -389,6 +394,9 @@ enum E_HOUSE_INFO
 
 	bool:HouseMusic,
 	HouseMusicLink[150],
+
+	HouseStatus,
+	HouseAreaID,
 	
 }
 new HouseInfo[MAX_HOUSE][E_HOUSE_INFO];

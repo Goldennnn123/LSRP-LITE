@@ -1,5 +1,8 @@
 #include <YSI_Coding\y_hooks>
 
+new possibleVehiclePlates[][] = 
+	{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+
 /*new PlayerText:VehicleBuyMenu[MAX_PLAYERS][23];
 
 enum V_VEHICLE_BUY
@@ -1072,7 +1075,11 @@ new g_aDealershipData[][VehiclePriceID] =
     {"Jester",559, 10,200000},//97
     {"Stratum",561, 10,110000},//98
     {"Sultan",560, 10,785000},//99
-    {"Uranus",558, 10,200000}//100
+    {"Uranus",558, 10,200000},//100
+
+    {"FCR-900",521, 10,200000},//101
+    {"PCJ-600",461, 10,200000},//102
+    {"Sanchez",468, 10,200000}//103
     /////Street racers:
     
 };

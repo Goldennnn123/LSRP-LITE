@@ -711,7 +711,9 @@ CMD:engine(playerid, params[])
 	VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && 
 	!VehicleInfo[vehicleid][eVehicleAdminSpawn] && 
 	!IsRentalVehicle(vehicleid) &&
-	!IsElecVehicle(vehicleid))
+	!IsElecVehicle(vehicleid) &&
+	!PlayerInfo[playerid][pAdminDuty]
+	)
 	{
 		new idx, str[128];
 		
@@ -2767,6 +2769,17 @@ GetVehicleMaxSeats(vehicleid)
 
 stock SetVehicleToRespawnEx(vehicleid)
 {
+	if(IsVehicleRented(vehicleid))
+	{
+		foreach(new i : Player)
+		{
+			if(RentCarKey[i] == vehicleid)
+			{
+				RentCarKey[i] = 9999;
+				SendServerMessage(i, "ผู้ดูแลได้ทำการรียานพาหนะ ยานพาหนะเช่า");
+			}
+		}
+	}
 	////ลบ Carsign 
 	Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
 	VehicleInfo[vehicleid][eVehicleHasCarsign] = false;

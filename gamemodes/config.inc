@@ -1,4 +1,4 @@
-#define GM_HOST_NAME    "Los Santos Roleplay LITE 0.3.DL"
+#define GM_HOST_NAME    "[0.3.DL] Los Santos LITE Roleplay | เข้าสู่ระบบด้วย UCP"
 #define GM_VERSION      "0.0.1" // x.y.z
 
 #define IN_GAME_REGISTER 			// สมัครสมาชิกในเกม

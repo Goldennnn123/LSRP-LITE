@@ -36,6 +36,7 @@ CMD:takejob(playerid, params[])
 	if(IsPlayerInRangeOfPoint(playerid, 3.0, -242.5856,-235.4501,2.4297))
 	{
 		PlayerInfo[playerid][pJob] = JOB_TRUCKER;
+		GameTextForPlayer(playerid, "~r~Congratulations,~n~~w~You are now a ~y~Trucker.~n~~w~/jobhelp.", 8000, 1);
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[TRUCKER JOB] คุณได้ทำการสมัครงาน พนักงานส่งของแล้ว สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
 		CharacterSave(playerid);
 		return 1;
@@ -43,6 +44,7 @@ CMD:takejob(playerid, params[])
 	else if(IsPlayerInRangeOfPoint(playerid, 3.0, 88.1169,-164.9625,2.5938))
 	{
 		PlayerInfo[playerid][pJob] = JOB_MECHANIC;
+		GameTextForPlayer(playerid, "~r~Congratulations,~n~~w~You are now a ~y~Mechanic.~n~~w~/jobhelp.", 8000, 1);
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[MECHANIC JOB] คุณได้ทำการสมัครงาน ช่าง สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
 		CharacterSave(playerid);
 		return 1;
@@ -63,6 +65,7 @@ CMD:takejob(playerid, params[])
 		}
 
 		
+		GameTextForPlayer(playerid, "~r~Congratulations,~n~~w~You are now a ~y~Miner.~n~~w~/jobhelp.", 8000, 1);
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[MINER JOB] คุณได้ทำการสมัครงาน นักขุดเหมือง สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
 		CharacterSave(playerid);
 		return 1;
@@ -83,6 +86,7 @@ CMD:takejob(playerid, params[])
 		}
 
 		
+		GameTextForPlayer(playerid, "~r~Congratulations,~n~~w~You are now a ~y~Electrician.~n~~w~/jobhelp.", 8000, 1);
 		SendClientMessage(playerid, COLOR_DARKGREEN, "[ELECTRICIAN JOB] คุณได้ทำการสมัครงาน ช่างซ่อมไฟฟ้า สามารถพิมพ์ /jobhelp เพื่อดูคำสั่ง");
 		CharacterSave(playerid);
 		return 1;

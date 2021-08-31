@@ -52,11 +52,6 @@ ptask @2PlayerTimer[1000](playerid)
 	return 1;
 }*/
 
-
-new 
-	playerWeaponsSpecSave[MAX_PLAYERS][13][13],
-	playerWeaponsSpecSaveData[MAX_PLAYERS][4][4];
-
 stock PlayerSpec(playerid, playerb)
 {
 	if(PlayerDrugUse[playerid] != -1)
@@ -68,20 +63,12 @@ stock PlayerSpec(playerid, playerb)
 
 	new weapon[13][2];
 
-	
-	for(new i = 0; i < 4; i++)
+	for(new i = 0; i < 13; i++)
 	{
-		if(PlayerInfo[playerid][pWeapons][i])
-			playerWeaponsSpecSaveData[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
-	
-	}
+		GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
+		PlayerInfo[playerid][pWeapons][i] = weapon[i][0];
+		PlayerInfo[playerid][pWeaponsAmmo][i] = weapon[i][1];
 
-	if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pMedicDuty] || PlayerInfo[playerid][pSADCRDuty])
-	{
-		for(new i = 0; i < 13; i++)
-		{
-			playerWeaponsSpecSave[playerid][i][i] = GetPlayerWeaponData(playerid, i, weapon[i][0], weapon[i][1]);
-		}
 	}
 
 	if(PlayerInfo[playerb][pSpectating] != INVALID_PLAYER_ID)
@@ -476,10 +463,10 @@ stock ShowCharacterStats(playerid, playerb)
 
 	SendClientMessageEx(playerb, COLOR_GRAD2, "ตัวละคร: กลุ่ม/แก๊ง:[%s] ตำแหน่ง:[%s] อาชีพ:[%s] เลือด:[%.2f] เกราะ:[%.2f]", ReturnFactionName(playerid), ReturnFactionRank(playerid), GetJobName(PlayerInfo[playerid][pCareer], PlayerInfo[playerid][pJob]), PlayerInfo[playerid][pHealth],PlayerInfo[playerid][pArmour]);
 	SendClientMessageEx(playerb, COLOR_GRAD1, "ประสบการณ์: เลเวล:[%d] ค่าประสบการณ์:[%d/%d] เวลาออนไลน์:[%d ชัวโมง]", PlayerInfo[playerid][pLevel], PlayerInfo[playerid][pExp], ((PlayerInfo[playerid][pLevel]) * 4 + 2), PlayerInfo[playerid][pTimeplayed]);
-	SendClientMessageEx(playerb, COLOR_GRAD2, "อาวุธ: อาวุธ หลัก:[%s] กระสุน:[%d] อาวุธสำรอง:[%s] กระสุน:[%d]", ShowPlayerWeapons(playerid, 4), PlayerInfo[playerid][pWeaponsAmmo][3], ShowPlayerWeapons(playerid, 3), PlayerInfo[playerid][pWeaponsAmmo][2]);
+	SendClientMessageEx(playerb, COLOR_GRAD2, "อาวุธ: อาวุธ หลัก:[%s] กระสุน:[%d] อาวุธสำรอง:[%s] กระสุน:[%d]", ShowPlayerWeapons(playerid, 4), PlayerInfo[playerid][pGunAmmo][3], ShowPlayerWeapons(playerid, 3), PlayerInfo[playerid][pGunAmmo][2]);
 	SendClientMessageEx(playerb, COLOR_GRAD1, "ช่องเก็บของ: เบอร์โทรศัพท์:[%d] วิทยุ:[%s] แชแนล:[%d] แมส:[%s] Melee:[%s]", PlayerInfo[playerid][pPhone], (PlayerInfo[playerid][pHasRadio] != true) ? ("ไม่มี") : ("มี"), PlayerInfo[playerid][pRadio][PlayerInfo[playerid][pMainSlot]], (PlayerInfo[playerid][pHasMask] != true) ? ("ไม่มี") : ("มี"), ShowPlayerWeapons(playerid, 1));
 	SendClientMessageEx(playerb, COLOR_GRAD2, "การเงิน: เงินในตัว:[$%s] เงินในธนาคาร:[$%s] เงินรายชัวโมง:[$%s] Bitsamp:[%.5f]", MoneyFormat(PlayerInfo[playerid][pCash]), MoneyFormat(PlayerInfo[playerid][pBank]), MoneyFormat(PlayerInfo[playerid][pPaycheck]), PlayerInfo[playerid][pBTC]);
-	SendClientMessageEx(playerb, COLOR_GRAD1, "อื่นๆ: กุญแจรถ:[%s] กุญแจสำรอง:[%s] กุญแจกิจการ:[%s]", vehicle_key, duplicate_key, business_key);	
+	SendClientMessageEx(playerb, COLOR_GRAD1, "อื่นๆ: กุญแจรถ:[%s] กุญแจสำรอง:[%s] กุญแจกิจการ:[%s]  กุญแจบ้านสำรอง:[%d]", vehicle_key, duplicate_key, business_key, PlayerInfo[playerid][pHouseKey]);	
 
 	if(PlayerInfo[playerid][pJob] == 4)
 	{
@@ -768,6 +755,10 @@ public CallPaycheck()
 		CharacterSave(i); 
 		Saveglobal();		
 	}
+
+	new str[120];
+	format(str, sizeof(str), "[%s] Paycheck Now",ReturnDate());
+	SendDiscordMessageEx("881588578365366322", str);
 	return 1;
 }
 
@@ -1015,7 +1006,8 @@ public StopChatting(playerid) ApplyAnimation(playerid, "CARRY", "crry_prtial", 4
 
 stock SetPlayerSpawn(playerid)
 {
-    PlayerTextDrawShow(playerid, RadioStats[playerid]);
+	if(GetPVarInt(playerid, "HideGUI"))
+		PlayerTextDrawShow(playerid, RadioStats[playerid]);
 
     if(PlayerInfo[playerid][pAdminjailed] == true)
     {
@@ -1028,7 +1020,6 @@ stock SetPlayerSpawn(playerid)
 
         CharacterSave(playerid);
         StopAudioStreamForPlayer(playerid);
-        return 1;
     }
     else if(PlayerInfo[playerid][pArrest] == true)
     {
@@ -1036,7 +1027,6 @@ stock SetPlayerSpawn(playerid)
         ClearAnimations(playerid);
         CharacterSave(playerid);
         StopAudioStreamForPlayer(playerid);
-        return 1;
     }
 
     else if (PlayerInfo[playerid][pTimeout]) {
@@ -1059,9 +1049,6 @@ stock SetPlayerSpawn(playerid)
         new query[255];
 		mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `cache` WHERE C_DBID = '%d'",PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query, "OnplayerCache", "d",playerid);
-
-    
-        return 1;
     }
 
     else if(PlayerInfo[playerid][pSpectating] != INVALID_PLAYER_ID)
@@ -1073,7 +1060,7 @@ stock SetPlayerSpawn(playerid)
         PlayerInfo[playerid][pSpectating] = INVALID_PLAYER_ID;
         StopAudioStreamForPlayer(playerid);
 
-        if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pSADCRDuty])
+        /*if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pSADCRDuty])
         {
             GivePlayerWeapon(playerid, 24, 100);
 			GivePlayerWeapon(playerid, 3, 1);
@@ -1082,10 +1069,9 @@ stock SetPlayerSpawn(playerid)
         else if(PlayerInfo[playerid][pMedicDuty])
         {
             GivePlayerWeapon(playerid, 42, 500);
-        }
+        }*/
 
         RemovePlayerWeapon(playerid, 1);
-        return 1;
     }
     else 
     {
@@ -1131,4 +1117,59 @@ stock SetPlayerSpawn(playerid)
 	mysql_format(dbCon, query, sizeof(query), "DELETE FROM `cache` WHERE `C_DBID` = '%d'",PlayerInfo[playerid][pDBID]);
 	mysql_tquery(dbCon, query);
     return 1;
+}
+
+
+Log_Write(const path[], const str[], {Float,_}:...)
+{
+	static
+	    args,
+	    start,
+	    end,
+	    File:file,
+	    string[1024]
+	;
+	if ((start = strfind(path, "/")) != -1) {
+	    strmid(string, path, 0, start + 1);
+
+	    if (!fexist(string))
+	        return printf("** Warning: Directory \"%s\" doesn't exist.", string);
+	}
+	#emit LOAD.S.pri 8
+	#emit STOR.pri args
+
+	file = fopen(path, io_append);
+
+	if (!file)
+	    return 0;
+
+	if (args > 8)
+	{
+		#emit ADDR.pri str
+		#emit STOR.pri start
+
+	    for (end = start + (args - 8); end > start; end -= 4)
+		{
+	        #emit LREF.pri end
+	        #emit PUSH.pri
+		}
+		#emit PUSH.S str
+		#emit PUSH.C 1024
+		#emit PUSH.C string
+		#emit PUSH.C args
+		#emit SYSREQ.C format
+
+		fwrite(file, string);
+		fwrite(file, "\r\n");
+		fclose(file);
+
+		#emit LCTRL 5
+		#emit SCTRL 4
+		#emit RETN
+	}
+	fwrite(file, str);
+	fwrite(file, "\r\n");
+	fclose(file);
+
+	return 1;
 }

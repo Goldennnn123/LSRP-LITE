@@ -790,7 +790,7 @@ stock Arrest_Jail(playerid, tagetid, reason[], time, room)
 	PlayerInfo[tagetid][pArrestTime] = time*60;
 	PlayerInfo[tagetid][pArrestRoom] = room;
 	SendPoliceMessage(0x8D8DFFFF, "HQ-ARREST: %s ถูกกุมขัง อยู่ห้องขัง Room: %d", ReturnName(tagetid,0), room);
-	SendPoliceMessage(0x8D8DFFFF, "...ด้วยข้อหา: %s โดย %s %s",reason, ReturnFactionRank(playerid), ReturnName(playerid,0));
+	SendPoliceMessage(0x8D8DFFFF, "ด้วยข้อหา: %s โดย %s %s",reason, ReturnFactionRank(playerid), ReturnName(playerid,0));
 	switch(room)
 	{
 		case 1:

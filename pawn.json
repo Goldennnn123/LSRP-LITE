@@ -20,7 +20,8 @@
 		"AGraber/samp-compat",
 		"infin1tyy/customplayernametags",
 		"maddinat0r/samp-discord-connector",
-		"NexiusTailer/Nex-AC"
+		"NexiusTailer/Nex-AC",
+		"https://github.com/Mergevos/samp-walking-styles.git"
 	],
 	"local": true,
 	"runtime": {
@@ -63,7 +64,8 @@
 		"output": true,
 		"extra": {
 			"announce": "0",
-			"useartwork": "1"
+			"useartwork": "1",
+			"discord_bot_token": "ODUzNjEyODc5NjQzNTQxNTU1.YMX68Q.fo9x5pMvAaqzIQLNO4etiA_1lWY"
 		}
 	},
 	"builds": [

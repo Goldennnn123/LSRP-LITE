@@ -11115,6 +11115,7 @@ public SetPlayerSpawn(playerid)
 		    }
 			ResetPlayerWeapons(playerid);
       		SetPlayerWeapons(playerid);
+			  
       		if(playerData[playerid][pHealth]) SetPlayerHealthEx(playerid, playerData[playerid][pHealth]);
       		else {
 				if(playerData[playerid][pDonateRank] > 0) SetPlayerHealthEx(playerid, 100.0 + playerData[playerid][pSHealth]);

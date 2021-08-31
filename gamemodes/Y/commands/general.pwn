@@ -237,7 +237,7 @@ CMD:jobhelp(playerid, params[])
 		SendClientMessage(playerid,COLOR_WHITE,"/checkcomponents (เช็ค อะไหล่)");
 		SendClientMessage(playerid,COLOR_WHITE,"/buycomponents (ซื้อ อะไหล่)");
 		SendClientMessage(playerid,COLOR_WHITE,"/changcolorvehicle (เปลี่ยนสียานพาหนะ)");
-		SendClientMessage(playerid,COLOR_WHITE,"/trun (แต่งยานพาหนะ)");
+		SendClientMessage(playerid,COLOR_WHITE,"/tune (แต่งยานพาหนะ)");
 	}
 
 	if(PlayerInfo[playerid][pJob] == JOB_MINER)
@@ -677,7 +677,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = PlayerInfo[playerid][pInsideProperty];
 
-		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDBID] != HouseInfo[id][HouseRent])
+		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDBID] != HouseInfo[id][HouseRent] && PlayerInfo[playerid][pHouseKey] != id)
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของบ้านหลังนี้");
 
 		
@@ -699,7 +699,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = IsPlayerNearHouse(playerid);
 
-		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdminDuty] && PlayerInfo[playerid][pDBID] != HouseInfo[id][HouseRent])
+		if(HouseInfo[id][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdminDuty] && PlayerInfo[playerid][pDBID] != HouseInfo[id][HouseRent] && PlayerInfo[playerid][pHouseKey] != id)
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของบ้านหลังนี้");
 
 		if(HouseInfo[id][HouseLock])
@@ -1499,7 +1499,7 @@ CMD:admins(playerid, params[])
 		
 		foreach(new i : Player)
 		{
-			if(PlayerInfo[i][pAdminDuty] && PlayerInfo[i][pAdmin] < 5)
+			if(PlayerInfo[i][pAdminDuty] && PlayerInfo[i][pAdmin] < 6)
 			{
 				SendClientMessageEx(playerid, COLOR_DARKGREEN, "(Level: %d) %s - On Duty: Yes", PlayerInfo[i][pAdmin], e_pAccountData[i][mForumName]);
 			}
@@ -1845,23 +1845,8 @@ CMD:setspawn(playerid, params[])
 			if(id_house == 0)
 				return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในบ้าน");
 
-			if(HouseInfo[id_house][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && HouseInfo[id_house][HouseRent] != PlayerInfo[playerid][pDBID])
-			{
-				new tagerid = INVALID_PLAYER_ID;
-
-				foreach(new i : Player)
-				{
-					if(HouseInfo[id_house][HouseOwnerDBID] != PlayerInfo[i][pDBID])
-						continue;
-					
-					tagerid = i;
-				}
-
-				if(tagerid == INVALID_PLAYER_ID)
-					return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของบ้านหลังนี้");
-
-				SendClientMessageEx(tagerid, COLOR_REPORT, "SMS-HOUSE: %s ได้เริ่มเข้ามาอยู่บ้านของคุณ", ReturnName(playerid,0));
-			}
+			if(HouseInfo[id_house][HouseOwnerDBID] != PlayerInfo[playerid][pDBID] && HouseInfo[id_house][HouseRent] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pHouseKey] != id_house)
+				return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของบ้านหลังนี้");
 
 			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_HOUSE;
 			PlayerInfo[playerid][pSpawnHouse] = id_house;
@@ -1930,7 +1915,7 @@ CMD:leavegun(playerid, params[])
 	WeaponDropInfo[idx][eWeaponDroppedBy] = PlayerInfo[playerid][pDBID]; 
 	
 	WeaponDropInfo[idx][eWeaponWepID] = weaponid;
-	WeaponDropInfo[idx][eWeaponWepAmmo] = PlayerInfo[playerid][pWeaponsAmmo][id];
+	WeaponDropInfo[idx][eWeaponWepAmmo] = PlayerInfo[playerid][pGunAmmo][id];
 	
 	WeaponDropInfo[idx][eWeaponPos][0] = x;
 	WeaponDropInfo[idx][eWeaponPos][1] = y;
@@ -1940,8 +1925,8 @@ CMD:leavegun(playerid, params[])
 	WeaponDropInfo[idx][eWeaponWorld] = GetPlayerVirtualWorld(playerid); 
 	
 	RemovePlayerWeapon(playerid, weaponid);
-	PlayerInfo[playerid][pWeapons][id] = 0;
-	PlayerInfo[playerid][pWeaponsAmmo][id] = 0; 
+	PlayerInfo[playerid][pGun][id] = 0;
+	PlayerInfo[playerid][pGunAmmo][id] = 0; 
 	
 	WeaponDropInfo[idx][eWeaponObject] = CreateDynamicObject(
 		ReturnWeaponsModel(weaponid),
@@ -2161,46 +2146,51 @@ CMD:pm(playerid, params[])
 		
 		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {FF9900}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
 		Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+		Log_Write("logs/pm.txt", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 
 		if(!PlayerInfo[playerb][pAdminDuty])
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 			
 		else SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
+		Log_Write("logs/pm.txt", "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 	}
 	else if(PlayerInfo[playerid][pTesterDuty])
 	{
 		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {229954}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
 		Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+		Log_Write("logs/pm.txt", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 
 		if(!PlayerInfo[playerb][pTesterDuty])
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 			
 		else SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
+		Log_Write("logs/pm.txt", "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 	}
 	else
 	{
 		if(PlayerInfo[playerb][pAdminDuty])
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
-			Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+			Log_Write("logs/pm.txt", "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
-			Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
+			Log_Write("logs/pm.txt", "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 		}
 		else if(PlayerInfo[playerb][pTesterDuty])
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
-			Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+			Log_Write("logs/pm.txt", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
-			Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
+			Log_Write("logs/pm.txt", "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		}
 		else
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
-			Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+			Log_Write("logs/pm.txt", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 			Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+			Log_Write("logs/pm.txt", "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		}
 	}
 	return 1;
@@ -2831,10 +2821,11 @@ CMD:frisk(playerid, params[])
 
 CMD:walkstyle(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pDonater])
+	if(!PlayerInfo[playerid][pDonater] && !PlayerInfo[playerid][pAdmin])
 		return SendErrorMessage(playerid, "คุณไม่ใช่ Donater");
 
 	new id;
+
 	if(sscanf(params, "d", id))
 		return SendUsageMessage(playerid, "/walkstyle <1-18>");
 
@@ -2842,6 +2833,8 @@ CMD:walkstyle(playerid, params[])
 		return SendErrorMessage(playerid, "คุณได้ใส่หมายเลข ท่าทางการเดินไม่ถูกต้อง (1-18)");
 
 	PlayerInfo[playerid][pWalk] = id;
+
+	Player_SetWalkingStyle(playerid, id);
 	SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ตั้งค่าท่าทางการเดินของคุณไปที่ %d",id);
 	return 1;
 }

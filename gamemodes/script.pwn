@@ -14,6 +14,7 @@
 #define CGEN_MEMORY 99999
 #include <YSI_Coding\y_timers>
 #include <YSI_Coding\y_hooks>
+#include <YSI_Visual\y_dialog>
 #include <YSI_Coding\y_va>
 #include <YSI_Core\y_utils>
 #include <YSI_Coding\y_inline>
@@ -34,6 +35,7 @@
 #include <nex-ac>
 #include <nex-ac_en.lang>
 #include <cec>
+#include <walking_styles>
 //#include <H-AC>
 //#include <io>
 
@@ -67,6 +69,28 @@ new globalWeather = 2;
 
 // ตั้งค่า
 
+
+enum {
+	WALKING_STYLE_DEFAULT = 0,
+	WALKING_STYLE_NORMAL,
+	WALKING_STYLE_PED,
+	WALKING_STYLE_GANGSTA,
+	WALKING_STYLE_GANGSTA2,
+	WALKING_STYLE_OLD,
+	WALKING_STYLE_FAT_OLD,
+	WALKING_STYLE_FAT,
+	WALKING_STYLE_WOMANOLD,
+	WALKING_STYLE_WOMANFATOLD,
+	WALKING_STYLE_SHUFFLE,
+	WALKING_STYLE_LADY,
+	WALKING_STYLE_LADY2,
+	WALKING_STYLE_WHORE,
+	WALKING_STYLE_WHORE2,
+	WALKING_STYLE_DRUNK,
+	WALKING_STYLE_BLIND
+};
+
+
 #include "config.inc"
 #include "Y/configuration/general.pwn"
 #include "Y/configuration/database.pwn" // สร้างไฟล์ database.pwn ด้วยตัวเองในไดเรกทอรี่ gamemodes/Y/configuration/..
@@ -97,18 +121,21 @@ new globalWeather = 2;
 
 #include "Y/systems/vehicle/vehicles.pwn"
 #include "Y/systems/vehicle/fuel.pwn"
+#include "Y/systems/vehicle/carmod.pwn"
+#include "Y/systems/vehicle/car_rental.pwn"
+#include "Y/systems/vehicle/dmv.pwn"
 #include "Y/systems/cooldown.pwn"
 #include "Y/systems/job.pwn"
 #include "Y/systems/report.pwn"
 #include "Y/systems/weapon.pwn"
 #include "Y/systems/faction.pwn"
+#include "Y/systems/furniture/house.pwn"
 #include "Y/systems/house.pwn"
 #include "Y/systems/business.pwn"
 #include "Y/systems/entrance.pwn"
 
 #include "Y/systems/phone.pwn"
 #include "Y/systems/business/ui_buy.pwn"
-#include "Y/systems/business/vehiclebuy.pwn"
 #include "Y/systems/business/vehbuy.pwn"
 #include "Y/systems/anim.pwn"
 #include "Y/systems/furniture/computer.pwn"
@@ -119,7 +146,7 @@ new globalWeather = 2;
 #include "Y/systems/global.pwn"
 #include "Y/systems/business/clothing.pwn"
 #include "Y/systems/drug/drug.pwn"
-#include "Y/systems/taxi.pwn"
+//#include "Y/systems/tolls.pwn"
 
 
 #include "Y/jobs/farmer.pwn"
@@ -129,6 +156,7 @@ new globalWeather = 2;
 #include "Y/jobs/miner.pwn"
 #include "Y/jobs/electrician.pwn"
 #include "Y/jobs/fuel.pwn"
+#include "Y/jobs/taxi.pwn"
 
 #include "Y/mysql/CharacterSave.pwn"
 #include "Y/mysql/SaveVehicle.pwn"
@@ -204,8 +232,6 @@ new globalWeather = 2;
 //#include "Y/Map/LSPDHQINT2.pwn"*/
 
 
-#include "Y/systems/car_rental.pwn"
-#include "Y/systems/dmv.pwn"
 #include "Y/systems/discord/discord.pwn"
 
 #include "Y/test/functionPlayer.pwn"
@@ -555,7 +581,7 @@ public OnPlayerDisconnect(playerid, reason) {
 
     PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
 	PlayerTextDrawDestroy(playerid, RadioStats[playerid]);
-    ResetPlayerWeapons(playerid);
+
     ResetPlayerCharacter(playerid);
     return 1;
 }
@@ -688,6 +714,7 @@ public KickPlayerWeaponsTime(playerid)
             KickEx(playerid);
         }
     }
+    
     DeletePVar(playerid, "CheckKickPlayerWeaponsTime");
     return 1;
 }

@@ -67,6 +67,20 @@ CMD:headquarter(playerid, params[])
     return 1;
 }
 
+CMD:factionconfig(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในแฟคชั่น");
+
+	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[PlayerInfo[playerid][pFaction]][eFactionAlterRank])
+		return SendErrorMessage(playerid, "ยศ/ต่ำแหน่งของคุณ ไม่ได้รับอนุญาติให้ใช้คำสั่งนี้");
+
+	PlayerSelectFac[playerid] = PlayerInfo[playerid][pFaction];
+
+	ShowFactionConfig(playerid);
+	return 1;
+}
+
 
 
 alias:government("gov")
@@ -379,8 +393,8 @@ CMD:duty(playerid, params[])
 
 			for(new i = 0; i < 4; i++)
 			{
-				playerWeaponsSave[playerid][i] = PlayerInfo[playerid][pWeapons][i];
-				playerWeaponsAmmoSave[playerid][i] = PlayerInfo[playerid][pWeaponsAmmo][i];
+				playerWeaponsSave[playerid][i] = PlayerInfo[playerid][pGun][i];
+				playerWeaponsAmmoSave[playerid][i] = PlayerInfo[playerid][pGunAmmo][i];
 			}
 
 			SendPoliceMessage(0x8D8DFFFF, "HQ: %s %s has gone on duty", ReturnFactionRank(playerid), ReturnName(playerid, 0));
@@ -412,7 +426,7 @@ CMD:duty(playerid, params[])
 
 			for(new i = 0; i < 4; i++)
 			{
-				PlayerInfo[playerid][pWeapons][i] = 0; PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
+				PlayerInfo[playerid][pGun][i] = 0; PlayerInfo[playerid][pGunAmmo][i] = 0;
 
 				if(playerWeaponsSave[playerid][i])
 					GivePlayerGun(playerid, playerWeaponsSave[playerid][i], playerWeaponsAmmoSave[playerid][i]);

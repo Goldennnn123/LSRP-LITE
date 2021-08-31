@@ -99,10 +99,10 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
 		for(new i = 0; i < 4; i++)
 		{
             format(str, sizeof(str), "pWeapon%d",i);
-            mysql_int(query, str,PlayerInfo[playerid][pWeapons][i]);
+            mysql_int(query, str,PlayerInfo[playerid][pGun][i]);
             
             format(str, sizeof(str), "pWeaponsAmmo%d",i);
-            mysql_int(query, str,PlayerInfo[playerid][pWeaponsAmmo][i]);
+            mysql_int(query, str,PlayerInfo[playerid][pGunAmmo][i]);
 		}
 
 		for(new i = 1; i < MAX_PLAYER_VEHICLES_V3; i++)
@@ -206,6 +206,8 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_int(query, "pWalk",PlayerInfo[playerid][pWalk]);
         mysql_int(query, "pFight",PlayerInfo[playerid][pFight]);
         mysql_bool(query, "pTogPm",PlayerInfo[playerid][pTogPm]);
+
+        mysql_int(query, "pHouseKey",PlayerInfo[playerid][pHouseKey]);
 
 		mysql_finish(query);
         

@@ -9,7 +9,7 @@ CMD:acmds(playerid, params[])
 	{
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /aduty, /forumname, /goto, /gethere, /a (achat), /showmain, /kick /checkucp"); 
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /unjail, /setint, /setworld, /setskin, /health, /reports, /ar (accept), /dr (disregard),"); 
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /slap, /mute, /freeze, /unfreeze, /spec, /specoff, /stats (id), /gotols, /respawncar,"); 
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /slap, /mute, /freeze, /unfreeze, /spec, /specoff, /stats (id), /gotols, /respawncar /(p)layer(to)(p)layer"); 
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /gotocar, /getcar, /listmasks, /dropinfo, /aooc, /revice, /towcars (aduty), /listweapons");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 2)
@@ -116,6 +116,7 @@ CMD:forumname(playerid, params[])
     return 1;
 }
 
+alias:goto("ไป", "ไปหา")
 CMD:goto(playerid, params[])
 {
 	if(PlayerInfo[playerid][pTester] < 3 && !PlayerInfo[playerid][pAdmin])
@@ -1241,7 +1242,7 @@ CMD:listmasks(playerid, params[])
 		if(!PlayerInfo[i][pMasked])
 			continue;
 			
-		SendClientMessageEx(playerid, COLOR_RED, "%s ID: %i %s", ReturnName(i), i, ReturnName(i, 0));
+		SendClientMessageEx(playerid, COLOR_RED, "%s ID: %i %s", ReturnName(i), i, ReturnRealName(i, 0));
 		return 1;
 	}
 	
@@ -1738,6 +1739,42 @@ CMD:setidcar(playerid, params[])
 	SendClientMessageEx(playerid, COLOR_GREY, "ผู้ดูแลได้ปรับกุญแจยานพาหนะให้คุณไปที่ %s(%d)",ReturnVehicleName(vehicleid), vehicleid);
 	return 1;
 }
+
+
+alias:playertoplayer("ptop")
+CMD:playertoplayer(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+	
+	new player_1, player_2, Float:x, Float:y, Float:z;
+	if(sscanf(params, "uu", player_1, player_2))
+		return SendUsageMessage(playerid, "/playertoplayer <ชื่อ/ไอดี (คนที่เราจะส่ง)> <ชื่อ/ไอดี (คนที่เราจะให้ไปหา)>");
+	
+	if (!IsPlayerConnected(player_1))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้ทำการเชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[player_1], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+	
+	if (!IsPlayerConnected(player_2))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้ทำการเชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[player_2], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+
+	
+	GetPlayerPos(player_2, x, y, z);
+
+	SetPlayerPos(playerid, x, y, z);
+	SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(player_2));
+	SetPlayerInterior(playerid, GetPlayerInterior(player_2));
+	PlayerInfo[player_1][pInsideProperty] = PlayerInfo[player_2][pInsideProperty];
+	PlayerInfo[player_1][pInsideBusiness] = PlayerInfo[player_2][pInsideBusiness];
+	SendClientMessageEx(player_1, COLOR_GREY, "ผู้ดูแลระบบ ได้ส่งคุณไปหา %s",ReturnName(player_2));
+	SendClientMessageEx(player_2, COLOR_GREY, "ผู้ดูแลระบบ ได้นำ %s มาหาคุณ",ReturnName(player_1));
+	return 1;
+}
 /// Admin Level: 1;
 
 
@@ -1793,7 +1830,7 @@ CMD:givegun(playerid, params[])
 	
 	idx = ReturnWeaponIDSlot(weaponid); 
 	
-	if(PlayerInfo[playerb][pWeapons][idx])
+	if(PlayerInfo[playerb][pGun][idx])
 		SendServerMessage(playerid, "%s ได้ลบอาวุธ %s และกระสุน %d ออก", ReturnName(playerb), ReturnWeaponName(PlayerInfo[playerb][pWeapons][idx]), PlayerInfo[playerb][pWeaponsAmmo][idx]);
 	
 	GivePlayerGun(playerb, weaponid, ammo);
@@ -2768,7 +2805,7 @@ CMD:edithouse(playerid, params[])
 		if(price < 1 || price > 10000000)
 			return SendErrorMessage(playerid, "กรุณาใส่ราคาบ้านให้ถูกต้องด้วย");
 
-		HouseInfo[playerid][HousePrice] = price;
+		HouseInfo[id][HousePrice] = price;
 		SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้เปลี่ยนราคาบ้าน %d เป็น %s",id, MoneyFormat(price));
 		Savehouse(id);
 		return 1;
@@ -2819,6 +2856,11 @@ CMD:edithouse(playerid, params[])
 		}
 		else HouseInfo[id][HouseInteriorWorld] = GetPlayerVirtualWorld(playerid);
 
+
+		DestroyDynamicArea(HouseInfo[id][HouseAreaID]);
+		HouseInfo[id][HouseAreaID] = CreateDynamicSphere(HouseInfo[id][HouseInterior][0], HouseInfo[id][HouseInterior][1], HouseInfo[id][HouseInterior][2], 3.0, HouseInfo[id][HouseInteriorWorld], HouseInfo[id][HouseInteriorID]); // The house interior.	
+		Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[id][HouseAreaID], E_STREAMER_EXTRA_ID, id);
+		
 		Savehouse(id);
 		SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้เปลี่ยนจุดภายในบ้านแล้ว %d แล้ว",id);
 

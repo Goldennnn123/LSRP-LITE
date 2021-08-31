@@ -342,7 +342,10 @@ Dialog:DIALOG_FACTION_CONFIG(playerid, response, listitem, inputtext[])
 			case 5: return Dialog_Show(playerid, DIALOG_FACTION_CHATCOLOR, DIALOG_STYLE_MSGBOX, "Faction Configuration", "{FF0033}ยังไม่อณุญาติให้ใช้คำสั่งนี้โปรดเข้าใจ", "ตกลง", "<<");
 			case 6: return Dialog_Show(playerid, DIALOG_FACTION_RANKS, DIALOG_STYLE_INPUT, "Faction Configuration", "ใส่เลขยศ/ต่ำแหน่ง ที่คุณต้องการแก้ไข(1-20)", "ตกลง", "<<");
 			case 7:
-			{		
+			{	
+				if(PlayerInfo[playerid][pAdmin] < 1337)
+					return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
+					
 				new factionid = PlayerSelectFac[playerid];
 					
 				GetPlayerPos(playerid, FactionInfo[factionid][eFactionSpawn][0], FactionInfo[factionid][eFactionSpawn][1], FactionInfo[factionid][eFactionSpawn][2]);
@@ -359,8 +362,12 @@ Dialog:DIALOG_FACTION_CONFIG(playerid, response, listitem, inputtext[])
 				return ShowFactionConfig(playerid);
 			}
 			case 8: return Dialog_Show(playerid, DIALOG_FACTION_ALTER_T, DIALOG_STYLE_INPUT, "Faction Configuration", "ใส่เลขยศ/ต่ำแหน่ง ที่คุณต้องการให้รียานพาหนะได้:", "ตกลง", "<<");
-			case 9: 
+			case 9:
 			{
+				if(PlayerInfo[playerid][pAdmin] < 1337)
+					return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
+
+				
 				new str[MAX_STRING];
 				format(str, sizeof(str), "{D35400}[{FFEB3B} ! {D35400}]{FF5722} แก๊ง\n\
 										  {D35400}[{FFEB3B} ! {D35400}]{1976D2} รัฐบาล");
@@ -368,6 +375,9 @@ Dialog:DIALOG_FACTION_CONFIG(playerid, response, listitem, inputtext[])
 			}
 			case 10: 
 			{
+				if(PlayerInfo[playerid][pAdmin] < 1337)
+					return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
+
 				if(FactionInfo[PlayerSelectFac[playerid]][eFactionType] != 2)
 				{
 					SendClientMessageEx(playerid, -1, "{2196F3}FACTION {FF9800}SYSTEM:{FFFFFF} เฟคชั่น {FFEE58}%s {FFFFFF}ไม่ได้เป็นเฟคชั่นรัฐบาล",FactionInfo[PlayerSelectFac[playerid]][eFactionName]);

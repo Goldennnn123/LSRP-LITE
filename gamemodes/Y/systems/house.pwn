@@ -101,18 +101,24 @@ public Query_LoadHouse()
 
         if(IsValidDynamicPickup(HouseInfo[i+1][HousePickup]))
             DestroyDynamicPickup(HouseInfo[i+1][HousePickup]);
-        
-        /*if(HouseInfo[i+1][HouseOwnerDBID])
-        {
-            HouseInfo[i+1][HousePickup] = CreateDynamicPickup(1272, 23, HouseInfo[i+1][HouseEntrance][0], HouseInfo[i+1][HouseEntrance][1], HouseInfo[i+1][HouseEntrance][2],-1,-1);
-        }
-        else
-        {
-            HouseInfo[i+1][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[i+1][HouseEntrance][0], HouseInfo[i+1][HouseEntrance][1], HouseInfo[i+1][HouseEntrance][2],-1,-1);
-        }*/
+
+
+        DestroyDynamicArea(HouseInfo[i+1][HouseAreaID]);
+        HouseInfo[i+1][HouseAreaID] = CreateDynamicSphere(HouseInfo[i+1][HouseInterior][0], HouseInfo[i+1][HouseInterior][1], HouseInfo[i+1][HouseInterior][2], 3.0, HouseInfo[i+1][HouseInteriorWorld], HouseInfo[i+1][HouseInteriorID]); // The house interior.	
+		Streamer_SetIntData(STREAMER_TYPE_AREA, HouseInfo[i+1][HouseAreaID], E_STREAMER_EXTRA_ID, i+1);
+
         countHouse++;
 
         HouseInfo[i+1][HouseSwicth] = false;
+
+        if(HouseInfo[i+1][HouseDBID] != i+1)
+        {
+            new query[255];
+            mysql_format(dbCon, query, sizeof(query), "UPDATE `house` SET `HouseDBID`='%d' WHERE HouseDBID = %d", i+1, HouseInfo[i+1][HouseDBID]);
+            mysql_tquery(dbCon, query);
+
+            HouseInfo[i+1][HouseDBID] = i+1;
+        }
         
     }
 

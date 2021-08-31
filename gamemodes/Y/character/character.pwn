@@ -383,10 +383,10 @@ public Query_LoadCharacter(playerid)
 	for(new i = 0; i < 4; i++)
 	{
 		format(str, sizeof(str), "pWeapon%d", i);
-		cache_get_value_name_int(0, str,PlayerInfo[playerid][pWeapons][i]);
+		cache_get_value_name_int(0, str,PlayerInfo[playerid][pGun][i]);
 		
 		format(str, sizeof(str), "pWeaponsAmmo%d", i);
-		cache_get_value_name_int(0, str,PlayerInfo[playerid][pWeaponsAmmo][i]);
+		cache_get_value_name_int(0, str,PlayerInfo[playerid][pGunAmmo][i]);
 	}
 
 	for(new i = 1; i < MAX_PLAYER_VEHICLES_V3; i++)
@@ -436,6 +436,8 @@ public Query_LoadCharacter(playerid)
 	cache_get_value_name_int(0, "pAddictedCount",PlayerInfo[playerid][pAddictedCount]);
 
 	cache_get_value_name_int(0, "pTogPm",PlayerInfo[playerid][pTogPm]);
+
+	cache_get_value_name_int(0, "pHouseKey",PlayerInfo[playerid][pHouseKey]);
 
 	new CheckAccount[MAX_STRING];
 	mysql_format(dbCon, CheckAccount, sizeof(CheckAccount), "SELECT * FROM `bannedlist` WHERE `MasterDBID` = '%d'",e_pAccountData[playerid][mDBID]);
@@ -774,10 +776,16 @@ stock ResetPlayerCharacter(playerid)
     PlayerInfo[playerid][pHasMask] = false;
     PlayerInfo[playerid][pWeaponsSpawned] = false;
 
-	for(new i = 0; i < 4; i++){
+	for(new i = 0; i < 13; i++){
 		PlayerInfo[playerid][pWeapons][i] = 0;
 		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
 	}
+
+	for(new i = 0; i < 4; i++){
+		PlayerInfo[playerid][pGun][i] = 0;
+		PlayerInfo[playerid][pGunAmmo][i] = 0;
+	}
+
     for(new i = 1; i < MAX_PLAYER_VEHICLES; i++) {
 		PlayerInfo[playerid][pOwnedVehicles][i] = 0; 
 	}
@@ -862,6 +870,8 @@ stock ResetPlayerCharacter(playerid)
 	PlayerInfo[playerid][pWalk] = 0;
 	PlayerInfo[playerid][pFight] = FIGHT_STYLE_NORMAL;
 	PlayerInfo[playerid][pAnimation] = 0;
+
+	PlayerInfo[playerid][pHouseKey] = 0;
 
 	ResetPlayerWeapons(playerid);
 	return 1;

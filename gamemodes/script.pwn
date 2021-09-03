@@ -198,6 +198,7 @@ enum {
 #include "Y/Interior/house7.pwn"
 #include "Y/Interior/hq_hpsital.pwn"
 #include "Y/Interior/pd_hq.pwn"
+#include "Y/Interior/SOS_BAR.pwn"
 //#include "Y/Interior/init1.pwn"
 
 
@@ -623,13 +624,13 @@ public OnPlayerText(playerid, text[]) {
 	return 0;
 }
 
-public OnPlayerCommandText(playerid, cmdtext[])
+/*public OnPlayerCommandText(playerid, cmdtext[])
 {
     return 0;
     // Returning 0 informs the server that the command hasn't been processed by this script.
     // OnPlayerCommandText will be called in other scripts until one returns 1.
     // If no scripts return 1, the 'SERVER: Unknown Command' message will be shown to the player.
-}
+}*/
 
 public OnPlayerCommandReceived(playerid, cmd[], params[], flags)
 {
@@ -644,13 +645,13 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
 {
     if(result == -1)
     {
-        SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}เกิดข้อผิดพลาดในการใช้คำสั่ง");
+        SendClientMessage(playerid, COLOR_LIGHTRED, "ERROR: {FFFFFF}เกิดข้อผิดพลาดในการใช้คำสั่ง...");
         return 0;
     }
   
-    new str[120];
+    /*new str[120];
     format(str, sizeof(str), "[CMD] %s: /%s",ReturnRealName(playerid, 0), cmd);
-    SendDiscordMessageEx("862581433302384650", str);
+    SendDiscordMessageEx("862581433302384650", str);*/
 
     Log(allcmdlog, INFO, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
     return 1;

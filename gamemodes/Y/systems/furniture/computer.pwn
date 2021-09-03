@@ -1,4 +1,5 @@
 #include <YSI_Coding\y_hooks>
+#include <YSI\y_inline>
 
 hook OnGameModeInit@15()
 {
@@ -156,8 +157,36 @@ CMD:computerhelp(playerid, params[])
     SendClientMessage(playerid, COLOR_GRAD2, "/checkcom (ตรวจสอบคอมพิวเตอร์ในตัวคุณ)");
     SendClientMessage(playerid, COLOR_GRAD2, "/placecom (วางคอม)");
     SendClientMessage(playerid, COLOR_GRAD2, "/editcom (แก้ไข, pos, upgrade, get)");
+    SendClientMessage(playerid, COLOR_GRAD2, "/checkcomputer (เช็คอะไหล่ภายในตัว)");
     SendClientMessage(playerid, COLOR_GREEN,"_____________________________________");
     SendClientMessage(playerid, COLOR_GRAD1,"โปรดศึกษาคำสั่งในเซิร์ฟเวอร์เพิ่มเติมในฟอรั่มหรือ /helpme เพื่อขอความช่วยเหลือ");
+    return 1;
+}
+
+
+CMD:checkcomputer(playerid, params[])
+{
+    inline D_CHECKCOMPUTER(id, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused id, dialogid, listitem, inputtext
+
+        if(!response)
+            return 1;
+    
+	}
+
+    new str[255], longstr[255];
+
+    format(str, sizeof(str), "CPU: %s\n",ReturnCPUNames(PlayerInfo[playerid][pCPU]));
+    strcat(longstr, str);
+    format(str, sizeof(str), "GPU: %s\n",ReturnCPUNames(PlayerInfo[playerid][pGPU]));
+    strcat(longstr, str);
+    format(str, sizeof(str), "RAM: %s\n",ReturnCPUNames(PlayerInfo[playerid][pRAM]));
+    strcat(longstr, str);
+    format(str, sizeof(str), "STORED: %s\n",ReturnCPUNames(PlayerInfo[playerid][pStored]));
+    strcat(longstr, str);
+
+	Dialog_ShowCallback(playerid, using inline D_CHECKCOMPUTER, DIALOG_STYLE_LIST, "อะไหล่คอมพิวเตอร์ภายในตัว", longstr, "ยืนยัน", "ยกเลิก");
     return 1;
 }
 

@@ -1833,7 +1833,8 @@ CMD:givegun(playerid, params[])
 	if(PlayerInfo[playerb][pGun][idx])
 		SendServerMessage(playerid, "%s ได้ลบอาวุธ %s และกระสุน %d ออก", ReturnName(playerb), ReturnWeaponName(PlayerInfo[playerb][pWeapons][idx]), PlayerInfo[playerb][pWeaponsAmmo][idx]);
 	
-	GivePlayerGun(playerb, weaponid, ammo);
+	//GivePlayerGun(playerb, weaponid, ammo);
+	GivePlayerValidWeapon(playerb, weaponid, ammo);
 	
 	format(str, sizeof(str), "%s เสกอาวุธให้กับ %s คือ %s พร้อมกับกระสุน %d ชุด", ReturnName(playerid), ReturnName(playerb), ReturnWeaponName(weaponid), ammo);
 	SendAdminMessage(2, str);
@@ -2892,6 +2893,46 @@ CMD:edithouse(playerid, params[])
 	else SendErrorMessage(playerid, "กรุณาใส่ให้ถูกต้อง");
 	return 1;
 }
+
+CMD:createpackage(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 5)
+		return SendUnauthMessage(playerid);
+
+	new type;
+	if(sscanf(params, "d", type))
+	{
+		SendUsageMessage(playerid, "/createpackage <type>");
+		SendClientMessage(playerid, COLOR_WHITE, "1.small(4) 2.big(12)");
+		return 1;
+	}
+
+	if(type < 1 || type > 2)
+		return SendErrorMessage(playerid, "คุณใส่เลขไม่ถูกต้อง");
+
+	new idx = 0;
+
+	for(new i = 1; i < MAX_PACKAGE; i++)
+	{
+		if(!WpInfo[i][wp_id])
+		{
+			idx = i;
+			break;
+		}
+	}
+	
+	if(idx == 0)
+		return SendErrorMessage(playerid, "การสร้างเพจเกจเต็มแล้ว");
+
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(playerid, x, y, z);
+
+	new query[255];
+	mysql_format(dbCon, query, sizeof(query), "INSERT INTO `weapons_package`(`wp_owner`, `wp_type`, `wp_posx`, `wp_posy`, `wp_posz`, `wp_world`) VALUES ('%d', '%d', '%f', '%f', '%f', '%d')",PlayerInfo[playerid][pDBID], type, x, y, z-0.8, GetPlayerVirtualWorld(playerid));
+	mysql_tquery(dbCon, query, "CreatePackage", "ddd", playerid, idx, type);
+	return 1;
+}
+
 
 
 

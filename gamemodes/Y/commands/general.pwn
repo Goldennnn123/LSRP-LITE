@@ -670,9 +670,6 @@ CMD:stopanimation(playerid, params[])
 
 CMD:lock(playerid,params[])
 {
-	/*if(!PlayerInfo[playerid][pInsideProperty] || !PlayerInfo[playerid][pInsideBusiness] || !IsPlayerNearBusiness(playerid) || !IsPlayerNearHouse(playerid))
-		return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้/ใน บ้าน/กิจการ");*/
-	
 	if(PlayerInfo[playerid][pInsideProperty])
 	{
 		new id = PlayerInfo[playerid][pInsideProperty];
@@ -760,16 +757,147 @@ CMD:lock(playerid,params[])
 		return 1;
 
 	}
-	else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ");
+	else if(!IsPlayerInAnyVehicle(playerid))
+	{
+		new bool:foundCar = false, vehicleid, Float:fetchPos[3];
+
+		for (new i = 0; i < MAX_VEHICLES; i++)
+		{
+			GetVehiclePos(i, fetchPos[0], fetchPos[1], fetchPos[2]);
+			if(IsPlayerInRangeOfPoint(playerid, 2.0, fetchPos[0], fetchPos[1], fetchPos[2]))
+			{
+				foundCar = true;
+				vehicleid = i; 
+				break; 
+			}
+		}
+
+		if(foundCar == true)
+		{
+			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && !VehicleInfo[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty] && IsElecVehicle(vehicleid) && !IsPlayerRentVehicle(playerid, vehicleid))
+			{
+				if(IsElecVehicle(vehicleid))
+					return SendErrorMessage(playerid, "ไม่สามารถพังยานพาหนะคันนี้ได้ได้");
+
+				if(VehicleInfo[vehicleid][eVehicleAdminSpawn])
+					return SendErrorMessage(playerid, "ไม่สามารถพังยานพาหนะคันนี้ได้ได้");
+
+				if (!isnull(params) && !strcmp(params, "breakin", true)) 
+				{
+			
+					SendClientMessage(playerid, COLOR_WHITE, "คุณสามารถเริ่มพังประตูได้ในขณะนี้! วิธีในการพัง:");
+					SendClientMessage(playerid, COLOR_WHITE, "-กำปั้น");
+					SendClientMessage(playerid, COLOR_WHITE, "-อาวุธระยะประชิด");
+
+					VehicleInfo[vehicleid][eVedhicleBreaktime] = 20;
+
+					new str[65];
+					format(str, sizeof(str), "กำลังดำเนินการพังยานพาหนะ %d",VehicleInfo[vehicleid][eVedhicleBreaktime]);
+
+					VehicleInfo[vehicleid][eVehicleBreakUI] = Create3DTextLabel(str, COLOR_WHITE, 0.0, 0.0, 0.0, 25.0, GetPlayerVirtualWorld(playerid), 0); 
+					Attach3DTextLabelToVehicle(VehicleInfo[vehicleid][eVehicleBreakUI], vehicleid, -0.7, -1.9, -0.3); 
+					VehicleInfo[vehicleid][eVehicleBreak] = true;
+					return 1;
+				}
+				else return SendClientMessage(playerid, COLOR_LIGHTRED, "SERVER: หากคุณพยายามที่จะพังเข้าไป: "EMBED_YELLOW"\"/lock "EMBED_WHITE"breakin"EMBED_YELLOW"\"");
+
+			}
+
+			new statusString[90]; 
+			new engine, lights, alarm, doors, bonnet, boot, objective; 
+			
+			GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+					
+			if(VehicleInfo[vehicleid][eVehicleLocked])
+			{
+				if(VehicleInfo[vehicleid][eVehicleBreak])
+				{
+					VehicleInfo[vehicleid][eVehicleBreak] = false;
+					VehicleInfo[vehicleid][eVedhicleBreaktime] = 0;
+
+					if(IsValidDynamic3DTextLabel(VehicleInfo[vehicleid][eVehicleBreakUI]))
+						Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleBreakUI]); 
+				}
+				format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
+					
+				SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
+				VehicleInfo[vehicleid][eVehicleLocked] = false;
+			}
+			else 
+			{
+				if(VehicleInfo[vehicleid][eVehicleBreak])
+				{
+					VehicleInfo[vehicleid][eVehicleBreak] = false;
+					VehicleInfo[vehicleid][eVedhicleBreaktime] = 0;
+
+					if(IsValidDynamic3DTextLabel(VehicleInfo[vehicleid][eVehicleBreakUI]))
+						Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleBreakUI]); 
+				}
+
+				format(statusString, sizeof(statusString), "~r~%s LOCKED", ReturnVehicleName(vehicleid));
+						
+				SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
+				VehicleInfo[vehicleid][eVehicleLocked] = true;
+			}
+			GameTextForPlayer(playerid, statusString, 3000, 3);
+		}
+		else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ/รถ");
+		return 1;
+	}
+	else if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !VehicleInfo[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty] && !IsPlayerInElecVehicle(playerid) && !IsPlayerRentVehicle(playerid, vehicleid))
+			return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้");
+
+		new statusString[90]; 
+		new engine, lights, alarm, doors, bonnet, boot, objective; 
+		
+		GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+				
+		if(VehicleInfo[vehicleid][eVehicleLocked])
+		{
+			if(VehicleInfo[vehicleid][eVehicleBreak])
+			{
+				VehicleInfo[vehicleid][eVehicleBreak] = false;
+				VehicleInfo[vehicleid][eVedhicleBreaktime] = 0;
+
+				if(IsValidDynamic3DTextLabel(VehicleInfo[vehicleid][eVehicleBreakUI]))
+					Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleBreakUI]); 
+			}
+
+			format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
+				
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
+			VehicleInfo[vehicleid][eVehicleLocked] = false;
+		}
+		else 
+		{
+			if(VehicleInfo[vehicleid][eVehicleBreak])
+			{
+				VehicleInfo[vehicleid][eVehicleBreak] = false;
+				VehicleInfo[vehicleid][eVedhicleBreaktime] = 0;
+
+				if(IsValidDynamic3DTextLabel(VehicleInfo[vehicleid][eVehicleBreakUI]))
+					Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleBreakUI]); 
+			}
+
+			format(statusString, sizeof(statusString), "~r~%s LOCKED", ReturnVehicleName(vehicleid));
+					
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
+			VehicleInfo[vehicleid][eVehicleLocked] = true;
+		}
+		GameTextForPlayer(playerid, statusString, 3000, 3);
+		return 1;
+	}
+	else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ/รถ");
 	return 1;
 }
 
 
 CMD:check(playerid,params[])
 {
-	if(!IsPlayerInAnyVehicle(playerid) && GetNearestVehicle(playerid) == INVALID_VEHICLE_ID && !PlayerInfo[playerid][pInsideProperty])
-		return SendErrorMessage(playerid, "คุณไม่ได้สามารถใช้คำสั่งนี้ได้ในขณะนี้");
-
 	new
 		Float: x,
 		Float: y,
@@ -853,13 +981,12 @@ CMD:check(playerid,params[])
 		
 		Dialog_Show(playerid, DIALOG_DEFAULT, DIALOG_STYLE_LIST, "Weapons:", longstr, "ตกลง", "ยกเลิก");		
 	}
+	else SendErrorMessage(playerid, "คุณไม่สามารถใช้คำสั่งได้ในขณะนี้");
 	return 1;
 }
 
 CMD:place(playerid, params[])
 {
-	if(!IsPlayerInAnyVehicle(playerid) && GetNearestVehicle(playerid) == INVALID_VEHICLE_ID && !PlayerInfo[playerid][pInsideProperty])
-		return SendErrorMessage(playerid, "คุณไม่สามรถใช้คำสั่งนี้ได้ในขณะนี้");
 
 	new
 		Float: x,
@@ -933,10 +1060,10 @@ CMD:place(playerid, params[])
 		}
 		
 		VehicleInfo[vehicleid][eVehicleWeapons][idx] = weaponid; 
-		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx] = PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)];
+		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx] = PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)];
 
-		PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
-		PlayerInfo[playerid][pWeapons][ReturnWeaponIDSlot(weaponid)] = 0;
+		PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
+		PlayerInfo[playerid][pGun][ReturnWeaponIDSlot(weaponid)] = 0;
 		
 		RemovePlayerWeapon(playerid, weaponid);
 		
@@ -969,10 +1096,10 @@ CMD:place(playerid, params[])
 			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
 		
 		VehicleInfo[vehicleid][eVehicleWeapons][idx] = weaponid; 
-		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx] = PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)];
+		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx] = PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)];
 
-		PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
-		PlayerInfo[playerid][pWeapons][ReturnWeaponIDSlot(weaponid)] = 0;
+		PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
+		PlayerInfo[playerid][pGun][ReturnWeaponIDSlot(weaponid)] = 0;
 		
 		RemovePlayerWeapon(playerid, weaponid);
 		
@@ -1007,10 +1134,10 @@ CMD:place(playerid, params[])
 			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
 
 		HouseInfo[id][HouseWeapons][pid] = weaponid;
-		HouseInfo[id][HouseWeaponsAmmo][pid] = PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)];
+		HouseInfo[id][HouseWeaponsAmmo][pid] = PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)];
 
-		PlayerInfo[playerid][pWeaponsAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
-		PlayerInfo[playerid][pWeapons][ReturnWeaponIDSlot(weaponid)] = 0;
+		PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
+		PlayerInfo[playerid][pGun][ReturnWeaponIDSlot(weaponid)] = 0;
 
 		RemovePlayerWeapon(playerid, weaponid);
 
@@ -1023,6 +1150,7 @@ CMD:place(playerid, params[])
 
 		CharacterSave(playerid); Savehouse(id);
 	}
+	else SendErrorMessage(playerid, "คุณไม่สามรถใช้คำสั่งนี้ได้ในขณะนี้");
 	return 1;
 }
 
@@ -1132,8 +1260,8 @@ CMD:takegun(playerid, params[])
 
 		new str[255];
 
-		GivePlayerGun(playerid, VehicleInfo[vehicleid][eVehicleWeapons][slotid], VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]); 
-				
+		GivePlayerValidWeapon(playerid, VehicleInfo[vehicleid][eVehicleWeapons][slotid], VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]);
+
 		format(str, sizeof(str), "> %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]), 
 		ReturnVehicleName(vehicleid));
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
@@ -1263,7 +1391,8 @@ CMD:takegun(playerid, params[])
 
 		new str[255];
 
-		GivePlayerGun(playerid, VehicleInfo[vehicleid][eVehicleWeapons][slotid], VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]); 
+		GivePlayerValidWeapon(playerid, VehicleInfo[vehicleid][eVehicleWeapons][slotid], VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]);
+
 				
 		format(str, sizeof(str), "> %s หยิบ %s ออกมาจากท้ายรถ %s", ReturnName(playerid, 0), ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]), 
 		ReturnVehicleName(vehicleid));
@@ -1293,7 +1422,7 @@ CMD:takegun(playerid, params[])
 		if(!HouseInfo[id][HouseWeapons][slotid])
 			return SendErrorMessage(playerid, "ไม่มีอาวุธใน สล็อตที่คุณเลือก");
 
-		GivePlayerGun(playerid, HouseInfo[id][HouseWeapons][slotid], HouseInfo[id][HouseWeaponsAmmo][slotid]);
+		GivePlayerValidWeapon(playerid, HouseInfo[id][HouseWeapons][slotid], HouseInfo[id][HouseWeaponsAmmo][slotid]);
 
 		new str[255];	
 		format(str, sizeof(str), "> %s หยิบ %s ออกมาจากตู้เซฟ", ReturnName(playerid, 0), ReturnWeaponName(HouseInfo[id][HouseWeapons][slotid])); 
@@ -2282,7 +2411,7 @@ CMD:helpme(playerid, params[])
 	
 	new str[60];
 	format(str, sizeof(str), "[%s] %s Helpme now", ReturnDate(),ReturnRealName(playerid,0));
-	SendDiscordMessageEx("848148148714209311", str);
+	SendDiscordMessageEx("884634051795906610", str);
 			
 	OnPlayerHelpme(playerid, idx, PlayerHelpme[playerid]);
 	return 1;
@@ -2540,7 +2669,7 @@ CMD:id(playerid, params[])
 	if(!BitFlag_Get(gPlayerBitFlag[tagerid], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-	SendClientMessageEx(playerid, COLOR_GREY, "ชื่อ: %s เล่นผ่าน: %s",ReturnName(tagerid,0), (IsPlayerAndroid(tagerid)) ? ("Android") : ("PC"));
+	SendClientMessageEx(playerid, COLOR_GREY, "[ID: %d] ชื่อ: %s เล่นผ่าน: %s", tagerid,ReturnRealName(tagerid,0), (IsPlayerAndroid(tagerid)) ? ("Android") : ("PC"));
 	return 1;
 }
 

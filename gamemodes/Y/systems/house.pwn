@@ -110,15 +110,6 @@ public Query_LoadHouse()
         countHouse++;
 
         HouseInfo[i+1][HouseSwicth] = false;
-
-        if(HouseInfo[i+1][HouseDBID] != i+1)
-        {
-            new query[255];
-            mysql_format(dbCon, query, sizeof(query), "UPDATE `house` SET `HouseDBID`='%d' WHERE HouseDBID = %d", i+1, HouseInfo[i+1][HouseDBID]);
-            mysql_tquery(dbCon, query);
-
-            HouseInfo[i+1][HouseDBID] = i+1;
-        }
         
     }
 

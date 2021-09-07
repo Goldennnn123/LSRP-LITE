@@ -728,6 +728,28 @@ stock IsSecondary(weaponid)
 	return 0;
 }
 
+stock RemoveWeapon(playerid, weaponid)
+{
+	ResetPlayerWeapons(playerid);
+
+	for (new i = 0; i < 13; i ++) {
+	    if (PlayerInfo[playerid][pWeapons][i] != weaponid) {
+	        GivePlayerWeapon(playerid, PlayerInfo[playerid][pWeapons][i], PlayerInfo[playerid][pWeaponsAmmo][i]);
+		}
+		else {
+            PlayerInfo[playerid][pWeapons][i] = 0;
+            PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
+	    }
+	}
+	return 1;
+}
+
+IsInvalidWeapon(weaponid)
+{
+	if(weaponid == 34 || weaponid == 35 || weaponid == 16 || weaponid == 18) return 1;
+	else return 0;
+}
+
 
 stock GivePlayerValidWeapon(playerid, weaponid, ammo, license=0)
 {

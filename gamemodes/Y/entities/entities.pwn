@@ -64,6 +64,7 @@ enum E_PLAYER_DATA
     bool:pMedicDuty,
     bool:pSADCRDuty,
     bool:pGovDuty,
+	bool:pDuty,
    	pActiveIP,
 
 
@@ -183,7 +184,7 @@ enum E_PLAYER_DATA
 	pShakeOffer,
 	pShakeType,
 
-	pObject[10],
+	pObject[11],
 	bool:pTogPm,
 	pAnimation,
 
@@ -192,6 +193,9 @@ enum E_PLAYER_DATA
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];
 new PlayerDrugUse[MAX_PLAYERS], bool:MealOder[MAX_PLAYERS]; new PlayerText:RadioStats[MAX_PLAYERS];
+new playerblock[MAX_PLAYERS];
+new playershottick[MAX_PLAYERS];
+
 
 enum P_MASTER_ACCOUNTS
 {
@@ -256,6 +260,10 @@ enum E_VEHICLE_SYSTEM
 	eVehicleLockLevel,
 	eVehicleAlarmLevel, 
 	eVehicleImmobLevel,
+	eVedhicleBreaktime,
+	bool:eVehicleBreak,
+	Text3D:eVehicleBreakUI,
+
 	
 	Text3D:eVehicleEnterTD,
 	eVehicleEnterTimer,

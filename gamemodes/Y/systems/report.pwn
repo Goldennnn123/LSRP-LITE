@@ -35,7 +35,7 @@ Dialog:DIALOG_REPORT(playerid, response, listitem, inputtext[])
 
 	new str[60];
 	format(str, sizeof(str), "[%s] %s Report now", ReturnDate(),ReturnRealName(playerid,0));
-	SendDiscordMessageEx("848148148714209311", str);
+	SendDiscordMessageEx("848144002964389908", str);
 
 	OnPlayerReport(playerid, idx, playerReport[playerid]); 
 	return 1;

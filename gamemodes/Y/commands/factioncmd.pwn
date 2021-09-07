@@ -387,9 +387,9 @@ CMD:duty(playerid, params[])
 	
 	if(ReturnFactionJob(playerid) == POLICE)
 	{
-		if(!PlayerInfo[playerid][pPoliceDuty])
+		if(!PlayerInfo[playerid][pDuty])
 		{
-			PlayerInfo[playerid][pPoliceDuty] = true;
+			PlayerInfo[playerid][pDuty] = true;
 
 			for(new i = 0; i < 4; i++)
 			{
@@ -420,7 +420,7 @@ CMD:duty(playerid, params[])
 		}
 		else
 		{
-			PlayerInfo[playerid][pPoliceDuty] = false;
+			PlayerInfo[playerid][pDuty] = false;
 
 			ResetPlayerWeapons(playerid);
 
@@ -450,12 +450,12 @@ CMD:duty(playerid, params[])
 	}
 	if(ReturnFactionJob(playerid) == SHERIFF)
 	{
-        if(!PlayerInfo[playerid][pSheriffDuty])
+        if(!PlayerInfo[playerid][pDuty])
         {
             if(!IsPlayerInRangeOfPoint(playerid, 5.0, FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][0], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][1], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][2]))
                 return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
  
-            PlayerInfo[playerid][pSheriffDuty] = true;
+            PlayerInfo[playerid][pDuty] = true;
  
             for(new i = 0; i < 4; i++)
             {
@@ -485,9 +485,9 @@ CMD:duty(playerid, params[])
             return 1;
         }
  
-        if(PlayerInfo[playerid][pSheriffDuty])
+        if(PlayerInfo[playerid][pDuty])
         {
-            PlayerInfo[playerid][pSheriffDuty] = false;
+            PlayerInfo[playerid][pDuty] = false;
  
             ResetPlayerWeapons(playerid);
  
@@ -518,12 +518,12 @@ CMD:duty(playerid, params[])
     }
 	if(ReturnFactionJob(playerid) == MEDIC)
 	{
-	    if(!PlayerInfo[playerid][pMedicDuty])
+	    if(!PlayerInfo[playerid][pDuty])
 		{
 	    	if(!IsPlayerInRangeOfPoint(playerid, 5.0, FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][0], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][1], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][2]))
 				return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
 
-			PlayerInfo[playerid][pMedicDuty] = true;
+			PlayerInfo[playerid][pDuty] = true;
 
 			for(new i = 0; i < 4; i++)
 			{
@@ -552,9 +552,9 @@ CMD:duty(playerid, params[])
             return 1;
 		}
 
-		if(PlayerInfo[playerid][pMedicDuty])
+		if(PlayerInfo[playerid][pDuty])
 		{
-		    PlayerInfo[playerid][pMedicDuty] = false;
+		    PlayerInfo[playerid][pDuty] = false;
 
 			ResetPlayerWeapons(playerid);
 
@@ -585,12 +585,12 @@ CMD:duty(playerid, params[])
 	}
 	if(ReturnFactionJob(playerid) == SADCR)
 	{
-	    if(!PlayerInfo[playerid][pSADCRDuty])
+	    if(!PlayerInfo[playerid][pDuty])
 		{
 	    	if(!IsPlayerInRangeOfPoint(playerid, 5.0, FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][0], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][1], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][2]))
 				return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
 
-			PlayerInfo[playerid][pSADCRDuty] = true;
+			PlayerInfo[playerid][pDuty] = true;
 
 			for(new i = 0; i < 4; i++)
 			{
@@ -622,9 +622,9 @@ CMD:duty(playerid, params[])
             return 1;
 		}
 
-		if(PlayerInfo[playerid][pSADCRDuty])
+		if(PlayerInfo[playerid][pDuty])
 		{
-		    PlayerInfo[playerid][pSADCRDuty] = false;
+		    PlayerInfo[playerid][pDuty] = false;
 
 			ResetPlayerWeapons(playerid);
 

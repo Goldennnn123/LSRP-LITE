@@ -1,5 +1,7 @@
 #include <YSI_Coding\y_hooks>
 
+#define SHOT_MS 700
+
 new PlayerText:Unscrambler_PTD[MAX_PLAYERS][7]; 
 new PlayerText:Statsvehicle[MAX_PLAYERS];
 
@@ -761,6 +763,10 @@ CMD:engine(playerid, params[])
 	{
 		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s ดับเครื่องยนต์ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
 		ToggleVehicleEngine(vehicleid, false); VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+		
+		VehicleInfo[vehicleid][eVehicleLights] = false;
+		ToggleVehicleLights(vehicleid, false);
+		
 		TogglePlayerControllable(playerid, 0);
 	}
 	return 1;
@@ -844,6 +850,7 @@ CMD:unscramble(playerid, params[])
 			NotifyVehicleOwner(vehicleid);
 			
 			ClearAnimations(playerid);
+			TogglePlayerControllable(playerid, 1);
 			CreateUnscrambleTextdraw(playerid, false);
 		}
 	}
@@ -1253,79 +1260,167 @@ CMD:vehicle(playerid, params[])
 	}
 	else if(!strcmp(oneString, "lock"))
 	{
-		new bool:foundCar = false, vehicleid, Float:fetchPos[3];
+		callcmd::lock(playerid, "");
+		return 1;
+	}
+	else if(!strcmp(oneString, "upgrade"))
+	{
+		new id = IsPlayerNearBusiness(playerid);
+		
+		if(id == 0)
+			return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
+
+		if(BusinessInfo[id][BusinessType] != 2)
+			return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
+		
+		new vehicleid = GetPlayerVehicleID(playerid);
 		
 		if(!IsPlayerInAnyVehicle(playerid))
-		{
-			for (new i = 0; i < MAX_VEHICLES; i++)
-			{
-				GetVehiclePos(i, fetchPos[0], fetchPos[1], fetchPos[2]);
-				if(IsPlayerInRangeOfPoint(playerid, 4.0, fetchPos[0], fetchPos[1], fetchPos[2]))
-				{
-					foundCar = true;
-					vehicleid = i; 
-					break; 
-				}
-			}
-			if(foundCar == true)
-			{
-				if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pFaction] != VehicleInfo[vehicleid][eVehicleFaction])
-					return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้");
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในรถ");
 
-				new statusString[90]; 
-				new engine, lights, alarm, doors, bonnet, boot, objective; 
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdmin])
+			return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของรถ");
+
+		new str[255], longstr[255];
+
+		format(str, sizeof(str), "LockLevel: %d\n",VehicleInfo[vehicleid][eVehicleLockLevel]);
+		strcat(longstr, str);
+		format(str, sizeof(str), "AlarmLevel: %d\n",VehicleInfo[vehicleid][eVehicleAlarmLevel]);
+		strcat(longstr, str);
 		
-				GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-				
-				if(VehicleInfo[vehicleid][eVehicleLocked])
-				{
-					format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
-				
-					SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
-					VehicleInfo[vehicleid][eVehicleLocked] = false;
-				}
-				else 
-				{
-					format(statusString, sizeof(statusString), "~r~%s LOCKED", ReturnVehicleName(vehicleid));
-					
-					SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
-					VehicleInfo[vehicleid][eVehicleLocked] = true;
-				}
-				GameTextForPlayer(playerid, statusString, 3000, 3);
-				return 1;
-			}
-		}
-		else
-		{
-			vehicleid = GetPlayerVehicleID(playerid);
-			
-			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !PlayerInfo[playerid][pAdmin] && PlayerInfo[playerid][pFaction] != VehicleInfo[vehicleid][eVehicleFaction])
-				return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้");
-					
-			new statusString[90]; 
-			new engine, lights, alarm, doors, bonnet, boot, objective; 
-
-			GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-				
-			if(VehicleInfo[vehicleid][eVehicleLocked])
-			{
-				format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
-				
-				SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
-				VehicleInfo[vehicleid][eVehicleLocked] = false;
-			}
-			else 
-			{
-				format(statusString, sizeof(statusString), "~r~%s LOCKED", ReturnVehicleName(vehicleid));
-					
-				SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
-				VehicleInfo[vehicleid][eVehicleLocked] = true;
-			}
-			GameTextForPlayer(playerid, statusString, 3000, 3);
-			return 1;
-		}
+		Dialog_Show(playerid, D_VEHUPGRADE, DIALOG_STYLE_LIST, "VEHICLE: UPGRADE", longstr, "เลือก", "ออก");
+		return 1;
 	}
 	else SendErrorMessage(playerid, "พิพม์ให้ถูกต้อง");
+	return 1;
+}
+
+Dialog:D_VEHUPGRADE(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		return 1;
+
+	new str[255], longstr[255];
+
+	switch(listitem)
+	{
+		case 0:
+		{
+			for(new i = 1; i < 4; i++)
+			{
+				format(str, sizeof(str), "Lock Level: %d - {F4D03F}$%s\n",i,MoneyFormat(2000*i));
+				strcat(longstr, str);
+			}
+
+			Dialog_Show(playerid, D_VEHUPGRADE_LOCK, DIALOG_STYLE_LIST, "VEHICLE: UPGRADE LOCK", longstr, "เลือก", "ออก");
+		}
+		case 1:
+		{
+			for(new i = 1; i < 4; i++)
+			{
+				format(str, sizeof(str), "Alarm Level: %d - {F4D03F}$%s\n",i,MoneyFormat(5000*i));
+				strcat(longstr, str);
+			}
+
+			Dialog_Show(playerid, D_VEHUPGRADE_ALARM, DIALOG_STYLE_LIST, "VEHICLE: UPGRADE ALARM", longstr, "เลือก", "ออก");
+		}
+	}
+	return 1;
+}
+
+Dialog:D_VEHUPGRADE_LOCK(playerid, response, listitem, inputtext[])
+{
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
+
+	new id = IsPlayerNearBusiness(playerid);
+		
+	if(id == 0)
+		return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
+
+	if(BusinessInfo[id][BusinessType] != 2)
+		return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
+
+
+
+	new level = listitem+1, vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!response)
+	{
+		new str[255], longstr[255];
+
+		format(str, sizeof(str), "LockLevel: %d\n",VehicleInfo[vehicleid][eVehicleLockLevel]);
+		strcat(longstr, str);
+		format(str, sizeof(str), "AlarmLevel: %d\n",VehicleInfo[vehicleid][eVehicleAlarmLevel]);
+		strcat(longstr, str);
+		
+		Dialog_Show(playerid, D_VEHUPGRADE, DIALOG_STYLE_LIST, "VEHICLE: UPGRADE", longstr, "เลือก", "ออก");
+		return 1;
+	}
+
+	if(PlayerInfo[playerid][pCash] < 2000 * level)
+		return SendErrorMessage(playerid, "คุณมีจำนวนเงินไม่เพียงพอ (ยังขาดอีก: $%s)", MoneyFormat(2000 * level - PlayerInfo[playerid][pCash]));
+
+	VehicleInfo[vehicleid][eVehicleLockLevel] = level;
+	GiveMoney(playerid, 2000 * level);
+	
+	new Float:tax = (2000 * level) * 0.07;
+
+	GlobalInfo[G_GovCash] += floatround(Float:tax, floatround_round);
+	BusinessInfo[id][BusinessCash] += (2000 * level) - tax;
+
+	SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้อัพเกรด การล็อค ยานพาหนะ %s ของคุณไปเลเวล %d พร้อมกับเสียงเงินจำนวน $%s",ReturnVehicleName(vehicleid), level, MoneyFormat(2000 * level));
+	CharacterSave(playerid);
+	SaveVehicle(vehicleid);
+	SaveBusiness(id);
+	Saveglobal();
+	return 1;
+}
+
+Dialog:D_VEHUPGRADE_ALARM(playerid, response, listitem, inputtext[])
+{
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
+
+	new id = IsPlayerNearBusiness(playerid);
+		
+	if(id == 0)
+		return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
+
+	if(BusinessInfo[id][BusinessType] != 2)
+		return SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ร้านตัวแทนจำหน่ายรถ");
+
+	new level = listitem+1, vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!response)
+	{
+		new str[255], longstr[255];
+
+		format(str, sizeof(str), "LockLevel: %d\n",VehicleInfo[vehicleid][eVehicleLockLevel]);
+		strcat(longstr, str);
+		format(str, sizeof(str), "AlarmLevel: %d\n",VehicleInfo[vehicleid][eVehicleAlarmLevel]);
+		strcat(longstr, str);
+		
+		Dialog_Show(playerid, D_VEHUPGRADE, DIALOG_STYLE_LIST, "VEHICLE: UPGRADE", longstr, "เลือก", "ออก");
+		return 1;
+	}
+
+	if(PlayerInfo[playerid][pCash] < 5000 * level)
+		return SendErrorMessage(playerid, "คุณมีจำนวนเงินไม่เพียงพอ (ยังขาดอีก: $%s)", MoneyFormat(5000 * level - PlayerInfo[playerid][pCash]));
+	
+	new Float:tax = (5000 * level) * 0.07;
+
+	GlobalInfo[G_GovCash] += floatround(Float:tax, floatround_round);
+	BusinessInfo[id][BusinessCash] += (5000 * level) - tax;
+
+
+	VehicleInfo[vehicleid][eVehicleAlarmLevel] = level;
+	GiveMoney(playerid, 5000 * level);
+	SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้อัพเกรด การแจ้งเตือน ยานพาหนะ %s ของคุณไปเลเวล %d พร้อมกับเสียงเงินจำนวน $%s",ReturnVehicleName(vehicleid), level, MoneyFormat(5000 * level));
+	CharacterSave(playerid);
+	SaveVehicle(vehicleid);
+	SaveBusiness(id);
+	Saveglobal();
 	return 1;
 }
 
@@ -1523,6 +1618,9 @@ CMD:hood(playerid, params[])
 	else return SendServerMessage(playerid, "คุณไม่ได้อยู่ใกล้รถ");
 	return 1;
 }
+
+
+
 
 alias:rollwindow("rw")
 CMD:rollwindow(playerid, params[])
@@ -2406,27 +2504,6 @@ stock GetVehicleSpeed(vehicleid)
     return vel;
 }
 
-/*forward Query_InsertVehicle_Faction(playerid, factionid, modelid,color1,color2,Float:x,Float:y,Float:z,Float:a,world,newid);
-public Query_InsertVehicle_Faction(playerid, factionid, modelid,color1,color2,Float:x,Float:y,Float:z,Float:a,world,newid)
-{
-	new vehicleid = INVALID_VEHICLE_ID;
-
-	vehicleid = CreateVehicle(modelid, x, y, z, a, color1, color2, -1, 0);
-
-	if(vehicleid != INVALID_VEHICLE_ID)
-	{
-		VehicleInfo[vehicleid][eVehicleDBID] = newid;
-		VehicleInfo[vehicleid][eVehicleModel] = modelid;
-		VehicleInfo[vehicleid][eVehicleFaction] = factionid;
-
-		VehicleInfo[vehicleid][eVehicleColor1] = color1;
-		VehicleInfo[vehicleid][eVehicleColor2] = color2;
-	}
-
-	SendClientMessageEx(playerid, -1, "คุณได้สร้างรถเฟคชั่นให้กับ {FF5722}%s {FFFFFF}(%d)",FactionInfo[factionid][eFactionName],newid);
-	return 1;
-}*/
-
 forward InsertVehicleFaction(playerid,newid, modelid, factionid, color1,color2);
 public InsertVehicleFaction(playerid,newid, modelid, factionid, color1,color2)
 {
@@ -2698,8 +2775,24 @@ stock IsCheckBike(vehicleid)
 
 CMD:setfuel(playerid, params[])
 {
-	new vehicleid = GetPlayerVehicleID(playerid);
-	VehicleInfo[vehicleid][eVehicleFuel] = 0.2;
+	if(PlayerInfo[playerid][pAdmin] < 3)
+		return SendUnauthMessage(playerid);
+
+	new Float:value, vehicleid;
+
+	if(sscanf(params, "df", vehicleid, value))
+		return SendUsageMessage(playerid, "/setfuel <ไอดียานพาหนะ> <น้ำมัน ไม่เกิน 100>");
+
+	if(!IsValidVehicle(vehicleid))
+		return SendErrorMessage(playerid, "ไม่มีไอดีรถที่ต้องการ"); 
+
+	
+	if(value < 1 || value > 100)
+		return SendErrorMessage(playerid, "คุณใส่ค่าน้ำมันไม่ถูกต้อง");
+
+	VehicleInfo[vehicleid][eVehicleFuel] = value;
+	SendClientMessageEx(playerid, COLOR_GREY, "คุณได้เซ็ตค่าน้ำมันให้กับยานพาหนะ %s เป็น %.1f", ReturnVehicleName(vehicleid), value);
+	SaveVehicle(vehicleid);
 	return 1;
 }
 
@@ -2840,4 +2933,163 @@ public GetPlayerPosVehmod(playerid, vehicleid)
 	PutPlayerInVehicle(playerid, vehicleid, 0);
 	return 1;
 }
+
+GetVehicleSize(modelID, &Float: size_X, &Float: size_Y, &Float: size_Z) // Author: RyDeR`
+{
+	static const
+		Float: sizeData[212][3] =
+		{
+			{ 2.32, 5.11, 1.63 }, { 2.56, 5.82, 1.71 }, { 2.41, 5.80, 1.52 }, { 3.15, 9.22, 4.17 },
+			{ 2.20, 5.80, 1.84 }, { 2.34, 6.00, 1.49 }, { 5.26, 11.59, 4.42 }, { 2.84, 8.96, 2.70 },
+			{ 3.11, 10.68, 3.91 }, { 2.36, 8.18, 1.52 }, { 2.25, 5.01, 1.79 }, { 2.39, 5.78, 1.37 },
+			{ 2.45, 7.30, 1.38 }, { 2.27, 5.88, 2.23 }, { 2.51, 7.07, 4.59 }, { 2.31, 5.51, 1.13 },
+			{ 2.73, 8.01, 3.40 }, { 5.44, 23.27, 6.61 }, { 2.56, 5.67, 2.14 }, { 2.40, 6.21, 1.40 },
+			{ 2.41, 5.90, 1.76 }, { 2.25, 6.38, 1.37 }, { 2.26, 5.38, 1.54 }, { 2.31, 4.84, 4.90 },
+			{ 2.46, 3.85, 1.77 }, { 5.15, 18.62, 5.19 }, { 2.41, 5.90, 1.76 }, { 2.64, 8.19, 3.23 },
+			{ 2.73, 6.28, 3.48 }, { 2.21, 5.17, 1.27 }, { 4.76, 16.89, 5.92 }, { 3.00, 12.21, 4.42 },
+			{ 4.30, 9.17, 3.88 }, { 3.40, 10.00, 4.86 }, { 2.28, 4.57, 1.72 }, { 3.16, 13.52, 4.76 },
+			{ 2.27, 5.51, 1.72 }, { 3.03, 11.76, 4.01 }, { 2.41, 5.82, 1.72 }, { 2.22, 5.28, 1.47 },
+			{ 2.30, 5.55, 2.75 }, { 0.87, 1.40, 1.01 }, { 2.60, 6.67, 1.75 }, { 4.15, 20.04, 4.42 },
+			{ 3.66, 6.01, 3.28 }, { 2.29, 5.86, 1.75 }, { 4.76, 17.02, 4.30 }, { 2.42, 14.80, 3.15 },
+			{ 0.70, 2.19, 1.62 }, { 3.02, 9.02, 4.98 }, { 3.06, 13.51, 3.72 }, { 2.31, 5.46, 1.22 },
+			{ 3.60, 14.56, 3.28 }, { 5.13, 13.77, 9.28 }, { 6.61, 19.04, 13.84 }, { 3.31, 9.69, 3.63 },
+			{ 3.23, 9.52, 4.98 }, { 1.83, 2.60, 2.72 }, { 2.41, 6.13, 1.47 }, { 2.29, 5.71, 2.23 },
+			{ 10.85, 13.55, 4.44 }, { 0.69, 2.46, 1.67 }, { 0.70, 2.19, 1.62 }, { 0.69, 2.42, 1.34 },
+			{ 1.58, 1.54, 1.14 }, { 0.87, 1.40, 1.01 }, { 2.52, 6.17, 1.64 }, { 2.52, 6.36, 1.66 },
+			{ 0.70, 2.23, 1.41 }, { 2.42, 14.80, 3.15 }, { 2.66, 5.48, 2.09 }, { 1.41, 2.00, 1.71 },
+			{ 2.67, 9.34, 4.86 }, { 2.90, 5.40, 2.22 }, { 2.43, 6.03, 1.69 }, { 2.45, 5.78, 1.48 },
+			{ 11.02, 11.28, 3.28 }, { 2.67, 5.92, 1.39 }, { 2.45, 5.57, 1.74 }, { 2.25, 6.15, 1.99 },
+			{ 2.26, 5.26, 1.41 }, { 0.70, 1.87, 1.32 }, { 2.33, 5.69, 1.87 }, { 2.04, 6.19, 2.10 },
+			{ 5.34, 26.20, 7.15 }, { 1.97, 4.07, 1.44 }, { 4.34, 7.84, 4.44 }, { 2.32, 15.03, 4.67 },
+			{ 2.32, 12.60, 4.65 }, { 2.53, 5.69, 2.14 }, { 2.92, 6.92, 2.14 }, { 2.30, 6.32, 1.28 },
+			{ 2.34, 6.17, 1.78 }, { 4.76, 17.82, 3.84 }, { 2.25, 6.48, 1.50 }, { 2.77, 5.44, 1.99 },
+			{ 2.27, 4.75, 1.78 }, { 2.32, 15.03, 4.65 }, { 2.90, 6.59, 4.28 }, { 2.64, 7.19, 3.75 },
+			{ 2.28, 5.01, 1.85 }, { 0.87, 1.40, 1.01 }, { 2.34, 5.96, 1.51 }, { 2.21, 6.13, 1.62 },
+			{ 2.52, 6.03, 1.64 }, { 2.53, 5.69, 2.14 }, { 2.25, 5.21, 1.16 }, { 2.56, 6.59, 1.62 },
+			{ 2.96, 8.05, 3.33 }, { 0.70, 1.89, 1.32 }, { 0.72, 1.74, 1.12 }, { 21.21, 21.19, 5.05 },
+			{ 11.15, 6.15, 2.99 }, { 8.69, 9.00, 2.23 }, { 3.19, 10.06, 3.05 }, { 3.54, 9.94, 3.42 },
+			{ 2.59, 6.23, 1.71 }, { 2.52, 6.32, 1.64 }, { 2.43, 6.00, 1.57 }, { 20.30, 19.29, 6.94 },
+			{ 8.75, 14.31, 2.16 }, { 0.69, 2.46, 1.67 }, { 0.69, 2.46, 1.67 }, { 0.69, 2.47, 1.67 },
+			{ 3.58, 8.84, 3.64 }, { 3.04, 6.46, 3.28 }, { 2.20, 5.40, 1.25 }, { 2.43, 5.71, 1.74 },
+			{ 2.54, 5.55, 2.14 }, { 2.38, 5.63, 1.86 }, { 1.58, 4.23, 2.68 }, { 1.96, 3.70, 1.66 },
+			{ 8.61, 11.39, 4.17 }, { 2.38, 5.42, 1.49 }, { 2.18, 6.26, 1.15 }, { 2.67, 5.48, 1.58 },
+			{ 2.46, 6.42, 1.29 }, { 3.32, 18.43, 5.19 }, { 3.26, 16.59, 4.94 }, { 2.50, 3.86, 2.55 },
+			{ 2.58, 6.07, 1.50 }, { 2.26, 4.94, 1.24 }, { 2.48, 6.40, 1.70 }, { 2.38, 5.73, 1.86 },
+			{ 2.80, 12.85, 3.89 }, { 2.19, 4.80, 1.69 }, { 2.56, 5.86, 1.66 }, { 2.49, 5.84, 1.76 },
+			{ 4.17, 24.42, 4.90 }, { 2.40, 5.53, 1.42 }, { 2.53, 5.88, 1.53 }, { 2.66, 6.71, 1.76 },
+			{ 2.65, 6.71, 3.55 }, { 28.73, 23.48, 7.38 }, { 2.68, 6.17, 2.08 }, { 2.00, 5.13, 1.41 },
+			{ 3.66, 6.36, 3.28 }, { 3.66, 6.26, 3.28 }, { 2.23, 5.25, 1.75 }, { 2.27, 5.48, 1.39 },
+			{ 2.31, 5.40, 1.62 }, { 2.50, 5.80, 1.78 }, { 2.25, 5.30, 1.50 }, { 3.39, 18.62, 4.71 },
+			{ 0.87, 1.40, 1.01 }, { 2.02, 4.82, 1.50 }, { 2.50, 6.46, 1.65 }, { 2.71, 6.63, 1.58 },
+			{ 2.71, 4.61, 1.41 }, { 3.25, 18.43, 5.03 }, { 3.47, 21.06, 5.19 }, { 1.57, 2.32, 1.58 },
+			{ 1.65, 2.34, 2.01 }, { 2.93, 7.38, 3.16 }, { 1.62, 3.84, 2.50 }, { 2.49, 5.82, 1.92 },
+			{ 2.42, 6.36, 1.85 }, { 62.49, 61.43, 34.95 }, { 3.15, 11.78, 2.77 }, { 2.47, 6.21, 2.55 },
+			{ 2.66, 5.76, 2.24 }, { 0.69, 2.46, 1.67 }, { 2.44, 7.21, 3.19 }, { 1.66, 3.66, 3.21 },
+			{ 3.54, 15.90, 3.40 }, { 2.44, 6.53, 2.05 }, { 0.69, 2.79, 1.96 }, { 2.60, 5.76, 1.45 },
+			{ 3.07, 8.61, 7.53 }, { 2.25, 5.09, 2.11 }, { 3.44, 18.39, 5.03 }, { 3.18, 13.63, 4.65 },
+			{ 44.45, 57.56, 18.43 }, { 12.59, 13.55, 3.56 }, { 0.50, 0.92, 0.30 }, { 2.84, 13.47, 2.21 },
+			{ 2.41, 5.90, 1.76 }, { 2.41, 5.90, 1.76 }, { 2.41, 5.78, 1.76 }, { 2.92, 6.15, 2.14 },
+			{ 2.40, 6.05, 1.55 }, { 3.07, 6.96, 3.82 }, { 2.31, 5.53, 1.28 }, { 2.64, 6.07, 1.42 },
+			{ 2.52, 6.17, 1.64 }, { 2.38, 5.73, 1.86 }, { 2.93, 3.38, 1.97 }, { 3.01, 3.25, 1.60 },
+			{ 1.45, 4.65, 6.36 }, { 2.90, 6.59, 4.21 }, { 2.48, 1.42, 1.62 }, { 2.13, 3.16, 1.83 }
+		}
+	;
+	if(400 <= modelID <= 611)
+	{
+		size_X = sizeData[modelID - 400][0];
+		size_Y = sizeData[modelID - 400][1];
+		size_Z = sizeData[modelID - 400][2];
+		return 1;
+	}
+	return 0;
+}
+
+
+public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z)
+{
+	new testtick = GetTickCount();
+	new cammode = GetPlayerCameraMode(playerid);
+	if(cammode == 7 || cammode == 8 || cammode == 53 || GetPlayerWeapon(playerid) <= 15)
+	{
+		new newkeys,plylr,plyup;
+		GetPlayerKeys(playerid,newkeys,plyup,plylr);
+		if(Holding(KEY_FIRE) || (GetTickCount()-playershottick[playerid]) <= SHOT_MS)
+		{
+			if(GetPlayerWeapon(playerid) <= 15)
+			{
+				new Float:VehSize[3],Float:VehPos[3];
+				GetVehicleSize(GetVehicleModel(vehicleid),VehSize[0],VehSize[1],VehSize[2]);
+				GetVehiclePos(vehicleid,VehPos[0],VehPos[1],VehPos[2]);
+				if(IsPlayerInRangeOfPoint(playerid,VehSize[1],VehPos[0],VehPos[1],VehPos[2]))
+				{
+					new animidx = GetPlayerAnimationIndex(playerid);
+					if(	animidx == 1136 || animidx == 1137 || animidx == 1138 || animidx == 1141 || //Fightstyle ...
+						animidx == 17 || animidx == 18 || animidx == 19 || // Bat
+						animidx == 749 || animidx == 750 || animidx == 751 || // Knife
+						animidx == 1545 || animidx == 1546 || animidx == 1547 || // Sword
+						animidx == 313 || animidx == 314 || animidx == 315 || // CSaw
+						animidx == 423 || animidx == 424 || animidx == 425 || // Dildo
+						animidx == 533) //Flowerattack
+					{
+						if(playerblock[playerid] == 0){playerblock[playerid] = 1;}
+						else{return 1;}
+					}
+					else
+					{
+						playerblock[playerid] = 0;
+						return 1;
+					}
+				}
+				else{return 1;}
+
+				OnEmptyVehicleDamage(vehicleid,playerid,(GetTickCount()-testtick));
+			}
+		}
+		else if(playerblock[playerid] == 1){playerblock[playerid] = 0;}
+	}
+    return 1;
+}
+
+forward OnEmptyVehicleDamage(vehicleid,playerid,exems);
+public OnEmptyVehicleDamage(vehicleid,playerid,exems)
+{
+	if(VehicleInfo[vehicleid][eVehicleBreak])
+	{
+		if(VehicleInfo[vehicleid][eVedhicleBreaktime])
+		{
+			VehicleInfo[vehicleid][eVedhicleBreaktime]--;
+
+			NotifyVehicleOwner(vehicleid);
+
+			new str[65];
+			format(str, sizeof(str), "กำลังดำเนินการพังยานพาหนะ %d",VehicleInfo[vehicleid][eVedhicleBreaktime]);
+			Update3DTextLabelText(VehicleInfo[vehicleid][eVehicleBreakUI], COLOR_WHITE, str);
+			return 1;
+		}
+		else if(!VehicleInfo[vehicleid][eVedhicleBreaktime])
+		{
+			new statusString[60];
+
+			VehicleInfo[vehicleid][eVehicleBreak] = false;
+			VehicleInfo[vehicleid][eVedhicleBreaktime] = 0;
+			
+			Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleBreakUI]); 
+
+			new engine, lights, alarm, doors, bonnet, boot, objective; 
+			
+			GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+
+			format(statusString, sizeof(statusString), "~g~%s UNLOCKED", ReturnVehicleName(vehicleid));
+					
+			SetVehicleParamsEx(vehicleid, engine, lights, alarm, false, bonnet, boot, objective);
+			VehicleInfo[vehicleid][eVehicleLocked] = false;
+			GameTextForPlayer(playerid, statusString, 3000, 3);
+			SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ทำการพังยานพาหนะ %s สำเร็จแล้ว",ReturnVehicleName(vehicleid));
+			return 1;
+		}
+	}
+	return 1;
+}
+
+
 

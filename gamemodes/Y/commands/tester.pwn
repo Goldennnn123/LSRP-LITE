@@ -11,10 +11,10 @@ CMD:testerchat(playerid, params[])
 	
 	if(strlen(params) > 89)
 	{
-		SendTesterMessageEx(COLOR_YELLOW2, "{F5B041}*%s[%d] %s: %.89s ...", PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mForumName], params);
-		SendTesterMessageEx(COLOR_YELLOW2, "{F5B041}*%s[%d] %s: ... %s", PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mForumName], params[89]);
+		SendTesterMessageEx(0xF5B041, "*%s[%d] %s: %.89s ...", PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mForumName], params);
+		SendTesterMessageEx(0xF5B041, "*%s[%d] %s: ... %s", PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mForumName], params[89]);
 	}
-	else SendTesterMessageEx(COLOR_YELLOW2, "{F5B041}*%s[%d] %s: %s", PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mForumName], params);
+	else SendTesterMessageEx(0xF5B041, "*%s[%d] %s: %s", PlayerInfo[playerid][pTester] == 0 ? ("Admin") : ("Tester"), PlayerInfo[playerid][pTester] == 0 ? PlayerInfo[playerid][pAdmin] : PlayerInfo[playerid][pTester], e_pAccountData[playerid][mForumName], params);
     return 1;
 }
 

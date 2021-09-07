@@ -111,6 +111,7 @@ enum {
 #include "Y/entities/customskin.pwn"
 #include "Y/entities/fuel.pwn"
 #include "Y/entities/furniture.pwn"
+#include "Y/entities/package.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -146,6 +147,7 @@ enum {
 #include "Y/systems/global.pwn"
 #include "Y/systems/business/clothing.pwn"
 #include "Y/systems/drug/drug.pwn"
+#include "Y/systems/package.pwn"
 //#include "Y/systems/tolls.pwn"
 
 
@@ -170,6 +172,7 @@ enum {
 #include "Y/mysql/SaveClothing.pwn"
 #include "Y/mysql/SaveGlobal.pwn"
 #include "Y/mysql/SaveFuel.pwn"
+#include "Y/mysql/SaveWp.pwn"
 
 #include "Y/registration/login.pwn"
 #include "Y/character/character.pwn"
@@ -207,30 +210,11 @@ enum {
 #include "Y/Map/garagegas.pwn"
 #include "Y/Map/Hospital.pwn"
 #include "Y/Map/ps.pwn"
-//#include "Y/Map/Piszza.pwn"
 #include "Y/Map/map_fight.pwn"
 #include "Y/Map/carmeeting.pwn"
-//#include "Y/Map/police_g.pwn"
 #include "Y/Map/pump.pwn"
 #include "Y/Map/mapnaigun.pwn"
-//#include "Y/Map/map_p_1.pwn"
-/*#include "Y/Map/slrp.pwn"
-#include "Y/Map/apartment.pwn"
-#include "Y/Map/LSPDHABOR.pwn"
-#include "Y/Map/Police.pwn"
-#include "Y/Map/swrp.pwn"
-#include "Y/Map/cityhall.pwn"
-#include "Y/Map/IDLEWOOD.pwn"
-#include "Y/Map/LSMALL.pwn"
-#include "Y/Map/LSPDWEST.pwn"
-#include "Y/Map/LSPDHQ.pwn"
-#include "Y/Map/LSPDVINEWOOD.pwn"
-#include "Y/Map/Police.pwn"
-#include "Y/Map/415garage.pwn"
-#include "Y/Map/Gas_station.pwn"
-//#include "Y/Map/LSPDHQINT.pwn"
-//#include "Y/Map/LSPDHQEXT.pwn"
-//#include "Y/Map/LSPDHQINT2.pwn"*/
+#include "Y/Map/lsrplite_map.pwn"
 
 
 #include "Y/systems/discord/discord.pwn"
@@ -544,29 +528,18 @@ public OnPlayerConnect(playerid) {
     return 1;
 }
 
-public OnPlayerDisconnect(playerid, reason) {
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+    new str[120];
+    format(str, sizeof(str), "[%s] %s : Disconnect", ReturnDate(),ReturnName(playerid,0));
+    SendDiscordMessageEx("862580236524191744", str);
 
     static const szDisconnectReason[3][] = {"หลุด","ออกจากเกมส์","ถูกเตะ"};
     ProxDetector(playerid, 20.0, sprintf("*** %s ออกจากเซิร์ฟเวอร์ (%s)", ReturnPlayerName(playerid), szDisconnectReason[reason]));
 
-    new str[120];
-    format(str, sizeof(str), "[%s] %s : Disconnect", ReturnDate(),ReturnName(playerid,0));
-    SendDiscordMessage(1, str);
 
-    // บันทึกว่าหลุด
-	if(reason == 0) {
-		PlayerInfo[playerid][pTimeout] = gettime();
-
-
-        if(PlayerInfo[playerid][pPoliceDuty])
-        {
-            new query[255];
-            mysql_format(dbCon, query, sizeof(query), "INSERT INTO `cache`(`C_DBID`, `C_DUTY`) VALUES ('%d','%d')",PlayerInfo[playerid][pDBID], PlayerInfo[playerid][pPoliceDuty]);
-            mysql_tquery(dbCon, query);
-        }
-    }
-
-    for(new i = 0; i < 10; i++)
+    for(new i = 1; i <= 10; i++)
     {
         DestroyDynamicObject(PlayerInfo[playerid][pObject][i]);
         PlayerInfo[playerid][pObject][i] = INVALID_OBJECT_ID;
@@ -583,7 +556,25 @@ public OnPlayerDisconnect(playerid, reason) {
     PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
 	PlayerTextDrawDestroy(playerid, RadioStats[playerid]);
 
+    // บันทึกว่าหลุด
+	if(reason == 0) {
+		PlayerInfo[playerid][pTimeout] = gettime();
+
+
+        if(PlayerInfo[playerid][pDuty])
+        {
+            new query[255];
+            mysql_format(dbCon, query, sizeof(query), "INSERT INTO `cache`(`C_DBID`, `C_DUTY`) VALUES ('%d','%d')",PlayerInfo[playerid][pDBID], PlayerInfo[playerid][pPoliceDuty]);
+            mysql_tquery(dbCon, query);
+        }
+    }
+
     ResetPlayerCharacter(playerid);
+    return 1;
+}
+
+public OnPlayerDisconnect(playerid, reason) {
+
     return 1;
 }
 

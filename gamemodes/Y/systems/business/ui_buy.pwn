@@ -24,14 +24,14 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
             return SendErrorMessage(playerid, "สินค้าหมด");
 
         GivePlayerWeapon(playerid, 43, 500);
-        BusinessInfo[id][BusinessS_Cemara]--;
+        BusinessInfo[id][BusinessS_Cemara]-=500;
     }
     if(itemid == 3)
     {
         if(BusinessInfo[id][BusinessS_Flower] < 1)
             return SendErrorMessage(playerid, "สินค้าหมด");
 
-        GivePlayerWeapon(playerid, 14, 1);
+        GivePlayerValidWeapon(playerid, 14, 1);
         BusinessInfo[id][BusinessS_Flower]--;
     }
     if(itemid == 4)
@@ -53,7 +53,7 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
 
     if(itemid == 6)
     {
-        GivePlayerGun(playerid, 5, 1);
+        GivePlayerValidWeapon(playerid, 5, 1);
         
     }
     

@@ -40,20 +40,20 @@ CMD:onduty(playerid, params[])
 
 	foreach(new i : Player)
 	{
-		if(PlayerInfo[i][pPoliceDuty])
+		new factiontype = FactionInfo[PlayerInfo[i][pFaction]][eFactionJob];
+		
+		if(factiontype == POLICE || factiontype == SHERIFF)
 			police++;
-
-		if(PlayerInfo[i][pSheriffDuty])
-			police++;
-
-		if(PlayerInfo[i][pMedicDuty])
-			medic++;
-
-		if(PlayerInfo[i][pSADCRDuty])
+		
+		if(factiontype == SADCR)
 			sadcr++;
+			
+		if(factiontype == MEDIC)
+			medic++;
 
 		if(PlayerTaxiDuty[i])
 			taxi++;
+		
 
 	}
 	SendClientMessageEx(playerid, -1, "On duty: %d PD/SD, %d DOC, %d LSFD, %d Taxis", police, sadcr, medic, taxi);
@@ -87,14 +87,14 @@ CMD:logout(playerid, params[])
 	SendDiscordMessageEx("873978832762314803", str);
 
 
-	if(PlayerInfo[playerid][pVehicleSpawned])
+	/*if(PlayerInfo[playerid][pVehicleSpawned])
 	{
 		ResetVehicleVars(PlayerInfo[playerid][pVehicleSpawnedID]);
 		DestroyVehicle(PlayerInfo[playerid][pVehicleSpawnedID]);
 		
 		PlayerInfo[playerid][pVehicleSpawned] = false;
 		PlayerInfo[playerid][pVehicleSpawnedID] = INVALID_VEHICLE_ID;
-	}
+	}*/
 
 
 	CharacterSave(playerid);
@@ -774,13 +774,19 @@ CMD:lock(playerid,params[])
 
 		if(foundCar == true)
 		{
-			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && !VehicleInfo[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty] && IsElecVehicle(vehicleid) && !IsPlayerRentVehicle(playerid, vehicleid))
+			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid /*|| || !VehicleInfo[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty] || IsElecVehicle(vehicleid) || !IsPlayerRentVehicle(playerid, vehicleid)*/)
 			{
 				if(IsElecVehicle(vehicleid))
 					return SendErrorMessage(playerid, "ไม่สามารถพังยานพาหนะคันนี้ได้ได้");
 
 				if(VehicleInfo[vehicleid][eVehicleAdminSpawn])
 					return SendErrorMessage(playerid, "ไม่สามารถพังยานพาหนะคันนี้ได้ได้");
+
+				if(VehicleInfo[vehicleid][eVehicleFaction] > 0)
+				{
+					if(VehicleInfo[vehicleid][eVehicleFaction] != PlayerInfo[playerid][pFaction])
+						return SendErrorMessage(playerid, "ไม่สามารถพังยานพาหนะคันนี้ได้ได้");	
+				}
 
 				if (!isnull(params) && !strcmp(params, "breakin", true)) 
 				{
@@ -2275,51 +2281,51 @@ CMD:pm(playerid, params[])
 		
 		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {FF9900}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
 		Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
-		Log_Write("logs/pm.txt", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+		Log_Write("pm.log", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 
 		if(!PlayerInfo[playerb][pAdminDuty])
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 			
 		else SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
-		Log_Write("logs/pm.txt", "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
+		Log_Write("pm.log", "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 	}
 	else if(PlayerInfo[playerid][pTesterDuty])
 	{
 		SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก {229954}%s{FFDC18} (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
 		Log(chatlog, WARNING, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
-		Log_Write("logs/pm.txt", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+		Log_Write("pm.log", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 
 		if(!PlayerInfo[playerb][pTesterDuty])
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 			
 		else SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
-		Log_Write("logs/pm.txt", "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
+		Log_Write("pm.log", "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 	}
 	else
 	{
 		if(PlayerInfo[playerb][pAdminDuty])
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
-			Log_Write("logs/pm.txt", "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+			Log_Write("pm.log", "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
-			Log_Write("logs/pm.txt", "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text);
+			Log_Write("pm.log", "(( PM ส่งไปยัง {FF9900}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 		}
 		else if(PlayerInfo[playerb][pTesterDuty])
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
-			Log_Write("logs/pm.txt", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+			Log_Write("pm.log", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
-			Log_Write("logs/pm.txt", "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+			Log_Write("pm.log", "(( PM ส่งไปยัง {229954}%s{EEE854} (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		}
 		else
 		{
 			SendClientMessageEx(playerb, COLOR_PMRECEIVED, "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text); 
-			Log_Write("logs/pm.txt", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
+			Log_Write("pm.log", "(( PM จาก %s (ID: %d): %s ))", ReturnName(playerid), playerid, text);
 			SendClientMessageEx(playerid, COLOR_PMSENT, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text);
 			Log(chatlog, WARNING, "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
-			Log_Write("logs/pm.txt", "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
+			Log_Write("pm.log", "(( PM ส่งไปยัง %s (ID: %d): %s ))", ReturnName(playerb), playerb, text); 
 		}
 	}
 	return 1;

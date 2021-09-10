@@ -463,7 +463,7 @@ public OnplayerCache(playerid)
 	{
 		if(ReturnFactionJob(playerid) == POLICE)
 		{
-			PlayerInfo[playerid][pPoliceDuty] = true;
+			PlayerInfo[playerid][pDuty] = true;
 			SendPoliceMessage(0x8D8DFFFF, "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 			
 			SetPlayerColor(playerid, COLOR_COP);
@@ -478,7 +478,7 @@ public OnplayerCache(playerid)
 		}
 		else if(ReturnFactionJob(playerid) == SHERIFF)
 		{
-			PlayerInfo[playerid][pSheriffDuty] = true;
+			PlayerInfo[playerid][pDuty] = true;
 			SendSheriffMessage(0x8D8DFFFF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้ (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 
 			SetPlayerHealth(playerid, 100);
@@ -613,6 +613,8 @@ public LoadCharacter(playerid)
 	new str[120];
     format(str, sizeof(str), "[%s] %s : Connected to the Server", ReturnDate(),ReturnName(playerid,0));
     SendDiscordMessage(1, str);
+
+	Player_SetWalkingStyle(playerid, PlayerInfo[playerid][pWalk]);
 	
 	UpDateRadioStats(playerid);
 	return 1;

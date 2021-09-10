@@ -296,6 +296,8 @@ hook OnPlayerDisconnect(playerid, reason)
 	{
 		PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
 	}
+
+	CreateUnscrambleTextdraw(playerid, false);
 	return 1;
 }
 
@@ -743,6 +745,7 @@ CMD:engine(playerid, params[])
 		PlayerInfo[playerid][pUnscrambleTimer] = repeat OnPlayerUnscramble(playerid);
 		
 		CreateUnscrambleTextdraw(playerid);
+		TogglePlayerControllable(playerid, 1);
 
 		format(str, sizeof(str), "%s", UnscrambleWord[idx]); 
 		PlayerTextDrawSetString(playerid, Unscrambler_PTD[playerid][3], str);
@@ -798,6 +801,7 @@ CMD:unscramble(playerid, params[])
 		PlayerInfo[playerid][pScrambleSuccess]++; 
 		
 		PlayerPlaySound(playerid, 1052, 0, 0, 0);
+
 		//จะต่อสายตรงได้สำเร็จนั้น ขึ้นอยู่กับเลเวลเตือนภัย:
 		if(PlayerInfo[playerid][pScrambleSuccess] >= (VehicleInfo[vehicleid][eVehicleImmobLevel] * 2) + 2)
 		{

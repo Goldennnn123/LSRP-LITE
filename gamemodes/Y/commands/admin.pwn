@@ -63,7 +63,7 @@ CMD:aduty(playerid, params[])
 		format(str, sizeof(str), "{FF5722}%s {43A047}ได้ออกจากการปฏิบัตรหน้าที่เป็นผู้ดูแลระบบแล้วในขณะนี้", ReturnRealName(playerid)); 
 		SendAdminMessage(1, str);
 		
-		if(!PlayerInfo[playerid][pPoliceDuty])
+		if(!PlayerInfo[playerid][pDuty])
 			SetPlayerColor(playerid, COLOR_WHITE); 
 			
 		else

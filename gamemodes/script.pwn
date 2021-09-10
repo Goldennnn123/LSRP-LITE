@@ -202,6 +202,7 @@ enum {
 #include "Y/Interior/hq_hpsital.pwn"
 #include "Y/Interior/pd_hq.pwn"
 #include "Y/Interior/SOS_BAR.pwn"
+#include "Y/Interior/house8.pwn"
 //#include "Y/Interior/init1.pwn"
 
 
@@ -551,7 +552,6 @@ hook OnPlayerDisconnect(playerid, reason)
 	new secondsConnection = (playerTime % (1000*60*60)) / (1000*60);
 	
 	PlayerInfo[playerid][pLastOnlineTime] = secondsConnection;
-    CharacterSave(playerid);
 
     PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
 	PlayerTextDrawDestroy(playerid, RadioStats[playerid]);
@@ -564,11 +564,12 @@ hook OnPlayerDisconnect(playerid, reason)
         if(PlayerInfo[playerid][pDuty])
         {
             new query[255];
-            mysql_format(dbCon, query, sizeof(query), "INSERT INTO `cache`(`C_DBID`, `C_DUTY`) VALUES ('%d','%d')",PlayerInfo[playerid][pDBID], PlayerInfo[playerid][pPoliceDuty]);
+            mysql_format(dbCon, query, sizeof(query), "INSERT INTO `cache`(`C_DBID`, `C_DUTY`) VALUES ('%d','%d')",PlayerInfo[playerid][pDBID], PlayerInfo[playerid][pDuty]);
             mysql_tquery(dbCon, query);
         }
     }
 
+    CharacterSave(playerid);
     ResetPlayerCharacter(playerid);
     return 1;
 }

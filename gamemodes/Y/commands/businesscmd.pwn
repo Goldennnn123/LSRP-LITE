@@ -48,11 +48,8 @@ CMD:buybiz(playerid,params[])
 
             BusinessInfo[b_id][BusinessEntrancePickUp] = CreateDynamicPickup(1239, 23, BusinessInfo[b_id][BusinessEntrance][0], BusinessInfo[b_id][BusinessEntrance][1], BusinessInfo[b_id][BusinessEntrance][2],-1,-1);
         }
-        SendClientMessageEx(playerid, -1, "{33FF66}BUSINESS {F57C00}SYSTEM:{F57C00} ยินดีด้วย!! คุณได้ซื้อกิจการในราคา $%s", MoneyFormat(BusinessInfo[b_id][BusinessPrice]));
-        Dialog_Show(playerid, DIALOG_MSG_BUSINESS, DIALOG_STYLE_MSGBOX, "{388E3C}Succes Buy Business", "{F4511E}ยินดีด้วยคุณได้เปิดกิจการใหม่ของคุณ ซึ่งการที่คุณได้เปิดกิจการใหม่นั้นจำเป็นอย่างมากที่จะต้องใช้ประสบการณ์ในการบริหารจัดการกิจการของคุณ\n\
-                                                                                                        ซึ่งคุณจะได้รับประสบการณ์ต่างๆมากมายจากการเปิดกิจการนี้ แต่อย่างอื่นอย่างใด คุณควรอัพเดทบทบาทของคุณที่มีต่อ กิจการของคุณ ลงในฟอรั่ม\n\
-                                                                                                        เพื่อที่จะได้ แสดงให้ผู้คนที่สนใจเข้าไปอ่านนั้น รู้จักและสนใจในกิจการของคุณ ซึ่งขอให้กิจการของคุณเติบโตไปได้ด้วยดี\n\
-                                                                                                        หากมีคำข้อสงในกิจการของคุณ ลองพิมพ์ {FF0000}/bizcmd {F4511E}เพื่อดูคำสั่งต่างๆในกิจการของคุณ", "รับทราบ","");                              
+
+        SendClientMessageEx(playerid, -1, "{33FF66}BUSINESS {F57C00}SYSTEM:{F57C00} ยินดีด้วย!! คุณได้ซื้อกิจการในราคา $%s", MoneyFormat(BusinessInfo[b_id][BusinessPrice]));                     
         
         for(new i = 1; i < MAX_FUELS; i++)
         {
@@ -171,7 +168,7 @@ CMD:bank(playerid, params[])
 }
 new PlayerSavingAdd[MAX_PLAYERS];
 
-CMD:saving(playerid, params[])
+CMD:saveing(playerid, params[])
 {
     if(PlayerInfo[playerid][pSaving])
         return SendErrorMessage(playerid, "คุณได้ทำการเริ่มฝากออมทรัพย์อยู่แล้ว");
@@ -206,7 +203,7 @@ CMD:saving(playerid, params[])
     \tเรียน %s\n\
     \t\tข้อตกลงในการทำบัญชีออมทรัพย์ของคุณนั้น เป็นข้อตกลงระหว่างคุณกับธนาคาร โดยมีข้อกำหนดต่างๆ ที่คุณจำเป็น\nจะต้องปฎิบัติตามและยอมรับมันดังข้อกำหนด\n\
     ข้อที่ 1: คุณจะได้รับดอกเบี้ยมากขึ้นจากเดิมที่คุณเคยได้นั่นก็คือ 0.9\n\
-    ข้อที่ 2: คุณจะไม่สามารถถอนเงินได้จนกว่าเงินของคุณจะครบกำหนด $2,000,000\n\
+    ข้อที่ 2: คุณจะไม่สามารถถอนเงินได้จนกว่าเงินของคุณจะครบกำหนด $20,000,000\n\
     ข้อที่ 3: หากคุณทำการถอนก่อนกำหนดจะถูกทางธนาคารปรับเงินคุณ หาร 2 ของเงินทั้งหมดที่คุณมี\n\
     หากคุณอ่านข้อกำหนดของเราและได้ยอมรับโปรดใส่จำนวนเงินที่จะต้องเริ่มต้นในการฝากเงินเข้า ไม่ต่ำกว่า $2,000 และห้ามเกิน $1,000,000",ReturnName(playerid, 0));
     Dialog_Show(playerid, DIALOG_CONFIRM_SAVEING, DIALOG_STYLE_MSGBOX, "ข้อตกลงในการฝากเงินออมทรัพย์", str, "ยืนยันทำรายการ", "ยกเลิกการทำรายการ");

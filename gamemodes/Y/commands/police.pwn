@@ -33,7 +33,7 @@ CMD:cuff(playerid, params[])
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
 
-    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+    if(PlayerInfo[playerid][pDuty] == false)
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
 
@@ -80,7 +80,7 @@ CMD:uncuff(playerid, params[])
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
 
-    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+    if(PlayerInfo[playerid][pDuty])
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
 	new playerb;
@@ -128,7 +128,7 @@ CMD:tazer(playerid, params[])
 			return SendErrorMessage(playerid, "คุณไม่มีปืนช็อตไฟฟ้า");
 		
 		PlayerInfo[playerid][pTaser] = true;
-		GivePlayerGun(playerid, 23, 100); 
+		GivePlayerWeaponEx(playerid, 23, 100); 
 		
 		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s หยิบปืนช็อตไฟฟ้าออกมาจากซองหนัง", ReturnName(playerid, 0)); 
 	}
@@ -137,7 +137,7 @@ CMD:tazer(playerid, params[])
 		if(GetPlayerWeapon(playerid) != 23)
 			return SendErrorMessage(playerid, "คุณไม่มีปืนช็อตไฟฟ้า");
 
-		GivePlayerGun(playerid, 24,160); 
+		GivePlayerWeaponEx(playerid, 24, 160);
 		PlayerInfo[playerid][pTaser] = false;
 		
 		SendNearbyMessage(playerid, 20.0, COLOR_EMOTE, "> %s เก็บปืนช็อตไฟฟ้าเข้าซองหนัง", ReturnName(playerid, 0)); 
@@ -156,7 +156,7 @@ CMD:rubberbullets(playerid, params[])
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
 
-    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+    if(PlayerInfo[playerid][pDuty] == false)
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
 	if(GetPVarInt(playerid, "Rubberbullets"))
@@ -257,7 +257,7 @@ CMD:givelicense(playerid, params[])
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
 
-    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+    if(PlayerInfo[playerid][pDuty] == false)
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
 	new playerb;
@@ -393,7 +393,7 @@ CMD:fine(playerid, params[])
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
 
-    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+    if(PlayerInfo[playerid][pDuty] == false)
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
 	new tagetid,reason[255],price, idx;
@@ -466,7 +466,7 @@ CMD:arrest(playerid, params[])
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
 
-    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+    if(PlayerInfo[playerid][pDuty] == false)
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
 	if(!IsPlayerInRangeOfPoint(playerid, 2.5, 226.9767,114.8129,999.0156))
@@ -586,7 +586,7 @@ CMD:spike_add(playerid, params[])
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
 
-    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+    if(PlayerInfo[playerid][pDuty] == false)
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
 	if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE)
@@ -630,7 +630,7 @@ CMD:spike_del(playerid, params[])
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
 
-    if(PlayerInfo[playerid][pPoliceDuty] == false && PlayerInfo[playerid][pSheriffDuty] == false && PlayerInfo[playerid][pSADCRDuty] == false)
+    if(PlayerInfo[playerid][pDuty] == false)
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
 	if(GetPlayerTeam(playerid) != PLAYER_STATE_ALIVE)

@@ -80,7 +80,7 @@ CMD:uncuff(playerid, params[])
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
 		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
 
-    if(PlayerInfo[playerid][pDuty])
+    if(!PlayerInfo[playerid][pDuty])
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
 	new playerb;
@@ -877,7 +877,7 @@ stock ShowFines(playerid, tagerid)
 		if(FineInfo[i][FineOwner] != PlayerInfo[tagerid][pDBID])
 			continue;
 
-		format(str, sizeof(str), "%s\t$%s\t%s\n", FineInfo[i][FineReson], MoneyFormat(FineInfo[i][FinePrice]), FineInfo[i][FineDate]);
+		format(str, sizeof(str), "%s...\t$%s\t%s\n", FineInfo[i][FineReson][10], MoneyFormat(FineInfo[i][FinePrice]), FineInfo[i][FineDate]);
 		strcat(longstr, str);
 
 		format(str, sizeof(str), "%d",fineid);

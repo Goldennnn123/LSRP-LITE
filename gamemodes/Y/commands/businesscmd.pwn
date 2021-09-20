@@ -120,6 +120,46 @@ CMD:eat(playerid, params[])
     return 1;
 }
 
+alias:createdrinkmenu("makedrink", "createdrink")
+CMD:createdrinkmenu(playerid, params[])
+{
+    new id = IsPlayerInBusiness(playerid);
+
+    if(!IsPlayerInBusiness(playerid))
+        return SendErrorMessage(playerid, "คุณไมได้อยู่ในกิจการ");
+
+    if(BusinessInfo[id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdmin])
+        return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของกิจการ");
+
+
+    new name[60], price, model, drunk, idx = 0;
+
+    for(new m = 1; m < MAX_DRINKMENU; m++)
+    {
+        if(!DrinkMenuInfo[m][drink_id])
+            continue;
+
+        idx = m;
+    }
+
+
+    if(!idx)
+        return SendErrorMessage(playerid, "คุณสามารถสร้างเมนูได้มากสุด 10 เมนู");
+
+    if(sscanf(params, "s[60]ddd", name, price, model, drunk))
+        return SendUsageMessage(playerid, "/createdrinkmenu <ชื่อเมนู> <ราคา> <โมเดล> <ความเมา>");
+
+
+    if(strlen(name) > 15)
+        return SendErrorMessage(playerid, "คุณไม่ควรสร้างชื่อเมนนูเกิน 15 ตัวอักษร");
+
+    if(price < 50 || price > 10000)
+        return SendErrorMessage(playerid, "คุณตั้งราคาไม่ถูกต้อง (50 - 10000)");
+
+    
+    return 1;
+}
+
 CMD:buy(playerid, params[])
 {
     new id = PlayerInfo[playerid][pInsideBusiness];
@@ -136,6 +176,7 @@ CMD:buy(playerid, params[])
     MenuStore_AddItem(playerid, 4, 19897, "Cigarette", 150, "Flower", 200);
     MenuStore_AddItem(playerid, 5, 2226, "BoomBox", 10000, "BoomBox use music staion", 200);
     MenuStore_AddItem(playerid, 6, 336, "Baseball Bat", 1500, "Baseball Bat", 200);
+    MenuStore_AddItem(playerid, 7, 1650, "GasCan", 2000, "GasCan use /refill", 200);
     MenuStore_Show(playerid, Shop, "SHOP");
     return 1;
 }
@@ -435,6 +476,123 @@ CMD:advertisements(playerid, params[])
 
     GiveMoney(playerid, -200);
 
+    return 1;
+}
+
+
+alias:givebusinesskey("givebizkey")
+CMD:givebusinesskey(playerid, params[])
+{
+    
+    return 1;
+}
+
+
+CMD:createmenu(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideBusiness];
+
+    if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_CLUB)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้าน บาร์ ของคุณ");
+    
+    if(BusinessInfo[id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คุณไม่ได้เป็นเจ้าของกิจการนี้");
+
+    new idx = 0;
+    for(new i = 1; i < 11; i++)
+    {
+        if(!BusinessInfo[id][BizDrink][i])
+        {
+            idx = i;
+            break;
+        }
+    }
+    if(!idx)
+        return SendErrorMessage(playerid, "คุณได้สร้าง Menu เต็มแล้ว");
+
+    new menuname[60], price, model, drunk;
+
+    if(sscanf(params, "s[60]ddd", menuname, price, model, drunk))
+    {
+        SendUsageMessage(playerid, "/createmenu <ชื่อเมนู> <ราคา> <โมเดล> <drunk>");
+        SendClientMessage(playerid, COLOR_WHITE, "");
+        return 1;
+    }
+    
+    if(strlen(menuname) < 5 || strlen(menuname) > 60)
+        return SendErrorMessage(playerid, "กรอกชื่อให้ถูกต้อง");
+
+    if(price < 1 || price > 5000)
+        return SendErrorMessage(playerid, "กรอกราคาไม่ถูกต้อง");
+    
+    if(model != 1484)
+        return SendErrorMessage(playerid, "ใส่ ไอดีให้ถูกต้อง");
+
+    if(drunk < 4000 || drunk > 10000)
+        return SendErrorMessage(playerid, "คุณตั้งค่าความเมาน้อยกว่า 4,000 หรือมากกว่า 10,000");
+
+    
+    CreateMenuBar(playerid, idx, menuname, price, model, drunk);
+    return 1;
+}
+
+stock CreateMenuBar(playerid, newid, menuname[], price, model, drunk)
+{
+    new idx = 0;
+    new id = PlayerInfo[playerid][pInsideBusiness];
+
+
+    for(new i = 1; i < MAX_DRINKMENU; i++)
+    {
+        if(!DrinkMenuInfo[i][drink_id])
+        {
+            idx = i;
+            break;
+        }
+    }
+    if(!idx)
+        return SendErrorMessage(playerid, "ไอดีถึงจุดสิ้นสุดแล้ว");
+
+    DrinkMenuInfo[idx][drink_id] = idx;
+    DrinkMenuInfo[idx][drink_bizid] = id;
+    format(DrinkMenuInfo[idx][drink_name], 60, "%s",menuname);
+    DrinkMenuInfo[idx][drink_price] = price;
+    DrinkMenuInfo[idx][drink_model] = model;
+    DrinkMenuInfo[idx][drink_drunk] = drunk;
+
+    BusinessInfo[id][BizDrink][newid] = idx;
+
+    SaveBusiness(id);
+
+    SendClientMessageEx(playerid, COLOR_GREY, "คุณได้สร้าง เมนู (%d)%s เรียบร้อยแล้ว พิมพ์ /buydrink - เพื่อดูเมนู", BusinessInfo[id][BizDrink][newid], DrinkMenuInfo[idx][drink_name]);
+    return 1;
+}
+
+CMD:buydrink(playerid, params[])
+{
+    new id = PlayerInfo[playerid][pInsideBusiness];
+
+    if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_CLUB)
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้าน บาร์ ของคุณ");
+    
+    if(BusinessInfo[id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คุณไม่ได้เป็นเจ้าของกิจการนี้");
+    
+    
+    new str[120], longstr[120];
+
+    for(new i = 1; i < 11; i++)
+    {
+        if(!BusinessInfo[id][BizDrink][i])
+            continue;
+        
+        format(str, sizeof(str), "%s - $%s\n", DrinkMenuInfo[BusinessInfo[id][BizDrink][i]][drink_name], MoneyFormat(DrinkMenuInfo[BusinessInfo[id][BizDrink][i]][drink_price]));
+        strcat(longstr, str);
+    }
+
+    
+
+    Dialog_Show(playerid, DIALOG_DEFAULT, DIALOG_STYLE_LIST, "MENU:", longstr, "ยืนยัน", "ยกเลิก");
     return 1;
 }
 

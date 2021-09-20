@@ -778,16 +778,6 @@ stock ResetPlayerCharacter(playerid)
     PlayerInfo[playerid][pHasMask] = false;
     PlayerInfo[playerid][pWeaponsSpawned] = false;
 
-	for(new i = 0; i < 13; i++){
-		PlayerInfo[playerid][pWeapons][i] = 0;
-		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
-	}
-
-	for(new i = 0; i < 4; i++){
-		PlayerInfo[playerid][pGun][i] = 0;
-		PlayerInfo[playerid][pGunAmmo][i] = 0;
-	}
-
     for(new i = 1; i < MAX_PLAYER_VEHICLES; i++) {
 		PlayerInfo[playerid][pOwnedVehicles][i] = 0; 
 	}
@@ -845,6 +835,7 @@ stock ResetPlayerCharacter(playerid)
     PlayerInfo[playerid][pBoomBox] = false;
     PlayerInfo[playerid][pBoomBoxSpawnID] = 0;
     PlayerInfo[playerid][pShakeOffer] = INVALID_PLAYER_ID;
+	PlayerInfo[playerid][pDuty] = false;
 	// vehicles.pwn
 	
 	gLastCar[playerid] = 0;
@@ -856,6 +847,7 @@ stock ResetPlayerCharacter(playerid)
     playerTowingVehicle[playerid] = false;
     KillTimer(PlayerDrugUse[playerid]);
     PlayerDrugUse[playerid] = -1;
+
     for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
     {
         PlayerInfo[playerid][pClothing][i-1] = 0;
@@ -874,8 +866,20 @@ stock ResetPlayerCharacter(playerid)
 	PlayerInfo[playerid][pAnimation] = 0;
 
 	PlayerInfo[playerid][pHouseKey] = 0;
+	PlayerInfo[playerid][pBusinessKey] = 0;
+
+	for(new i = 0; i < 13; i++){
+		PlayerInfo[playerid][pWeapons][i] = 0;
+		PlayerInfo[playerid][pWeaponsAmmo][i] = 0;
+	}
+
+	for(new i = 0; i < 4; i++){
+		PlayerInfo[playerid][pGun][i] = 0;
+		PlayerInfo[playerid][pGunAmmo][i] = 0;
+	}
 
 	ResetPlayerWeapons(playerid);
+	SendClientMessage(playerid, COLOR_GREY, "ล้างตัวแปรตัวละคร สำเร็จ");
 	return 1;
 }
 

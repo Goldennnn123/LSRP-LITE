@@ -112,6 +112,7 @@ enum {
 #include "Y/entities/fuel.pwn"
 #include "Y/entities/furniture.pwn"
 #include "Y/entities/package.pwn"
+#include "Y/entities/cim.pwn"
 
 // ตัวหลัก
 #include "Y/define.pwn"
@@ -148,7 +149,8 @@ enum {
 #include "Y/systems/business/clothing.pwn"
 #include "Y/systems/drug/drug.pwn"
 #include "Y/systems/package.pwn"
-//#include "Y/systems/tolls.pwn"
+#include "Y/systems/tolls.pwn"
+#include "Y/systems/cim.pwn"
 
 
 #include "Y/jobs/farmer.pwn"
@@ -224,6 +226,7 @@ enum {
 
 #include "Y/systems/textdraw/computer.pwn"
 #include "Y/systems/textdraw/blindfold.pwn"
+//#include "Y/systems/textdraw/mdc.pwn"
 
 #if SETUP_TABLE
     #include "install"
@@ -387,7 +390,7 @@ public OnGameModeInit() {
     SendRconCommand("hostname "GM_HOST_NAME"");
     SetGameModeText(GM_VERSION);
 
-    SetNameTagDrawDistance(20.0);
+    SetNameTagDrawDistance(5.0);
     
     mysql_tquery(dbCon, "SELECT * FROM factions ORDER BY dbid ASC", "Query_LoadFactions");
     mysql_tquery(dbCon, "SELECT * FROM House ORDER BY HouseDBID", "Query_LoadHouse");
@@ -597,7 +600,6 @@ public OnPlayerSpawn(playerid) {
 
     StopAudioStreamForPlayer(playerid);
 
-    ResetPlayerWeapons(playerid);
     SetPlayerWeapons(playerid);
 
     SetPlayerSpawn(playerid);
@@ -641,9 +643,9 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
         return 0;
     }
   
-    /*new str[120];
+    new str[120];
     format(str, sizeof(str), "[CMD] %s: /%s",ReturnRealName(playerid, 0), cmd);
-    SendDiscordMessageEx("862581433302384650", str);*/
+    SendDiscordMessageEx("862581433302384650", str);
 
     Log(allcmdlog, INFO, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
     return 1;

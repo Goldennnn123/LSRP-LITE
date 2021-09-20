@@ -296,8 +296,6 @@ hook OnPlayerDisconnect(playerid, reason)
 	{
 		PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
 	}
-
-	CreateUnscrambleTextdraw(playerid, false);
 	return 1;
 }
 
@@ -743,6 +741,7 @@ CMD:engine(playerid, params[])
 		}
 		
 		PlayerInfo[playerid][pUnscrambleTimer] = repeat OnPlayerUnscramble(playerid);
+
 		
 		CreateUnscrambleTextdraw(playerid);
 		TogglePlayerControllable(playerid, 1);
@@ -805,17 +804,9 @@ CMD:unscramble(playerid, params[])
 		//จะต่อสายตรงได้สำเร็จนั้น ขึ้นอยู่กับเลเวลเตือนภัย:
 		if(PlayerInfo[playerid][pScrambleSuccess] >= (VehicleInfo[vehicleid][eVehicleImmobLevel] * 2) + 2)
 		{
-			stop PlayerInfo[playerid][pUnscrambleTimer];
-			PlayerInfo[playerid][pScrambleSuccess] = 0; 
-			PlayerInfo[playerid][pUnscrambling] = false;
-			
-			PlayerInfo[playerid][pUnscrambleID] = 0;
-			PlayerInfo[playerid][pUnscramblerTime] = 0;
-			
-			PlayerInfo[playerid][pScrambleFailed] = 0;
+			ClearUnscramble(playerid);
 			
 			GameTextForPlayer(playerid, "~g~ENGINE TURNED ON", 2000, 3); 
-			CreateUnscrambleTextdraw(playerid, false);
 			
 			SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s สตาร์ทเครื่องยนต์ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
 			ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
@@ -837,14 +828,7 @@ CMD:unscramble(playerid, params[])
 		
 		if(PlayerInfo[playerid][pScrambleFailed] >= 5)
 		{
-			stop PlayerInfo[playerid][pUnscrambleTimer];
-			PlayerInfo[playerid][pScrambleSuccess] = 0; 
-			PlayerInfo[playerid][pUnscrambling] = false;
-			
-			PlayerInfo[playerid][pUnscrambleID] = 0;
-			PlayerInfo[playerid][pUnscramblerTime] = 0;
-			
-			PlayerInfo[playerid][pScrambleFailed] = 0;
+			ClearUnscramble(playerid);
 			
 			new 
 				vehicleid = GetPlayerVehicleID(playerid)
@@ -853,9 +837,8 @@ CMD:unscramble(playerid, params[])
 			ToggleVehicleAlarms(vehicleid, true);
 			NotifyVehicleOwner(vehicleid);
 			
-			ClearAnimations(playerid);
+			//ClearAnimations(playerid);
 			TogglePlayerControllable(playerid, 1);
-			CreateUnscrambleTextdraw(playerid, false);
 		}
 	}
 	
@@ -1366,7 +1349,7 @@ Dialog:D_VEHUPGRADE_LOCK(playerid, response, listitem, inputtext[])
 		return SendErrorMessage(playerid, "คุณมีจำนวนเงินไม่เพียงพอ (ยังขาดอีก: $%s)", MoneyFormat(2000 * level - PlayerInfo[playerid][pCash]));
 
 	VehicleInfo[vehicleid][eVehicleLockLevel] = level;
-	GiveMoney(playerid, 2000 * level);
+	GiveMoney(playerid, -2000 * level);
 	
 	new Float:tax = (2000 * level) * 0.07;
 
@@ -1419,7 +1402,7 @@ Dialog:D_VEHUPGRADE_ALARM(playerid, response, listitem, inputtext[])
 
 
 	VehicleInfo[vehicleid][eVehicleAlarmLevel] = level;
-	GiveMoney(playerid, 5000 * level);
+	GiveMoney(playerid, -5000 * level);
 	SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้อัพเกรด การแจ้งเตือน ยานพาหนะ %s ของคุณไปเลเวล %d พร้อมกับเสียงเงินจำนวน $%s",ReturnVehicleName(vehicleid), level, MoneyFormat(5000 * level));
 	CharacterSave(playerid);
 	SaveVehicle(vehicleid);
@@ -1949,15 +1932,7 @@ timer OnPlayerUnscramble[1000](playerid)
 {	
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 	{
-		PlayerInfo[playerid][pUnscrambling] = false;
-		PlayerInfo[playerid][pUnscramblerTime] = 0;
-		PlayerInfo[playerid][pUnscrambleID] = 0;
-		
-		PlayerInfo[playerid][pScrambleSuccess] = 0; 
-		PlayerInfo[playerid][pScrambleFailed] = 0; 
-		stop PlayerInfo[playerid][pUnscrambleTimer];
-		
-		CreateUnscrambleTextdraw(playerid, false);
+		ClearUnscramble(playerid);
 		return 1;
 	}
 	
@@ -1970,24 +1945,14 @@ timer OnPlayerUnscramble[1000](playerid)
 	
 	if(PlayerInfo[playerid][pUnscramblerTime] < 1)
 	{
-		PlayerInfo[playerid][pUnscrambling] = false;
-		PlayerInfo[playerid][pUnscramblerTime] = 0;
-		PlayerInfo[playerid][pUnscrambleID] = 0;
+		ClearUnscramble(playerid);
 		
-		PlayerInfo[playerid][pScrambleSuccess] = 0; 
-		PlayerInfo[playerid][pScrambleFailed] = 0; 
-		stop PlayerInfo[playerid][pUnscrambleTimer]; 
-		
-		CreateUnscrambleTextdraw(playerid, false);
-		
-		new 
-			vehicleid = GetPlayerVehicleID(playerid)
-		;
+		new vehicleid = GetPlayerVehicleID(playerid);
 			
 		ToggleVehicleAlarms(vehicleid, true);
 		NotifyVehicleOwner(vehicleid);
 		
-		ClearAnimations(playerid);
+		//ClearAnimations(playerid);
 	}
 	return 1;
 }
@@ -2759,8 +2724,14 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	if(!ispassenger && VehicleInfo[vehicleid][eVehicleFaction] && PlayerInfo[playerid][pFaction] != VehicleInfo[vehicleid][eVehicleFaction])
 	{
 		SendErrorMessage(playerid, "คุณไม่สามารถขึ้นรถของแฟคชั่น");		
-		return ClearAnimations(playerid);
+		ClearAnimations(playerid);
 	}
+	return 1;
+}
+
+hook OnPlayerExitVehicle(playerid, vehicleid)
+{
+	ClearUnscramble(playerid);
 	return 1;
 }
 
@@ -3092,6 +3063,20 @@ public OnEmptyVehicleDamage(vehicleid,playerid,exems)
 			return 1;
 		}
 	}
+	return 1;
+}
+
+
+stock ClearUnscramble(playerid)
+{
+
+	CreateUnscrambleTextdraw(playerid, false);
+	stop PlayerInfo[playerid][pUnscrambleTimer];
+	PlayerInfo[playerid][pScrambleSuccess] = 0; 
+	PlayerInfo[playerid][pUnscrambling] = false;
+	PlayerInfo[playerid][pUnscrambleID] = 0;
+	PlayerInfo[playerid][pUnscramblerTime] = 0;
+	PlayerInfo[playerid][pScrambleFailed] = 0;
 	return 1;
 }
 

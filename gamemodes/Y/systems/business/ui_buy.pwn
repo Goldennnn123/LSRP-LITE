@@ -56,6 +56,11 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
         GivePlayerValidWeapon(playerid, 5, 1);
         
     }
+
+    if(itemid == 7)
+    {
+        PlayerInfo[playerid][pGasCan]+=1;
+    }
     
     new string[128];
     format(string, 128, "คุณได้ซื้อ %dx %s", amount, itemname);

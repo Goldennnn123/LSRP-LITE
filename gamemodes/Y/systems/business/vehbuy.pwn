@@ -956,6 +956,8 @@ new g_aDealershipData[][VehiclePriceID] =
     {"Freeway",463, 1, 50000}, //3
     {"Wayfarer",586, 1, 50000}, //4
 
+    {"BMX",481, 10,2300},//104
+
     ///// 2 Door:
     {"Alpha",602, 2, 330000}, //5
     {"Blista",496, 2, 140000}, //6
@@ -1067,7 +1069,7 @@ new g_aDealershipData[][VehiclePriceID] =
     ///// Street racers:
     {"Banshee",429, 10,850000},//90
     {"Bullet",541, 10,1200000},//91
-    {"Cheetah",415, 10,8500000},//92
+    {"Cheetah",415, 10,850000},//92
     {"Comet",480, 10,625000},//93
     {"Elegy",562, 10,220000},//94
     {"Flash",565, 10,180000},//95
@@ -1213,12 +1215,24 @@ hook OP_ClickPlayerTextDraw(playerid, PlayerText:playertextid)
                     return 1;
                 }
 
+
+
                 if(g_aDealershipData[PlayerbuyVeh[playerid][V_STEP]][V_Model] == 541)
                 {
                     if(PlayerInfo[playerid][pDonater] < 3)
                     {
                         CancelSelectTextDraw(playerid);
                         SendErrorMessage(playerid, "คุณไม่ใช่ Donater ระดับ Platinum");
+                        
+                    }
+                    return 1;
+                }
+                else if(g_aDealershipData[PlayerbuyVeh[playerid][V_STEP]][V_Model] == 481)
+                {
+                    if(PlayerInfo[playerid][pDonater] < 2)
+                    {
+                        CancelSelectTextDraw(playerid);
+                        SendErrorMessage(playerid, "คุณไม่ใช่ Donater ระดับ Gold");
                         
                     }
                     return 1;

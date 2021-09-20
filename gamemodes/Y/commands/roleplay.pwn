@@ -55,6 +55,7 @@ CMD:dolow(playerid, params[])
 	return 1;
 }
 
+alias:low("l")
 CMD:low(playerid, params[])
 {
 	if (isnull(params))

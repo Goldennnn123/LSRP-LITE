@@ -466,7 +466,7 @@ stock ShowCharacterStats(playerid, playerb)
 	SendClientMessageEx(playerb, COLOR_GRAD2, "อาวุธ: อาวุธ หลัก:[%s] กระสุน:[%d] อาวุธสำรอง:[%s] กระสุน:[%d]", ShowPlayerWeapons(playerid, 4), PlayerInfo[playerid][pGunAmmo][3], ShowPlayerWeapons(playerid, 3), PlayerInfo[playerid][pGunAmmo][2]);
 	SendClientMessageEx(playerb, COLOR_GRAD1, "ช่องเก็บของ: เบอร์โทรศัพท์:[%d] วิทยุ:[%s] แชแนล:[%d] แมส:[%s] Melee:[%s]", PlayerInfo[playerid][pPhone], (PlayerInfo[playerid][pHasRadio] != true) ? ("ไม่มี") : ("มี"), PlayerInfo[playerid][pRadio][PlayerInfo[playerid][pMainSlot]], (PlayerInfo[playerid][pHasMask] != true) ? ("ไม่มี") : ("มี"), ShowPlayerWeapons(playerid, 1));
 	SendClientMessageEx(playerb, COLOR_GRAD2, "การเงิน: เงินในตัว:[$%s] เงินในธนาคาร:[$%s] เงินรายชัวโมง:[$%s] Bitsamp:[%.5f]", MoneyFormat(PlayerInfo[playerid][pCash]), MoneyFormat(PlayerInfo[playerid][pBank]), MoneyFormat(PlayerInfo[playerid][pPaycheck]), PlayerInfo[playerid][pBTC]);
-	SendClientMessageEx(playerb, COLOR_GRAD1, "อื่นๆ: กุญแจรถ:[%s] กุญแจสำรอง:[%s] กุญแจกิจการ:[%s]  กุญแจบ้านสำรอง:[%d]", vehicle_key, duplicate_key, business_key, PlayerInfo[playerid][pHouseKey]);	
+	SendClientMessageEx(playerb, COLOR_GRAD1, "อื่นๆ: กุญแจรถ:[%s] กุญแจสำรอง:[%s] กุญแจกิจการ:[%s]  กุญแจบ้านสำรอง:[%d] กุจแจกิจการสำรอง [%d]", vehicle_key, duplicate_key, business_key, PlayerInfo[playerid][pHouseKey], PlayerInfo[playerid][pBusinessKey]);	
 
 	if(PlayerInfo[playerid][pJob] == 4)
 	{
@@ -692,7 +692,7 @@ public CallPaycheck()
 
 		new randset[2];
 
-		randset[0] = random(sizeof(Ticketnumber)); 
+		randset[0] = random(sizeof(Ticketnumber));
 		randset[1] = random(sizeof(Ticketnumber)); 
 
 		format(GlobalInfo[G_Ticket], 32,  "%s%s", Ticketnumber[randset[0]],Ticketnumber[randset[1]]);
@@ -751,6 +751,9 @@ public CallPaycheck()
 			}
 		}
 		
+
+		PlayerInfo[i][pPaycheck] += 5000;
+		SendClientMessage(i, COLOR_LIGHTRED, "มีการชดเชย Paycheck ให้จากการเกิดปัญหาของเซืร์ฟเวอร์ $5,000");
 		DelevehicleVar();
 		CharacterSave(i); 
 		Saveglobal();		

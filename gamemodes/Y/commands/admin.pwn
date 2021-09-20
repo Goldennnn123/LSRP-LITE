@@ -833,7 +833,8 @@ CMD:reports(playerid, params[])
 	return 1;
 }
 
-CMD:ar(playerid, params[])
+alias:acceptreport("ar")
+CMD:acceptreport(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
 		return 0;
@@ -856,6 +857,7 @@ CMD:ar(playerid, params[])
 	return 1; 
 }
 
+alias:disregardreport("dr")
 CMD:dr(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pAdmin])
@@ -1766,13 +1768,73 @@ CMD:playertoplayer(playerid, params[])
 	
 	GetPlayerPos(player_2, x, y, z);
 
-	SetPlayerPos(playerid, x, y, z);
-	SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(player_2));
-	SetPlayerInterior(playerid, GetPlayerInterior(player_2));
+	SetPlayerPos(player_1, x, y, z);
+	SetPlayerVirtualWorld(player_1, GetPlayerVirtualWorld(player_2));
+	SetPlayerInterior(player_1, GetPlayerInterior(player_2));
 	PlayerInfo[player_1][pInsideProperty] = PlayerInfo[player_2][pInsideProperty];
 	PlayerInfo[player_1][pInsideBusiness] = PlayerInfo[player_2][pInsideBusiness];
 	SendClientMessageEx(player_1, COLOR_GREY, "ผู้ดูแลระบบ ได้ส่งคุณไปหา %s",ReturnName(player_2));
 	SendClientMessageEx(player_2, COLOR_GREY, "ผู้ดูแลระบบ ได้นำ %s มาหาคุณ",ReturnName(player_1));
+	return 1;
+}
+
+CMD:cimdel(playerid, params[])
+{
+	if(IsNearPlayerCim(playerid))
+	{
+		if(PlayerInfo[playerid][pDBID] != CimInfo[IsNearPlayerCim(playerid)][c_cimby])
+			return 1;
+		
+		RemoveCim(playerid, IsNearPlayerCim(playerid));
+	}
+	else if(PlayerInfo[playerid][pAdmin])
+	{
+		new id;
+		if(sscanf(params, "d", id))
+			return SendUsageMessage(playerid, "/(cimdel)ete");
+
+		if(!CimInfo[id][c_cimid])
+			return SendErrorMessage(playerid, "ไม่มี ไอดีที่คุณต้องการ");
+
+		RemoveCim(playerid, id);
+	}
+	else SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ CIM ของคุณ");
+
+	return 1;
+}
+
+CMD:cimlist(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+
+	for(new i = 1; i < MAX_CIM; i++)
+	{
+		if(!CimInfo[i][c_cimid])
+			continue;
+
+		SendClientMessageEx(playerid, COLOR_HELPME, "ID: %d BY: %s DETEL: %.10s.. TIME: %s",CimInfo[i][c_cimid], ReturnDBIDName(CimInfo[i][c_cimby]), CimInfo[i][c_cimtext], CimInfo[i][c_cimtime]);
+	}
+	return 1;
+}
+
+stock RemoveCim(playerid, id)
+{
+	if(!CimInfo[id][c_cimid])
+		return 1;
+
+	CimInfo[id][c_cimid] = 0;
+	CimInfo[id][c_cimby] = 0;
+	format(CimInfo[id][c_cimtext], 60, " ");
+	format(CimInfo[id][c_cimtime], 120, " ");
+
+	CimInfo[id][c_cimpos][0] = 0;
+	CimInfo[id][c_cimpos][1] = 0;
+	CimInfo[id][c_cimpos][2] = 0;
+	CimInfo[id][c_cimworld] = 0;
+	
+	DestroyDynamicPickup(CimInfo[id][c_cimItem]);
+	SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ลบ cim id ที่ %d", id);
 	return 1;
 }
 /// Admin Level: 1;

@@ -450,6 +450,9 @@ CMD:phone(playerid, params[])
         return 1;
     }
 
+    if(PlayerInfo[playerid][pGUI] == 911)
+        return SendErrorMessage(playerid, "คุณยังเปิด MDC อยู่");
+
     if(PlayerInfo[playerid][pGUI] == 0)
     {
         new hour, seconds, minute;

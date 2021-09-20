@@ -42,6 +42,9 @@ CMD:onduty(playerid, params[])
 	{
 		new factiontype = FactionInfo[PlayerInfo[i][pFaction]][eFactionJob];
 		
+		if(!PlayerInfo[i][pDuty])
+			continue;
+
 		if(factiontype == POLICE || factiontype == SHERIFF)
 			police++;
 		
@@ -901,6 +904,35 @@ CMD:lock(playerid,params[])
 	return 1;
 }
 
+CMD:cim(playerid, params[])
+{
+	new str[120];
+
+	if(sscanf(params, "s[60]", str))
+		return SendUsageMessage(playerid, "/cim <การกระทำ>");
+
+
+	if(strlen(str) < 5 || strlen(str) > 60)
+		return SendErrorMessage(playerid, "กรุณาใส่ชื่อให้มากกว่านี้");
+	
+
+	new idx = 0;
+	for(new i = 1; i < MAX_CIM; i++)
+	{
+		if(!CimInfo[i][c_cimid])
+		{
+			idx = i;
+			break;
+		}
+	}
+	if(!idx)
+		return SendErrorMessage(playerid, "การสร้าง cim เต็มแล้ว");
+
+	
+	CreateCim(playerid, idx, str);
+	return 1;
+}
+
 
 CMD:check(playerid,params[])
 {
@@ -1076,7 +1108,7 @@ CMD:place(playerid, params[])
 		format(str, sizeof(str), "* %s ได้วาง %s ลงไปในรถ %s.", ReturnName(playerid, 0), ReturnWeaponName(weaponid), ReturnVehicleName(vehicleid));
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4000);
 
-		format(str, sizeof(str), "%s place weapon incar %s(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(weaponid),weaponid,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx]);
+		format(str, sizeof(str), "[%s] %s place weapon incar %s(%d) %s(%d) Ammo: %d", ReturnDate(), ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(weaponid),weaponid,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx]);
 		SendDiscordMessageEx("862581286656671754", str);
 		SaveVehicle(vehicleid); 
 	}
@@ -1113,7 +1145,7 @@ CMD:place(playerid, params[])
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4000); 
 		SendClientMessage(playerid, COLOR_EMOTE, str);
 
-		format(str, sizeof(str), "%s place weapon incar %s(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(weaponid),weaponid,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx]);
+		format(str, sizeof(str), "[%s] %s place weapon incar %s(%d) %s(%d) Ammo: %d", ReturnDate(), ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(weaponid),weaponid,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx]);
 		SendDiscordMessageEx("862581286656671754", str);
 		SaveVehicle(vehicleid); 
 	}
@@ -1151,7 +1183,7 @@ CMD:place(playerid, params[])
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4000); 
 		SendClientMessage(playerid, COLOR_EMOTE, str);
 
-		format(str, sizeof(str), "%s place in house(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), id,ReturnWeaponName(weaponid),weaponid,HouseInfo[id][HouseWeaponsAmmo][pid]);
+		format(str, sizeof(str), "[%s] %s place in house(%d) %s(%d) Ammo: %d", ReturnDate(), ReturnRealName(playerid,0), id,ReturnWeaponName(weaponid),weaponid,HouseInfo[id][HouseWeaponsAmmo][pid]);
 		SendDiscordMessageEx("862581286656671754", str);
 
 		CharacterSave(playerid); Savehouse(id);
@@ -1201,7 +1233,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 25, 100);
+					GivePlayerWeaponEx(playerid, 25, 100);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(25), 
 					ReturnVehicleName(vehicleid));
@@ -1213,7 +1245,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 29, 60);
+					GivePlayerWeaponEx(playerid, 29, 60);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(29), 
 					ReturnVehicleName(vehicleid));
@@ -1225,7 +1257,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 31, 60);
+					GivePlayerWeaponEx(playerid, 31, 60);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(31), 
 					ReturnVehicleName(vehicleid));
@@ -1237,7 +1269,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 34, 60);
+					GivePlayerWeaponEx(playerid, 34, 60);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(34), 
 					ReturnVehicleName(vehicleid));
@@ -1249,7 +1281,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 27, 60);
+					GivePlayerWeaponEx(playerid, 27, 60);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(27), 
 					ReturnVehicleName(vehicleid));
@@ -1273,7 +1305,7 @@ CMD:takegun(playerid, params[])
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
 		SendClientMessage(playerid, COLOR_EMOTE, str);
 
-		format(str, sizeof(str), "%s takegun leave vehicle %s(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]),VehicleInfo[vehicleid][eVehicleWeapons][slotid],VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]);
+		format(str, sizeof(str), "[%s] %s takegun leave vehicle %s(%d) %s(%d) Ammo: %d", ReturnDate(), ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]),VehicleInfo[vehicleid][eVehicleWeapons][slotid],VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]);
 		SendDiscordMessageEx("862581286656671754", str);
 				
 				
@@ -1332,7 +1364,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 25, 100);
+					GivePlayerWeaponEx(playerid, 25, 100);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(25), 
 					ReturnVehicleName(vehicleid));
@@ -1344,7 +1376,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 29, 60);
+					GivePlayerWeaponEx(playerid, 29, 60);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(29), 
 					ReturnVehicleName(vehicleid));
@@ -1356,7 +1388,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 31, 60);
+					GivePlayerWeaponEx(playerid, 31, 60);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(31), 
 					ReturnVehicleName(vehicleid));
@@ -1368,7 +1400,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 34, 60);
+					GivePlayerWeaponEx(playerid, 34, 60);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(34), 
 					ReturnVehicleName(vehicleid));
@@ -1380,7 +1412,7 @@ CMD:takegun(playerid, params[])
 				{
 					new str[255];
 
-					GivePlayerWeapon(playerid, 27, 60);
+					GivePlayerWeaponEx(playerid, 27, 60);
 							
 					format(str, sizeof(str), "* %s หยิบ %s ออกมาจากรถ %s", ReturnName(playerid, 0), ReturnWeaponName(27), 
 					ReturnVehicleName(vehicleid));
@@ -1405,7 +1437,7 @@ CMD:takegun(playerid, params[])
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
 		SendClientMessage(playerid, COLOR_EMOTE, str);
 
-		format(str, sizeof(str), "%s takegun leave trunk vehicle %s(%d) %s(%d) Ammo: %d", ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]),VehicleInfo[vehicleid][eVehicleWeapons][slotid],VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]);
+		format(str, sizeof(str), "[%s] %s takegun leave trunk vehicle %s(%d) %s(%d) Ammo: %d", ReturnDate(), ReturnRealName(playerid,0), ReturnVehicleName(vehicleid),VehicleInfo[vehicleid][eVehicleDBID],ReturnWeaponName(VehicleInfo[vehicleid][eVehicleWeapons][slotid]),VehicleInfo[vehicleid][eVehicleWeapons][slotid],VehicleInfo[vehicleid][eVehicleWeaponsAmmo][slotid]);
 		SendDiscordMessageEx("862581286656671754", str);
 				
 		VehicleInfo[vehicleid][eVehicleWeapons][slotid] = 0; 
@@ -1435,7 +1467,7 @@ CMD:takegun(playerid, params[])
 		SetPlayerChatBubble(playerid, str, COLOR_EMOTE, 20.0, 4500); 
 		SendClientMessage(playerid, COLOR_EMOTE, str); 
 
-		format(str, sizeof(str), "%s takegun leave house %d %s(%d) Ammo: %d", ReturnRealName(playerid,0), id,ReturnWeaponName(HouseInfo[id][HouseWeapons][slotid]),HouseInfo[id][HouseWeapons][slotid],HouseInfo[id][HouseWeaponsAmmo][slotid]);
+		format(str, sizeof(str), "[%s] %s takegun leave house %d %s(%d) Ammo: %d", ReturnDate(), ReturnRealName(playerid,0), id,ReturnWeaponName(HouseInfo[id][HouseWeapons][slotid]),HouseInfo[id][HouseWeapons][slotid],HouseInfo[id][HouseWeaponsAmmo][slotid]);
 		SendDiscordMessageEx("862581286656671754", str);
 				
 		HouseInfo[id][HouseWeapons][slotid] = 0; 
@@ -1733,7 +1765,7 @@ CMD:pay(playerid, params[])
 	if(amount > PlayerInfo[playerid][pCash])
 		return SendErrorMessage(playerid, "คุณไม่มีเงินพอที่จะให้");
 
-	if(!amount)
+	if(amount < 1)
 		return SendErrorMessage(playerid, "กรุณาใส่เงินให้ถูกต้อง");
 
 	PlayerPlaySound(playerid, 1052, 0.0, 0.0, 0.0); PlayerPlaySound(playerb, 1052, 0.0, 0.0, 0.0);
@@ -1752,6 +1784,9 @@ CMD:pay(playerid, params[])
 		SendAdminMessage(1, str);
 	}
 	
+	format(str, sizeof(str), "[%s] %s pay to %s amount: $%s",ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb), MoneyFormat(amount));
+	SendDiscordMessageEx("862580814528774144", str);
+
 	GiveMoney(playerid, -amount); GiveMoney(playerb, amount);
 	return 1;
 }
@@ -1956,7 +1991,7 @@ CMD:setspawn(playerid, params[])
 	if(sscanf(params, "i", id))
 	{
 		SendUsageMessage(playerid, "/setspawn [spawn id]");
-		SendClientMessage(playerid, COLOR_WHITE, "1. สนามบิน, 2. บ้าน, 3. เฟคชั่น, 4.จุดเกิดล่าสุด");
+		SendClientMessage(playerid, COLOR_WHITE, "1. สนามบิน, 2. บ้าน, 3. เฟคชั่น");
 		return 1;
 	}
 
@@ -2061,7 +2096,8 @@ CMD:leavegun(playerid, params[])
 	
 	RemovePlayerWeapon(playerid, weaponid);
 	PlayerInfo[playerid][pGun][id] = 0;
-	PlayerInfo[playerid][pGunAmmo][id] = 0; 
+	PlayerInfo[playerid][pGunAmmo][g_aWeaponSlots[weaponid]] = 0; 
+	PlayerInfo[playerid][pWeapons][g_aWeaponSlots[weaponid]] = 0;
 	
 	WeaponDropInfo[idx][eWeaponObject] = CreateDynamicObject(
 		ReturnWeaponsModel(weaponid),

@@ -334,39 +334,19 @@ CMD:giverank(playerid, params[])
     return 1;
 }
 
+alias:factionon("fon")
 CMD:factionon(playerid, params[])
 {
-	new factionid;
-	
-	if(sscanf(params, "I(-1)", factionid))
-		return SendUsageMessage(playerid, "/factionon [เฟคชั่นไอดี]");
-		
-	if(factionid == -1)
-	{
-		if(!PlayerInfo[playerid][pFaction])
-			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
-			
-		SendClientMessageEx(playerid, COLOR_GREY, "สมาชิก %s ออนไลน์:", ReturnFactionName(playerid)); 
-		
-		foreach(new i : Player)
-		{
-			if(PlayerInfo[i][pFaction] != PlayerInfo[playerid][pFaction])
-				continue;
-				
-			if(PlayerInfo[i][pAdminDuty])
-				SendClientMessageEx(playerid, COLOR_GREY, "(ID: %i) {FF9900}%s %s", i, ReturnFactionRank(i), ReturnName(i));
-				
-			else
-				SendClientMessageEx(playerid, COLOR_GREY, "(ID: %i) %s %s", i, ReturnFactionRank(i), ReturnName(i));
-		}
-		
-		return 1;
-	}
+	if(!PlayerInfo[playerid][pFaction])
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
 
-	if(!FactionInfo[factionid][eFactionDBID])
-		return SendErrorMessage(playerid, "ไม่มีเฟคชั่นที่คุณระบุ");
-		
-	SendClientMessageEx(playerid, COLOR_RED, "[ ! ]{FFFFFF} %s มี %i ออกจาก %i สมาชิก ออนไลน์",  ReturnFactionNameEx(factionid), ReturnOnlineMembers(factionid), ReturnTotalMembers(factionid));
+	foreach(new i : Player)
+	{
+		if(PlayerInfo[i][pFaction] != PlayerInfo[playerid][pFaction])
+			continue;
+			
+		SendClientMessageEx(playerid, COLOR_GREY, "(ID: %i) %s %s", i, ReturnFactionRank(i), ReturnName(i));
+	}
 	return 1;
 }
 
@@ -404,14 +384,17 @@ CMD:duty(playerid, params[])
 			format(str, sizeof(str), "ได้หยิบตราประจำตัวออกมาจากตู้ล็อกเกอร์");
 			callcmd::me(playerid, str);
 
+			format(str, sizeof(str), "```HQ: %s %s has gone on duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendDiscordMessageEx("889024270112538705", str);
+
 			SetPlayerHealth(playerid, 100);
 			SetPlayerArmour(playerid, 100);
 
 			TakePlayerGuns(playerid);
 
-			GivePlayerWeapon(playerid, 24, 100);
-			GivePlayerWeapon(playerid, 3, 1);
-			GivePlayerWeapon(playerid, 41, 350);
+			GivePlayerWeaponEx(playerid, 24, 100);
+			GivePlayerWeaponEx(playerid, 3, 1);
+			GivePlayerWeaponEx(playerid, 41, 350);
 
 			if(!PlayerInfo[playerid][pAdminDuty] && !PlayerInfo[playerid][pTesterDuty])
 				SetPlayerColor(playerid, COLOR_COP);
@@ -436,6 +419,9 @@ CMD:duty(playerid, params[])
 			new str[128];
 			format(str, sizeof(str), "วางตราประจำตัวไว้ที่ล็อคเกอร์");
 			callcmd::me(playerid, str);
+
+			format(str, sizeof(str), "```HQ: %s %s has gone off duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendDiscordMessageEx("889024270112538705", str);
 
 			SetPlayerArmour(playerid, 0);
 			SetPlayerHealth(playerid, 100);
@@ -475,9 +461,9 @@ CMD:duty(playerid, params[])
  
             TakePlayerGuns(playerid);
  
-            GivePlayerWeapon(playerid, 24, 100);
-            GivePlayerWeapon(playerid, 3, 1);
-            GivePlayerWeapon(playerid, 41, 350);
+            GivePlayerWeaponEx(playerid, 24, 100);
+            GivePlayerWeaponEx(playerid, 3, 1);
+            GivePlayerWeaponEx(playerid, 41, 350);
  
             if(!PlayerInfo[playerid][pAdminDuty] && !PlayerInfo[playerid][pTesterDuty])
                 SetPlayerColor(playerid, COLOR_COP);
@@ -544,7 +530,7 @@ CMD:duty(playerid, params[])
 
 			TakePlayerGuns(playerid);
 
-			GivePlayerWeapon(playerid, 42, 500);
+			GivePlayerWeaponEx(playerid, 42, 500);
 
 			if(!PlayerInfo[playerid][pAdminDuty] && !PlayerInfo[playerid][pTesterDuty])
 				SetPlayerColor(playerid, COLOR_PINK);
@@ -611,10 +597,10 @@ CMD:duty(playerid, params[])
 
 			TakePlayerGuns(playerid);
 
-			GivePlayerWeapon(playerid, 25, 150);
-			GivePlayerWeapon(playerid, 24, 150);
-			GivePlayerWeapon(playerid, 3, 1);
-			GivePlayerWeapon(playerid, 41, 350);
+			GivePlayerWeaponEx(playerid, 25, 150);
+			GivePlayerWeaponEx(playerid, 24, 150);
+			GivePlayerWeaponEx(playerid, 3, 1);
+			GivePlayerWeaponEx(playerid, 41, 350);
 
 			if(!PlayerInfo[playerid][pAdminDuty] && !PlayerInfo[playerid][pTesterDuty])
 				SetPlayerColor(playerid, COLOR_PINK);
@@ -695,7 +681,7 @@ CMD:showbadge(playerid, params[])
 	return 1;
 }
 
-alias:megaphone("m")
+alias:megaphone("m", "meg")
 CMD:megaphone(playerid, params[])
 {
     if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
@@ -1316,6 +1302,9 @@ hook OnPlayerDisconnect(playerid, reason)
 		if(IsValidDynamicObject(PlayerInfo[playerid][pObject][i]))
         	DestroyDynamicObject(PlayerInfo[playerid][pObject][i]);
 	}
+
+	PlayerInfo[playerid][pLastSkin] = GetPlayerSkin(playerid);
+	CharacterSave(playerid);
     return 1;
 }
 

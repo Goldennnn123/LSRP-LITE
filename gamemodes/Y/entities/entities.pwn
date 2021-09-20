@@ -5,6 +5,7 @@
 #define MAX_PHONEBOOK				(700)
 #define MAX_ENTRANCE				(700)
 #define MAX_FACTION_VEHICLE			(200)
+#define MAX_DRINKMENU				(200)
 
 enum E_PLAYER_DATA
 {
@@ -188,7 +189,9 @@ enum E_PLAYER_DATA
 	bool:pTogPm,
 	pAnimation,
 
-	pHouseKey
+	pHouseKey,
+	pBusinessKey,
+	pGasCan,
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];
@@ -440,9 +443,22 @@ enum E_BUSINESS_INFO
 	BusinessS_Flower,
 
 	bool:BusinessMusic,
-	BusinessMusicLink[150]
+	BusinessMusicLink[150],
+
+	BizDrink[11]
 }
 new BusinessInfo[MAX_BUSINESS][E_BUSINESS_INFO];
+
+enum D_DRINKMENU_DATA
+{
+	drink_id,
+	drink_bizid,
+	drink_name[60],
+	drink_price,
+	drink_model,
+	drink_drunk,
+}
+new DrinkMenuInfo[MAX_DRINKMENU][D_DRINKMENU_DATA];
 
 enum E_DAMAGE_INFO
 {

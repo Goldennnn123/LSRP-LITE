@@ -170,47 +170,98 @@ alias:refill("fill", "เติมน้ำมัน")
 CMD:refill(playerid, params[])
 {
     if(!IsPlayerInAnyVehicle(playerid))
-        return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
-
-    if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
-        return SendErrorMessage(playerid, "คุณต้องเป็นคนขับ");
-
-    if(GetPVarInt(playerid, "RefillFuelStats"))
-        return SendErrorMessage(playerid, "คุณกำลังเติมน้ำมันอยู่");
-
-    new id, Float:FuelCount;
-
-    for(new i = 1; i < MAX_FUELS; i++)
     {
-        if(!FuelInfo[i][F_ID])
-            continue;
+        if(!PlayerInfo[playerid][pGasCan])
+            return SendErrorMessage(playerid, "คุณไม่มี Gascan");
+
+        if(!GetNearestVehicle(playerid))
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ยานพาหนะ");
+
         
-        if(IsPlayerInRangeOfPoint(playerid, 3.5, FuelInfo[i][F_Pos][0], FuelInfo[i][F_Pos][1], FuelInfo[i][F_Pos][2]))
+        new vehicleid = GetNearestVehicle(playerid);
+
+        if(VehicleInfo[vehicleid][eVehicleLocked] == true)
+            return SendErrorMessage(playerid, "ยานพาหานะ ล็อคอยู่");
+
+        if(VehicleInfo[vehicleid][eVehicleFuel] > 30)
+            return SendErrorMessage(playerid, "น้ำมันจำเป็นต้องตต่ำกว่า 30");
+
+        SendClientMessage(playerid, COLOR_YELLOWEX, "คุณกำลังเติมน้ำมันผ่าน Gascan");
+        VehicleInfo[vehicleid][eVehicleFuelTimer] = SetTimerEx("RefillFuelGascan", 1500, true, "dd",playerid, vehicleid);
+        SetPVarInt(playerid, "RefillFuelStats", 1);
+        return 1;
+    }
+    else if(IsPlayerInElecVehicle(playerid))
+    {
+        if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
+            return SendErrorMessage(playerid, "คุณต้องเป็นคนขับ");
+
+        if(GetPVarInt(playerid, "RefillFuelStats"))
+            return SendErrorMessage(playerid, "คุณกำลังเติมน้ำมันอยู่");
+
+        new id, Float:FuelCount;
+
+        for(new i = 1; i < MAX_FUELS; i++)
         {
-            id = i;
-            break;
+            if(!FuelInfo[i][F_ID])
+                continue;
+            
+            if(IsPlayerInRangeOfPoint(playerid, 3.5, FuelInfo[i][F_Pos][0], FuelInfo[i][F_Pos][1], FuelInfo[i][F_Pos][2]))
+            {
+                id = i;
+                break;
+            }
         }
+
+        if(id == 0)
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ที่เติมน้ำมัน");
+        
+        
+        new vehicleid = GetPlayerVehicleID(playerid);
+
+        if(VehicleInfo[vehicleid][eVehicleEngineStatus] == true)
+            return SendErrorMessage(playerid, "คุณต้องดับเครื่องยนต์ก่อน");
+
+        if(VehicleInfo[vehicleid][eVehicleFuel] >= 100)
+            return SendErrorMessage(playerid, "คุณมีน้ำมันที่เต็มอยู่แล้ว");
+
+        if(FuelInfo[id][F_Fuel] <= 0.0)
+            return SendErrorMessage(playerid, "น้ำมันในหัวจ่ายนี้หมด");
+
+        FuelCount = 100 - VehicleInfo[vehicleid][eVehicleFuel];
+
+        VehicleInfo[vehicleid][eVehicleFuelTimer] = SetTimerEx("RefillFuel", 1500, true, "dddf", id, playerid, vehicleid, FuelCount);
+        SetPVarInt(playerid, "RefillFuelStats", 1);
+    }
+    else SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะหรือใกล้ยานพาหนะ");
+    return 1;
+}
+
+forward RefillFuelGascan(playerid, vehicleid);
+public RefillFuelGascan(playerid, vehicleid)
+{
+    if(VehicleInfo[vehicleid][eVehicleFuel] >= 70.0)
+    {
+        KillTimer(VehicleInfo[vehicleid][eVehicleFuelTimer]);
+        VehicleInfo[vehicleid][eVehicleFuelTimer] = -1;
+        VehicleInfo[vehicleid][eVehicleFuel] = 70;
+
+        DeletePVar(playerid, "RefillFuelStats");
+        SendClientMessage(playerid, COLOR_HELPME, "คุณได้เติมน้ำมันสำเร็จแล้ว");
+        return 1;
     }
 
-    if(id == 0)
-        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ที่เติมน้ำมัน");
-    
-    
-    new vehicleid = GetPlayerVehicleID(playerid);
 
-    if(VehicleInfo[vehicleid][eVehicleEngineStatus] == true)
-        return SendErrorMessage(playerid, "คุณต้องดับเครื่องยนต์ก่อน");
+    else if(VehicleInfo[vehicleid][eVehicleEngineStatus] == true)
+    {
+        KillTimer(VehicleInfo[vehicleid][eVehicleFuelTimer]);
+        VehicleInfo[vehicleid][eVehicleFuelTimer] = -1;
 
-    if(VehicleInfo[vehicleid][eVehicleFuel] >= 100)
-        return SendErrorMessage(playerid, "คุณมีน้ำมันที่เต็มอยู่แล้ว");
+        DeletePVar(playerid, "RefillFuelStats");
+        return 1;
+    }
 
-    if(FuelInfo[id][F_Fuel] <= 0.0)
-        return SendErrorMessage(playerid, "น้ำมันในหัวจ่ายนี้หมด");
-
-    FuelCount = 100 - VehicleInfo[vehicleid][eVehicleFuel];
-
-    VehicleInfo[vehicleid][eVehicleFuelTimer] = SetTimerEx("RefillFuel", 1500, true, "dddf", id, playerid, vehicleid, FuelCount);
-    SetPVarInt(playerid, "RefillFuelStats", 1);
+    VehicleInfo[vehicleid][eVehicleFuel] += 5;
     return 1;
 }
 

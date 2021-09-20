@@ -505,8 +505,8 @@ CMD:editcom(playerid, params[])
     if(!PlayerInfo[playerid][pInsideProperty])
         return SendClientMessage(playerid,-1,"คุณไม่ได้อยู่ในบ้าน");
 
-    if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
-        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");
+    /*if(ComputerInfo[id][ComputerOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คอมเครื่องนี้ไม่ใช่ของคุณ");*/
 
     if(PlayerEditObject[playerid])
         return SendErrorMessage(playerid, "คุณกำลังแก้ไข Object อยู่");
@@ -720,6 +720,7 @@ stock EditObjectComputer(playerid, id)
     PlayerEditObject[playerid] = true;
     return 1;
 }
+
 public OnPlayerEditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 

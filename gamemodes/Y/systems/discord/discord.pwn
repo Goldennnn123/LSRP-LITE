@@ -16,8 +16,8 @@ new
 
 
 /*
-* ¿Ñ§ªÑè¹ã¹¡ÒÃÊè§¢éÍ¤ÇÒÁà¢éÒ ´ÔÊ¤ÍÃì´ à¾×èÍà»ç¹¡ÒÃá¨é§àµ×Í¹¢éÍ¤ÇÒÁÀÒÂã¹à«ÔÃì¿àÇÍÃì
-* â»Ã´ãªàÍÂèÒ§ÃĞÁÑ´ÃĞÇÑ§äÁèä»Êè§ã¹ËéÍ§¢Í§ Player;
+* ï¿½Ñ§ï¿½ï¿½ï¿½ã¹¡ï¿½ï¿½ï¿½è§¢ï¿½Í¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ê¤ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ç¹¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¹ï¿½ï¿½Í¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½Ò§ï¿½ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í§ï¿½Í§ Player;
 */
 stock SendDiscordMessage(channel, const message[])
 {
@@ -75,6 +75,18 @@ stock SendDiscordMessageEx(const channel[], const fmat[])
 	return 1;
 }
 
+stock SendDiscordMessageExs(channel[], fmat[],  va_args<>)
+{
+	new
+		str[145];
+	va_format(str, sizeof (str), fmat, va_start<2>);
+
+	channelFind = DCC_FindChannelById(channel);
+
+	utf8encode(str, str, sizeof(str));
+	return DCC_SendChannelMessage(channelFind, str);
+}
+
 #if defined USING_DISCORD
 forward DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[]);
 public DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[])
@@ -94,7 +106,7 @@ public DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[]
 			}
 			else PC++;
 		}
-		format(str, sizeof(str), "Android: %d ¤¹ PC: %d ¤¹",Android, PC);
+		format(str, sizeof(str), "Android: %d ï¿½ï¿½ PC: %d ï¿½ï¿½",Android, PC);
 		SendDiscordMessage(6, str);
 		return 1;
 	}

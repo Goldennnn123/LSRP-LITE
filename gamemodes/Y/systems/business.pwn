@@ -8,6 +8,7 @@
 #define BUSINESS_TYPE_BANK          (5)
 #define BUSINESS_TYPE_CLUB          (6)
 #define BUSINESS_TYPE_SKIN          (7)
+#define BUSINESS_TYPE_ROLE          (8)
 
 
 new PlayerSelectBusiness[MAX_PLAYERS];
@@ -218,6 +219,11 @@ stock ShowSelectBusiness(playerid)
             format(infoString, sizeof(infoString), "ประเภท: ร้านขายเสื้อผ้า\n");
             strcat(showString, infoString);
         }
+        else if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_ROLE)
+        {
+            format(infoString, sizeof(infoString), "ประเภท: บทบาท\n");
+            strcat(showString, infoString);
+        }
     }
 
     format(infoString, sizeof(infoString), "ราคากิจการ: %s\n", MoneyFormat(BusinessInfo[id][BusinessPrice]));
@@ -278,6 +284,7 @@ stock ShowSelectBusinessType(playerid)
     strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}ธนาคาร\n"); 
     strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}คลับ\n"); 
     strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}ร้านขายเสื้อผ้า\n"); 
+    strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}บทบาท\n"); 
 
     Dialog_Show(playerid, DIALOG_BU_TYPE, DIALOG_STYLE_LIST, "เปลี่ยนประเภทกิจการ", select_type, "ยืนยัน", "ยกเลิก");
     return 1;

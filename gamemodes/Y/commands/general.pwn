@@ -720,7 +720,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = PlayerInfo[playerid][pInsideBusiness];
 
-		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID] || PlayerInfo[playerid][pAdminDuty])
+		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdminDuty])
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของกิจการนี้");
 
 		if(BusinessInfo[id][BusinessLock] == true)
@@ -777,7 +777,7 @@ CMD:lock(playerid,params[])
 
 		if(foundCar == true)
 		{
-			if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid /*|| || !VehicleInfo[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty] || IsElecVehicle(vehicleid) || !IsPlayerRentVehicle(playerid, vehicleid)*/)
+			if(CheckPlayeyKey(playerid, vehicleid))
 			{
 				if(IsElecVehicle(vehicleid))
 					return SendErrorMessage(playerid, "ไม่สามารถพังยานพาหนะคันนี้ได้ได้");
@@ -857,8 +857,11 @@ CMD:lock(playerid,params[])
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 		
-		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !VehicleInfo[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty] && !IsPlayerInElecVehicle(playerid) && !IsPlayerRentVehicle(playerid, vehicleid))
+		if(CheckPlayeyKey(playerid, vehicleid))
 			return SendErrorMessage(playerid, "คุณไม่มีกุญแจสำหรับรถคันนี้");
+
+		if(IsElecVehicle(vehicleid))
+			return SendErrorMessage(playerid, "ไม่สามารถพังยานพาหนะคันนี้ได้ได้");
 
 		new statusString[90]; 
 		new engine, lights, alarm, doors, bonnet, boot, objective; 
@@ -901,6 +904,32 @@ CMD:lock(playerid,params[])
 		return 1;
 	}
 	else SendErrorMessage(playerid,"คุณไม่ได้อยู่ใกล้ประตู บ้าน/กิจการ/รถ");
+	return 1;
+}
+
+
+CMD:mypos(playerid, params[])
+{
+	new Float:x, Float:y, Float:z, Float:a;
+
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+		GetVehiclePos(vehicleid,  x, y, z);
+		GetVehicleZAngle(vehicleid, a);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle_Pos: %.3f %.3f %.3f %.3f", x, y, z, a);
+		SendClientMessageEx(playerid, COLOR_WHITE, "World: %d", GetVehicleVirtualWorld(vehicleid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Interior: %d", GetPlayerInterior(playerid));
+		return 1;
+	}
+	else
+	{
+		GetPlayerPos(playerid, x, y, z);
+		GetPlayerFacingAngle(playerid, a);
+		SendClientMessageEx(playerid, COLOR_WHITE, "POS: %.3f %.3f %.3f %.3f", x, y, z, a);
+		SendClientMessageEx(playerid, COLOR_WHITE, "World: %d", GetPlayerVirtualWorld(playerid));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Interior: %d", GetPlayerInterior(playerid));
+	}
 	return 1;
 }
 
@@ -1038,6 +1067,13 @@ CMD:place(playerid, params[])
 	if(sscanf(params, "i", weaponid))
 		return SendUsageMessage(playerid, "/place [ไอดีอาวุธ]");
 
+	if(weaponid < 1 || weaponid > 46 || weaponid == 35 || weaponid == 36 || weaponid == 37 || weaponid == 38 || weaponid == 39)
+	    return SendErrorMessage(playerid, "อาวุธเหล่านี้ถูกจัดเป็นอาวุธต้องห้ามภายในเซืฟเวอร์");
+
+
+	if(GetPlayerWeapon(playerid) != weaponid)
+		return SendErrorMessage(playerid, "คุณไม่ได้ถืออาวุธนี้");
+
 	if(!IsPlayerInAnyVehicle(playerid) && GetNearestVehicle(playerid) != INVALID_VEHICLE_ID)
 	{
 		GetVehicleBoot(GetNearestVehicle(playerid), x, y, z); 
@@ -1073,8 +1109,8 @@ CMD:place(playerid, params[])
 			return 1;
 		}
 
-		if(!PlayerHasWeapon(playerid, weaponid))
-			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
+		/*if(!PlayerHasWeapon(playerid, weaponid))
+			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");*/
 
 		if(VehicleInfo[vehicleid][eVehicleFaction])
 			return SendClientMessage(playerid, COLOR_YELLOW, "รถคันนี้เป็นรถของเฟคชั่นไม่สามารถใช้คำสั่งนี้ได้");
@@ -1102,6 +1138,9 @@ CMD:place(playerid, params[])
 
 		PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
 		PlayerInfo[playerid][pGun][ReturnWeaponIDSlot(weaponid)] = 0;
+
+		PlayerInfo[playerid][pWeapons][g_aWeaponSlots[weaponid]] = 0;
+		PlayerInfo[playerid][pWeaponsAmmo][g_aWeaponSlots[weaponid]] = 0;
 		
 		RemovePlayerWeapon(playerid, weaponid);
 		
@@ -1130,14 +1169,17 @@ CMD:place(playerid, params[])
 			}
 		}
 
-		if(!PlayerHasWeapon(playerid, weaponid))
-			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
+		/*if(!PlayerHasWeapon(playerid, weaponid))
+			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");*/
 		
 		VehicleInfo[vehicleid][eVehicleWeapons][idx] = weaponid; 
 		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx] = PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)];
 
 		PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
 		PlayerInfo[playerid][pGun][ReturnWeaponIDSlot(weaponid)] = 0;
+
+		PlayerInfo[playerid][pWeapons][g_aWeaponSlots[weaponid]] = 0;
+		PlayerInfo[playerid][pWeaponsAmmo][g_aWeaponSlots[weaponid]] = 0;
 		
 		RemovePlayerWeapon(playerid, weaponid);
 		
@@ -1168,14 +1210,17 @@ CMD:place(playerid, params[])
 			}
 		}
 
-		if(!PlayerHasWeapon(playerid, weaponid))
-			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");
+		/*if(!PlayerHasWeapon(playerid, weaponid))
+			return SendErrorMessage(playerid, "คุณไม่มีอาวุธดังกล่าว");*/
 
 		HouseInfo[id][HouseWeapons][pid] = weaponid;
 		HouseInfo[id][HouseWeaponsAmmo][pid] = PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)];
 
 		PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
 		PlayerInfo[playerid][pGun][ReturnWeaponIDSlot(weaponid)] = 0;
+
+		PlayerInfo[playerid][pWeapons][g_aWeaponSlots[weaponid]] = 0;
+		PlayerInfo[playerid][pWeaponsAmmo][g_aWeaponSlots[weaponid]] = 0;
 
 		RemovePlayerWeapon(playerid, weaponid);
 
@@ -2043,6 +2088,8 @@ CMD:setspawn(playerid, params[])
 alias:leavegun("lg")
 CMD:leavegun(playerid, params[])
 {
+	if(PlayerInfo[playerid][pDuty])
+		return SendErrorMessage(playerid, "คุณอยู่ในสถานะการทำงานเป็นหน่วยงานรัฐไม่สามารถใช้คำสั่งนี้ได้");
 
 	if(GetPlayerState(playerid) != PLAYER_STATE_ALIVE)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในสถานะปกติทำให้ไม่สามารถใช้คำสั่งนี้ได้");
@@ -2066,8 +2113,11 @@ CMD:leavegun(playerid, params[])
 	if(weaponid < 1 || weaponid > 46 || weaponid == 35 || weaponid == 36 || weaponid == 37 || weaponid == 38 || weaponid == 39)
 	    return SendErrorMessage(playerid, "อาวุธเหล่านี้ถูกจัดเป็นอาวุธต้องห้ามภายในเซืฟเวอร์");
 		
-	if(!PlayerHasWeapon(playerid, weaponid))
-		return SendErrorMessage(playerid, "คุณไม่ได้มีอาวุธชนิดดังกล่าว"); 
+	/*if(!PlayerHasWeapon(playerid, weaponid))
+		return SendErrorMessage(playerid, "คุณไม่ได้มีอาวุธชนิดดังกล่าว"); */
+
+	if(GetPlayerWeapon(playerid) != weaponid)
+		return SendErrorMessage(playerid, "คุณไม่ได้ถืออาวุธ %s", ReturnWeaponName(weaponid));
 		
 	for(new i = 0; i < sizeof(WeaponDropInfo); i++)
 	{
@@ -2096,8 +2146,9 @@ CMD:leavegun(playerid, params[])
 	
 	RemovePlayerWeapon(playerid, weaponid);
 	PlayerInfo[playerid][pGun][id] = 0;
-	PlayerInfo[playerid][pGunAmmo][g_aWeaponSlots[weaponid]] = 0; 
+	PlayerInfo[playerid][pGunAmmo][id] = 0; 
 	PlayerInfo[playerid][pWeapons][g_aWeaponSlots[weaponid]] = 0;
+	PlayerInfo[playerid][pWeaponsAmmo][g_aWeaponSlots[weaponid]] = 0;
 	
 	WeaponDropInfo[idx][eWeaponObject] = CreateDynamicObject(
 		ReturnWeaponsModel(weaponid),

@@ -14,6 +14,7 @@ stock SendClientMessageEx(playerid, colour, const fmat[],  va_args<>)
 	return SendClientMessage(playerid, colour, str);
 }
 
+
 stock SendNearbyMessage(playerid, Float:radius, color, const fmat[], {Float,_}:...)
 {
 	new

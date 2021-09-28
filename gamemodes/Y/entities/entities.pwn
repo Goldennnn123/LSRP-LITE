@@ -224,6 +224,7 @@ enum E_VEHICLE_SYSTEM
 	eVehicleColor2,
 	eVehiclePaintjob,
 	
+	bool:eVehicleCarPark,
 	Float:eVehicleParkPos[4],
 	eVehicleParkInterior,
 	eVehicleParkWorld,

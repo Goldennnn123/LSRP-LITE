@@ -205,6 +205,8 @@ enum {
 #include "Y/Interior/pd_hq.pwn"
 #include "Y/Interior/SOS_BAR.pwn"
 #include "Y/Interior/house8.pwn"
+#include "Y/Interior/house9.pwn"
+
 //#include "Y/Interior/init1.pwn"
 
 
@@ -218,6 +220,12 @@ enum {
 #include "Y/Map/pump.pwn"
 #include "Y/Map/mapnaigun.pwn"
 #include "Y/Map/lsrplite_map.pwn"
+
+
+#include "Y/Map/habro.pwn"
+#include "Y/Interior/harbor.pwn"
+#include "Y/Map/viewwood.pwn"
+#include "Y/Interior/jail.pwn"
 
 
 #include "Y/systems/discord/discord.pwn"
@@ -397,6 +405,7 @@ public OnGameModeInit() {
     mysql_tquery(dbCon, "SELECT * FROM Business ORDER BY BusinessDBID", "Query_LoadBusiness");
     mysql_tquery(dbCon, "SELECT * FROM phonebook ORDER BY PhoneDBID", "LoadPhoneBook");
     mysql_tquery(dbCon, "SELECT * FROM entrance ORDER BY EntranceDBID", "LoadEntrance");
+    mysql_tquery(dbCon, "SELECT * FROM vehicles WHERE VehicleCarPark > 0", "LoadCarPark");
     mysql_tquery(dbCon, "SELECT * FROM vehicles WHERE VehicleFaction > 0", "LoadFactionVehicle");
     mysql_tquery(dbCon, "SELECT * FROM global ORDER BY ID", "LoadGlobal");
     // ใช้การควบคุมเครื่องยนต์ด้วยสคริปต์แทน

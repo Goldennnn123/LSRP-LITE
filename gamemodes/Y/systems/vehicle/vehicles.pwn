@@ -15,6 +15,7 @@ new PlayerOwnerDBID[MAX_PLAYERS];
 
 new bool:playerTowingVehicle[MAX_PLAYERS] = false;
 new	playerTowTimer[MAX_PLAYERS] = 0;
+new CheckPointGetCar;
 
 enum S_SELLVEH_DATA
 {
@@ -303,6 +304,20 @@ hook OnPlayerDisconnect(playerid, reason)
 hook OnGameModeInit()
 {
 	SetTimer("OnVehicleUpdate", 250, true);
+
+	CheckPointGetCar = CreateDynamicPickup(19134, 2, 1539.552 ,-2362.102,13.554, -1, -1, -1);
+	return 1;
+}
+
+hook OP_PickUpDynamicPickup(playerid, STREAMER_TAG_PICKUP:pickupid)
+{
+	if(pickupid == CheckPointGetCar)
+	{
+		SendClientMessage(playerid, COLOR_LIGHTGREEN, "/vehicle get [sloit]");
+		return 1;
+	}
+
+	
 	return 1;
 }
 
@@ -455,6 +470,8 @@ stock ResetVehicleVars(vehicleid)
 
 	Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
 	VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
+
+	VehicleInfo[vehicleid][eVehicleCarPark] = true; 
 	return 1;
 }
 
@@ -718,6 +735,7 @@ CMD:engine(playerid, params[])
 	)
 	{
 		new idx, str[128];
+
 		
 		if(VehicleInfo[vehicleid][eVehicleEngineStatus] && !PlayerInfo[playerid][pAdminDuty])
 			return GameTextForPlayer(playerid, "~g~ENGINE IS ALREADY ON", 3000, 3);
@@ -757,6 +775,9 @@ CMD:engine(playerid, params[])
 	
 	if(!VehicleInfo[vehicleid][eVehicleEngineStatus])
 	{
+		if(VehicleInfo[vehicleid][eVehicleCarPark])
+			return SendErrorMessage(playerid, "คุณยังไม่ได้ carget ยานพาหนะของคุณ");
+
 		SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s สตาร์ทเครื่องยนต์ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
 		ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
 		TogglePlayerControllable(playerid, 1);
@@ -855,8 +876,8 @@ CMD:vehicle(playerid, params[])
 	{
  	    SendClientMessage(playerid, COLOR_YELLOWEX, "___________________________________________________________");
 	 	SendClientMessage(playerid, COLOR_YELLOWEX, "USAGE: /(v)ehicle <action>");
-	    SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] get, park, sell, buy, upgrade, list, lock");
-        SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] stats, tow, duplicatekey, find, buypark($2,500)");
+	    SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] get, sell, buy, upgrade, list, lock");
+        SendClientMessage(playerid, COLOR_YELLOWEX, "[Actions] stats, tow, duplicatekey");
         SendClientMessage(playerid, COLOR_YELLOWEX, "[Delete] scrap (ตำเตือน: หากใช้คำสั่งนี้จะทำการขายรถทิ้งในทันที.)");
         SendClientMessage(playerid, COLOR_YELLOWEX, "[Hint] หากพบบัคหรือสิ่งผิดปกติให้ทำการแจ้งผู้ดูแลในทันที");
 		SendClientMessage(playerid, COLOR_YELLOWEX, "___________________________________________________________");
@@ -865,6 +886,9 @@ CMD:vehicle(playerid, params[])
 
 	if(!strcmp(oneString, "get"))
 	{
+		if(!IsPlayerInRangeOfPoint(playerid, 3.0, 1539.552 ,-2362.102,13.554))
+			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในจุดในการเรียกยานพาหนะ");
+		
 		new
 			slotid
 		;
@@ -891,9 +915,6 @@ CMD:vehicle(playerid, params[])
 		if(!PlayerInfo[playerid][pOwnedVehicles][slotid])
 			return SendErrorMessage(playerid, "ไม่มีรถในสล็อตนี้");
 
-		if(PlayerInfo[playerid][pVehicleSpawned] == true)
-			return SendErrorMessage(playerid, "มีรถถูกนำออกมาแล้ว");
-
 		new threadLoad[128];
 
 		for(new i = 0; i < MAX_VEHICLES; i++)
@@ -901,13 +922,12 @@ CMD:vehicle(playerid, params[])
 			if(VehicleInfo[i][eVehicleDBID] == PlayerInfo[playerid][pOwnedVehicles][slotid])
 				return SendErrorMessage(playerid, "รถถูกนำออกมาอยู่แล้ว");
 		}
-		//Easiest way to prevent players with faction vehicles duplicating it.
 
 		mysql_format(dbCon, threadLoad, sizeof(threadLoad), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][slotid]);
 		mysql_tquery(dbCon, threadLoad, "Query_LoadPrivateVehicle", "i", playerid);
 		return 1;
 	}
-	else if(!strcmp(oneString, "park"))
+	/*else if(!strcmp(oneString, "park"))
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในรถ");
@@ -957,8 +977,8 @@ CMD:vehicle(playerid, params[])
 		DestroyVehicle(vehicleid); 
 		TogglePlayerControllable(playerid, 1);
 		return 1;
-	}
-	else if(!strcmp(oneString, "buypark"))
+	}*/
+	/*else if(!strcmp(oneString, "buypark"))
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
@@ -987,7 +1007,7 @@ CMD:vehicle(playerid, params[])
 
 		callcmd::vehicle(playerid, "park");
 		return 1;
-	}
+	}*/
 	else if(!strcmp(oneString, "list"))
 	{
 		ShowVehicleList(playerid);
@@ -1057,7 +1077,9 @@ CMD:vehicle(playerid, params[])
 		new tagetid;
 		if(sscanf(secString, "u", tagetid))
 			return SendUsageMessage(playerid, "/vehicle sell <ชื่อบางส่วน/ไอดี>");
-
+		
+		if(!IsPlayerInAnyVehicle(playerid))
+			return SendErrorMessage(playerid, "คุณต้องอยู่บนยานพาหนะ");
 
 		if(playerid == tagetid)
 			return SendErrorMessage(playerid, "คุณไม่สามารถยื่นข้อเสนอนี้ได้");
@@ -1071,8 +1093,8 @@ CMD:vehicle(playerid, params[])
 		if(!IsPlayerNearPlayer(playerid, tagetid, 5.0))
 			return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
 
-		if(PlayerInfo[tagetid][pVehicleSpawned] == true)
-			return SendErrorMessage(playerid, "ไม่สามารถให้ยานพาหนะกับผู้เล่นได้ เนื่องจาก ผู้เล่นยังไม่ได้เก็บยานพหานะคันเดิม");
+		/*if(PlayerInfo[tagetid][pVehicleSpawned] == true)
+			return SendErrorMessage(playerid, "ไม่สามารถให้ยานพาหนะกับผู้เล่นได้ เนื่องจาก ผู้เล่นยังไม่ได้เก็บยานพหานะคันเดิม");*/
 
 		new idx = 0;
 
@@ -1113,7 +1135,7 @@ CMD:vehicle(playerid, params[])
 		if(idx == 0)
 			return SendErrorMessage(playerid,"ผู้เล่นมียานพาหนะเต็มแล้ว");
 
-		new vehicleid = PlayerInfo[playerid][pVehicleSpawnedID];
+		new vehicleid = GetPlayerVehicleID(playerid);
 
 		if(vehicleid == 0)
 			return SendErrorMessage(playerid, "คุณยังไม่ได้นำยานพาหนะออกมา");
@@ -1134,8 +1156,6 @@ CMD:vehicle(playerid, params[])
 	{
 		if(!IsPlayerInAnyVehicle(playerid))
 			return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนรถ");
-
-		if(PlayerInfo[playerid][pVehicleSpawned] == false) return SendErrorMessage(playerid, "รถของคุณไม่ได้ถูกนำออกมา");
 
 		new 
 			playerb, vehicleid = GetPlayerVehicleID(playerid);
@@ -1172,7 +1192,7 @@ CMD:vehicle(playerid, params[])
 			
 		if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)return SendErrorMessage(playerid, "คุณไม่ได้เป็นคนขับรถ");
 			
-		if(PlayerInfo[playerid][pVehicleSpawned] == false) return SendErrorMessage(playerid, "รถของคุณยังไม่ได้ถูกนำออกมา");
+		/*if(PlayerInfo[playerid][pVehicleSpawned] == false) return SendErrorMessage(playerid, "รถของคุณยังไม่ได้ถูกนำออกมา");*/
 
 		new 
 			str[160], 
@@ -1189,7 +1209,10 @@ CMD:vehicle(playerid, params[])
 	}
 	else if(!strcmp(oneString, "tow"))
 	{
-		if(PlayerInfo[playerid][pVehicleSpawned] == false) 
+		SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้ยังไม่เปิดให้ใช้งาน");
+		return 1;
+
+		/*if(PlayerInfo[playerid][pVehicleSpawned] == false) 
 			return SendErrorMessage(playerid, "คุณไม่ได้นำรถออกมา");
 			
 		if(IsVehicleOccupied(PlayerInfo[playerid][pVehicleSpawnedID]))
@@ -1207,11 +1230,14 @@ CMD:vehicle(playerid, params[])
 		playerTowTimer[playerid] = SetTimerEx("OnVehicleTow", 5000, true, "i", playerid);
 		
 		SendServerMessage(playerid, "คุณได้ส่งคำขอให้ประกันนำรถ %s มาไว้ที่จุดเกิดแล้ว", ReturnVehicleName(PlayerInfo[playerid][pVehicleSpawnedID]));
-		return 1;
+		return 1;*/
 	}
 	else if(!strcmp(oneString, "find"))
 	{
-		if(PlayerInfo[playerid][pVehicleSpawned] == false) 
+		SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้ยังไม่เปิดให้ใช้งาน");
+		return 1;
+
+		/*if(PlayerInfo[playerid][pVehicleSpawned] == false) 
 			return SendErrorMessage(playerid, "คุณไม่ได้นำรถออกมา");
 			
 		if(IsVehicleOccupied(PlayerInfo[playerid][pVehicleSpawnedID]))
@@ -1222,7 +1248,7 @@ CMD:vehicle(playerid, params[])
 		
 		GetVehiclePos(PlayerInfo[playerid][pVehicleSpawnedID], fetchPos[0], fetchPos[1], fetchPos[2]);
 		SetPlayerCheckpoint(playerid, fetchPos[0], fetchPos[1], fetchPos[2], 3.0);
-		return 1;
+		return 1;*/
 	}
 	else if(!strcmp(oneString, "stats"))
 	{
@@ -1281,6 +1307,261 @@ CMD:vehicle(playerid, params[])
 	else SendErrorMessage(playerid, "พิพม์ให้ถูกต้อง");
 	return 1;
 }
+
+
+CMD:carpark(playerid, params[])
+{
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+	new engine, lights, alarm, doors, bonnet, boot, objective, threadLoad[255]; 	
+	GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+
+
+	if(PlayerInfo[playerid][pDuplicateKey] != vehicleid && VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+		return SendErrorMessage(playerid, "คุณไม่มีกุญแจยานพาหนะคันนี้");
+
+	if(VehicleInfo[vehicleid][eVehicleEngineStatus] == true && !HasNoEngine(vehicleid))
+		return SendErrorMessage(playerid, "กรุณาดับเครื่องยนต์ก่อน");
+
+	if(VehicleInfo[vehicleid][eVehicleCarPark] == true)
+		return SendErrorMessage(playerid, "คุณได้ทำการ park ยานพาหนะคุณไว้เรียบร้อยแล้ว");
+
+	VehicleInfo[vehicleid][eVehicleCarPark] = true;
+	GetVehiclePos(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2]);
+	GetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][3]);
+	VehicleInfo[vehicleid][eVehicleParkWorld] = GetVehicleVirtualWorld(vehicleid);
+
+
+	
+	SaveVehicle(vehicleid);
+	//ResetVehicleVars(vehicleid);
+	DestroyVehicle(vehicleid);	
+
+	mysql_format(dbCon, threadLoad, sizeof(threadLoad), "SELECT * FROM vehicles WHERE VehicleDBID = %i", VehicleInfo[vehicleid][eVehicleDBID]);
+	mysql_tquery(dbCon, threadLoad, "LoadVehicleCarpark", "i", playerid);
+
+	TogglePlayerControllable(playerid, 1);
+	SetVehicleParamsEx(vehicleid, engine, lights, alarm, true, bonnet, boot, objective);
+	VehicleInfo[vehicleid][eVehicleLocked] = true;
+
+	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "You Park %s is now",  ReturnVehicleName(vehicleid));
+	SendDiscordMessageExs("862581089494892564", "[%s] %s Park Vehicle %s(%d)",ReturnDate(), ReturnRealName(playerid), ReturnVehicleName(vehicleid), VehicleInfo[vehicleid][eVehicleDBID]);
+	return 1;
+}
+
+forward LoadVehicleCarpark(playerid);
+public LoadVehicleCarpark(playerid)
+{
+	if(!cache_num_rows())
+		return SendErrorMessage(playerid, "ไม่มีรถอยู่ในสล็อตนี้"); 
+		
+	new rows; cache_get_row_count(rows); 
+	new str[MAX_STRING], vehicleid = INVALID_VEHICLE_ID; 
+
+	new VehicleModel,Float:VehicleParkPos[4],VehicleColor1,VehicleColor2, VehiclePaintjob;
+	
+	for (new i = 0; i < rows && i < MAX_VEHICLES; i++)
+	{
+		cache_get_value_name_int(i, "VehicleModel", VehicleModel);
+		cache_get_value_name_float(i, "VehicleParkPosX", VehicleParkPos[0]);
+		cache_get_value_name_float(i, "VehicleParkPosY", VehicleParkPos[1]);
+		cache_get_value_name_float(i, "VehicleParkPosZ", VehicleParkPos[2]);
+		cache_get_value_name_float(i, "VehicleParkPosA", VehicleParkPos[3]);
+		cache_get_value_name_int(i, "VehicleColor1", VehicleColor1);
+		cache_get_value_name_int(i, "VehicleColor2", VehicleColor2);
+		cache_get_value_name_int(i, "VehiclePaintjob",VehiclePaintjob);
+
+		vehicleid = CreateVehicle(VehicleModel, 
+			VehicleParkPos[0],
+			VehicleParkPos[1],
+			VehicleParkPos[2],
+			VehicleParkPos[3],
+			VehicleColor1,
+			VehicleColor2,
+			VehiclePaintjob,
+			0);
+			
+		if(vehicleid != INVALID_VEHICLE_ID)
+		{
+			VehicleInfo[vehicleid][eVehicleExists] = true; 
+			cache_get_value_name_int(i, "VehicleDBID",VehicleInfo[vehicleid][eVehicleDBID]);
+			
+			cache_get_value_name(i, "VehicleName",VehicleInfo[vehicleid][eVehicleName]);
+			cache_get_value_name_int(i, "VehicleOwnerDBID",VehicleInfo[vehicleid][eVehicleOwnerDBID]);
+			cache_get_value_name_int(i, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
+			
+			cache_get_value_name_int(i, "VehicleModel",VehicleInfo[vehicleid][eVehicleModel]);
+			
+			cache_get_value_name_int(i, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);
+			cache_get_value_name_int(i, "VehicleColor2",VehicleInfo[vehicleid][eVehicleColor2]);
+			
+			cache_get_value_name_float(i, "VehicleParkPosX", VehicleInfo[vehicleid][eVehicleParkPos][0]);
+			cache_get_value_name_float(i, "VehicleParkPosY", VehicleInfo[vehicleid][eVehicleParkPos][1]);
+			cache_get_value_name_float(i, "VehicleParkPosZ", VehicleInfo[vehicleid][eVehicleParkPos][2]);
+			cache_get_value_name_float(i, "VehicleParkPosA", VehicleInfo[vehicleid][eVehicleParkPos][3]);
+			
+			cache_get_value_name_int(i, "VehicleParkInterior",VehicleInfo[vehicleid][eVehicleParkInterior]);
+			cache_get_value_name_int(i, "VehicleParkWorld",VehicleInfo[vehicleid][eVehicleParkWorld]);
+			
+
+			cache_get_value_name(i, "VehiclePlates",VehicleInfo[vehicleid][eVehiclePlates], 32);
+			cache_get_value_name_int(i, "VehicleLocked",VehicleInfo[vehicleid][eVehicleLocked]);
+			
+			cache_get_value_name_int(i, "VehicleImpounded",VehicleInfo[vehicleid][eVehicleImpounded]);
+			
+			cache_get_value_name_float(i, "VehicleImpoundPosX", VehicleInfo[vehicleid][eVehicleImpoundPos][0]);
+			cache_get_value_name_float(i, "VehicleImpoundPosY", VehicleInfo[vehicleid][eVehicleImpoundPos][1]);
+			cache_get_value_name_float(i, "VehicleImpoundPosZ", VehicleInfo[vehicleid][eVehicleImpoundPos][2]);
+			cache_get_value_name_float(i, "VehicleImpoundPosA", VehicleInfo[vehicleid][eVehicleImpoundPos][3]);
+			
+			cache_get_value_name_float(i, "VehicleFuel",VehicleInfo[vehicleid][eVehicleFuel]);
+			
+			cache_get_value_name_int(i, "VehicleXMR",VehicleInfo[vehicleid][eVehicleHasXMR]);
+			cache_get_value_name_int(i, "VehicleTimesDestroyed",VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
+			
+			cache_get_value_name_float(i, "VehicleEngine",VehicleInfo[vehicleid][eVehicleEngine]);
+			cache_get_value_name_float(i, "VehicleBattery",VehicleInfo[vehicleid][eVehicleBattery]);
+			
+			cache_get_value_name_int(i, "VehicleAlarmLevel",VehicleInfo[vehicleid][eVehicleAlarmLevel]);
+			cache_get_value_name_int(i, "VehicleLockLevel",VehicleInfo[vehicleid][eVehicleLockLevel]);
+			cache_get_value_name_int(i, "VehicleImmobLevel",VehicleInfo[vehicleid][eVehicleImmobLevel]);
+			
+			
+			cache_get_value_name_int(i, "VehiclePaintjob",VehicleInfo[vehicleid][eVehiclePaintjob]);
+
+			cache_get_value_name_int(i, "VehiclePrice",VehicleInfo[vehicleid][eVehiclePrice]);
+
+
+			cache_get_value_name_int(i, "VehicleComp",VehicleInfo[vehicleid][eVehicleComp]);
+
+			cache_get_value_name_float(i, "VehicleDrug1", VehicleInfo[vehicleid][eVehicleDrug][0]);
+			cache_get_value_name_float(i, "VehicleDrug2", VehicleInfo[vehicleid][eVehicleDrug][1]);
+			cache_get_value_name_float(i, "VehicleDrug3", VehicleInfo[vehicleid][eVehicleDrug][2]);
+
+			for(new j = 0; j < 14; j++)
+			{
+				format(str, sizeof(str), "VehicleMod%d", j);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleMod][j]);
+			}
+			
+			for(new j = 1; j < 6; j++)
+			{
+				format(str, sizeof(str), "VehicleWeapons%d", j);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleWeapons][j]);
+				
+				format(str, sizeof(str), "VehicleWeaponsAmmo%d", j);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][j]);
+			}
+
+			for(new j = 0; j < 4; j++)
+			{
+				format(str, sizeof(str), "VehicleDamage%d",i);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleDamage][j]);
+			}
+
+			cache_get_value_name_float(i, "VehicleHealth",VehicleInfo[vehicleid][eVehicleHealth]);
+
+			//AddVehicleComponent(vehicleid, componentid);
+			
+			
+			if(VehicleInfo[vehicleid][eVehicleParkInterior] != 0)
+			{
+				LinkVehicleToInterior(vehicleid, VehicleInfo[vehicleid][eVehicleParkInterior]); 
+				SetVehicleVirtualWorld(vehicleid, VehicleInfo[vehicleid][eVehicleParkWorld]);
+			}
+			
+			if(!isnull(VehicleInfo[vehicleid][eVehiclePlates]))
+			{
+				SetVehicleNumberPlate(vehicleid, VehicleInfo[vehicleid][eVehiclePlates]);
+				SetVehicleToRespawn(vehicleid); 
+			}
+			
+			if(VehicleInfo[vehicleid][eVehicleImpounded] == true)
+			{
+				SetVehiclePos(vehicleid, VehicleInfo[vehicleid][eVehicleImpoundPos][0], VehicleInfo[vehicleid][eVehicleImpoundPos][1], VehicleInfo[vehicleid][eVehicleImpoundPos][2]);
+				SetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleImpoundPos][3]); 
+			}
+			
+			if(VehicleInfo[vehicleid][eVehicleLocked] == false)
+				SetVehicleParamsEx(vehicleid, 0, 0, 0, 0, 0, 0, 0);
+				
+			else SetVehicleParamsEx(vehicleid, 0, 0, 0, 1, 0, 0, 0);
+			
+			VehicleInfo[vehicleid][eVehicleAdminSpawn] = false;
+			
+			
+			SetVehicleToRespawn(vehicleid); 
+			SetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][3]);
+			UpdateVehicleDamageStatus(vehicleid, VehicleInfo[vehicleid][eVehicleDamage][0], VehicleInfo[vehicleid][eVehicleDamage][1], VehicleInfo[vehicleid][eVehicleDamage][2],0);
+			
+			if(VehicleInfo[vehicleid][eVehicleHealth] < 310)
+			{
+				SetVehicleHp(vehicleid);
+			}
+			else
+			{
+				SetVehicleHealth(vehicleid, VehicleInfo[vehicleid][eVehicleHealth]);
+			}
+			
+			if(HasNoEngine(playerid))
+				ToggleVehicleEngine(vehicleid, true); 
+			
+			for(new j = 0; j < 14; j++)
+			{
+				AddVehicleComponent(vehicleid, VehicleInfo[vehicleid][eVehicleMod][j]);
+			}
+
+		}
+	}
+	
+	VehicleInfo[vehicleid][eVehicleFaction] = 0;
+
+
+	if(VehicleInfo[vehicleid][eVehicleImpounded]) 
+	{
+		SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleImpoundPos][0], VehicleInfo[vehicleid][eVehicleImpoundPos][1], VehicleInfo[vehicleid][eVehicleImpoundPos][2], 3.0);
+	}
+	else
+	{
+		new Float:x, Float:y, Float:z, Float:a;
+		GetPlayerPos(playerid, x, y, z);
+		GetPlayerFacingAngle(playerid, a);
+
+		SetVehiclePos(vehicleid, x, y, z);
+		SetVehicleZAngle(vehicleid, a);
+		PutPlayerInVehicle(playerid, vehicleid, 0);
+	}
+	return 1;
+}
+
+CMD:carget(playerid, params[])
+{
+	if(!IsPlayerInAnyVehicle(playerid))
+		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพาหนะ");
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(PlayerInfo[playerid][pDuplicateKey] != vehicleid && VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+		return SendErrorMessage(playerid, "คุณไม่มีกุญแจยานพาหนะคันนี้");
+
+	if(VehicleInfo[vehicleid][eVehicleEngineStatus] == true)
+		return SendErrorMessage(playerid, "กรุณาดับเครื่องยนต์ก่อน");
+
+	if(VehicleInfo[vehicleid][eVehicleCarPark] == false)
+		return SendErrorMessage(playerid, "ยานพาหนะคันนี้ถูก Carget อยู่แล้ว");
+
+	VehicleInfo[vehicleid][eVehicleCarPark] = false;
+
+	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "You GetCar %s is now",  ReturnVehicleName(vehicleid));
+	SendDiscordMessageExs("862581089494892564", "[%s] %s Get Vehicle %s(%d)",ReturnDate(), ReturnRealName(playerid), ReturnVehicleName(vehicleid), VehicleInfo[vehicleid][eVehicleDBID]);
+
+	SaveVehicle(vehicleid);
+	return 1;
+}
+
+
 
 Dialog:D_VEHUPGRADE(playerid, response, listitem, inputtext[])
 {
@@ -1870,8 +2151,7 @@ public Query_ShowVehicleList(playerid, idx)
 		vehicleImmobLevel,
 		vehicleTimesDestroyed,
 		vehiclePlates[32],
-		bool:isSpawned = false,
-		color
+		bool:isSpawned = false
 	;
 
 	for(new i = 0; i < rows; i++)
@@ -1888,20 +2168,21 @@ public Query_ShowVehicleList(playerid, idx)
 		cache_get_value_name(0,"VehiclePlates",vehiclePlates,32);
 	}
 
+	new v_id;
 	for(new id = 0; id < MAX_VEHICLES; id++)
 	{
 		if(VehicleInfo[id][eVehicleDBID] == vehicleDBID)
 		{
 			isSpawned = true;
+			v_id = id;
 		}
 	}
 
 	if(isSpawned)
-		color = COLOR_DARKGREEN;
+		SendClientMessageEx(playerid, COLOR_DARKGREEN, "[ID: %d] Vehicle %i: %s, Lock[%i], Alarm[%i], Immobiliser[%i], Times destroyed[%i], Plates[%s]", v_id, idx, ReturnVehicleModelName(vehicleModel), vehicleLockLevel, vehicleAlarmLevel, vehicleImmobLevel, vehicleTimesDestroyed, vehiclePlates);
 
-	else color = COLOR_WHITE;
+	else SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle %i: %s, Lock[%i], Alarm[%i], Immobiliser[%i], Times destroyed[%i], Plates[%s]", idx, ReturnVehicleModelName(vehicleModel), vehicleLockLevel, vehicleAlarmLevel, vehicleImmobLevel, vehicleTimesDestroyed, vehiclePlates);
 
-	SendClientMessageEx(playerid, color, "Vehicle %i: %s, Lock[%i], Alarm[%i], Immobiliser[%i], Times destroyed[%i], Plates[%s]", idx, ReturnVehicleModelName(vehicleModel), vehicleLockLevel, vehicleAlarmLevel, vehicleImmobLevel, vehicleTimesDestroyed, vehiclePlates);
 	return 1;
 }
 
@@ -2070,6 +2351,172 @@ public LoadFactionVehicle()
 }
 
 
+forward LoadCarPark();
+public LoadCarPark()
+{
+	if(!cache_num_rows())
+		return print("[SERVER]: No Vehicle Faction In Database");
+
+	new rows; cache_get_row_count(rows);
+	new vehicleid = INVALID_VEHICLE_ID, str[255];
+
+	new VehicleModel,Float:VehicleParkPos[4],VehicleColor1,VehicleColor2, VehiclePaintjob;
+
+	for (new i = 0; i < rows && i < MAX_FACTION_VEHICLE; i++)
+	{
+		cache_get_value_name_int(i, "VehicleModel", VehicleModel);
+		cache_get_value_name_float(i, "VehicleParkPosX", VehicleParkPos[0]);
+		cache_get_value_name_float(i, "VehicleParkPosY", VehicleParkPos[1]);
+		cache_get_value_name_float(i, "VehicleParkPosZ", VehicleParkPos[2]);
+		cache_get_value_name_float(i, "VehicleParkPosA", VehicleParkPos[3]);
+		cache_get_value_name_int(i, "VehicleColor1", VehicleColor1);
+		cache_get_value_name_int(i, "VehicleColor2", VehicleColor2);
+		cache_get_value_name_int(i, "VehiclePaintjob",VehiclePaintjob);
+
+		vehicleid = CreateVehicle(VehicleModel, 
+		VehicleParkPos[0],
+		VehicleParkPos[1],
+		VehicleParkPos[2],
+		VehicleParkPos[3],
+		VehicleColor1,
+		VehicleColor2,
+		VehiclePaintjob,
+		1);
+
+		if(vehicleid != INVALID_VEHICLE_ID)
+		{
+			VehicleInfo[vehicleid][eVehicleExists] = true; 
+			cache_get_value_name_int(i, "VehicleDBID",VehicleInfo[vehicleid][eVehicleDBID]);
+			
+			cache_get_value_name(i, "VehicleName",VehicleInfo[vehicleid][eVehicleName]);
+			cache_get_value_name_int(i, "VehicleCarPark",VehicleInfo[vehicleid][eVehicleCarPark]);
+			cache_get_value_name_int(i, "VehicleOwnerDBID",VehicleInfo[vehicleid][eVehicleOwnerDBID]);
+			cache_get_value_name_int(i, "VehicleFaction",VehicleInfo[vehicleid][eVehicleFaction]);
+			
+			cache_get_value_name_int(i, "VehicleModel",VehicleInfo[vehicleid][eVehicleModel]);
+			
+			cache_get_value_name_int(i, "VehicleColor1",VehicleInfo[vehicleid][eVehicleColor1]);
+			cache_get_value_name_int(i, "VehicleColor2",VehicleInfo[vehicleid][eVehicleColor2]);
+			
+			cache_get_value_name_float(i, "VehicleParkPosX", VehicleInfo[vehicleid][eVehicleParkPos][0]);
+			cache_get_value_name_float(i, "VehicleParkPosY", VehicleInfo[vehicleid][eVehicleParkPos][1]);
+			cache_get_value_name_float(i, "VehicleParkPosZ", VehicleInfo[vehicleid][eVehicleParkPos][2]);
+			cache_get_value_name_float(i, "VehicleParkPosA", VehicleInfo[vehicleid][eVehicleParkPos][3]);
+			
+			cache_get_value_name_int(i, "VehicleParkInterior",VehicleInfo[vehicleid][eVehicleParkInterior]);
+			cache_get_value_name_int(i, "VehicleParkWorld",VehicleInfo[vehicleid][eVehicleParkWorld]);
+			
+
+			cache_get_value_name(i, "VehiclePlates",VehicleInfo[vehicleid][eVehiclePlates], 32);
+			cache_get_value_name_int(i, "VehicleLocked",VehicleInfo[vehicleid][eVehicleLocked]);
+			
+			cache_get_value_name_int(i, "VehicleImpounded",VehicleInfo[vehicleid][eVehicleImpounded]);
+			
+			cache_get_value_name_float(i, "VehicleImpoundPosX", VehicleInfo[vehicleid][eVehicleImpoundPos][0]);
+			cache_get_value_name_float(i, "VehicleImpoundPosY", VehicleInfo[vehicleid][eVehicleImpoundPos][1]);
+			cache_get_value_name_float(i, "VehicleImpoundPosZ", VehicleInfo[vehicleid][eVehicleImpoundPos][2]);
+			cache_get_value_name_float(i, "VehicleImpoundPosA", VehicleInfo[vehicleid][eVehicleImpoundPos][3]);
+			
+			cache_get_value_name_float(i, "VehicleFuel",VehicleInfo[vehicleid][eVehicleFuel]);
+			
+			cache_get_value_name_int(i, "VehicleXMR",VehicleInfo[vehicleid][eVehicleHasXMR]);
+			cache_get_value_name_int(i, "VehicleTimesDestroyed",VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
+			
+			cache_get_value_name_float(i, "VehicleEngine",VehicleInfo[vehicleid][eVehicleEngine]);
+			cache_get_value_name_float(i, "VehicleBattery",VehicleInfo[vehicleid][eVehicleBattery]);
+			
+			cache_get_value_name_int(i, "VehicleAlarmLevel",VehicleInfo[vehicleid][eVehicleAlarmLevel]);
+			cache_get_value_name_int(i, "VehicleLockLevel",VehicleInfo[vehicleid][eVehicleLockLevel]);
+			cache_get_value_name_int(i, "VehicleImmobLevel",VehicleInfo[vehicleid][eVehicleImmobLevel]);
+			
+			
+			cache_get_value_name_int(i, "VehiclePaintjob",VehicleInfo[vehicleid][eVehiclePaintjob]);
+
+			cache_get_value_name_int(i, "VehiclePrice",VehicleInfo[vehicleid][eVehiclePrice]);
+
+
+			cache_get_value_name_int(i, "VehicleComp",VehicleInfo[vehicleid][eVehicleComp]);
+
+			cache_get_value_name_float(i, "VehicleDrug1", VehicleInfo[vehicleid][eVehicleDrug][0]);
+			cache_get_value_name_float(i, "VehicleDrug2", VehicleInfo[vehicleid][eVehicleDrug][1]);
+			cache_get_value_name_float(i, "VehicleDrug3", VehicleInfo[vehicleid][eVehicleDrug][2]);
+
+			for(new j = 0; j < 14; j++)
+			{
+				format(str, sizeof(str), "VehicleMod%d", j);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleMod][j]);
+			}
+			
+			for(new j = 1; j < 6; j++)
+			{
+				format(str, sizeof(str), "VehicleWeapons%d", j);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleWeapons][j]);
+				
+				format(str, sizeof(str), "VehicleWeaponsAmmo%d", j);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleWeaponsAmmo][j]);
+			}
+
+			for(new j = 0; j < 4; j++)
+			{
+				format(str, sizeof(str), "VehicleDamage%d",i);
+				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleDamage][j]);
+			}
+
+			cache_get_value_name_float(i, "VehicleHealth",VehicleInfo[vehicleid][eVehicleHealth]);
+
+			//AddVehicleComponent(vehicleid, componentid);
+			
+			
+			if(VehicleInfo[vehicleid][eVehicleParkInterior] != 0)
+			{
+				LinkVehicleToInterior(vehicleid, VehicleInfo[vehicleid][eVehicleParkInterior]); 
+				SetVehicleVirtualWorld(vehicleid, VehicleInfo[vehicleid][eVehicleParkWorld]);
+			}
+			
+			if(!isnull(VehicleInfo[vehicleid][eVehiclePlates]))
+			{
+				SetVehicleNumberPlate(vehicleid, VehicleInfo[vehicleid][eVehiclePlates]);
+				SetVehicleToRespawn(vehicleid); 
+			}
+			
+			if(VehicleInfo[vehicleid][eVehicleImpounded] == true)
+			{
+				SetVehiclePos(vehicleid, VehicleInfo[vehicleid][eVehicleImpoundPos][0], VehicleInfo[vehicleid][eVehicleImpoundPos][1], VehicleInfo[vehicleid][eVehicleImpoundPos][2]);
+				SetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleImpoundPos][3]); 
+			}
+			
+			if(VehicleInfo[vehicleid][eVehicleLocked] == false)
+				SetVehicleParamsEx(vehicleid, 0, 0, 0, 0, 0, 0, 0);
+				
+			else SetVehicleParamsEx(vehicleid, 0, 0, 0, 1, 0, 0, 0);
+			
+			VehicleInfo[vehicleid][eVehicleAdminSpawn] = false;
+			
+			
+			SetVehicleToRespawn(vehicleid); 
+			SetVehicleZAngle(vehicleid, VehicleInfo[vehicleid][eVehicleParkPos][3]);
+			UpdateVehicleDamageStatus(vehicleid, VehicleInfo[vehicleid][eVehicleDamage][0], VehicleInfo[vehicleid][eVehicleDamage][1], VehicleInfo[vehicleid][eVehicleDamage][2],0);
+			
+			if(VehicleInfo[vehicleid][eVehicleHealth] < 310)
+			{
+				SetVehicleHp(vehicleid);
+			}
+			else
+			{
+				SetVehicleHealth(vehicleid, VehicleInfo[vehicleid][eVehicleHealth]);
+			}
+		
+			
+			for(new j = 0; j < 14; j++)
+			{
+				AddVehicleComponent(vehicleid, VehicleInfo[vehicleid][eVehicleMod][j]);
+			}
+
+		}
+	}
+	return 1;
+}
+
 forward Query_LoadPrivateVehicle(playerid);
 public Query_LoadPrivateVehicle(playerid)
 {
@@ -2235,8 +2682,6 @@ public Query_LoadPrivateVehicle(playerid)
 		}
 	}
 	
-	PlayerInfo[playerid][pVehicleSpawned] = true;
-	PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
 	VehicleInfo[vehicleid][eVehicleFaction] = 0;
 
 	
@@ -2250,8 +2695,16 @@ public Query_LoadPrivateVehicle(playerid)
 	}
 	else
 	{
+		new Float:x, Float:y, Float:z, Float:a;
+		GetPlayerPos(playerid, x, y, z);
+		GetPlayerFacingAngle(playerid, a);
+
+		SetVehiclePos(vehicleid, x, y, z);
+		SetVehicleZAngle(vehicleid, a);
+		PutPlayerInVehicle(playerid, vehicleid, 0);
+
 		SendClientMessage(playerid, 0xFF00FFFF, "Hint: ไปตามจุดที่เราได้มาร์กไว้เพื่อไปที่รถ");
-		SetPlayerCheckpoint(playerid, VehicleInfo[vehicleid][eVehicleParkPos][0], VehicleInfo[vehicleid][eVehicleParkPos][1], VehicleInfo[vehicleid][eVehicleParkPos][2], 3.0);
+		SetPlayerCheckpoint(playerid, x, y, z, 3.0);
 	}
 	PlayerCheckpoint[playerid] = 1; 
 	return 1;
@@ -2620,8 +3073,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			new tagetid = SellVehData[playerid][S_BY];
 
 			PlayerInfo[playerid][pOwnedVehicles][id] = VehicleInfo[vehicleid_ID][eVehicleDBID];
-			PlayerInfo[playerid][pVehicleSpawned] = true;
-			PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid_ID;
+			/*PlayerInfo[playerid][pVehicleSpawned] = true;
+			PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid_ID;*/
 
 			VehicleInfo[vehicleid_ID][eVehicleOwnerDBID] = PlayerInfo[playerid][pDBID];
 
@@ -3080,5 +3533,16 @@ stock ClearUnscramble(playerid)
 	return 1;
 }
 
+stock CheckPlayeyKey(playerid, vehicleid)
+{
+		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && PlayerInfo[playerid][pDuplicateKey] != vehicleid && RentCarKey[playerid] != vehicleid && !VehicleInfo[vehicleid][eVehicleFaction] && !PlayerInfo[playerid][pAdminDuty] && !IsPlayerInElecVehicle(playerid) && !IsPlayerRentVehicle(playerid, vehicleid))
+		return 1;
+
+	return 0;
+}
+
+
+/*VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID] && 
+	   PlayerInfo[playerid][pDuplicateKey] != vehicleid && 
 
 

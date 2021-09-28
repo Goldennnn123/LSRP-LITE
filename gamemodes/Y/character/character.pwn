@@ -313,8 +313,8 @@ public Query_LoadCharacter(playerid)
 		cache_get_value_name_int(0, "pWalk",PlayerInfo[playerid][pWalk]);
 	}
 
-	cache_get_value_name_int(0, "pVehicleSpawned",PlayerInfo[playerid][pVehicleSpawned]);
-	cache_get_value_name_int(0, "pVehicleSpawnedID",PlayerInfo[playerid][pVehicleSpawnedID]);
+	/*cache_get_value_name_int(0, "pVehicleSpawned",PlayerInfo[playerid][pVehicleSpawned]);
+	cache_get_value_name_int(0, "pVehicleSpawnedID",PlayerInfo[playerid][pVehicleSpawnedID]);*/
 
 	cache_get_value_name_float(0, "pLastPosX", PlayerInfo[playerid][pLastPosX]);
 	cache_get_value_name_float(0, "pLastPosY", PlayerInfo[playerid][pLastPosY]);

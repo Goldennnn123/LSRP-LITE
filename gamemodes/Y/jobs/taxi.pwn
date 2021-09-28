@@ -287,7 +287,7 @@ CMD:taxisetting(playerid, params[])
 	if(!PlayerTaxiDuty[playerid])
 		return SendErrorMessage(playerid, "คุณยังไม่ได้เริ่มทำงานเป็นพนักงานขับรถส่งผู้โดยสาร ประเภท TAXI");
 
-	new vehicleid = PlayerInfo[playerid][pVehicleSpawnedID];
+	new vehicleid = GetPlayerVehicleID(playerid);
 	if(GetVehicleModel(vehicleid) != 420 && GetVehicleModel(vehicleid) != 438)
 		return SendErrorMessage(playerid, "ยานพาหนะของคุณไม่ใช่ TAXI หรือ Cabbie");
 
@@ -358,7 +358,7 @@ CMD:taxistart(playerid, params[])
 
 	new vehicleid = GetPlayerVehicleID(tagetid);
 	
-	if(vehicleid != PlayerInfo[playerid][pVehicleSpawnedID])
+	if(VehicleInfo[vehicleid][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่บนยานพาหนะของคุณ");
 
 	PlayerTaxitInfo[playerid][T_Start] = true;

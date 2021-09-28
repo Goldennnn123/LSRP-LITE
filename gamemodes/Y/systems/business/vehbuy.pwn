@@ -1578,8 +1578,8 @@ public OnPlayerVehiclePurchase(playerid, newid, plates[], Float:x, Float:y, Floa
 		SaveVehicle(vehicleid);
 
 		
-		PlayerInfo[playerid][pVehicleSpawned] = true;
-		PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;
+		/*PlayerInfo[playerid][pVehicleSpawned] = true;
+		PlayerInfo[playerid][pVehicleSpawnedID] = vehicleid;*/
 	}
 
     SendClientMessageEx(playerid, 0xB9E35EFF, "PROCESSED: คุณได้ทำการซื้อรถรุ่น %s ด้วยเงิน $%s  เรียบร้อยแล้ว", ReturnVehicleName(vehicleid), MoneyFormat(Price));

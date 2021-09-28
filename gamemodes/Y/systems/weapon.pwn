@@ -670,25 +670,28 @@ stock SetPlayerWeapons(playerid)
 {
 	if(PlayerInfo[playerid][pGun][0] > 0)
 	{
-		GivePlayerGun(playerid, PlayerInfo[playerid][pGun][0], PlayerInfo[playerid][pGunAmmo][0]);
+		GivePlayerWeaponEx(playerid, PlayerInfo[playerid][pGun][0], PlayerInfo[playerid][pGunAmmo][0]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pGun][0]), PlayerInfo[playerid][pGunAmmo][0]);
 	}
 	if(PlayerInfo[playerid][pGun][1] > 0)
 	{
-		GivePlayerGun(playerid, PlayerInfo[playerid][pGun][1], PlayerInfo[playerid][pGunAmmo][1]);
+		GivePlayerWeaponEx(playerid, PlayerInfo[playerid][pGun][1], PlayerInfo[playerid][pGunAmmo][1]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pGun][1]), PlayerInfo[playerid][pGunAmmo][1]);
 	}
+
 	if(PlayerInfo[playerid][pGun][2] > 0)
 	{
-		GivePlayerGun(playerid, PlayerInfo[playerid][pGun][2], PlayerInfo[playerid][pGunAmmo][2]);
+		GivePlayerWeaponEx(playerid, PlayerInfo[playerid][pGun][2], PlayerInfo[playerid][pGunAmmo][2]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pGun][2]), PlayerInfo[playerid][pGunAmmo][2]);
 	}
+
 	if(PlayerInfo[playerid][pGun][3] > 0)
 	{
 		
-		GivePlayerGun(playerid, PlayerInfo[playerid][pGun][3], PlayerInfo[playerid][pGunAmmo][3]);
+		GivePlayerWeaponEx(playerid, PlayerInfo[playerid][pGun][3], PlayerInfo[playerid][pGunAmmo][3]);
 		SendClientMessageEx(playerid, COLOR_WHITE, "ในตัวคุณมีอาวุธ %s กระสุน %d นัด",ReturnWeaponName(PlayerInfo[playerid][pGun][3]), PlayerInfo[playerid][pGunAmmo][3]);
-	}		
+	}	
+
 	SetPlayerArmedWeapon(playerid, 0);
 	return 1;
 }

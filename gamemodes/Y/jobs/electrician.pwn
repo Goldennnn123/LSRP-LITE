@@ -79,6 +79,7 @@ hook OnGameModeInit()
     {
         VehicleInfo[electrician_vehicles[i]][eVehicleFuel] = 100;
         VehicleInfo[electrician_vehicles[i]][eVehicleEngine] = 100;
+        VehicleInfo[electrician_vehicles[i]][eVehicleCarPark] = false;
     }
     return 1;
 }

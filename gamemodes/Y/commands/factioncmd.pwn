@@ -1101,6 +1101,7 @@ CMD:customskin(playerid, params[])
 		return SendErrorMessage(playerid, "คุณใส่ สกินไม่ถูกต้อง");
 	
 	SetPlayerSkin(playerid, CustomskinFacInfo[factionid][FactionSkin][skinid]);
+	PlayerInfo[playerid][pLastSkin] = CustomskinFacInfo[factionid][FactionSkin][skinid];
 	TogglePlayerControllable(playerid, 1);
 	ClearAnimations(playerid);
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
@@ -1303,7 +1304,6 @@ hook OnPlayerDisconnect(playerid, reason)
         	DestroyDynamicObject(PlayerInfo[playerid][pObject][i]);
 	}
 
-	PlayerInfo[playerid][pLastSkin] = GetPlayerSkin(playerid);
 	CharacterSave(playerid);
     return 1;
 }

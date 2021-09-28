@@ -15,6 +15,13 @@ hook OnPlayerConnect(playerid)
     return 1;
 }
 
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+    DeletePVar(playerid, "RefillFuelStats");
+    return 1;
+}
+
 forward LoadFuel();
 public LoadFuel()
 {
@@ -191,7 +198,7 @@ CMD:refill(playerid, params[])
         SetPVarInt(playerid, "RefillFuelStats", 1);
         return 1;
     }
-    else if(IsPlayerInElecVehicle(playerid))
+    else if(IsPlayerInAnyVehicle(playerid))
     {
         if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
             return SendErrorMessage(playerid, "คุณต้องเป็นคนขับ");
@@ -240,7 +247,16 @@ CMD:refill(playerid, params[])
 forward RefillFuelGascan(playerid, vehicleid);
 public RefillFuelGascan(playerid, vehicleid)
 {
-    if(VehicleInfo[vehicleid][eVehicleFuel] >= 70.0)
+    if(!GetNearestVehicle(playerid))
+    {
+
+        KillTimer(VehicleInfo[vehicleid][eVehicleFuelTimer]);
+        VehicleInfo[vehicleid][eVehicleFuelTimer] = -1;
+
+        DeletePVar(playerid, "RefillFuelStats");
+        return 1;
+    }
+    else if(VehicleInfo[vehicleid][eVehicleFuel] >= 70.0)
     {
         KillTimer(VehicleInfo[vehicleid][eVehicleFuelTimer]);
         VehicleInfo[vehicleid][eVehicleFuelTimer] = -1;

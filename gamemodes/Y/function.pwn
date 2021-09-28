@@ -434,17 +434,14 @@ stock ShowCharacterStats(playerid, playerb)
 	// playerb = player receiving stats;
 	
 	new 
-		vehicle_key[20],
 		duplicate_key[20],
 		business_key[20] = "None"
 	;
-	
-	if(!PlayerInfo[playerid][pVehicleSpawned])
-		vehicle_key = "ไม่มี";
-	else format(vehicle_key, 32, "%d", PlayerInfo[playerid][pVehicleSpawnedID]);
+
 	
 	if(PlayerInfo[playerid][pDuplicateKey] == INVALID_VEHICLE_ID)
 		duplicate_key = "ไม่มี";
+
 	else format(duplicate_key, 32, "%d", PlayerInfo[playerid][pDuplicateKey]); 
 	
 	for(new i = 1; i < MAX_BUSINESS; i++)
@@ -466,7 +463,7 @@ stock ShowCharacterStats(playerid, playerb)
 	SendClientMessageEx(playerb, COLOR_GRAD2, "อาวุธ: อาวุธ หลัก:[%s] กระสุน:[%d] อาวุธสำรอง:[%s] กระสุน:[%d]", ShowPlayerWeapons(playerid, 4), PlayerInfo[playerid][pGunAmmo][3], ShowPlayerWeapons(playerid, 3), PlayerInfo[playerid][pGunAmmo][2]);
 	SendClientMessageEx(playerb, COLOR_GRAD1, "ช่องเก็บของ: เบอร์โทรศัพท์:[%d] วิทยุ:[%s] แชแนล:[%d] แมส:[%s] Melee:[%s]", PlayerInfo[playerid][pPhone], (PlayerInfo[playerid][pHasRadio] != true) ? ("ไม่มี") : ("มี"), PlayerInfo[playerid][pRadio][PlayerInfo[playerid][pMainSlot]], (PlayerInfo[playerid][pHasMask] != true) ? ("ไม่มี") : ("มี"), ShowPlayerWeapons(playerid, 1));
 	SendClientMessageEx(playerb, COLOR_GRAD2, "การเงิน: เงินในตัว:[$%s] เงินในธนาคาร:[$%s] เงินรายชัวโมง:[$%s] Bitsamp:[%.5f]", MoneyFormat(PlayerInfo[playerid][pCash]), MoneyFormat(PlayerInfo[playerid][pBank]), MoneyFormat(PlayerInfo[playerid][pPaycheck]), PlayerInfo[playerid][pBTC]);
-	SendClientMessageEx(playerb, COLOR_GRAD1, "อื่นๆ: กุญแจรถ:[%s] กุญแจสำรอง:[%s] กุญแจกิจการ:[%s]  กุญแจบ้านสำรอง:[%d] กุจแจกิจการสำรอง [%d]", vehicle_key, duplicate_key, business_key, PlayerInfo[playerid][pHouseKey], PlayerInfo[playerid][pBusinessKey]);	
+	SendClientMessageEx(playerb, COLOR_GRAD1, "อื่นๆ: กุญแจรถสำรอง:[%s] กุญแจกิจการ:[%s]  กุญแจบ้านสำรอง:[%d] กุจแจกิจการสำรอง [%d]", duplicate_key, business_key, PlayerInfo[playerid][pHouseKey], PlayerInfo[playerid][pBusinessKey]);	
 
 	if(PlayerInfo[playerid][pJob] == 4)
 	{
@@ -685,7 +682,7 @@ public CallPaycheck()
 			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $500 จากการเป็นเลเวล 2. ))");
 
 		else if(PlayerInfo[i][pJob] == 3)
-			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $500 จากการเป็นอาชีพช่างยนต์ ))");
+			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $400 จากการเป็นอาชีพช่างยนต์ ))");
 		
 		format(str, sizeof(str), "~y~Payday~n~~w~Paycheck~n~~g~$%d", total_paycheck);
 		GameTextForPlayer(i, str, 3000, 1); 
@@ -752,8 +749,6 @@ public CallPaycheck()
 		}
 		
 
-		PlayerInfo[i][pPaycheck] += 5000;
-		SendClientMessage(i, COLOR_LIGHTRED, "มีการชดเชย Paycheck ให้จากการเกิดปัญหาของเซืร์ฟเวอร์ $5,000");
 		DelevehicleVar();
 		CharacterSave(i); 
 		Saveglobal();		
@@ -767,7 +762,7 @@ public CallPaycheck()
 
 stock DelevehicleVar()
 {
-	new bool:respawn, query[MAX_STRING];
+	new bool:respawn/*,query[MAX_STRING]*/;
 
 	for(new v = 1; v < MAX_VEHICLES; v++) 
 	{
@@ -778,6 +773,9 @@ stock DelevehicleVar()
 			continue;
 
 		if(VehicleInfo[v][eVehicleFaction])
+			continue;
+
+		if(VehicleInfo[v][eVehicleCarPark])
 			continue;
 
 			
@@ -796,8 +794,8 @@ stock DelevehicleVar()
 
 
 		if (respawn) {
-			mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0',`pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",VehicleInfo[v][eVehicleOwnerDBID]);
-         	mysql_tquery(dbCon, query);
+			/*mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0',`pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",VehicleInfo[v][eVehicleOwnerDBID]);
+         	mysql_tquery(dbCon, query);*/
 
 			ResetVehicleVars(v);
 			DestroyVehicle(v);
@@ -1062,18 +1060,6 @@ stock SetPlayerSpawn(playerid)
         SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
         PlayerInfo[playerid][pSpectating] = INVALID_PLAYER_ID;
         StopAudioStreamForPlayer(playerid);
-
-        /*if(PlayerInfo[playerid][pPoliceDuty] || PlayerInfo[playerid][pSheriffDuty] || PlayerInfo[playerid][pSADCRDuty])
-        {
-            GivePlayerWeapon(playerid, 24, 100);
-			GivePlayerWeapon(playerid, 3, 1);
-			GivePlayerWeapon(playerid, 41, 350);
-        }
-        else if(PlayerInfo[playerid][pMedicDuty])
-        {
-            GivePlayerWeapon(playerid, 42, 500);
-        }*/
-
         RemovePlayerWeapon(playerid, 1);
     }
     else 

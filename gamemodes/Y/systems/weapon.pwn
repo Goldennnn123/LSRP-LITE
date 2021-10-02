@@ -538,7 +538,11 @@ public OnPlayerWounded(playerid, killerid, reason)
 	SetPlayerTeam(playerid, PLAYER_STATE_WOUNDED);
 	ResetPlayerWeapons(playerid);
 
-
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(playerid, x, y, z);
+	SetPlayerPos(playerid, x, y, z);
+	SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(playerid));
+	
 	SendClientMessage(playerid, COLOR_RED, "ตอนนี้คุณบาดเจ็บสาหัสคุณยังไม่ตาย");
 	SendClientMessage(playerid, COLOR_RED, "สามารถยอมรับการตายโดยการพิมพ์: /acceptdeath."); 
 	return 1;

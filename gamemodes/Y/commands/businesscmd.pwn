@@ -24,7 +24,7 @@ CMD:buybiz(playerid,params[])
     
     if(b_id != 0)
     {
-        if(CountPlayerBusiness(playerid))
+        if(CountPlayerBusiness(playerid) > 10)
         {
             SendErrorMessage(playerid, "คุณเป็นเจ้าของกิจการอื่นอยู่");
             return 1;
@@ -483,7 +483,28 @@ CMD:advertisements(playerid, params[])
 alias:givebusinesskey("givebizkey")
 CMD:givebusinesskey(playerid, params[])
 {
-    
+    if(!IsPlayerInBusiness(playerid))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในกิจการของคุณ");
+
+    new id = PlayerInfo[playerid][pInsideBusiness];
+
+    if(BusinessInfo[id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
+        return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าของกิจการ");
+
+    new tagetid;
+    if(sscanf(params, "u", tagetid))
+        return SendUsageMessage(playerid, "/givebusinesskey <ชื่อบางส่วน/ไอดี> ");
+
+
+    if(!IsPlayerNearPlayer(playerid, tagetid, 4.0))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ใกล้ %s", ReturnRealName(playerid));
+
+
+    PlayerInfo[tagetid][pBusinessKey] = id;
+
+    GiveMoney(playerid, -1000);
+    SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ให้กุญแจสำรองของกิจการของคุณกับ %s เรียบร้อยแล้ว คุณเสียเงินค่ากุญแจสำรองกิจการไป $1,000", ReturnRealName(tagetid));
+    SendClientMessageEx(tagetid, COLOR_LIGHTGREEN, "คุณได้รับกุจแจกิจการจาก %s หมายเลขกิจการ %d", ReturnRealName(playerid), id); 
     return 1;
 }
 

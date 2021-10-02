@@ -1,8 +1,14 @@
-new arrest_icon;
+new arrest_icon, getcar_picon;
+
+
+///215.239 -2194.590 13.554 314.820 0 0
+
+//2147.152,-2192.154,13.730,314.507 จุดที่รถจะเ spawn ออกมา
 
 hook OnGameModeInit()
 {
 	arrest_icon = CreateDynamicPickup(1239, 2, 226.9767,114.8129,999.0156, -1,-1);
+	getcar_picon = CreateDynamicPickup(19134, 2, 2140.071,-2197.955,13.554, -1, -1);
 	return 1;
 }
 
@@ -11,6 +17,8 @@ hook OnPlayerConnect(playerid)
 	PlayerInfo[playerid][pArrest] = false;
 	PlayerInfo[playerid][pArrestBy] = 0;
 	PlayerInfo[playerid][pArrestTime] = 0;
+	
+	SetPVarInt(playerid,"PlayerGetVehicle", 0);
 	return 1;
 }
 
@@ -19,6 +27,73 @@ hook OP_PickUpDynamicPickup(playerid, STREAMER_TAG_PICKUP:pickupid)
 	if(pickupid == arrest_icon)
 	{
 		SendUsageMessage(playerid, "/arrest <ชื่อบางส่วน/ไอดี> <ข้อหา> <เวลา: นาที> <ห้องขัง 1-4>");
+		return 1;
+	}
+	else if(pickupid == getcar_picon)
+	{
+		if(ReturnFactionJob(playerid) != 1)
+			return 1;
+
+
+		if(!IsPlayerInAnyVehicle(playerid))
+		{
+			new str[255], longstr[255];
+
+			format(str, sizeof(str), "Police LS\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Police LV\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Police Ranger	\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Police SF\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "HPV1000\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "FBI Truck\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Police Maverick\n");
+			strcat(longstr,str);
+
+
+			inline police_getcar(id, dialogid, response, listitem, string:inputtext[])
+			{
+				#pragma unused id, dialogid, listitem, inputtext
+
+				if(!response)
+				{
+					return 1;
+				}
+				if(response)
+				{
+					switch(listitem)
+					{
+						case 0: SpawnVehicleFaction(playerid, 596, 0, 1);
+					}
+				}
+			}
+
+			Dialog_ShowCallback(playerid, using inline police_getcar, DIALOG_STYLE_LIST, "POLCIE CAR", longstr, "ยืนยัน", "ยกเลิก");
+			return 1;
+		}
+		else
+		{
+			new vehicleid = GetPlayerVehicleID(playerid);
+
+
+			if(VehicleInfo[vehicleid][eVehicleFaction] != PlayerInfo[playerid][pFaction])
+				return 1;
+
+
+			ResetVehicleVars(vehicleid);
+			DestroyVehicle(vehicleid);
+		}
+
 		return 1;
 	}
 	return 1;
@@ -469,13 +544,10 @@ CMD:arrest(playerid, params[])
     if(PlayerInfo[playerid][pDuty] == false)
         return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
 
-	if(!IsPlayerInRangeOfPoint(playerid, 2.5, 226.9767,114.8129,999.0156))
-		return SendErrorMessage(playerid, "คุณไม่ได้อยุ่จุดส่งคุกของผู้ต้องหา");
-
 	new tagetid,reason[255],time, room;
 
 	if(sscanf(params, "us[255]dd", tagetid, reason, time, room))
-		return SendUsageMessage(playerid, "/arrest <ชื่อบางส่วน/ไอดี> <ข้อหา> <เวลา : นาที> <ห้องขัง 1-4>");
+		return SendUsageMessage(playerid, "/arrest <ชื่อบางส่วน/ไอดี> <ข้อหา> <เวลา : นาที> <ห้องขัง 1-3>");
 
 	if(!IsPlayerConnected(tagetid))
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
@@ -483,8 +555,8 @@ CMD:arrest(playerid, params[])
 	if(IsPlayerLogin(tagetid))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
 
-	if(!IsPlayerInRangeOfPoint(tagetid, 2.5, 226.9767,114.8129,999.0156))
-		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ในจุดส่งคุก");
+	if(!IsPlayerNearPlayer(playerid, tagetid, 3.0))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้อยู่ใกล้คุณ");
 
 	if(strlen(reason) < 5 || strlen(reason) > 250)
 		return SendErrorMessage(playerid, "กรอกข้อหาให้ถูกต้อง ห้ามน้อยกว่า 5 และห้ามเกิน 250");
@@ -492,8 +564,8 @@ CMD:arrest(playerid, params[])
 	if(time < 1 || time > 600)
 		return SendErrorMessage(playerid, "กรอกเวลาให้ถูกต้อง ห้ามน้อยกว่า 1 และห้ามมากกว่า 600 นาที");
 
-	if(room < 1 || room > 4)
-		return SendErrorMessage(playerid, "กรอกห้องขังที่จะส่งให้ผู้ต้องกาให้ถูกต้อง 1-4");
+	if(room < 1 || room > 3)
+		return SendErrorMessage(playerid, "กรอกห้องขังที่จะส่งให้ผู้ต้องกาให้ถูกต้อง 1-3");
 
 	Arrest_Jail(playerid, tagetid, reason, time, room);
 
@@ -715,6 +787,39 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	        else DetachTrailerFromVehicle(playerTowTruck);
 	    }
 	}
+	else if(RELEASED(KEY_CTRL_BACK))
+	{
+		if(!IsPlayerInRangeOfPoint(playerid, 3.0, 2140.071,-2197.955,13.554))
+			return 1;
+
+		if(GetPlayerVirtualWorld(playerid) != 0)
+			return 1;
+
+		if(IsPlayerInAnyVehicle(playerid))
+			return 1;
+
+		if(ReturnFactionJob(playerid) != 1)
+			return 1;
+
+		new vehicleid = GetPlayerNearVehicle(playerid);
+
+		if(vehicleid == INVALID_VEHICLE_ID)
+		{
+			ShowVehicleSpawnMenuFaction(playerid);
+			return 1;
+		}
+
+
+		if(VehicleInfo[vehicleid][eVehicleFaction] != PlayerInfo[playerid][pFaction])
+			return ShowVehicleSpawnMenuFaction(playerid);
+
+		
+		ResetVehicleVars(vehicleid);
+		DestroyVehicle(vehicleid);
+		SendClientMessage(playerid, COLOR_LIGHTGREEN, "You Are Collect Vehicles");
+		SetPVarInt(playerid,"PlayerGetVehicle", 0);
+		return 1;
+	}
 	return 1;
 }
 
@@ -795,28 +900,28 @@ stock Arrest_Jail(playerid, tagetid, reason[], time, room)
 	{
 		case 1:
 		{
-			SetPlayerPos(tagetid, 227.1921,108.9945,999.0156);
-			SetPlayerVirtualWorld(tagetid, 10001);
-			SetPlayerInterior(tagetid, 10);
+			SetPlayerPos(tagetid, 1408.480,-3.796,1000.964);
+			SetPlayerVirtualWorld(tagetid, 50835);
+			SetPlayerInterior(tagetid, 3);
 		}
 		case 2:
 		{
-			SetPlayerPos(tagetid, 223.4052,109.4984,999.0156);
-			SetPlayerVirtualWorld(tagetid, 10001);
-			SetPlayerInterior(tagetid, 10);
+			SetPlayerPos(tagetid, 1405.166,-3.539,1000.964);
+			SetPlayerVirtualWorld(tagetid, 50835);
+			SetPlayerInterior(tagetid, 3);
 		}
 		case 3:
 		{
-			SetPlayerPos(tagetid,219.6822,110.2353,999.0156);
-			SetPlayerVirtualWorld(tagetid, 10001);
-			SetPlayerInterior(tagetid, 10);
+			SetPlayerPos(tagetid,1402.111,-3.375,1000.964);
+			SetPlayerVirtualWorld(tagetid, 50835);
+			SetPlayerInterior(tagetid, 3);
 		}
-		case 4:
+		/*case 4:
 		{
 			SetPlayerPos(tagetid,215.4856,109.6158,999.0156);
 			SetPlayerVirtualWorld(tagetid, 10001);
 			SetPlayerInterior(tagetid, 10);
-		}
+		}*/
 	}
 	CharacterSave(tagetid);
 	return 1;
@@ -831,30 +936,30 @@ stock ArrestConecterJail(playerid, time, room)
 	{
 		case 1:
 		{
-			SetPlayerPos(playerid, 227.1921,108.9945,999.0156+1);
-			SetPlayerVirtualWorld(playerid, 10001);
+			SetPlayerPos(playerid, 1408.480,-3.796,1000.964+1);
+			SetPlayerVirtualWorld(playerid, 50835);
 			SetPlayerInterior(playerid, 10);
 			SetTimerEx("Freeze2Sec", 2000, false, "d", playerid);
 
 		}
 		case 2:
 		{
-			SetPlayerPos(playerid, 223.4052,109.4984,999.0156+1);
-			SetPlayerVirtualWorld(playerid, 10001);
+			SetPlayerPos(playerid, 1405.166,-3.539,1000.964+1);
+			SetPlayerVirtualWorld(playerid, 50835);
 			SetPlayerInterior(playerid, 10);
 			SetTimerEx("Freeze2Sec", 2000, false, "d", playerid);
 		}
 		case 3:
 		{
 			SetPlayerPos(playerid,219.6822,110.2353,999.0156+1);
-			SetPlayerVirtualWorld(playerid, 10001);
+			SetPlayerVirtualWorld(playerid, 50835);
 			SetPlayerInterior(playerid, 10);
 			SetTimerEx("Freeze2Sec", 2000, false, "d", playerid);
 		}
 		case 4:
 		{
-			SetPlayerPos(playerid,215.4856,109.6158,999.0156+1);
-			SetPlayerVirtualWorld(playerid, 10001);
+			SetPlayerPos(playerid,1402.111,-3.375,1000.964+1);
+			SetPlayerVirtualWorld(playerid, 50835);
 			SetPlayerInterior(playerid, 10);
 			SetTimerEx("Freeze2Sec", 2000, false, "d", playerid);
 		}
@@ -892,5 +997,118 @@ stock ShowFines(playerid, tagerid)
 	}
 
 	Dialog_Show(playerid, DIALOG_FINES_LIST, DIALOG_STYLE_TABLIST_HEADERS, "ใบสั่ง", longstr, "ยืนยัน", "ยกเลิก");
+	return 1;
+}
+
+
+stock ShowVehicleSpawnMenuFaction(playerid)
+{
+
+	if(ReturnFactionJob(playerid) == 1)
+	{
+		if(!IsPlayerInAnyVehicle(playerid))
+		{
+			new str[255], longstr[255];
+
+			format(str, sizeof(str), "Police LS\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Police LV\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Police Ranger	\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Police SF\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "HPV1000\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "FBI Truck\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Police Maverick\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Tow Truck\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Premier\n");
+			strcat(longstr,str);
+
+			format(str, sizeof(str), "Sultan\n");
+			strcat(longstr,str);
+
+
+			inline police_getcar(id, dialogid, response, listitem, string:inputtext[])
+			{
+				#pragma unused id, dialogid, listitem, inputtext
+
+				if(!response)
+				{
+					return 1;
+				}
+				if(response)
+				{
+					switch(listitem)
+					{
+						case 0: SpawnVehicleFaction(playerid, 596, 0, 1);
+						case 1: SpawnVehicleFaction(playerid, 598, 0, 1);
+						case 2: SpawnVehicleFaction(playerid, 599, 0, 1);
+						case 3: SpawnVehicleFaction(playerid, 597, 0, 1);
+						case 4: SpawnVehicleFaction(playerid, 523, 0, 1);
+						case 5: SpawnVehicleFaction(playerid, 528, 0, 1);
+						case 6: SpawnVehicleFaction(playerid, 497, 0, 1);
+						case 7: SpawnVehicleFaction(playerid, 525, 0, 1);
+						case 8: SpawnVehicleFaction(playerid, 426, 0, 0);
+						case 9: SpawnVehicleFaction(playerid, 560, 0, 0);
+					}
+				}
+			}
+
+			Dialog_ShowCallback(playerid, using inline police_getcar, DIALOG_STYLE_LIST, "POLCIE CAR", longstr, "ยืนยัน", "ยกเลิก");
+			return 1;
+		}
+	}
+	return 1;
+}
+
+
+
+stock SpawnVehicleFaction(playerid, vehid, color1, color2)
+{
+
+	new vehicleid = INVALID_VEHICLE_ID;
+
+	if(GetPVarInt(playerid, "PlayerGetVehicle"))
+	{
+		ResetVehicleVars(vehicleid);
+		DestroyVehicle(vehicleid);
+	}
+
+
+	new Float: x, Float:y, Float:z, Float:a;
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, a);
+
+	vehicleid = CreateVehicle(vehid, x+3, y, z, 315.537, color1, color2, -1, 1);
+
+	if(vehicleid != INVALID_VEHICLE_ID)
+	{
+		VehicleInfo[vehicleid][eVehicleAdminSpawn] = false;
+		VehicleInfo[vehicleid][eVehicleFaction] = PlayerInfo[playerid][pFaction];
+		VehicleInfo[vehicleid][eVehicleModel] = vehid;
+		
+		VehicleInfo[vehicleid][eVehicleColor1] = color1;
+		VehicleInfo[vehicleid][eVehicleColor2] = color2;
+		VehicleInfo[vehicleid][eVehicleFuel] = Random(30, 100);
+		VehicleInfo[vehicleid][eVehicleEngine] = 100;
+		VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
+		VehicleInfo[vehicleid][eVehicleCarPark] = false;
+	}
+	
+	SetVehicleHp(vehicleid);
+	SetPVarInt(playerid,"PlayerGetVehicle", vehicleid);
 	return 1;
 }

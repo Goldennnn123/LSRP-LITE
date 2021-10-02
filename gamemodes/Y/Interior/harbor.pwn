@@ -18,6 +18,7 @@ hook OnGameModeInit()
 
     //Objects////////////////////////////////////////////////////////////////////////////////////////////////////////
     new tmpobjid;
+    
     tmpobjid = CreateDynamicObject(19458, 1417.141601, -31.910200, 999.860534, 0.000000, 90.000000, 0.000000, -1,1,-1, 300.00, 300.00); 
     SetDynamicObjectMaterial(tmpobjid, 0, 11100, "bendytunnel_sfse", "Bow_sub_walltiles", 0x00000000);
     tmpobjid = CreateDynamicObject(19458, 1417.146362, -22.302349, 999.860534, 0.000000, 90.000000, 0.000000, -1,1,-1, 300.00, 300.00); 

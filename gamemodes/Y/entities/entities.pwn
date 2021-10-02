@@ -446,7 +446,8 @@ enum E_BUSINESS_INFO
 	bool:BusinessMusic,
 	BusinessMusicLink[150],
 
-	BizDrink[11]
+	BizDrink[11],
+	BizTimeRob
 }
 new BusinessInfo[MAX_BUSINESS][E_BUSINESS_INFO];
 

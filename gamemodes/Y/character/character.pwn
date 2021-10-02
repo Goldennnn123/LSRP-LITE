@@ -465,6 +465,7 @@ public OnplayerCache(playerid)
 		{
 			PlayerInfo[playerid][pDuty] = true;
 			SendPoliceMessage(0x8D8DFFFF, "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendDiscordMessageExs("893062666820661280", "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 			
 			SetPlayerColor(playerid, COLOR_COP);
 			SetPlayerHealth(playerid, 100);

@@ -720,7 +720,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = PlayerInfo[playerid][pInsideBusiness];
 
-		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdminDuty])
+		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdminDuty] && PlayerInfo[playerid][pBusinessKey] != BusinessInfo[id][BusinessOwnerDBID])
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของกิจการนี้");
 
 		if(BusinessInfo[id][BusinessLock] == true)
@@ -742,7 +742,7 @@ CMD:lock(playerid,params[])
 	{
 		new id = IsPlayerNearBusiness(playerid);
 
-		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdminDuty])
+		if(BusinessInfo[id][BusinessOwnerDBID] !=  PlayerInfo[playerid][pDBID] && !PlayerInfo[playerid][pAdminDuty] && PlayerInfo[playerid][pBusinessKey] != BusinessInfo[id][BusinessOwnerDBID])
 			return SendErrorMessage(playerid,"คุณไม่ใช่เจ้าของกิจการนี้");
 
 		if(BusinessInfo[id][BusinessLock] == true)
@@ -1134,7 +1134,7 @@ CMD:place(playerid, params[])
 		}
 		
 		VehicleInfo[vehicleid][eVehicleWeapons][idx] = weaponid; 
-		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx] = PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)];
+		VehicleInfo[vehicleid][eVehicleWeaponsAmmo][idx] = GetPlayerAmmo(playerid);
 
 		PlayerInfo[playerid][pGunAmmo][ReturnWeaponIDSlot(weaponid)] = 0;
 		PlayerInfo[playerid][pGun][ReturnWeaponIDSlot(weaponid)] = 0;
@@ -2135,7 +2135,7 @@ CMD:leavegun(playerid, params[])
 	WeaponDropInfo[idx][eWeaponDroppedBy] = PlayerInfo[playerid][pDBID]; 
 	
 	WeaponDropInfo[idx][eWeaponWepID] = weaponid;
-	WeaponDropInfo[idx][eWeaponWepAmmo] = PlayerInfo[playerid][pGunAmmo][id];
+	WeaponDropInfo[idx][eWeaponWepAmmo] = GetPlayerAmmo(playerid);
 	
 	WeaponDropInfo[idx][eWeaponPos][0] = x;
 	WeaponDropInfo[idx][eWeaponPos][1] = y;

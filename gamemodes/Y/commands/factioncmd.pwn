@@ -384,8 +384,7 @@ CMD:duty(playerid, params[])
 			format(str, sizeof(str), "ได้หยิบตราประจำตัวออกมาจากตู้ล็อกเกอร์");
 			callcmd::me(playerid, str);
 
-			format(str, sizeof(str), "```HQ: %s %s has gone on duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-			SendDiscordMessageEx("889024270112538705", str);
+			SendDiscordMessageExs("893062666820661280", "```HQ: %s %s has gone on duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 
 			SetPlayerHealth(playerid, 100);
 			SetPlayerArmour(playerid, 100);
@@ -420,8 +419,7 @@ CMD:duty(playerid, params[])
 			format(str, sizeof(str), "วางตราประจำตัวไว้ที่ล็อคเกอร์");
 			callcmd::me(playerid, str);
 
-			format(str, sizeof(str), "```HQ: %s %s has gone off duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-			SendDiscordMessageEx("889024270112538705", str);
+			SendDiscordMessageExs("893062666820661280", "```HQ: %s %s has gone off duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 
 			SetPlayerArmour(playerid, 0);
 			SetPlayerHealth(playerid, 100);
@@ -1305,6 +1303,12 @@ hook OnPlayerDisconnect(playerid, reason)
 	}
 
 	CharacterSave(playerid);
+
+	if(PlayerInfo[playerid][pDuty])
+	{
+		if(ReturnFactionJob(playerid) == POLICE)
+			SendDiscordMessageExs("893062666820661280", "```HQ: %s %s has gone off duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+	}
     return 1;
 }
 
@@ -1426,6 +1430,7 @@ stock SendFactionMessageEx(playerid, color, const str[], {Float,_}:...)
 	}
 	return 1;
 }
+
 
 stock SendPoliceMessage(color, const str[], {Float,_}:...)
 {

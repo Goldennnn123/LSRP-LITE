@@ -17,6 +17,7 @@ new PlayerText:BuyFood[MAX_PLAYERS][8];
 hook OnPlayerConnect(playerid)
 {
     PlayerSelectBusiness[playerid] = 0;
+    DeletePVar(playerid, "ReadyRobing");
     return 1;
 }
 
@@ -885,7 +886,7 @@ stock SendBusinessType(playerid, id)
 		case BUSINESS_TYPE_BANK:
 		{
             if(!PlayerInfo[playerid][pSaving])
-                SendClientMessage(playerid, COLOR_DARKGREEN, "Bank: /saving สำหรับการฝากออมทรัพท์");
+                SendClientMessage(playerid, COLOR_DARKGREEN, "Bank: /saveing สำหรับการฝากออมทรัพท์");
 			SendClientMessage(playerid, COLOR_DARKGREEN, "Bank: /bank, /withdraw, /balance."); 
 		}
 		case BUSINESS_TYPE_STORE:
@@ -1207,6 +1208,84 @@ hook OP_EditDynamicObject(playerid, STREAMER_TAG_OBJECT:objectid, response, Floa
                 MealOder[playerid] = true;
                 return 1;
             }
+        }
+    }
+    return 1;
+}
+
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+    if(PlayerInfo[playerid][pInsideBusiness])
+    {
+        new id = PlayerInfo[playerid][pInsideBusiness];
+
+        if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE)
+            return 1;
+
+        if(BusinessInfo[id][BusinessOwnerDBID] != PlayerInfo[playerid][pDBID])
+        {
+            if(RELEASED(KEY_NO))
+            {
+                if(GetPVarInt(playerid, "ReadyRobing"))
+                    return 1;
+
+                if(gettime() - BusinessInfo[id][BizTimeRob] < 18000)//18000 = ชั่วโมง
+                    return SendErrorMessage(playerid, "ร้านนนี้ยังไม่สามารถที่จะปล้นได้");
+
+                
+                SetPVarInt(playerid, "ReadyRobing", id);
+
+                SendPoliceMessage(COLOR_COP, "สัญญาญการแจ้งเตือนที่ %s (211)", BusinessInfo[id][BusinessName]);
+
+                BusinessInfo[id][BizTimeRob] = gettime();
+                SendClientMessage(playerid, COLOR_LIGHTRED, "คุณกำลังปล้นร้านสะดวกซื้อ..... (รอ 20 วิ)");
+                SetTimerEx("RobingStoreWait", 20000, false, "dd", playerid, id);
+
+            }
+            return 1;
+        }
+    } 
+    return 1;
+}
+
+
+forward RobingStoreWait(playerid, id);
+public RobingStoreWait(playerid, id)
+{
+    if(PlayerInfo[playerid][pInsideBusiness] != id)
+    {   
+        DeletePVar(playerid, "ReadyRobing");
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ภายในกิจการที่คุณจะต้องการปล้นแล้ว");
+    }
+
+    if(!BusinessInfo[id][BusinessCash])
+    {   
+        DeletePVar(playerid, "ReadyRobing");
+        return SendErrorMessage(playerid, "เงินภายในร้านนนี้ไม่มีให้ปล้นแล้ว");
+    }
+
+    new money = Random(1, BusinessInfo[id][BusinessCash] / 2);
+
+    
+    GiveMoney(playerid, money);
+    BusinessInfo[id][BusinessCash] -= money;
+    SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณได้ปล้นกิจการ %s สำเร็จแล้วได้เงินมาจำนวน $%s", BusinessInfo[id][BusinessName], MoneyFormat(money));
+    return 1;
+}
+
+
+ptask BizTimeRobDely[1000]()
+{
+    for(new i = 1; i < MAX_BUSINESS; i++)
+    {
+        if(BusinessInfo[i][BizTimeRob])
+        {
+            BusinessInfo[i][BizTimeRob] --;
+        }
+        else
+        {
+            BusinessInfo[i][BizTimeRob] = 0;
         }
     }
     return 1;

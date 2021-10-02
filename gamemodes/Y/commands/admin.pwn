@@ -3098,7 +3098,7 @@ CMD:makebusiness(playerid,params[])
 	{
 		SendUsageMessage(playerid, "/makebusiness [ประเภท]");
 		SendUsageMessage(playerid, "Type: 1.ร้านค้า(24/7) 2.ร้านตัวแทนจำหน่ายรถ 3.ร้านปืน");
-		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร  6.คลับ 7.ร้านขายเสื้อผ้า");
+		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร  6.คลับ 7.ร้านขายเสื้อผ้า 8. บทบาท");
 		return 1;
 	}
 
@@ -3351,10 +3351,6 @@ CMD:deletevehicle(playerid, params[])
 
 
 	SendClientMessageEx(playerid, -1, "คุณได้ลบยานพาหนะของแฟคชั่น %s ไอดี %d",ReturnFactionNameEx(VehicleInfo[vehicleid][eVehicleFaction]), vehicleid);
-	new thread[MAX_STRING]; 
-
-	mysql_format(dbCon, thread, sizeof(thread), "DELETE FROM `vehicles` WHERE `VehicleDBID` = '%d'", VehicleInfo[vehicleid][eVehicleDBID]);
-	mysql_tquery(dbCon, thread);
 
 	VehicleInfo[vehicleid][eVehicleDBID] = 0;
 	VehicleInfo[vehicleid][eVehicleModel] = 0;

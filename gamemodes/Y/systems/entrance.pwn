@@ -163,8 +163,8 @@ forward OnPlayerExit(playerid, id);
 public OnPlayerExit(playerid, id)
 {
 	SetPlayerPos(playerid, EntranceInfo[id][EntranceLoc][0], EntranceInfo[id][EntranceLoc][1], EntranceInfo[id][EntranceLoc][2]);
-    //SetPlayerVirtualWorld(playerid, EntranceInfo[id][EntranceLocInID]);
-	//SetPlayerInterior(playerid, EntranceInfo[id][EntranceLocWorld]);
+    SetPlayerVirtualWorld(playerid, EntranceInfo[id][EntranceLocWorld]);
+	SetPlayerInterior(playerid, EntranceInfo[id][EntranceLocInID]);
     TogglePlayerControllable(playerid, 1);
     return 1;
 }

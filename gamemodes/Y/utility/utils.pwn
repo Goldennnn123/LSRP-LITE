@@ -108,6 +108,29 @@ stock GetNearestVehicle(playerid, except_player_vehicle = false)
 }
 
 
+stock GetPlayerNearVehicle(playerid)
+{
+	new bool:foundCar = false, vehicleid, Float:fetchPos[3];
+
+	for (new i = 0; i < MAX_VEHICLES; i++)
+		{
+		GetVehiclePos(i, fetchPos[0], fetchPos[1], fetchPos[2]);
+		if(IsPlayerInRangeOfPoint(playerid, 5.0, fetchPos[0], fetchPos[1], fetchPos[2]))
+		{
+			foundCar = true;
+			vehicleid = i; 
+			break; 
+		}
+	}
+
+	if(foundCar == true)
+	{
+		return vehicleid;
+	}
+	else return INVALID_VEHICLE_ID;
+}
+
+
 stock SendTeleportMessage(playerid)
 {
 	return SendClientMessage(playerid, COLOR_GREY, "คุณถูกเคลื่อยย้ายโดยผู้ดูแลระบบ"); 

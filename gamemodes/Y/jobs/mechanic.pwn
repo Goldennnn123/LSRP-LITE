@@ -531,6 +531,7 @@ CMD:buycomponents(playerid, params[])
         SendClientMessageEx(playerid, -1, "คุณได้ซื้อะไหล่ จำนวน "EMBED_GREENMONEY"%s ชิ้น "EMBED_WHITE"ราคาทั้งหมด: "EMBED_LIGHTRED"$%s", MoneyFormat(amount), MoneyFormat(price * amount));
         VehicleInfo[vehicleid][eVehicleComp]+=amount;
         GiveMoney(playerid, -price * amount);
+        SaveVehicle(vehicleid);
     }
     else
     {

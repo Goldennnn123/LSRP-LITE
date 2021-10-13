@@ -410,10 +410,11 @@ CMD:impound(playerid, params[])
 	if(!checked) {
 		GetVehicleZAngle(trailerid, a);
 		VehicleInfo[trailerid][eVehicleImpounded] = true;
-		VehicleInfo[trailerid][eVehicleImpoundPos][0] = x;
-		VehicleInfo[trailerid][eVehicleImpoundPos][1] = y;
-		VehicleInfo[trailerid][eVehicleImpoundPos][2] = z;
-		VehicleInfo[trailerid][eVehicleImpoundPos][3] = a;
+		VehicleInfo[trailerid][eVehicleCarPark] = true;
+		VehicleInfo[trailerid][eVehicleParkPos][0] = x;
+		VehicleInfo[trailerid][eVehicleParkPos][1] = y;
+		VehicleInfo[trailerid][eVehicleParkPos][2] = z;
+		VehicleInfo[trailerid][eVehicleParkPos][3] = a;
 		SetVehiclePos(trailerid, x, y, z);
 		SetVehicleZAngle(trailerid, a);
 		SaveVehicle(trailerid);
@@ -428,6 +429,16 @@ CMD:impound(playerid, params[])
 CMD:unimpound(playerid, params[])
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ"); 
+
+    if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != POLICE && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SHERIFF && FactionInfo[PlayerInfo[playerid][pFaction]][eFactionJob] != SADCR)
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่ ตำรวจ/นายอำเภอ/ข้าราชการเรือนจำ");
+
+    if(PlayerInfo[playerid][pDuty] == false)
+        return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่อยู่ในการทำหน้าที่ (off-duty)");
+
 	if(!GetPlayerVehicleID(playerid))
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่บนยานพหานะ");
 

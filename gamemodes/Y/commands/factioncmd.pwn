@@ -652,7 +652,7 @@ CMD:showbadge(playerid, params[])
 	new playerb;
 	
 	if(sscanf(params, "u", playerb))
-		return SendUsageMessage(playerid, "/showbadge [ชื่อบางส่วน/ไอดี]"); 
+		return SendUsageMessage(playerid, "/showbadge <ชื่อบางส่วน/ไอดี>"); 
 		
 	if(!IsPlayerConnected(playerb))
 		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");

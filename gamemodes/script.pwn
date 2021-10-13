@@ -399,7 +399,7 @@ public OnGameModeInit() {
     SendRconCommand("hostname "GM_HOST_NAME"");
     SetGameModeText(GM_VERSION);
 
-    SetNameTagDrawDistance(5.0);
+    SetNameTagDrawDistance(10.0);
     
     mysql_tquery(dbCon, "SELECT * FROM factions ORDER BY dbid ASC", "Query_LoadFactions");
     mysql_tquery(dbCon, "SELECT * FROM House ORDER BY HouseDBID", "Query_LoadHouse");

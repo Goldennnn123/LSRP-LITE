@@ -472,6 +472,29 @@ stock ResetVehicleVars(vehicleid)
 	VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
 
 	VehicleInfo[vehicleid][eVehicleCarPark] = true; 
+
+
+	Delete3DTextLabel(VehicleInfo[vehicleid][eVehicleCarsign]); 
+	VehicleInfo[vehicleid][eVehicleHasCarsign] = false;
+	VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+
+	//ปิดไฟ
+	VehicleInfo[vehicleid][eVehicleLights] = false;
+	ToggleVehicleLights(vehicleid, false);
+
+
+	////ดับเครื่องยนต์
+	ToggleVehicleEngine(vehicleid, false); 
+	VehicleInfo[vehicleid][eVehicleEngineStatus] = false;
+
+	///ลบ ELM
+	KillTimer(VehicleInfo[vehicleid][eVehicleElmTimer]);
+	VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
+	VehicleInfo[vehicleid][eVehicleFuel] = 100.0;
+
+
+	DestroyDynamicObject(VehicleSiren[vehicleid]);
+	VehicleSiren[vehicleid] = INVALID_OBJECT_ID;
 	return 1;
 }
 
@@ -710,7 +733,7 @@ CMD:engine(playerid, params[])
 		return SendErrorMessage(playerid, "ยานพาหนะของคุณแบตตารี่หมด กรุณาไปเติมก่อน");
 
 	if(VehicleInfo[vehicleid][eVehicleImpounded])
-		return SendErrorMessage(playerid, "ยานพาหนะถูกยึด พิมพ์ /unimpound เพื่อนำรถคืน จะต้องเสียง $1,500");
+		return SendErrorMessage(playerid, "ยานพาพนะคันนี้ถูกยึดอยู่โปรดติดต่อ เจ้าหน้าที่ตำรวจให้ทำการยกเลิกการยึดยานพาหนะ");
 	
 	if(VehicleInfo[vehicleid][eVehicleFaction] > 0)
 	{

@@ -3460,7 +3460,7 @@ CMD:givemoney(playerid, params[])
 
 CMD:callpaycheck(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1339)
+	if(PlayerInfo[playerid][pAdmin] < 1337)
 		return 0;
 		
 	Dialog_Show(playerid,  DIALOG_CALLPAYCHECK, DIALOG_STYLE_MSGBOX,"Confirmation", "คุณมั่นใจใช่ไหมที่จะทำการชดเชยค่ารายชัวโมงในเวลานี้?\n\nการกระทำของคุณอาจจะผิดกฏของผู้ดูแลระบบได้", "ยืนยัน", "ยกเลิก"); 

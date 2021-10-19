@@ -199,6 +199,9 @@ CMD:bank(playerid, params[])
 		
 	if(amount < 1 || amount > PlayerInfo[playerid][pCash])
 		return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ"); 
+
+    if(PlayerInfo[playerid][pSaving])
+        return SendErrorMessage(playerid, "คุณไม่สามารถถอนหรือฝากเงินเข้าไปเพิ่มได้จนกว่าคุณจะยกเลิกสัญญา");
 		
 	PlayerInfo[playerid][pBank]+= amount;
 	GiveMoney(playerid, -amount); 
@@ -209,7 +212,7 @@ CMD:bank(playerid, params[])
 }
 new PlayerSavingAdd[MAX_PLAYERS];
 
-CMD:saveing(playerid, params[])
+CMD:saving(playerid, params[])
 {
     if(PlayerInfo[playerid][pSaving])
         return SendErrorMessage(playerid, "คุณได้ทำการเริ่มฝากออมทรัพย์อยู่แล้ว");

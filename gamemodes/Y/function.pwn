@@ -636,24 +636,24 @@ public CallPaycheck()
 		//Add an auto-level up on paycheck for level 1 and 2 to prevent paycheck farming.
 		if(!PlayerInfo[i][pSaving])
 		{
-			interest_saving = 0.05;
+			interest_saving = 0.03;
 			interest = PlayerInfo[i][pBank] * interest_saving;
 		}
 		else
 		{
-			if(PlayerInfo[i][pBank] >= 20000000)
+			if(PlayerInfo[i][pBank] >= 10000000)
 			{
 				PlayerInfo[i][pSaving] = false;
 				SendClientMessage(i, COLOR_ORANGE, "ขอแสดงความยินดีด้วยคุณได้มียอดเงินฝากออมทรัพ ถึงยอดที่กำหนดแล้วสามารถไปถอนเงินได้ที่ธนาคารของคุณ");
 			}
 
-			interest_saving = 0.06;
+			interest_saving = 0.04;
 			interest = PlayerInfo[i][pBank] * interest_saving; 
 		}
 
 		interest_convert = floatround(interest, floatround_round); 
 	
-		total_tax = floatround((PlayerInfo[i][pBank] * 0.04), floatround_round);
+		total_tax = floatround((PlayerInfo[i][pBank] * 0.03), floatround_round);
 		
 		SendClientMessageEx(i, COLOR_WHITE, "SERVER TIME:[ %s ]", ReturnHour()); 
 		
@@ -696,8 +696,8 @@ public CallPaycheck()
 
 		if(PlayerInfo[i][pTicket] == GlobalInfo[G_Ticket])
 		{
-			SendClientMessageEx(i, COLOR_GENANNOUNCE, "คุณถูกรางวัลจากการซื้อ ล็อตตารี่ %d ได้รับเงิน $2,000",GlobalInfo[G_Ticket]);
-			GiveMoney(i, 2000);
+			SendClientMessageEx(i, COLOR_GENANNOUNCE, "คุณถูกรางวัลจากการซื้อ ล็อตตารี่ %d ได้รับเงิน $200",GlobalInfo[G_Ticket]);
+			GiveMoney(i, 200);
 			format(PlayerInfo[i][pTicket], PlayerInfo[i][pTicket],"");
 		}
 		SendClientMessageEx(i, COLOR_GREY, "เลขล็อตตารี่ออก คือ: %s",  GlobalInfo[G_Ticket]);

@@ -11,6 +11,7 @@
 
 # Vendor directory for dependencies
 dependencies/
+YS/
 
 # Dependency versions lockfile
 pawn.lock

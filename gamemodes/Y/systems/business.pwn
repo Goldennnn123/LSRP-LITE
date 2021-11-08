@@ -149,6 +149,7 @@ stock ShowViewBusiness(playerid)
 {
     new str[182], longstr[556], str_b[MAX_STRING];
 	new businessid; 
+    
 	for (new i = 1; i < MAX_BUSINESS; i ++)
 	{
 		if(!BusinessInfo[i][BusinessDBID])

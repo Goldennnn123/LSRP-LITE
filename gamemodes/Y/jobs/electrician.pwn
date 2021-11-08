@@ -225,7 +225,7 @@ public OnRepiarEle(playerid, Float:x, Float:y, Float:z)
         DestroyDynamicObject(PlayerObjectEle[playerid]);
 
 
-    new money = Random(140, 1000);
+    new money = Random(50, 100);
 
     SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ทำการซ่อมเสาไฟฟ้าที่ชำรุดสำเร็จเสร็จสิ้นแล้ว ได้เงินมาจำนวน $%s", MoneyFormat(money));
     SendClientMessageEx(playerid, COLOR_DEPT, "เสียภาษีรายได้ ร้อยละ 0.07 ($%s)",MoneyFormat(floatround(money * 0.07, floatround_round)));

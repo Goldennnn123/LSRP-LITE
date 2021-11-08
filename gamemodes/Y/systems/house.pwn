@@ -1,8 +1,4 @@
 #include <YSI_Coding\y_hooks>
-new PlayerCreHouse[MAX_PLAYERS][90],
-    PlayerCreHousePrice[MAX_PLAYERS],
-    PlayerCreHouseLevel[MAX_PLAYERS];
-
 new PlayerSelectHouse[MAX_PLAYERS];
 new OnPlayerNereHouse[MAX_PLAYERS][MAX_HOUSE];
 
@@ -12,10 +8,6 @@ new PlayerText:PlayerSwicthOff[MAX_PLAYERS][1];
 
 hook OnPlayerConnect(playerid)
 {
-    PlayerCreHouse[playerid] = "";
-    PlayerCreHousePrice[playerid] = 0;
-    PlayerCreHouseLevel[playerid] = 0;
-
     PlayerSwicthOff[playerid][0] = CreatePlayerTextDraw(playerid, 316.000000, 2.000000, "_");
 	PlayerTextDrawFont(playerid, PlayerSwicthOff[playerid][0], 1);
 	PlayerTextDrawLetterSize(playerid, PlayerSwicthOff[playerid][0], 0.600000, 48.999988);
@@ -118,53 +110,55 @@ public Query_LoadHouse()
 }
 
 
-Dialog:DIALOG_CRE_HOUSE(playerid, response, listitem, inputtext[])
+forward MakeHouse(playerid, price, level, name[]);
+public MakeHouse(playerid, price, level, name[])
 {
-    if(!response)
-        return SendClientMessage(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FF0000} ยกเลิกการสร้างบ้าน");
+    new Float:x, Float:y, Float:z;
+    GetPlayerPos(playerid, x, y, z);
 
-    else
-    {  
-        new idx = 0;
+    new idx = 0;
 	
-        for (new i = 1; i < MAX_HOUSE; i ++)
+    for (new i = 1; i < MAX_HOUSE; i ++)
+    {
+        if(!HouseInfo[i][HouseDBID])
         {
-            if(!HouseInfo[i][HouseDBID])
-            {
-                idx = i; 
-                break;
-            }
+            idx = i; 
+            break;
         }
-        if(idx == 0)
-        {
-            return SendServerMessage(playerid, "สร้าบบ้านเกินกว่านี้ไม่ได้แล้ว (30)"); 
-        }
-        new Float:X,Float:Y,Float:Z, InsertHouse[MAX_STRING],str[MAX_STRING];
-        GetPlayerPos(playerid, X, Y, Z);
-
-        new Price = PlayerCreHousePrice[playerid];
-        new Level = PlayerCreHouseLevel[playerid];
-
-        mysql_format(dbCon, InsertHouse, sizeof(InsertHouse), "INSERT INTO house (`HouseName`,`HouseEntranceX`,`HouseEntranceY`,`HouseEntranceZ`,`HouseEntranceWorld`,`HouseEntranceInterior`,`HousePrice`,`HouseLevel`) VALUES('%e',%f,%f,%f,%i,%i,%i,%i)",PlayerCreHouse[playerid],X,Y,Z,GetPlayerVirtualWorld(playerid),GetPlayerInterior(playerid),Price,Level); 
-	    mysql_tquery(dbCon, InsertHouse);
-
-        HouseInfo[idx][HouseDBID] = idx;
-        HouseInfo[idx][HouseName] = PlayerCreHouse[playerid];
-        HouseInfo[idx][HouseEntrance][0] = X;
-        HouseInfo[idx][HouseEntrance][1] = Y;
-        HouseInfo[idx][HouseEntrance][2] = Z;
-        HouseInfo[idx][HouseEntranceWorld] = GetPlayerVirtualWorld(playerid);
-        HouseInfo[idx][HouseEntranceInterior] = GetPlayerInterior(playerid);
-
-        HouseInfo[idx][HousePrice] = Price;
-        HouseInfo[idx][HouseLevel] = Level;
-
-        HouseInfo[idx][HousePickup] = CreateDynamicPickup(1273, 23, HouseInfo[idx][HouseEntrance][0], HouseInfo[idx][HouseEntrance][1], HouseInfo[idx][HouseEntrance][2],-1,-1);
-        SendClientMessageEx(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FFFFFF} คุณได้สร้างบ้าน ID {66FFFF}%i {FFFFFF}แล้ว",HouseInfo[idx][HouseDBID]);
-
-        format(str, sizeof(str), "{27AE60}HOUSE {F39C12}SYSTEM:{FFA000} %s {FFFFFF}ได้สร้างบ้าน ID {66FFFF}%i {FFFFFF}แล้ว",ReturnRealName(playerid),HouseInfo[idx][HouseDBID]);
-		SendAdminMessage(2, str);
     }
+    if(idx == 0)
+    {
+        return SendServerMessage(playerid, "สร้าบบ้านเกินกว่านี้ไม่ได้แล้ว (300)"); 
+    }
+
+
+    
+    HouseInfo[idx][HouseDBID] = cache_insert_id();
+
+    if(!HouseInfo[idx][HouseDBID])
+        return SendErrorMessage(playerid, "มีข้อผิดพลาดในการสร้างบ้านโปรดตรวจสอบที่ตัวสคลิปต์ด้วย");
+
+
+    format(HouseInfo[idx][HouseName], 90, "%s",name);
+    HouseInfo[idx][HouseEntrance][0] = x;
+    HouseInfo[idx][HouseEntrance][1] = y;
+    HouseInfo[idx][HouseEntrance][2] = z;
+    HouseInfo[idx][HouseEntranceWorld] = GetPlayerVirtualWorld(playerid);
+    HouseInfo[idx][HouseEntranceInterior] = GetPlayerInterior(playerid);
+
+    HouseInfo[idx][HousePrice] = price;
+    HouseInfo[idx][HouseLevel] = level;
+
+    HouseInfo[idx][HouseInterior][0] = 244.411987;
+	HouseInfo[idx][HouseInterior][1] = 305.032989;
+	HouseInfo[idx][HouseInterior][2] = 999.148437;
+    HouseInfo[idx][HouseInteriorID] = 1;
+    HouseInfo[idx][HouseInteriorWorld] = random(99999);
+    Savehouse(idx);
+
+
+    SendClientMessageEx(playerid, COLOR_GREY, "คุณได้สร้างบ้านสำเร็จแล้ว %d(%s)", HouseInfo[idx][HouseDBID], HouseInfo[idx][HouseName]);
+    SendDiscordMessageExs("900267036163338300", "[%s] %s Create Property(House) At %s Property name: %s",  ReturnDate(), ReturnRealName(playerid), ReturnLocation(playerid), name);
     return 1;
 }
 

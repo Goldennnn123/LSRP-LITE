@@ -182,7 +182,7 @@ hook OnPlayerEnterCheckpoint(playerid, checkpointid) {
                 new vehicleid = GetPlayerVehicleID(playerid);
                 if(far_veh[playerid] == vehicleid) {
                     if (IsPlayerInRangeOfPoint(playerid, 5.0, -53.5525,70.3079,4.0933) || IsPlayerInRangeOfPoint(playerid, 5.0, -377.8374,-1433.8853,25.7266)) {
-                        new randmoney = 200 + random(125), farmString[60];
+                        new randmoney = 50 + random(100), farmString[60];
 
                         format(farmString, sizeof(farmString), "~w~you got some wheat and sold it for~n~~y~for %d$", randmoney);
                         GameTextForPlayer(playerid, farmString, 5000, 1);

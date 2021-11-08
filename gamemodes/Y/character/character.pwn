@@ -439,6 +439,12 @@ public Query_LoadCharacter(playerid)
 
 	cache_get_value_name_int(0, "pHouseKey",PlayerInfo[playerid][pHouseKey]);
 
+	cache_get_value_name_int(0, "pHasid_card",PlayerInfo[playerid][pHasid_card]);
+	cache_get_value_name(0, "pId_dob",PlayerInfo[playerid][pId_dob]);
+	cache_get_value_name_int(0, "pId_number",PlayerInfo[playerid][pId_number]);
+	cache_get_value_name(0, "pId_gebder",PlayerInfo[playerid][pId_gebder]);
+	cache_get_value_name(0, "pid_expire",PlayerInfo[playerid][pid_expire]);
+
 	new CheckAccount[MAX_STRING];
 	mysql_format(dbCon, CheckAccount, sizeof(CheckAccount), "SELECT * FROM `bannedlist` WHERE `MasterDBID` = '%d'",e_pAccountData[playerid][mDBID]);
 	mysql_tquery(dbCon, CheckAccount, "CheckBanAccount", "d",playerid);

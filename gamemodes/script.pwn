@@ -151,6 +151,7 @@ enum {
 #include "Y/systems/package.pwn"
 #include "Y/systems/tolls.pwn"
 #include "Y/systems/cim.pwn"
+#include "Y/systems/id_card/id_card.pwn"
 
 
 #include "Y/jobs/farmer.pwn"

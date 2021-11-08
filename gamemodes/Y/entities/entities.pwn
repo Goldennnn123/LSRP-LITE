@@ -192,6 +192,12 @@ enum E_PLAYER_DATA
 	pHouseKey,
 	pBusinessKey,
 	pGasCan,
+
+	bool:pHasid_card,
+	pId_dob[50],
+	pId_number,
+	pId_gebder[10],
+	pid_expire[50]
 };
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];

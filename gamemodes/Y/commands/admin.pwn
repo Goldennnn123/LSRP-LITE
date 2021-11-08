@@ -15,7 +15,7 @@ CMD:acmds(playerid, params[])
 	if(PlayerInfo[playerid][pAdmin] >= 2)
 	{
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /setarmour, /clearreports, /givegun, /clearpguns, /gotohouse, /gotofaction, /gotopoint,");
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /gotobusiness, /noooc, /backup, /repair.");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /gotobusiness, /noooc, /backup, /repair, /idlekick");
 		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /acceptwhitelist");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 3)
@@ -24,29 +24,49 @@ CMD:acmds(playerid, params[])
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 4)
 	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 4:{FFFFFF} /factions");
-	}
-	if(PlayerInfo[playerid][pAdmin] >= 5)
-	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 5:{FFFFFF} /makeleader, /makehouse, /viewhouse");
-	}
-	if(PlayerInfo[playerid][pAdmin] >= 1336)
-	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1336:{FFFFFF} /makebusiness, /viewbusiness");
-	}
-	if(PlayerInfo[playerid][pAdmin] >= 1337)
-	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1337:{FFFFFF} /maketester");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 4:{FFFFFF} /factions /makeleader, /makehouse /makebusiness, /viewbusiness");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 1338)
 	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1338:{FFFFFF} /restart");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1338:{FFFFFF} /restart /maketester /makefaction, /makeadmin");
 	}
 	if(PlayerInfo[playerid][pAdmin] >= 1339)
 	{
-		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1339:{FFFFFF} /makefaction, /makeadmin");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1339:{FFFFFF} คุณอยู่ในระบบ ผู้บริหารของเซิร์เวอร์แล้ว");
 	}
     return 1;
+}
+
+
+CMD:ahelp(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] >= 1)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /aduty, /forumname, /goto, /gethere, /a (achat), /showmain, /kick"); 
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /aunjail, /setint, /setworld, /setskin, /sethp, /reports, /ar (accept), /dr (disregard),"); 
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /slap, /freeze, /unfreeze, /spec, /specoff, /stats (id), /gotols, /respawncar /(p)layer(to)(p)layer"); 
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1:{FFFFFF} /gotocar, /getcar, /listmasks, /dropinfo, /aooc, /revice, /listweapons");
+	}
+	else if(PlayerInfo[playerid][pAdmin] >= 2)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /setarmour, /clearreports, /givegun, /clearpguns, /gotohouse, /gotofaction, /gotopos,");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /gotobusiness, /noooc, /backup, /repair, /acceptwhitelist");
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 2:{FFFFFF} /acceptwhitelist");
+	}
+	else if(PlayerInfo[playerid][pAdmin] >= 3)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 3:{FFFFFF} /spawncar, /despawncar, /pcar, /setstats, /setcar");
+	}
+	else if(PlayerInfo[playerid][pAdmin] >= 4)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 4:{FFFFFF} /factions /makeleader, /makehouse /makebusiness, /viewbusiness");
+
+	}
+	else if(PlayerInfo[playerid][pAdmin] >= 1338)
+	{
+		SendClientMessage(playerid, COLOR_DARKGREEN, "LEVEL 1338:{FFFFFF} /restart /makehelper /makefaction, /makeadmin");
+	}
+	return 1;
 }
 
 CMD:aduty(playerid, params[])
@@ -149,6 +169,8 @@ CMD:goto(playerid, params[])
 
 	PlayerInfo[playerid][pInsideProperty] = PlayerInfo[playerb][pInsideProperty]; 
 	PlayerInfo[playerid][pInsideBusiness] = PlayerInfo[playerb][pInsideBusiness];
+
+	SendDiscordMessageExs("900267036163338300", "[%s] %s Go to %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
 	return 1;
 }
 
@@ -425,6 +447,7 @@ CMD:kick(playerid, params[])
 	mysql_tquery(dbCon, insertLog); 
 
 	KickEx(playerb);
+	SendDiscordMessageExs("900267036163338300", "[%s] %s Kick %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
 	return 1;
 }
 
@@ -476,6 +499,7 @@ CMD:idlekick(playerid, params[])
 	mysql_tquery(dbCon, insertLog); 
 
 	KickEx(playerb);
+	SendDiscordMessageExs("900267036163338300", "[%s] %s Kick %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
 	return 1;
 }
 
@@ -526,6 +550,7 @@ CMD:ban(playerid, params[])
 	mysql_tquery(dbCon, insertLog); 
 	
 	KickEx(playerb);
+	SendDiscordMessageExs("900267036163338300", "[%s] %s Ban %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
 	return 1;
 }
 
@@ -1135,6 +1160,7 @@ CMD:respawncar(playerid, params[])
 		
 		format(str, sizeof(str), "%s ได้ส่งรถ ไอดี:%d กลับจุดเกิดแล้ว", ReturnName(playerid), vehicleid);
 		SendAdminMessage(1, str);
+		SetVehicleComponent(vehicleid);
 		return 1;
 	}
 	if(sscanf(params, "d", vehicleid))
@@ -1144,6 +1170,7 @@ CMD:respawncar(playerid, params[])
 		return SendErrorMessage(playerid, "ไม่มีไอดีรถที่ต้องการ");
 		
 	SetVehicleToRespawnEx(vehicleid);
+	SetVehicleComponent(vehicleid);
 	
 	foreach(new i : Player)
 	{
@@ -2422,6 +2449,9 @@ CMD:setstats(playerid, params[])
 		}
 		case 4:
 		{
+			if(PlayerInfo[playerid][pAdmin] < 4)
+				return SendUnauthMessage(playerid);
+
 			if(value == -1)
 				return SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] 4 [value required]"); 
 		
@@ -2458,6 +2488,9 @@ CMD:setstats(playerid, params[])
 		}
 		case 7:
 		{
+			if(PlayerInfo[playerid][pAdmin] < 4)
+				return SendUnauthMessage(playerid);
+
 			if(value == -1)
 				return SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] 7 [value required]");
 				
@@ -2469,6 +2502,9 @@ CMD:setstats(playerid, params[])
 		}
 		case 8:
 		{
+			if(PlayerInfo[playerid][pAdmin] < 4)
+				return SendUnauthMessage(playerid);
+
 			if(value == -1)
 				return SendUsageMessage(playerid, "/setstats [ชื่อบางส่วน/ไอดี] 8 [value required]"); 
 		
@@ -2484,33 +2520,6 @@ CMD:setstats(playerid, params[])
 		}
 		default: return SendErrorMessage(playerid, "ใส่ไม่ถูกต้อง");
 	}
-	return 1;
-}
-
-CMD:setmoney(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 3)
-		return SendUnauthMessage(playerid);
-
-	new playerb, value, str[128];
-	
-	if(sscanf(params, "ui", playerb, value))
-		return SendUsageMessage(playerid, "/setmoney < ชื่อบางส่วน/ไอดี > < จำนวน >");
-		
-	if(!IsPlayerConnected(playerb))
-		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
-		
-	if(IsPlayerLogin(playerb))
-		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
-		
-	ResetPlayerMoney(playerb);
-	PlayerInfo[playerb][pCash] = 0;
-
-	GiveMoney(playerb, value);
-	SendServerMessage(playerb, "คุณได้รับเงินจำนวน $%s จาก ผู้ดูแลระบบ %s", MoneyFormat(value), ReturnName(playerid));
-
-	format(str, sizeof(str), "%s เซ็ตเงินจำนวน $%s ให้กับ %s", ReturnName(playerid), MoneyFormat(value), ReturnName(playerb));
-	SendAdminMessage(3, str);
 	return 1;
 }
 
@@ -2693,6 +2702,33 @@ CMD:setcar(playerid, params[])
 // Admin Level: 3;
 
 // Admin Level: 4:
+CMD:setmoney(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4)
+		return SendUnauthMessage(playerid);
+
+	new playerb, value, str[128];
+	
+	if(sscanf(params, "ui", playerb, value))
+		return SendUsageMessage(playerid, "/setmoney < ชื่อบางส่วน/ไอดี > < จำนวน >");
+		
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+		
+	if(IsPlayerLogin(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+		
+	ResetPlayerMoney(playerb);
+	PlayerInfo[playerb][pCash] = 0;
+
+	GiveMoney(playerb, value);
+	SendServerMessage(playerb, "คุณได้รับเงินจำนวน $%s จาก ผู้ดูแลระบบ %s", MoneyFormat(value), ReturnName(playerid));
+
+	format(str, sizeof(str), "%s เซ็ตเงินจำนวน $%s ให้กับ %s", ReturnName(playerid), MoneyFormat(value), ReturnName(playerb));
+	SendAdminMessage(3, str);
+	return 1;
+}
+
 CMD:factions(playerid, params[])
 {
 	if(PlayerInfo[playerid][pAdmin] < 4)
@@ -2712,12 +2748,10 @@ CMD:factions(playerid, params[])
 	Dialog_Show(playerid, DIALOG_EDITFACTION, DIALOG_STYLE_LIST, "Factions:", longstr, "<<", "");
 	return 1;
 }
-// Admin Level: 4;
 
-// Admin Level: 5:
 CMD:makeleader(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
 
 	new playerb, factionid, str[MAX_STRING];
@@ -2768,78 +2802,50 @@ CMD:makeleader(playerid, params[])
 
 CMD:makehouse(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
-	
-	new price,level,str[MAX_STRING], name[90];
 
-	if(sscanf(params, "s[90]dd", name, price, level))
-		return SendUsageMessage(playerid, "/makehouse [ชื่อบ้าน(ควรใส่บ้านเลขที่)] [ราคา-บ้าน] [เลเวล-บ้าน]");
+	new price, level, name[50];
+
+	if(sscanf(params, "dds[90]", price, level, name))
+		return SendUsageMessage(playerid, "/makehouse <ราคาบ้าน> <เลเวลในการซื้อ> <ชื่อบ้าน>");
+
 
 	if(strlen(name) > 90)
 	{
-		SendClientMessage(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FFFFFF}คุณไม่สามารถตั้งชื่อบ้านเกิน 90 ตัวอักษรได้");
+		SendClientMessage(playerid, -1, "คุณไม่สามารถตั้งชื่อบ้านเกิน 90 ตัวอักษรได้");
 		return SendUsageMessage(playerid, "/makehouse [ชื่อบ้าน(ควรใส่บ้านเลขที่)] [ราคา-บ้าน] [เลเวล-บ้าน]");
 	}
 	if(price < 1 || price > 90000000)
 	{
-		SendClientMessageEx(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FFFFFF}คุณไม่สามารถตั้งราคา $%s ได้เนื่องจากมีราคาเกินที่กำหนด/ไม่ถึงที่กำหนด 1 < || > 90,000,000",MoneyFormat(price));
+		SendClientMessageEx(playerid, -1, "คุณไม่สามารถตั้งราคา $%s ได้เนื่องจากมีราคาเกินที่กำหนด/ไม่ถึงที่กำหนด 1 < || > 90,000,000",MoneyFormat(price));
 		return SendUsageMessage(playerid, "/makehouse [ชื่อบ้าน(ควรใส่บ้านเลขที่)] [ราคา-บ้าน] [เลเวล-บ้าน]");
 	}
 	if(level < 1 || level > 90000000)
 	{
-		SendClientMessageEx(playerid, -1, "{27AE60}HOUSE {F39C12}SYSTEM:{FFFFFF}คุณไม่สามารถตั้งเลเวล %i ได้เนื่องจากมีเลเวลเกินที่กำหนด/ไม่ถึงที่กำหนด 1 < || > 90000000",level);
+		SendClientMessageEx(playerid, -1, "คุณไม่สามารถตั้งเลเวล %i ได้เนื่องจากมีเลเวลเกินที่กำหนด/ไม่ถึงที่กำหนด 1 < || > 90000000",level);
 		return SendUsageMessage(playerid, "/makehouse [ชื่อบ้าน(ควรใส่บ้านเลขที่)] [ราคา-บ้าน] [เลเวล-บ้าน]");
 	}
-	
-	format(name, sizeof(name),name);
-	format(str, sizeof(str), "คุณกำลังจะสร้างบ้าน: %s\n\
-							  ราคา: $%s\n\
-							  เลวล: %i", name,MoneyFormat(price),level);
 
-	PlayerCreHouse[playerid] = name;
-	PlayerCreHousePrice[playerid] = price;
-    PlayerCreHouseLevel[playerid] = level;
+	new InsertHouse[MAX_STRING];
+	mysql_format(dbCon, InsertHouse, sizeof(InsertHouse), "INSERT INTO `house`(`HouseName`) VALUES ('%e')", name);
+    mysql_tquery(dbCon, InsertHouse, "MakeHouse", "ddds", playerid, price, level, name);
 
-	Dialog_Show(playerid, DIALOG_CRE_HOUSE, DIALOG_STYLE_MSGBOX, "คุณมันใจ?", str, "ยืนยัน", "ยกเลิก");
-
-	return 1;
-}
-
-CMD:viewhouse(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 5)
-		return SendUnauthMessage(playerid);
-	
-	new str[182], longstr[556], str_h[MAX_STRING];
-	new Houseid; 
-	for (new i = 1; i < MAX_HOUSE; i ++)
-	{
-		if(!HouseInfo[i][HouseDBID])
-			continue;
-			
-		format(str, sizeof(str), "{ADC3E7}%d \t %s \t\n", i, HouseInfo[i][HouseName]);
-		strcat(longstr, str);
-
-		format(str_h, sizeof(str_h), "%d",Houseid);
-		SetPVarInt(playerid, str_h, i);
-
-		Houseid++;
-		
-	}
-	
-	Dialog_Show(playerid, DIALOG_VIEWHOUSE, DIALOG_STYLE_LIST, "HOUSE:", longstr, "เลือก", "ออก");
 	return 1;
 }
 
 CMD:edithouse(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
 
 	new id, option[32],secstr[32];
 	if(sscanf(params, "ds[32]S()[32]", id, option, secstr))
-		return SendUsageMessage(playerid, "/edithouse <ไอดี> <option>");
+	{
+		SendUsageMessage(playerid, "name, price, level, enter, interiorpos");
+		SendUsageMessage(playerid, "/edithouse <houseid> <option>");
+		return 1;
+	}
 
 	if(!HouseInfo[id][HouseDBID])
 		return SendErrorMessage(playerid, "ไม่มีบ้านไอดีนี้");
@@ -2957,51 +2963,11 @@ CMD:edithouse(playerid, params[])
 	return 1;
 }
 
-CMD:createpackage(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 5)
-		return SendUnauthMessage(playerid);
-
-	new type;
-	if(sscanf(params, "d", type))
-	{
-		SendUsageMessage(playerid, "/createpackage <type>");
-		SendClientMessage(playerid, COLOR_WHITE, "1.small(4) 2.big(12)");
-		return 1;
-	}
-
-	if(type < 1 || type > 2)
-		return SendErrorMessage(playerid, "คุณใส่เลขไม่ถูกต้อง");
-
-	new idx = 0;
-
-	for(new i = 1; i < MAX_PACKAGE; i++)
-	{
-		if(!WpInfo[i][wp_id])
-		{
-			idx = i;
-			break;
-		}
-	}
-	
-	if(idx == 0)
-		return SendErrorMessage(playerid, "การสร้างเพจเกจเต็มแล้ว");
-
-	new Float:x, Float:y, Float:z;
-	GetPlayerPos(playerid, x, y, z);
-
-	new query[255];
-	mysql_format(dbCon, query, sizeof(query), "INSERT INTO `weapons_package`(`wp_owner`, `wp_type`, `wp_posx`, `wp_posy`, `wp_posz`, `wp_world`) VALUES ('%d', '%d', '%f', '%f', '%f', '%d')",PlayerInfo[playerid][pDBID], type, x, y, z-0.8, GetPlayerVirtualWorld(playerid));
-	mysql_tquery(dbCon, query, "CreatePackage", "ddd", playerid, idx, type);
-	return 1;
-}
-
-
 
 
 CMD:makeentrance(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
 
 	new idx = 0;
@@ -3040,7 +3006,7 @@ CMD:makeentrance(playerid, params[])
 alias:editentrance("editenter")
 CMD:editentrance(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
 
 	new id, str[MAX_STRING], longstr[MAX_STRING];
@@ -3066,14 +3032,11 @@ CMD:editentrance(playerid, params[])
 }
 
 
-// Admin Level: 5;
 
-
-// Admin Level: 1336:
 alias:makebusiness("makebiz", "createbiz")
 CMD:makebusiness(playerid,params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
 
 	new idx = 0;
@@ -3130,7 +3093,7 @@ CMD:makebusiness(playerid,params[])
 alias:editbusiness("editbiz")
 CMD:editbusiness(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
 
 	new id;
@@ -3148,7 +3111,7 @@ CMD:editbusiness(playerid, params[])
 
 CMD:viewbusiness(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
 	
 
@@ -3159,7 +3122,7 @@ CMD:viewbusiness(playerid, params[])
 alias:deletebusiness("delbusiness", "delbiz")
 CMD:deletebusiness(playerid,params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
 
     new id;
@@ -3215,7 +3178,7 @@ CMD:deletebusiness(playerid,params[])
 alias:deletehouse("delhouse")
 CMD:deletehouse(playerid,params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 		return SendUnauthMessage(playerid);
 
     new id;
@@ -3265,10 +3228,34 @@ CMD:deletehouse(playerid,params[])
 	return 1;
 }
 
-alias:createvehicle("createveh","makevehicle")
+CMD:givemoney(playerid, params[])
+{
+	if(PlayerInfo[playerid][pAdmin] < 4)
+		return SendUnauthMessage(playerid);
+		
+	new playerb, value, str[128];
+	
+	if(sscanf(params, "ui", playerb, value))
+		return SendUsageMessage(playerid, "/givemoney [ชื่อบางส่วน/ไอดี] [จำนวน]");
+		
+	if(!IsPlayerConnected(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
+		
+	if(IsPlayerLogin(playerb))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+		
+	GiveMoney(playerb, value);
+	SendServerMessage(playerb, "คุณได้รับเงินจำนวน $%s จาก ผู้ดูแลระบบ %s", MoneyFormat(value), ReturnName(playerid));
+
+	format(str, sizeof(str), "%s เสกเงินจำนวน $%s ให้กับ %s", ReturnName(playerid), MoneyFormat(value), ReturnName(playerb));
+	SendAdminMessage(3, str);
+	return 1;
+}
+
+/*alias:createvehicle("createveh","makevehicle")
 CMD:createvehicle(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1336)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 	    return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
 
 	new factionid, modelid, color1, color2;
@@ -3317,25 +3304,13 @@ CMD:createvehicle(playerid, params[])
 		a,
 		World);
 	mysql_tquery(dbCon, thread, "InsertVehicleFaction", "dddddd", playerid,idx, modelid, factionid, color1, color2);
-
-	/*mysql_format(dbCon, thread, sizeof(thread), "INSERT INTO vehicle_faction (`VehicleModel`, `VehicleFaction`,`VehicleColor1`,`VehicleColor2`,`VehicleParkPosX`,`VehicleParkPosY`,`VehicleParkPosZ`,`VehicleParkPosA`,`VehicleParkWorld`) VALUES(%d,%d,%d,%d,%f,%f,%f,%f,%d)",
-		modelid,
-		factionid,
-		color1,
-		color2,
-		x,
-		y,
-		z,
-		a,
-		World);
-	mysql_tquery(dbCon, thread, "InsertVehicleFaction", "dddddd", playerid,idx, modelid, factionid, color1, color2);*/
 	return 1;
 }
 
 alias:deletevehicle("delveh","removeveh")
 CMD:deletevehicle(playerid, params[])
 {	
-	if(PlayerInfo[playerid][pAdmin] < 1336)
+	if(PlayerInfo[playerid][pAdmin] < 4)
 	    return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
 
 	new vehicleid;
@@ -3362,13 +3337,13 @@ CMD:deletevehicle(playerid, params[])
 	DestroyVehicle(vehicleid);
 	ResetVehicleVars(vehicleid);
 	return 1;
-}
+}*/
 // Admin Level: 1336;
 
 // Admin Level: 1337:
 CMD:maketester(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337)
+	if(PlayerInfo[playerid][pAdmin] < 1338)
 		return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
 
 	new tagetid, level;
@@ -3393,19 +3368,25 @@ CMD:maketester(playerid, params[])
 		if(level == 0)
 		{
 			PlayerInfo[tagetid][pTester] = 0;
-			SendClientMessage(tagetid, COLOR_LIGHTRED, "คุณได้ถูกปลดออกจากตำแหน่ง Tester แล้วขอบคุณที่เข้ามาเป็นส่วนนึงของทีมงาน");
+			SendClientMessage(tagetid, COLOR_LIGHTRED, "คุณได้ถูกปลดออกจากตำแหน่ง Helper แล้วขอบคุณที่เข้ามาเป็นส่วนนึงของทีมงาน");
+			SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปลด %s ออกจากต่ำแหน่ง Helper", ReturnRealName(tagetid));
+
+			SendDiscordMessageExs("900267036163338300", "[%s] %s Remove Helper %s",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid));
 			CharacterSave(tagetid);
 			return 1;
 		}
 
-		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "คุณถูกปรับให้ลดต่ำแหน่ง Tester จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
+		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "คุณถูกปรับให้ลดต่ำแหน่ง Helper จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
 		PlayerInfo[tagetid][pTester] = level;
 		CharacterSave(tagetid);
+
+		SendDiscordMessageExs("900267036163338300", "[%s] %s Demote Helper %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
 		return 1;
 	}
 	else
 	{
-		SendClientMessageEx(tagetid, COLOR_PMS, "คุณได้ถูกเพิ่มต่ำแหน่งจาก Tester จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
+		SendClientMessageEx(tagetid, COLOR_PMS, "คุณได้ถูกเพิ่มต่ำแหน่งจาก Helper จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
+		SendDiscordMessageExs("900267036163338300", "[%s] %s Upgrade Helper %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
 		PlayerInfo[tagetid][pTester] = level;
 		CharacterSave(tagetid);
 		return 1;
@@ -3433,34 +3414,11 @@ CMD:restart(playerid, params[])
 
 // Admin Level: 1338;
 
-// Admin Level: 1339:
-CMD:givemoney(playerid, params[])
-{
-	if(PlayerInfo[playerid][pAdmin] < 1339)
-		return SendUnauthMessage(playerid);
-		
-	new playerb, value, str[128];
-	
-	if(sscanf(params, "ui", playerb, value))
-		return SendUsageMessage(playerid, "/givemoney [ชื่อบางส่วน/ไอดี] [จำนวน]");
-		
-	if(!IsPlayerConnected(playerb))
-		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้เชื่อมต่อกับเซืฟเวอร์");
-		
-	if(IsPlayerLogin(playerb))
-		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
-		
-	GiveMoney(playerb, value);
-	SendServerMessage(playerb, "คุณได้รับเงินจำนวน $%s จาก ผู้ดูแลระบบ %s", MoneyFormat(value), ReturnName(playerid));
-
-	format(str, sizeof(str), "%s เสกเงินจำนวน $%s ให้กับ %s", ReturnName(playerid), MoneyFormat(value), ReturnName(playerb));
-	SendAdminMessage(3, str);
-	return 1;
-}
+// Admin Level: 1338:
 
 CMD:callpaycheck(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1337)
+	if(PlayerInfo[playerid][pAdmin] < 1338)
 		return 0;
 		
 	Dialog_Show(playerid,  DIALOG_CALLPAYCHECK, DIALOG_STYLE_MSGBOX,"Confirmation", "คุณมั่นใจใช่ไหมที่จะทำการชดเชยค่ารายชัวโมงในเวลานี้?\n\nการกระทำของคุณอาจจะผิดกฏของผู้ดูแลระบบได้", "ยืนยัน", "ยกเลิก"); 
@@ -3469,7 +3427,7 @@ CMD:callpaycheck(playerid, params[])
 
 CMD:makefaction(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1339)
+	if(PlayerInfo[playerid][pAdmin] < 1338)
 		return SendUnauthMessage(playerid);
 		
 	new varAbbrev[30], varName[90]; 
@@ -3511,7 +3469,7 @@ CMD:makefaction(playerid, params[])
 
 CMD:setcustomskin(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1339)
+	if(PlayerInfo[playerid][pAdmin] < 1338)
 		return SendUnauthMessage(playerid);
 
 	new factionid, slotid, skinid;
@@ -3532,7 +3490,7 @@ CMD:setcustomskin(playerid, params[])
 
 CMD:makeadmin(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1339)
+	if(PlayerInfo[playerid][pAdmin] < 1338)
 		return SendUnauthMessage(playerid);
 
 	new playerb, level;
@@ -3561,8 +3519,8 @@ CMD:makeadmin(playerid, params[])
 		CharacterSave(playerb);
 		return 1;
 	}
-	if(level > 1339)
-		return SendErrorMessage(playerid, "คุณไม่สามารถให้ต่ำแหน่งผู้ดูแลระบบที่มากกว่า (1339) ได้");
+	if(level > 1338)
+		return SendErrorMessage(playerid, "คุณไม่สามารถให้ต่ำแหน่งผู้ดูแลระบบที่มากกว่า (1338) ได้");
 
 	PlayerInfo[playerb][pAdmin] = level;
 	SendClientMessageEx(playerb, -1, "{FF5722}ADMIN SYSTEM:{FFFFFF}คุณได้รับต่ำแหน่งผู้ดูแลระบบ (%d)",level);
@@ -3576,7 +3534,7 @@ CMD:makeadmin(playerid, params[])
 
 CMD:setdonater(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 1339)
+	if(PlayerInfo[playerid][pAdmin] < 1338)
 		return SendUnauthMessage(playerid);
 
 	

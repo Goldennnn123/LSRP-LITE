@@ -1742,7 +1742,7 @@ CMD:online(playerid, params[])
 }
 
 
-CMD:testers(playerid, params[])
+CMD:helpers(playerid, params[])
 {
 	new bool:TesterOn = false;
 	

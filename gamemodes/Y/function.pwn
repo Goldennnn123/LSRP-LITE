@@ -625,13 +625,13 @@ public CallPaycheck()
 		}
 		
 		if(PlayerInfo[i][pLevel] == 1)
-			total_paycheck+= 700; 
+			total_paycheck+= 200; 
 			
 		else if(PlayerInfo[i][pLevel] == 2)
-			total_paycheck+= 500; 
+			total_paycheck+= 100; 
 
 		else if(PlayerInfo[i][pJob] == 3)
-			total_paycheck+= 500;
+			total_paycheck+= 50;
 			
 		//Add an auto-level up on paycheck for level 1 and 2 to prevent paycheck farming.
 		if(!PlayerInfo[i][pSaving])
@@ -653,7 +653,7 @@ public CallPaycheck()
 
 		interest_convert = floatround(interest, floatround_round); 
 	
-		total_tax = floatround((PlayerInfo[i][pBank] * 0.03), floatround_round);
+		total_tax = floatround((PlayerInfo[i][pBank] * 0.035), floatround_round);
 		
 		SendClientMessageEx(i, COLOR_WHITE, "SERVER TIME:[ %s ]", ReturnHour()); 
 		
@@ -676,13 +676,13 @@ public CallPaycheck()
 		SendClientMessageEx(i, COLOR_WHITE, "   เงินในธนาคาร: $%s", MoneyFormat(PlayerInfo[i][pBank]));
 		
 		if(PlayerInfo[i][pLevel] == 1)
-			SendClientMessage(i, COLOR_WHITE, "((คุณได้รับ $700 จากการเป็นเลเวล 1 ))");
+			SendClientMessage(i, COLOR_WHITE, "((คุณได้รับ $200 จากการเป็นเลเวล 1 ))");
 			
 		else if(PlayerInfo[i][pLevel] == 2)
-			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $500 จากการเป็นเลเวล 2. ))");
+			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $100 จากการเป็นเลเวล 2. ))");
 
 		else if(PlayerInfo[i][pJob] == 3)
-			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $400 จากการเป็นอาชีพช่างยนต์ ))");
+			SendClientMessage(i, COLOR_WHITE, "(( คุณได้รับ $50 จากการเป็นอาชีพช่างยนต์ ))");
 		
 		format(str, sizeof(str), "~y~Payday~n~~w~Paycheck~n~~g~$%d", total_paycheck);
 		GameTextForPlayer(i, str, 3000, 1); 

@@ -55,7 +55,7 @@ stock SendDiscordMessage(channel, const message[])
 		}
 		case 6:
 		{
-			CommandAdminLog = DCC_FindChannelById("862581433302384650");
+			CommandAdminLog = DCC_FindChannelById("898561843726004254");
 			DCC_SendChannelMessage(CommandAdminLog, message);
 		}
 		case 7:

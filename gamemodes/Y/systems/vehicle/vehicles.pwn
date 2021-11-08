@@ -2481,7 +2481,7 @@ public LoadCarPark()
 
 			for(new j = 0; j < 4; j++)
 			{
-				format(str, sizeof(str), "VehicleDamage%d",i);
+				format(str, sizeof(str), "VehicleDamage%d",j);
 				cache_get_value_name_int(i, str,VehicleInfo[vehicleid][eVehicleDamage][j]);
 			}
 
@@ -2537,6 +2537,17 @@ public LoadCarPark()
 
 		}
 	}
+	return 1;
+}
+
+
+stock SetVehicleComponent(vehicleid)
+{
+	for(new j = 0; j < 14; j++)
+	{
+		AddVehicleComponent(vehicleid, VehicleInfo[vehicleid][eVehicleMod][j]);
+	}
+
 	return 1;
 }
 

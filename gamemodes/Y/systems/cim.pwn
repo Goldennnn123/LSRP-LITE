@@ -1,4 +1,32 @@
 
+CMD:cim(playerid, params[])
+{
+	new str[120];
+
+	if(sscanf(params, "s[60]", str))
+		return SendUsageMessage(playerid, "/cim <การกระทำ>");
+
+
+	if(strlen(str) < 5 || strlen(str) > 60)
+		return SendErrorMessage(playerid, "กรุณาใส่ชื่อให้มากกว่านี้");
+	
+
+	new idx = 0;
+	for(new i = 1; i < MAX_CIM; i++)
+	{
+		if(!CimInfo[i][c_cimid])
+		{
+			idx = i;
+			break;
+		}
+	}
+	if(!idx)
+		return SendErrorMessage(playerid, "การสร้าง cim เต็มแล้ว");
+
+	
+	CreateCim(playerid, idx, str);
+	return 1;
+}
 
 CMD:cimdel(playerid, params[])
 {

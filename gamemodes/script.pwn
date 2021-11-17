@@ -208,6 +208,7 @@ enum {
 #include "Y/Interior/house8.pwn"
 #include "Y/Interior/house9.pwn"
 #include "Y/Interior/house10.pwn"
+#include "Y/Interior/business/biz1.pwn"
 
 //#include "Y/Interior/init1.pwn"
 
@@ -222,6 +223,7 @@ enum {
 #include "Y/Map/pump.pwn"
 #include "Y/Map/mapnaigun.pwn"
 #include "Y/Map/lsrplite_map.pwn"
+#include "Y/Map/car_buy.pwn"
 
 
 #include "Y/Map/habro.pwn"
@@ -243,6 +245,7 @@ enum {
 #endif
 
 main() { }
+
 
 
 
@@ -430,13 +433,7 @@ public OnGameModeInit() {
     DeathLog = CreateLog("server/deathlog");
     chatlog = CreateLog("server/chatlog");
     
-    /*new query[MAX_STRING];
-
-    for(new v = 1; v < 290; v++)
-    {
-        mysql_format(dbCon, query, sizeof(query), "UPDATE `characters` SET `pVehicleSpawned` = '0',`pVehicleSpawnedID` = '0' WHERE `char_dbid` = '%d'",v);
-        mysql_tquery(dbCon, query);
-    }*/
+    SendDiscordMessage("dev-chat", ">>> สวัสดี");
     
     return 1;
 }

@@ -1237,7 +1237,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
                 
                 SetPVarInt(playerid, "ReadyRobing", id);
 
-                SendPoliceMessage(COLOR_COP, "สัญญาญการแจ้งเตือนที่ %s (211)", BusinessInfo[id][BusinessName]);
+                SendFactionMessageToAll(1 , COLOR_COP, "สัญญาญการแจ้งเตือนที่ %s (211)", BusinessInfo[id][BusinessName]);
 
                 BusinessInfo[id][BizTimeRob] = gettime();
                 SendClientMessage(playerid, COLOR_LIGHTRED, "คุณกำลังปล้นร้านสะดวกซื้อ..... (รอ 20 วิ)");

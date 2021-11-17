@@ -1518,7 +1518,7 @@ CMD:carpark(playerid, params[])
 	VehicleInfo[vehicleid][eVehicleLocked] = true;
 
 	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "You Park %s is now",  ReturnVehicleName(vehicleid));
-	SendDiscordMessageExs("862581089494892564", "[%s] %s Park Vehicle %s(%d)",ReturnDate(), ReturnRealName(playerid), ReturnVehicleName(vehicleid), VehicleInfo[vehicleid][eVehicleDBID]);
+	SendDiscordMessageEx("vehicle-park-get", "[%s] %s Park Vehicle %s(%d)",ReturnDate(), ReturnRealName(playerid), ReturnVehicleName(vehicleid), VehicleInfo[vehicleid][eVehicleDBID]);
 	return 1;
 }
 
@@ -1726,7 +1726,7 @@ CMD:carget(playerid, params[])
 	VehicleInfo[vehicleid][eVehicleCarPark] = false;
 
 	SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "You GetCar %s is now",  ReturnVehicleName(vehicleid));
-	SendDiscordMessageExs("862581089494892564", "[%s] %s Get Vehicle %s(%d)",ReturnDate(), ReturnRealName(playerid), ReturnVehicleName(vehicleid), VehicleInfo[vehicleid][eVehicleDBID]);
+	SendDiscordMessageEx("vehicle-park-get", "[%s] %s Get Vehicle %s(%d)",ReturnDate(), ReturnRealName(playerid), ReturnVehicleName(vehicleid), VehicleInfo[vehicleid][eVehicleDBID]);
 
 	SaveVehicle(vehicleid);
 	return 1;

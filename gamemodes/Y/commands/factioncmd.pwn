@@ -377,14 +377,14 @@ CMD:duty(playerid, params[])
 				playerWeaponsAmmoSave[playerid][i] = PlayerInfo[playerid][pGunAmmo][i];
 			}
 
-			SendPoliceMessage(0x8D8DFFFF, "HQ: %s %s has gone on duty", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendFactionMessageEx(1,playerid, "HQ: %s %s has gone on duty", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 			SendClientMessage(playerid, COLOR_WHITE, "สิ่งที่คุณจะได้รับ: Spraycan, Nitestick, Desert Eagle (60), Health(100)");
 
 			new str[128];
 			format(str, sizeof(str), "ได้หยิบตราประจำตัวออกมาจากตู้ล็อกเกอร์");
 			callcmd::me(playerid, str);
 
-			SendDiscordMessageExs("893062666820661280", "```HQ: %s %s has gone on duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendDiscordMessageEx("duty-roster", "```HQ: %s %s has gone on duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 
 			SetPlayerHealth(playerid, 100);
 			SetPlayerArmour(playerid, 100);
@@ -414,12 +414,13 @@ CMD:duty(playerid, params[])
 					GivePlayerGun(playerid, playerWeaponsSave[playerid][i], playerWeaponsAmmoSave[playerid][i]);
 			}
 
-			SendPoliceMessage(0x8D8DFFFF, " HQ: %s %s has gone off duty", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+
+			SendFactionMessageEx(playerid, 0x8D8DFFFF, " HQ: %s %s has gone off duty", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 			new str[128];
 			format(str, sizeof(str), "วางตราประจำตัวไว้ที่ล็อคเกอร์");
 			callcmd::me(playerid, str);
 
-			SendDiscordMessageExs("893062666820661280", "```HQ: %s %s has gone off duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendDiscordMessageEx("duty-roster", "```HQ: %s %s has gone off duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 
 			SetPlayerArmour(playerid, 0);
 			SetPlayerHealth(playerid, 100);
@@ -446,8 +447,8 @@ CMD:duty(playerid, params[])
                 playerWeaponsSave[playerid][i] = PlayerInfo[playerid][pWeapons][i];
                 playerWeaponsAmmoSave[playerid][i] = PlayerInfo[playerid][pWeaponsAmmo][i];
             }
- 
-            SendSheriffMessage(0x8D8DFFFF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+	
+			SendFactionMessageEx(playerid, 0x8D8DFFFF, " HQ: %s %s has gone off duty", ReturnFactionRank(playerid), ReturnName(playerid, 0));
             SendClientMessage(playerid, COLOR_WHITE, "สิ่งที่คุณจะได้รับ: Spraycan, Nitestick, Desert Eagle (60), Health(100)");
  
             new str[128];
@@ -482,9 +483,11 @@ CMD:duty(playerid, params[])
                 if(playerWeaponsSave[playerid][i])
                     GivePlayerGun(playerid, playerWeaponsSave[playerid][i], playerWeaponsAmmoSave[playerid][i]);
             }
- 
-            SendPoliceMessage(0x8D8DFFFF, " HQ: %s %s ได้ออกจากการปติบัตหน้าที่ในเวลานี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-           	new str[128];
+            	
+			SendFactionMessageEx(playerid, 0x8D8DFFFF, " HQ: %s %s ได้ออกจากการปติบัตหน้าที่ในเวลานี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			
+
+			new str[128];
 			format(str, sizeof(str), "วางตราประจำตัวไว้ที่ล็อคเกอร์");
 			callcmd::me(playerid, str);
  
@@ -515,7 +518,7 @@ CMD:duty(playerid, params[])
 				playerWeaponsAmmoSave[playerid][i] = PlayerInfo[playerid][pWeaponsAmmo][i];
 			}
 
-			SendMedicMessage(0xFF8282FF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendFactionMessageEx(playerid, 0xFF8282FF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 			SendClientMessage(playerid, COLOR_WHITE, "สิ่งที่คุณจะได้รับ: ถังดับเพลิง");
 
 			new str[128];
@@ -550,7 +553,8 @@ CMD:duty(playerid, params[])
 					GivePlayerGun(playerid, playerWeaponsSave[playerid][i], playerWeaponsAmmoSave[playerid][i]);
 			}
 
-			SendMedicMessage(0xFF8282FF, " HQ: %s %s ได้ออกจากการปติบัตหน้าที่ในเวลานี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendFactionMessageEx(playerid, 0xFF8282FF, " HQ: %s %s ได้ออกจากการปติบัตหน้าที่ในเวลานี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+
 			new str[128];
 			format(str, sizeof(str), "วางตราประจำตัวไว้ที่ล็อคเกอร์");
 			callcmd::me(playerid, str);
@@ -582,7 +586,7 @@ CMD:duty(playerid, params[])
 				playerWeaponsAmmoSave[playerid][i] = PlayerInfo[playerid][pWeaponsAmmo][i];
 			}
 
-			SendDOCMessage(0xFF8282FF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendFactionMessageEx(playerid, 0xFF8282FF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 			SendClientMessage(playerid, COLOR_WHITE, "สิ่งที่คุณจะได้รับ: ถังดับเพลิง");
 
 			new str[128];
@@ -620,7 +624,8 @@ CMD:duty(playerid, params[])
 					GivePlayerGun(playerid, playerWeaponsSave[playerid][i], playerWeaponsAmmoSave[playerid][i]);
 			}
 
-			SendDOCMessage(0xFF8282FF, " HQ: %s %s ได้ออกจากการปติบัตหน้าที่ในเวลานี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendFactionMessageEx(playerid, 0xFF8282FF, " HQ: %s %s ได้ออกจากการปติบัตหน้าที่ในเวลานี้", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			
 			new str[128];
 			format(str, sizeof(str), "วางตราประจำตัวไว้ที่ล็อคเกอร์");
 			callcmd::me(playerid, str);
@@ -1307,7 +1312,7 @@ hook OnPlayerDisconnect(playerid, reason)
 	if(PlayerInfo[playerid][pDuty])
 	{
 		if(ReturnFactionJob(playerid) == POLICE)
-			SendDiscordMessageExs("893062666820661280", "```HQ: %s %s has gone off duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendDiscordMessageEx("duty-roster", "```HQ: %s %s has gone off duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 	}
     return 1;
 }
@@ -1432,204 +1437,20 @@ stock SendFactionMessageEx(playerid, color, const str[], {Float,_}:...)
 }
 
 
-stock SendPoliceMessage(color, const str[], {Float,_}:...)
+stock SendFactionMessageToAll(type , color, fmat[],  va_args<>)
 {
-	static
-	    args,
-	    start,
-	    end,
-	    string[144]
-	;
-	#emit LOAD.S.pri 8
-	#emit STOR.pri args
+	new
+		str[145];
 
-	if (args > 8)
-	{
-		#emit ADDR.pri str
-		#emit STOR.pri start
+	va_format(str, sizeof (str), fmat, va_start<2>);
 
-	    for (end = start + (args - 8); end > start; end -= 4)
-		{
-	        #emit LREF.pri end
-	        #emit PUSH.pri
-		}
-		#emit PUSH.S str
-		#emit PUSH.C 144
-		#emit PUSH.C string
-
-		#emit LOAD.S.pri 8
-		#emit ADD.C 4
-		#emit PUSH.pri
-
-		#emit SYSREQ.C format
-		#emit LCTRL 5
-		#emit SCTRL 4
-
-        foreach (new i : Player)
-		{
-			if (FactionInfo[PlayerInfo[i][pFaction]][eFactionJob] == POLICE) {
-  				SendClientMessage(i, color, string);
-			}
-		}
-		return 1;
-	}
 	foreach (new i : Player)
 	{
-		if (FactionInfo[PlayerInfo[i][pFaction]][eFactionJob] == POLICE) {
+		if(ReturnFactionJob(i) == type)
+		{
 			SendClientMessage(i, color, str);
 		}
 	}
-	return 1;
-}
-
-stock SendSheriffMessage(color, const str[], {Float,_}:...)
-{
-	static
-	    args,
-	    start,
-	    end,
-	    string[144]
-	;
-	#emit LOAD.S.pri 8
-	#emit STOR.pri args
-
-	if (args > 8)
-	{
-		#emit ADDR.pri str
-		#emit STOR.pri start
-
-	    for (end = start + (args - 8); end > start; end -= 4)
-		{
-	        #emit LREF.pri end
-	        #emit PUSH.pri
-		}
-		#emit PUSH.S str
-		#emit PUSH.C 144
-		#emit PUSH.C string
-
-		#emit LOAD.S.pri 8
-		#emit ADD.C 4
-		#emit PUSH.pri
-
-		#emit SYSREQ.C format
-		#emit LCTRL 5
-		#emit SCTRL 4
-
-        foreach (new i : Player)
-		{
-			if (FactionInfo[PlayerInfo[i][pFaction]][eFactionJob] == SHERIFF) {
-  				SendClientMessage(i, color, string);
-			}
-		}
-		return 1;
-	}
-	foreach (new i : Player)
-	{
-		if (FactionInfo[PlayerInfo[i][pFaction]][eFactionJob] == SHERIFF) {
-			SendClientMessage(i, color, str);
-		}
-	}
-	return 1;
-}
-
-stock SendMedicMessage(color, const str[], {Float,_}:...)
-{
-	static
-	    args,
-	    start,
-	    end,
-	    string[144]
-	;
-	#emit LOAD.S.pri 8
-	#emit STOR.pri args
-
-	if (args > 8)
-	{
-		#emit ADDR.pri str
-		#emit STOR.pri start
-
-	    for (end = start + (args - 8); end > start; end -= 4)
-		{
-	        #emit LREF.pri end
-	        #emit PUSH.pri
-		}
-		#emit PUSH.S str
-		#emit PUSH.C 144
-		#emit PUSH.C string
-
-		#emit LOAD.S.pri 8
-		#emit ADD.C 4
-		#emit PUSH.pri
-
-		#emit SYSREQ.C format
-		#emit LCTRL 5
-		#emit SCTRL 4
-
-        foreach (new i : Player)
-		{
-			if (FactionInfo[PlayerInfo[i][pFaction]][eFactionJob] == MEDIC) {
-  				SendClientMessage(i, color, string);
-			}
-		}
-		return 1;
-	}
-	foreach (new i : Player)
-	{
-		if (FactionInfo[PlayerInfo[i][pFaction]][eFactionJob] == MEDIC) {
-			SendClientMessage(i, color, str);
-		}
-	}
-	return 1;
-}
-
-stock SendDOCMessage(color, const str[], {Float,_}:...)
-{
-	static
-	    args,
-	    start,
-	    end,
-	    string[144]
-	;
-	#emit LOAD.S.pri 8
-	#emit STOR.pri args
-
-	if (args > 8)
-	{
-		#emit ADDR.pri str
-		#emit STOR.pri start
-
-	    for (end = start + (args - 8); end > start; end -= 4)
-		{
-	        #emit LREF.pri end
-	        #emit PUSH.pri
-		}
-		#emit PUSH.S str
-		#emit PUSH.C 144
-		#emit PUSH.C string
-
-		#emit LOAD.S.pri 8
-		#emit ADD.C 4
-		#emit PUSH.pri
-
-		#emit SYSREQ.C format
-		#emit LCTRL 5
-		#emit SCTRL 4
-
-        foreach (new i : Player)
-		{
-			if (FactionInfo[PlayerInfo[i][pFaction]][eFactionJob] == SADCR) {
-  				SendClientMessage(i, color, string);
-			}
-		}
-		return 1;
-	}
-	foreach (new i : Player)
-	{
-		if (FactionInfo[PlayerInfo[i][pFaction]][eFactionJob] == SADCR) {
-			SendClientMessage(i, color, str);
-		}
-	}
-	return 1;
 }
 
 

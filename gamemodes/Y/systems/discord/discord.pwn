@@ -26,18 +26,6 @@ stock SendDiscordMessageEx(channel[], fmat[],  va_args<>)
 	return DCC_SendChannelMessage(channelFind, str);
 }
 
-stock SendDiscordMessageExs(channel[], fmat[],  va_args<>)
-{
-	new
-		str[145];
-	va_format(str, sizeof (str), fmat, va_start<2>);
-
-	channelFind = DCC_FindChannelById(channel);
-
-	utf8encode(str, str, sizeof(str));
-	return DCC_SendChannelMessage(channelFind, str);
-}
-
 #if defined USING_DISCORD
 forward DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[]);
 public DCC_OnChannelMessage(DCC_Channel:channel, const author[], const message[])

@@ -470,8 +470,8 @@ public OnplayerCache(playerid)
 		if(ReturnFactionJob(playerid) == POLICE)
 		{
 			PlayerInfo[playerid][pDuty] = true;
-			SendPoliceMessage(0x8D8DFFFF, "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-			SendDiscordMessageExs("893062666820661280", "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendFactionMessageEx(playerid, COLOR_COP, "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendDiscordMessageEx("duty-roster", "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 			
 			SetPlayerColor(playerid, COLOR_COP);
 			SetPlayerHealth(playerid, 100);
@@ -486,7 +486,7 @@ public OnplayerCache(playerid)
 		else if(ReturnFactionJob(playerid) == SHERIFF)
 		{
 			PlayerInfo[playerid][pDuty] = true;
-			SendSheriffMessage(0x8D8DFFFF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้ (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendFactionMessageEx(playerid, COLOR_COP, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้ (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 
 			SetPlayerHealth(playerid, 100);
 			SetPlayerArmour(playerid, 100);
@@ -499,7 +499,7 @@ public OnplayerCache(playerid)
 		}
 		else if(ReturnFactionJob(playerid) == MEDIC)
 		{
-			SendMedicMessage(0xFF8282FF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้ (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
+			SendFactionMessageEx(playerid, 0xFF8282FF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้ (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
 
 			SetPlayerColor(playerid, 0xFF8282FF);
 			SetPlayerHealth(playerid, 100);

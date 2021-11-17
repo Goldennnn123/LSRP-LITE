@@ -542,7 +542,6 @@ public OnPlayerConnect(playerid) {
     SendClientMessage(playerid, -1, "ยินดีต้อนรับเข้าสู่ "EMBED_YELLOW"Los Santos Roleplay LITE");
 
 
-    SendDiscordMessageExs("connect", "[%s] %s has Join Server",  ReturnDate(), ReturnRealName(playerid));
     return 1;
 }
 

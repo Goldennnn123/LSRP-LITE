@@ -360,24 +360,6 @@ CMD:usedrug(playerid, params[])
     return 1;
 }
 
-CMD:buydrug(playerid, params[])
-{
-    if(!IsPlayerInRangeOfPoint(playerid, 3.0, DrugBuyPos[RanDomDrugPoint][DrugPosX], DrugBuyPos[RanDomDrugPoint][DrugPosY], DrugBuyPos[RanDomDrugPoint][DrugPosZ]))
-        return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดซื้อยาเสพติด");
-    
-    new Float:amout, type;
-
-    if(sscanf(params, "df",type,amout))
-    {
-        SendUsageMessage(playerid, "/buydrug <ยาที่ต้องการ> <จำนวนยาที่ต้องการ ตัวอย่าง: 0.01>");
-        SendUsageMessage(playerid, "1.Cocaine 2.Cannabis 3.Heroin 4.Random");
-        return 1;
-    }
-
-    BuyDrug(playerid, amout, type);
-    return 1;
-}
-
 CMD:setdrug(playerid, params[])
 {
     if(PlayerInfo[playerid][pAdmin] < 3)

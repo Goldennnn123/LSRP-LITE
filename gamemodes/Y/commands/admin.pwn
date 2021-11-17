@@ -142,7 +142,7 @@ CMD:goto(playerid, params[])
 	PlayerInfo[playerid][pInsideProperty] = PlayerInfo[playerb][pInsideProperty]; 
 	PlayerInfo[playerid][pInsideBusiness] = PlayerInfo[playerb][pInsideBusiness];
 
-	SendDiscordMessageExs("900267036163338300", "[%s] %s Go to %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
+	SendDiscordMessageEx("admin-log", "[%s] %s Go to %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
 	return 1;
 }
 
@@ -419,7 +419,7 @@ CMD:kick(playerid, params[])
 	mysql_tquery(dbCon, insertLog); 
 
 	KickEx(playerb);
-	SendDiscordMessageExs("900267036163338300", "[%s] %s Kick %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
+	SendDiscordMessageEx("admin-log", "[%s] %s Kick %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
 	return 1;
 }
 
@@ -471,7 +471,7 @@ CMD:idlekick(playerid, params[])
 	mysql_tquery(dbCon, insertLog); 
 
 	KickEx(playerb);
-	SendDiscordMessageExs("900267036163338300", "[%s] %s Kick %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
+	SendDiscordMessageEx("admin-log", "[%s] %s Kick %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
 	return 1;
 }
 
@@ -522,7 +522,7 @@ CMD:ban(playerid, params[])
 	mysql_tquery(dbCon, insertLog); 
 	
 	KickEx(playerb);
-	SendDiscordMessageExs("900267036163338300", "[%s] %s Ban %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
+	SendDiscordMessageEx("admin-log", "[%s] %s Ban %s", ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb));
 	return 1;
 }
 
@@ -3031,7 +3031,7 @@ CMD:makesupport(playerid, params[])
 			SendClientMessage(tagetid, COLOR_LIGHTRED, "คุณได้ถูกปลดออกจากตำแหน่ง Support แล้วขอบคุณที่เข้ามาเป็นส่วนนึงของทีมงาน");
 			SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปลด %s ออกจากต่ำแหน่ง Support", ReturnRealName(tagetid));
 
-			SendDiscordMessageExs("admin-log", "[%s] %s Remove Support %s",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid));
+			SendDiscordMessageEx("admin-log", "[%s] %s Remove Support %s",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid));
 			CharacterSave(tagetid);
 			return 1;
 		}
@@ -3041,14 +3041,14 @@ CMD:makesupport(playerid, params[])
 		PlayerInfo[tagetid][pTester] = level;
 		CharacterSave(tagetid);
 
-		SendDiscordMessageExs("admin-log", "[%s] %s Demote Support %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
+		SendDiscordMessageEx("admin-log", "[%s] %s Demote Support %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
 		return 1;
 	}
 	else
 	{
 		SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ปรับต่ำแหน่ง Support ของ %s",  ReturnRealName(tagetid));
 		SendClientMessageEx(tagetid, COLOR_PMS, "คุณได้ถูกเพิ่มต่ำแหน่งจาก Support จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
-		SendDiscordMessageExs("admin-log", "[%s] %s Upgrade Support %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
+		SendDiscordMessageEx("admin-log", "[%s] %s Upgrade Support %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
 		PlayerInfo[tagetid][pTester] = level;
 		CharacterSave(tagetid);
 		return 1;

@@ -158,7 +158,7 @@ public MakeHouse(playerid, price, level, name[])
 
 
     SendClientMessageEx(playerid, COLOR_GREY, "คุณได้สร้างบ้านสำเร็จแล้ว %d(%s)", HouseInfo[idx][HouseDBID], HouseInfo[idx][HouseName]);
-    SendDiscordMessageExs("900267036163338300", "[%s] %s Create Property(House) At %s Property name: %s",  ReturnDate(), ReturnRealName(playerid), ReturnLocation(playerid), name);
+    SendDiscordMessageEx("admin-log", "[%s] %s Create Property(House) At %s Property name: %s",  ReturnDate(), ReturnRealName(playerid), ReturnLocation(playerid), name);
     return 1;
 }
 

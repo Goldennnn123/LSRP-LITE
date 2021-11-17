@@ -254,34 +254,6 @@ CMD:saving(playerid, params[])
     return 1;
 }
 
-CMD:buyticket(playerid, params[])
-{
-    new id = PlayerInfo[playerid][pInsideBusiness];
-    
-
-    if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE)
-        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านสดวกซื้อ");
-    
-    if(isnull(params))
-        return SendUsageMessage(playerid, "/buyticket <ใส่เลขที่คุณต้องการไป 2 <หลัก>");
-
-    if(strlen(params) < 1 || strlen(params) > 2)
-        return SendErrorMessage(playerid, "ใส่เลข 2 หลักให้ถูกต้องด้วย");
-
-    if(PlayerInfo[playerid][pCash] < 1000)
-        return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอต่อการซื้อล็อตตารี่");
-
-    GiveMoney(playerid, -1000);
-    
-    format(PlayerInfo[playerid][pTicket], PlayerInfo[playerid][pTicket], "%s", params);
-
-    SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ซื้อล็อตตารี่ เลข %s เรียบร้อยแล้ว โปรดรอล็อตตารี่ออก",params);
-    BusinessInfo[id][BusinessCash] += 500;
-    GlobalInfo[G_GovCash] += 500;
-    Saveglobal();
-    return 1;
-}
-
 Dialog:DIALOG_CONFIRM_SAVEING(playerid, response, listitem, inputtext[])
 {  
     if(!response)

@@ -292,7 +292,6 @@ CMD:givelicense(playerid, params[])
 		return SendErrorMessage(playerid,"ผู้เล่นมีใบพกอาวุธอยู่แล้ว");
 
 	PlayerInfo[playerb][pWeaponLicense] = true;
-	SendPoliceMessage(0x8D8DFFFF, "HQ: %s %s มอบใบพกอาวุธ ให้กับ %s", ReturnFactionRank(playerid), ReturnName(playerid, 0), ReturnName(playerb, 0));
 	return 1;
 }
 
@@ -408,7 +407,7 @@ CMD:unimpound(playerid, params[])
 	VehicleInfo[vehicleid][eVehicleImpoundPos][2] = 0;
 	VehicleInfo[vehicleid][eVehicleImpoundPos][3] = 0;
 	SendClientMessageEx(playerid, -1, "คุณได้นำที่ล็อกล้ออกจากยานพนะ %s ของคุณเรียบร้อยแล้ว",ReturnVehicleName(vehicleid));
-	SendPoliceMessage(0x8D8DFFFF, "HQ-TRAFFIC-DIVISION: %s ได้นำยานพนะ %s ออกจากการยึดเรียบร้อยแล้ว",ReturnName(playerid,0), ReturnVehicleName(vehicleid));
+	SendFactionMessageEx(playerid, 0x8D8DFFFF, "HQ-TRAFFIC-DIVISION: %s ได้นำยานพนะ %s ออกจากการยึดเรียบร้อยแล้ว",ReturnName(playerid,0), ReturnVehicleName(vehicleid));
 	SaveVehicle(vehicleid);
 	GiveMoney(playerid, -1500);
 	CharacterSave(playerid);
@@ -807,8 +806,9 @@ stock Arrest_Jail(playerid, tagetid, reason[], time, room)
 	PlayerInfo[tagetid][pArrestBy] = PlayerInfo[playerid][pDBID];
 	PlayerInfo[tagetid][pArrestTime] = time*60;
 	PlayerInfo[tagetid][pArrestRoom] = room;
-	SendPoliceMessage(0x8D8DFFFF, "HQ-ARREST: %s ถูกกุมขัง อยู่ห้องขัง Room: %d", ReturnName(tagetid,0), room);
-	SendPoliceMessage(0x8D8DFFFF, "ด้วยข้อหา: %s โดย %s %s",reason, ReturnFactionRank(playerid), ReturnName(playerid,0));
+
+	SendFactionMessageEx(playerid, 0x8D8DFFFF, "HQ-ARREST: %s ถูกกุมขัง อยู่ห้องขัง Room: %d", ReturnName(tagetid,0), room);
+	SendFactionMessageEx(playerid, 0x8D8DFFFF, "ด้วยข้อหา: %s โดย %s %s",reason, ReturnFactionRank(playerid), ReturnName(playerid,0));
 	switch(room)
 	{
 		case 1:

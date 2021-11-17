@@ -3017,7 +3017,7 @@ CMD:makesupport(playerid, params[])
 		return SendErrorMessage(playerid, "ผู้เล่นยังไม่ได้เข้าสู่ระบบ");
 
 
-	if(level > 3)
+	if(level > 2)
 		return SendErrorMessage(playerid, "โปรดใส่ เลวลให้ถูกต้อง (ห้ามมากกว่า 3)");
 
 	if(PlayerInfo[tagetid][pAdmin])
@@ -3028,25 +3028,27 @@ CMD:makesupport(playerid, params[])
 		if(level == 0)
 		{
 			PlayerInfo[tagetid][pTester] = 0;
-			SendClientMessage(tagetid, COLOR_LIGHTRED, "คุณได้ถูกปลดออกจากตำแหน่ง Helper แล้วขอบคุณที่เข้ามาเป็นส่วนนึงของทีมงาน");
-			SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปลด %s ออกจากต่ำแหน่ง Helper", ReturnRealName(tagetid));
+			SendClientMessage(tagetid, COLOR_LIGHTRED, "คุณได้ถูกปลดออกจากตำแหน่ง Support แล้วขอบคุณที่เข้ามาเป็นส่วนนึงของทีมงาน");
+			SendClientMessageEx(playerid, COLOR_GREY, "คุณได้ปลด %s ออกจากต่ำแหน่ง Support", ReturnRealName(tagetid));
 
-			SendDiscordMessageExs("900267036163338300", "[%s] %s Remove Helper %s",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid));
+			SendDiscordMessageExs("admin-log", "[%s] %s Remove Support %s",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid));
 			CharacterSave(tagetid);
 			return 1;
 		}
 
-		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "คุณถูกปรับให้ลดต่ำแหน่ง Helper จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
+		SendClientMessageEx(tagetid, COLOR_YELLOWEX, "คุณถูกปรับให้ลดต่ำแหน่ง Support จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
+		SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ปรับต่ำแหน่ง Support ของ %s",  ReturnRealName(tagetid));
 		PlayerInfo[tagetid][pTester] = level;
 		CharacterSave(tagetid);
 
-		SendDiscordMessageExs("900267036163338300", "[%s] %s Demote Helper %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
+		SendDiscordMessageExs("admin-log", "[%s] %s Demote Support %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
 		return 1;
 	}
 	else
 	{
-		SendClientMessageEx(tagetid, COLOR_PMS, "คุณได้ถูกเพิ่มต่ำแหน่งจาก Helper จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
-		SendDiscordMessageExs("900267036163338300", "[%s] %s Upgrade Helper %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
+		SendClientMessageEx(playerid, COLOR_YELLOWEX, "คุณได้ปรับต่ำแหน่ง Support ของ %s",  ReturnRealName(tagetid));
+		SendClientMessageEx(tagetid, COLOR_PMS, "คุณได้ถูกเพิ่มต่ำแหน่งจาก Support จาก %d เป็น %d",  PlayerInfo[tagetid][pTester], level);
+		SendDiscordMessageExs("admin-log", "[%s] %s Upgrade Support %s is %d",  ReturnDate(), ReturnRealName(playerid), ReturnRealName(tagetid), level);
 		PlayerInfo[tagetid][pTester] = level;
 		CharacterSave(tagetid);
 		return 1;

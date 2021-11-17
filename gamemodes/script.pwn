@@ -551,7 +551,7 @@ hook OnPlayerDisconnect(playerid, reason)
 {
     new str[120];
     format(str, sizeof(str), "[%s] %s : Disconnect", ReturnDate(),ReturnName(playerid,0));
-    SendDiscordMessageEx("862580236524191744", str);
+    SendDiscordMessageEx("connecnt", str);
 
     static const szDisconnectReason[3][] = {"หลุด","ออกจากเกมส์","ถูกเตะ"};
     ProxDetector(playerid, 20.0, sprintf("*** %s ออกจากเซิร์ฟเวอร์ (%s)", ReturnPlayerName(playerid), szDisconnectReason[reason]));
@@ -659,7 +659,7 @@ public OnPlayerCommandPerformed(playerid, cmd[], params[], result, flags)
   
     new str[120];
     format(str, sizeof(str), "[CMD] %s: /%s",ReturnRealName(playerid, 0), cmd);
-    SendDiscordMessageEx("862581433302384650", str);
+    SendDiscordMessageEx("command", str);
 
     Log(allcmdlog, INFO, "[CMD] %s: /%s %s", ReturnPlayerName(playerid), cmd, params);
     return 1;

@@ -525,7 +525,7 @@ public OnPlayerWounded(playerid, killerid, reason)
 	format(str, sizeof(str), "%s ถูกสังหารโดย %s. (%s)", ReturnName(playerid), ReturnName(killerid), ReturnWeaponName(reason)); 
 	SendAdminMessageEx(COLOR_RED, 1, str); 
 	format(str, sizeof(str), "%s abused by %s. (%s)", ReturnName(playerid), ReturnName(killerid), ReturnWeaponName(reason));
-	SendDiscordMessage(3, str); 
+	SendDiscordMessage("death", str); 
 
 	GameTextForPlayer(playerid, "~b~BRUTALLY WOUNDED", 5000, 3);
 	TogglePlayerControllable(playerid, 0);
@@ -561,7 +561,7 @@ public OnPlayerDead(playerid, killerid, reason, executed)
 		SendAdminMessageEx(COLOR_RED, 1, str);
 		Log(DeathLog, WARNING, "[KILL] %s Has Been Murder by %s. (%s)", ReturnName(playerid, 0), ReturnName(killerid, 0), ReturnWeaponName(reason));
 		format(str, sizeof(str), "[KILL] %s Has Been Murder by %s. (%s)", ReturnName(playerid, 0), ReturnName(killerid, 0), ReturnWeaponName(reason));
-		SendDiscordMessage(3, str); 
+		SendDiscordMessage("death", str); 
 	}
 	
 	SetPlayerTeam(playerid, PLAYER_STATE_DEAD); 

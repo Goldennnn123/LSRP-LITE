@@ -3541,7 +3541,7 @@ public HelpUpPLayer(playerid, tagerid)
 
 	new str[150];
 	format(str, sizeof(str), "%s Helpup %s", ReturnRealName(playerid,0), ReturnRealName(tagerid,0));
-	SendDiscordMessage(7, str);
+	SendDiscordMessage("helpup", str);
 	return 1;
 }
 

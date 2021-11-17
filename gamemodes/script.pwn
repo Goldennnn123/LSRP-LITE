@@ -154,11 +154,11 @@ enum {
 #include "Y/systems/id_card/id_card.pwn"
 
 
-#include "Y/jobs/farmer.pwn"
+//#include "Y/jobs/farmer.pwn"
 #include "Y/jobs/fisher.pwn"
 #include "Y/jobs/trucker.pwn"
 #include "Y/jobs/mechanic.pwn"
-#include "Y/jobs/miner.pwn"
+//#include "Y/jobs/miner.pwn"
 #include "Y/jobs/electrician.pwn"
 #include "Y/jobs/fuel.pwn"
 #include "Y/jobs/taxi.pwn"
@@ -261,7 +261,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น Airbreck", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Airbreck",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
 
@@ -270,7 +270,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น teleport", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke teleport",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
         //KickEx(playerid);
@@ -279,7 +279,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น Surf", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Surf",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
     }
@@ -287,7 +287,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น ในการเสกอาวุธ", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Weapons",e_pAccountData[playerid][mDBID] ,PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         RemovePlayerWeapon(playerid, GetPlayerWeapon(playerid));
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
@@ -296,7 +296,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสก Jeckpat", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Jeckpat",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
     }
@@ -304,7 +304,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น ล่องหน", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Invisible",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
         //KickEx(playerid);
@@ -313,7 +313,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s อินเตอร์เน็ตมีความล่าช้าเกินไป", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Low Internet",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "Ping คุณมากเกินไปในการเข้าเล่นโปรดตรวจสอบการเชื่อมต่ออินเตอร์เน็ตอีกครั้ง");
     }
@@ -321,7 +321,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสกอาวุธ", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Weapons",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
     }
@@ -329,7 +329,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น ซ่อมยานพหานะ", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Repair Vehicle",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
         //KickEx(playerid);
@@ -338,7 +338,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสกเกราะ", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Armour",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
     }
@@ -346,7 +346,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสกเลือด", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Health",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
     }
@@ -354,7 +354,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น แต่งยานพาหานะ", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Modefile Vehicle",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
     }
@@ -362,7 +362,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น Speed Hack", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Speed Hack",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
     }
@@ -370,7 +370,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น วาปเข้ายานพหานะ", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Warp To Vehicle",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         //SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
         //KickEx(playerid);
@@ -379,7 +379,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น เสกเงิน", playerid, ReturnName(playerid,0));
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacke Money",e_pAccountData[playerid][mDBID], PlayerInfo[playerid][pDBID],ReturnName(playerid,0));
-	    SendDiscordMessage(4, str);
+	    SendDiscordMessage("hacker", str);
         //SetPlayerArmour(playerid,0);
         //SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
     }
@@ -387,7 +387,7 @@ public OnCheatDetected(playerid, ip_address[], type, code)
     {
         SendAdminMessageEx(COLOR_LIGHTRED,1, "AdmWarn: [%d] %s มีความเป็นไปได้ที่จะใช้โปรแกรมในการช่วยเล่น (%d)", playerid, ReturnName(playerid,0), code);
         format(str, sizeof(str), "[HECK] UCP_ID:%d CHARDBID:%d  %s Hacker is check in game now (#%d)",e_pAccountData[playerid][mDBID],PlayerInfo[playerid][pDBID],ReturnName(playerid,0), code);
-        SendDiscordMessage(4, str);
+        SendDiscordMessage("hacker", str);
         /*SetPlayerArmour(playerid,0);
         SendClientMessage(playerid, COLOR_LIGHTRED, "คุณถูกต้องสงสัยว่าใช้โปรแกรมในการช่วยเล่น");
         KickEx(playerid);*/
@@ -540,6 +540,9 @@ public OnPlayerConnect(playerid) {
 	mysql_tquery(dbCon, query, "OnPlayerJoin", "d", playerid);
 
     SendClientMessage(playerid, -1, "ยินดีต้อนรับเข้าสู่ "EMBED_YELLOW"Los Santos Roleplay LITE");
+
+
+    SendDiscordMessageExs("connect", "[%s] %s has Join Server",  ReturnDate(), ReturnRealName(playerid));
     return 1;
 }
 

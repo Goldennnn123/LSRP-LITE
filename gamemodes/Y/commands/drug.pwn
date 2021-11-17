@@ -224,7 +224,7 @@ CMD:givedrug(playerid, params[])
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบ Cocaine ให้กับ %s จำนวน %.2f กรัม",ReturnName(tagetid,0), amout);
             
             format(str, sizeof(str), "[%s] %s Give Drug 'Cocaine' to %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
-            SendDiscordMessage(5, str);
+            SendDiscordMessage("drug", str);
 
             Log(druglog, WARNING, str);
 
@@ -242,7 +242,7 @@ CMD:givedrug(playerid, params[])
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบ Cannabis ให้กับ %s จำนวน %.2f กรัม",ReturnName(tagetid,0), amout);
             
             format(str, sizeof(str), "[%s] %s Give Drug 'Cannabis' to %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
-            SendDiscordMessage(5, str);    
+            SendDiscordMessage("drug", str);
             Log(druglog, WARNING, str);        
             
             PlayerInfo[playerid][pDrug][1]-=amout;
@@ -259,7 +259,7 @@ CMD:givedrug(playerid, params[])
             SendClientMessageEx(playerid, COLOR_GREY, "คุณได้มอบ Heroin ให้กับ %s จำนวน %.2f กรัม",ReturnName(tagetid,0), amout);
             
             format(str, sizeof(str), "[%s] %s Give Drug 'Heroin' to %s Amount: %.2f", ReturnDate(),ReturnName(playerid,0), ReturnName(tagetid,0), amout);
-            SendDiscordMessage(5, str);  
+            SendDiscordMessage("drug", str);
             Log(druglog, WARNING, str);
 
             PlayerInfo[playerid][pDrug][2]-=amout;

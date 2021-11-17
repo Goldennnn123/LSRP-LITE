@@ -619,7 +619,7 @@ public LoadCharacter(playerid)
 
 	new str[120];
     format(str, sizeof(str), "[%s] %s : Connected to the Server", ReturnDate(),ReturnName(playerid,0));
-    SendDiscordMessage(1, str);
+    SendDiscordMessage("connecnt", str);
 
 	Player_SetWalkingStyle(playerid, PlayerInfo[playerid][pWalk]);
 	

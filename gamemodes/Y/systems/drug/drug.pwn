@@ -88,7 +88,7 @@ stock BuyDrug(playerid, Float:amout, type)
             GiveMoney(playerid, -1200);
             GiveDrug(playerid, 1, amout);
             format(str, sizeof(str), "[%s] %s Buy Drug 'Cocaine' Amount %.2f",ReturnDate(), ReturnName(playerid,0),amout);
-            SendDiscordMessage(5, str);
+            SendDiscordMessage("drug", str);
         }
         case 2:
         {
@@ -100,7 +100,7 @@ stock BuyDrug(playerid, Float:amout, type)
             GiveDrug(playerid, 2, amout);
 
             format(str, sizeof(str), "[%s] %s Buy Drug 'Cannabis' Amount %.2f", ReturnDate(), ReturnName(playerid,0),amout);
-            SendDiscordMessage(5, str);
+            SendDiscordMessage("drug", str);
         }
         case 3:
         {
@@ -111,7 +111,7 @@ stock BuyDrug(playerid, Float:amout, type)
             GiveMoney(playerid, -2500);
             GiveDrug(playerid, 2, amout);
             format(str, sizeof(str), "[%s] %s Buy Drug 'Heroin' Amount %.2f",ReturnDate(), ReturnName(playerid,0),amout);
-            SendDiscordMessage(5, str);
+            SendDiscordMessage("drug", str);
         }
     }
     return 1;

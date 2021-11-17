@@ -52,5 +52,15 @@
 #define IsPlayerAndroid(%0)                 GetPVarInt(%0, "NotAndroid") == 0
 
 
+#define SUPPORT_LV_1	(1)
+#define SENIOR_SUPPORT	(2)
+
+#define GAME_ADMIN_LV_1	(1)
+#define GAME_ADMIN_LV_2	(2)
+#define SENIOR_ADMIN	(3)
+#define LEAD_ADMIN		(4)
+#define MANAGEMENT		(5)
+
+
 
 

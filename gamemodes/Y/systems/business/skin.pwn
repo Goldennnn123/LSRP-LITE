@@ -15,6 +15,9 @@ CMD:customskin(playerid, params[])
 
 CMD:showskin(playerid, params[])
 {
+    if(!PlayerInfo[playerid][pAdmin])
+        return SendUnauthMessage(playerid);
+        
     ShowSkinModelMenu(playerid);
     return 1;
 }

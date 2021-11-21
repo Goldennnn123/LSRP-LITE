@@ -395,7 +395,6 @@ CMD:skin(playerid, params[])
         return SendErrorMessage(playerid, "คุณไม่อยุ่ในร้านขายเสื้อผ้า");
 
     ShowSkinModelMenu(playerid);
-    //Dialog_Show(playerid, DIALOG_BUYSKIN_INPUT, DIALOG_STYLE_INPUT, "ซื้อ Skin", "ในการเปลี่ยน Skin จำเป็นต้องคำนึงถึงบทบาทของตัวละครเป็นหลักหากชื่อเป็นผู้ชายแต่\nเปลี่ยนเป็น Skin ผู้หญิงแล้วทางผู้ดูแลพบเจอจะทำการแตะออกจากเซิร์ฟเวอร์\nหากถูกแต่ออกในกรณีเดียวกันครบ 3 ครั้งจะทำการลบตัวละครตัวนั้นทันที","ยืนยัน", "ยกเลิก");
     return 1;
 }
 

@@ -32,12 +32,11 @@
 #include <compat>
 //#include <cpn>
 #define DEBUG
+#include <eSelection>
 #include <nex-ac>
 #include <nex-ac_en.lang>
 #include <cec>
 #include <walking_styles>
-//#include <H-AC>
-//#include <io>
 
 /*======================================================================================================
 										[Macros]
@@ -139,6 +138,7 @@ enum {
 #include "Y/systems/phone.pwn"
 #include "Y/systems/business/ui_buy.pwn"
 #include "Y/systems/business/vehbuy.pwn"
+#include "Y/systems/business/skin.pwn"
 #include "Y/systems/anim.pwn"
 #include "Y/systems/furniture/computer.pwn"
 #include "Y/systems/furniture/boombox.pwn"
@@ -191,45 +191,36 @@ enum {
 #include "Y/commands/tester.pwn"
 #include "Y/commands/drug.pwn"
 
-#include "Y/Interior/Bank.pwn"
-#include "Y/Interior/House1.pwn"
-#include "Y/Interior/House2.pwn"
-#include "Y/Interior/house3.pwn"
-#include "Y/Interior/pizza.pwn"
-#include "Y/Interior/bar2.pwn"
-//#include "Y/Interior/bar3.pwn"
-#include "Y/Interior/House3.pwn"
-#include "Y/Interior/House5.pwn"
-#include "Y/Interior/House6.pwn"
-#include "Y/Interior/house7.pwn"
-#include "Y/Interior/hq_hpsital.pwn"
-#include "Y/Interior/pd_hq.pwn"
-#include "Y/Interior/SOS_BAR.pwn"
-#include "Y/Interior/house8.pwn"
-#include "Y/Interior/house9.pwn"
-#include "Y/Interior/house10.pwn"
-#include "Y/Interior/business/biz1.pwn"
+#include "Y/Interior/house/House1.pwn"
+#include "Y/Interior/house/House2.pwn"
+#include "Y/Interior/house/house3.pwn"
+#include "Y/Interior/house/House3.pwn"
+#include "Y/Interior/house/House5.pwn"
+#include "Y/Interior/house/House6.pwn"
+#include "Y/Interior/house/house7.pwn"
+#include "Y/Interior/house/house8.pwn"
+#include "Y/Interior/house/house9.pwn"
+#include "Y/Interior/house/house10.pwn"
+/*#include "Y/Interior/business/biz1.pwn"
+#include "Y/Interior/business/biz2.pwn"
+#include "Y/Interior/business/biz3.pwn"
+#include "Y/Interior/business/pizza.pwn"
+#include "Y/Interior/business/bar2.pwn"
+#include "Y/Interior/business/SOS_BAR.pwn"
+#include "Y/Interior/business/Bank.pwn"*/
+//#include "Y/Interior/lsfd/hq_hpsital.pwn"
 
-//#include "Y/Interior/init1.pwn"
+#include "Y/Interior/lspd/wilshire.pwn"
+#include "Y/Interior/lspd/jail.pwn"
 
 
-#include "Y/Map/LSPDHQ.pwn"
 #include "Y/Map/415garage.pwn"
 #include "Y/Map/garagegas.pwn"
-#include "Y/Map/Hospital.pwn"
 #include "Y/Map/ps.pwn"
 #include "Y/Map/map_fight.pwn"
-#include "Y/Map/carmeeting.pwn"
 #include "Y/Map/pump.pwn"
-#include "Y/Map/mapnaigun.pwn"
 #include "Y/Map/lsrplite_map.pwn"
 #include "Y/Map/car_buy.pwn"
-
-
-#include "Y/Map/habro.pwn"
-#include "Y/Interior/harbor.pwn"
-//#include "Y/Map/viewwood.pwn"
-#include "Y/Interior/jail.pwn"
 
 
 #include "Y/systems/discord/discord.pwn"

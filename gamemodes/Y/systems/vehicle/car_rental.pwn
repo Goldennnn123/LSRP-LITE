@@ -76,8 +76,8 @@ stock VehicleRentalPrice(model)
 	switch(model)
 	{
 		case 462: return 350;
-	    case 492: return 1500;
-	    case 422: return 2000;
+	    case 492: return 500;
+	    case 422: return 550;
 	}
 	return 0;
 }
@@ -100,6 +100,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
     return 1;
 }
 
+alias:rentvehicle("rentcar", "เช่ารถ")
 CMD:rentvehicle(playerid)
 {
 	new vehicleid = GetPlayerVehicleID(playerid);

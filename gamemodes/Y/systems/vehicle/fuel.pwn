@@ -76,7 +76,7 @@ CMD:fuelcmds(playerid, params[])
 
 CMD:makefuelstation(playerid, params[])
 {
-	if(PlayerInfo[playerid][pAdmin] < 5)
+	if(PlayerInfo[playerid][pAdmin] < LEAD_ADMIN)
 		return SendUnauthMessage(playerid);
 
     new id;

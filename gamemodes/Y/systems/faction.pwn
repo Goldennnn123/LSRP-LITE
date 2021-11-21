@@ -343,7 +343,7 @@ Dialog:DIALOG_FACTION_CONFIG(playerid, response, listitem, inputtext[])
 			case 6: return Dialog_Show(playerid, DIALOG_FACTION_RANKS, DIALOG_STYLE_INPUT, "Faction Configuration", "ใส่เลขยศ/ต่ำแหน่ง ที่คุณต้องการแก้ไข(1-20)", "ตกลง", "<<");
 			case 7:
 			{	
-				if(PlayerInfo[playerid][pAdmin] < 1337)
+				if(PlayerInfo[playerid][pAdmin] < LEAD_ADMIN)
 					return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
 					
 				new factionid = PlayerSelectFac[playerid];
@@ -364,7 +364,7 @@ Dialog:DIALOG_FACTION_CONFIG(playerid, response, listitem, inputtext[])
 			case 8: return Dialog_Show(playerid, DIALOG_FACTION_ALTER_T, DIALOG_STYLE_INPUT, "Faction Configuration", "ใส่เลขยศ/ต่ำแหน่ง ที่คุณต้องการให้รียานพาหนะได้:", "ตกลง", "<<");
 			case 9:
 			{
-				if(PlayerInfo[playerid][pAdmin] < 1337)
+				if(PlayerInfo[playerid][pAdmin] < LEAD_ADMIN)
 					return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
 
 				
@@ -375,7 +375,7 @@ Dialog:DIALOG_FACTION_CONFIG(playerid, response, listitem, inputtext[])
 			}
 			case 10: 
 			{
-				if(PlayerInfo[playerid][pAdmin] < 1337)
+				if(PlayerInfo[playerid][pAdmin] < LEAD_ADMIN)
 					return SendErrorMessage(playerid, "คุณไม่ใช่ผู้ดูแลระบบ");
 
 				if(FactionInfo[PlayerSelectFac[playerid]][eFactionType] != 2)

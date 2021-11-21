@@ -853,12 +853,12 @@ CMD:towcars(playerid, params[])
 alias:checkgovcash("checkgc")
 CMD:checkgovcash(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pFaction] && PlayerInfo[playerid][pAdmin] < 1339)
+	if(!PlayerInfo[playerid][pFaction] && PlayerInfo[playerid][pAdmin] < LEAD_ADMIN)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่น รัฐบาล");
 
 	new factionid = PlayerInfo[playerid][pFaction];
 
-	if(FactionInfo[factionid][eFactionJob] != GOV && PlayerInfo[playerid][pAdmin] < 1339)
+	if(FactionInfo[factionid][eFactionJob] != GOV && PlayerInfo[playerid][pAdmin] < LEAD_ADMIN)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่นที่เกี่ยวกับการบริหารงบประมาณของรัฐบาล");
 
 	SendClientMessageEx(playerid, COLOR_HELPME, "เงินในกรมการคลังของรัฐ San Andreas: $%s",MoneyFormat(GlobalInfo[G_GovCash]));
@@ -1049,12 +1049,12 @@ CMD:setbadge(playerid, params[])
 
 CMD:withdrawgov(playerid, params[])
 {
-	if(!PlayerInfo[playerid][pFaction] && PlayerInfo[playerid][pAdmin] < 1339)
+	if(!PlayerInfo[playerid][pFaction] && PlayerInfo[playerid][pAdmin] < LEAD_ADMIN)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่น รัฐบาล");
 
 	new factionid = PlayerInfo[playerid][pFaction];
 
-	if(FactionInfo[factionid][eFactionJob] != GOV && PlayerInfo[playerid][pAdmin] < 1339)
+	if(FactionInfo[factionid][eFactionJob] != GOV && PlayerInfo[playerid][pAdmin] < LEAD_ADMIN)
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในแฟคชั่นที่เกี่ยวกับการบริหารงบประมาณของรัฐบาล");
 
 	if(PlayerInfo[playerid][pFactionRank] > FactionInfo[factionid][eFactionAlterRank] && !PlayerInfo[playerid][pAdmin])
@@ -1073,7 +1073,7 @@ CMD:withdrawgov(playerid, params[])
 	return 1;
 }
 
-CMD:customskin(playerid, params[])
+/*CMD:customskin(playerid, params[])
 {
 	if(!PlayerInfo[playerid][pFaction])
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
@@ -1088,6 +1088,7 @@ CMD:customskin(playerid, params[])
 				continue;
 			
 			skincuount = i;
+			
 		}
 
 		SendUsageMessage(playerid, "/customskin <1-%d>", skincuount);
@@ -1109,7 +1110,7 @@ CMD:customskin(playerid, params[])
 	ClearAnimations(playerid);
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 	return 1;
-}
+}*/
 
 CMD:elm(playerid, params[])
 {

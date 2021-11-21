@@ -21,7 +21,8 @@
 		"infin1tyy/customplayernametags",
 		"maddinat0r/samp-discord-connector",
 		"NexiusTailer/Nex-AC",
-		"https://github.com/Mergevos/samp-walking-styles.git"
+		"https://github.com/Mergevos/samp-walking-styles.git",
+		"TommyB123/eSelection"
 	],
 	"local": true,
 	"runtime": {
@@ -64,8 +65,8 @@
 		"output": true,
 		"extra": {
 			"announce": "0",
-			"useartwork": "1",
-			"discord_bot_token": "ODUzNjEyODc5NjQzNTQxNTU1.YMX68Q.fo9x5pMvAaqzIQLNO4etiA_1lWY"
+			"discord_bot_token": "ODUzNjEyODc5NjQzNTQxNTU1.YMX68Q.fo9x5pMvAaqzIQLNO4etiA_1lWY",
+			"useartwork": "1"
 		}
 	},
 	"builds": [

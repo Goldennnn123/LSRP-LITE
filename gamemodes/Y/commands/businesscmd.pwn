@@ -170,12 +170,12 @@ CMD:buy(playerid, params[])
 
     PlayerInfo[playerid][pGUI] = 6;
     SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
-    MenuStore_AddItem(playerid, 1, 18919, "OOC Mask", 5000, "OOC Mask use /mask", 200);
-    MenuStore_AddItem(playerid, 2, 367, "Camera", 15000, "Cemara To Take Photo", 200);
-    MenuStore_AddItem(playerid, 3, 325, "Flower", 300, "Flower", 200);
-    MenuStore_AddItem(playerid, 4, 19897, "Cigarette", 150, "Flower", 200);
-    MenuStore_AddItem(playerid, 5, 2226, "BoomBox", 10000, "BoomBox use music staion", 200);
-    MenuStore_AddItem(playerid, 6, 336, "Baseball Bat", 1500, "Baseball Bat", 200);
+    MenuStore_AddItem(playerid, 1, 18919, "OOC Mask", 100, "OOC Mask use /mask", 200);
+    MenuStore_AddItem(playerid, 2, 367, "Camera", 50, "Cemara To Take Photo", 200);
+    MenuStore_AddItem(playerid, 3, 325, "Flower", 10, "Flower", 200);
+    MenuStore_AddItem(playerid, 4, 19897, "Cigarette", 25, "Flower", 200);
+    MenuStore_AddItem(playerid, 5, 2226, "BoomBox", 500, "BoomBox use music staion", 200);
+    MenuStore_AddItem(playerid, 6, 336, "Baseball Bat", 250, "Baseball Bat", 200);
     MenuStore_AddItem(playerid, 7, 1650, "GasCan", 2000, "GasCan use /refill", 200);
     MenuStore_Show(playerid, Shop, "SHOP");
     return 1;
@@ -394,17 +394,7 @@ CMD:skin(playerid, params[])
     if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_SKIN)
         return SendErrorMessage(playerid, "คุณไม่อยุ่ในร้านขายเสื้อผ้า");
 
-    new str[255], longstr[255];
-    format(str, sizeof(str), "ชุดที่ 1: %d\n",PlayerInfo[playerid][pSkinClothing][0]);
-    strcat(longstr, str);
-
-    format(str, sizeof(str), "ชุดที่ 2: %d\n",PlayerInfo[playerid][pSkinClothing][1]);
-    strcat(longstr, str);
-
-    format(str, sizeof(str), "ชุดที่ 3: %d\n",PlayerInfo[playerid][pSkinClothing][2]);
-    strcat(longstr, str);
-
-    Dialog_Show(playerid, DIALOG_SKINCLOST_LIST, DIALOG_STYLE_LIST, "Clothing Skin:", longstr, "ยืนยัน", "ยกเลิก");
+    ShowSkinModelMenu(playerid);
     //Dialog_Show(playerid, DIALOG_BUYSKIN_INPUT, DIALOG_STYLE_INPUT, "ซื้อ Skin", "ในการเปลี่ยน Skin จำเป็นต้องคำนึงถึงบทบาทของตัวละครเป็นหลักหากชื่อเป็นผู้ชายแต่\nเปลี่ยนเป็น Skin ผู้หญิงแล้วทางผู้ดูแลพบเจอจะทำการแตะออกจากเซิร์ฟเวอร์\nหากถูกแต่ออกในกรณีเดียวกันครบ 3 ครั้งจะทำการลบตัวละครตัวนั้นทันที","ยืนยัน", "ยกเลิก");
     return 1;
 }

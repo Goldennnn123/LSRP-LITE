@@ -50,7 +50,7 @@ hook OnPlayerConnect(playerid)
 
 CMD:gotodrugpos(playerid, params[])
 {
-    if(PlayerInfo[playerid][pAdmin] < 1338)
+    if(PlayerInfo[playerid][pAdmin] < LEAD_ADMIN)
         return SendErrorMessage(playerid, "เกิดข้อผิดพลาดในการใช้คำสั่ง");
 
     SetPlayerPos(playerid, DrugBuyPos[RanDomDrugPoint][DrugPosX], DrugBuyPos[RanDomDrugPoint][DrugPosY], DrugBuyPos[RanDomDrugPoint][DrugPosZ]);

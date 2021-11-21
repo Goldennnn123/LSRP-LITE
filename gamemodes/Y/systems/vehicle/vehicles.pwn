@@ -3069,6 +3069,12 @@ stock ToggleVehicleLights(vehicleid, bool:lightstate)
 	GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 	SetVehicleParamsEx(vehicleid, engine, lightstate, alarm, doors, bonnet, boot, objective);
 	
+	if(lightstate == false)
+	{
+		KillTimer(VehicleInfo[vehicleid][eVehicleElmTimer]);
+		VehicleInfo[vehicleid][eVehicleElmTimer] = -1;
+	}
+
 	VehicleInfo[vehicleid][eVehicleLights] = lightstate;
 	return 1;
 }

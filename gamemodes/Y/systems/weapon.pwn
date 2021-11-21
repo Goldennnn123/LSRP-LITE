@@ -492,7 +492,7 @@ public OnPlayerLeaveWeapon(index)
 {
 	new str[120];
 	format(str, sizeof(str), "Weapons %s(Ammo:%d) of %s(%d) Time Out it Remove", ReturnWeaponName(WeaponDropInfo[index][eWeaponWepID]),WeaponDropInfo[index][eWeaponWepID], WeaponDropInfo[index][eWeaponWepAmmo],ReturnDBIDName(WeaponDropInfo[index][eWeaponDroppedBy]),WeaponDropInfo[index][eWeaponDroppedBy]);
-	SendDiscordMessageEx("862581286656671754", str);
+	SendDiscordMessageEx("weapons", str);
 
 	WeaponDropInfo[index][eWeaponDropped] = false;
 	WeaponDropInfo[index][eWeaponDroppedBy] = 0;

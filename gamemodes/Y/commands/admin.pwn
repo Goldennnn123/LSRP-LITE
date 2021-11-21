@@ -1796,7 +1796,7 @@ CMD:givegun(playerid, params[])
 	SendAdminMessage(2, str);
 	
 	format(str, sizeof(str), "%s Give Weapons to %s is %s and Ammo %d", ReturnRealName(playerid, 0), ReturnRealName(playerb, 0), ReturnWeaponName(weaponid), ammo);
-	SendDiscordMessageEx("871080526260346941", str);
+	SendDiscordMessageEx("admin-log", str);
 
 	SendServerMessage(playerb, "ผู้ดูแลได้มอบอาวุธ %s และกระสุน %d ชุด", ReturnWeaponName(weaponid), ammo);
 	CharacterSave(playerid);

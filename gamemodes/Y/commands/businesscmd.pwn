@@ -320,7 +320,7 @@ CMD:withdraw(playerid, params[])
     if(amount < 1 || amount > PlayerInfo[playerid][pBank])
 		return SendErrorMessage(playerid, "คุณมีเงินในบัญชีธนาคารไม่เพียงพอ"); 
 
-    if(PlayerInfo[playerid][pSaving] && PlayerInfo[playerid][pBank] < 20000000)
+    if(PlayerInfo[playerid][pSaving] && PlayerInfo[playerid][pBank] < MONEY_MAX_SAVING)
     {
         PlayerInfo[playerid][pBank] = PlayerInfo[playerid][pBank] / 2;
         PlayerInfo[playerid][pSaving] = false;

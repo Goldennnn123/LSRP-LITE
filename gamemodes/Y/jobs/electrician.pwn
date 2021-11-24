@@ -201,7 +201,7 @@ CMD:startele(playerid, params[])
 
     new timestart =  GetPVarInt(playerid, "TimeDeley");
 
-    if(gettime() - timestart < 120)
+    if(gettime() - timestart < 30)
         return SendErrorMessage(playerid, "กรุณารอ 2 นาทีก่อนที่จะไปซ่อมไฟฟ้า");
 
     new randdom = Random(1, 50);

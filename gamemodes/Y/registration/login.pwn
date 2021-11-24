@@ -128,7 +128,7 @@ Dialog:DIALOG_REGISTER(playerid, response, listitem, inputtext[])
     WP_Hash(buf, sizeof (buf), inputtext);
 
     new query[256];
-    mysql_format(dbCon, query, sizeof(query), "INSERT INTO `masters` (acc_name, acc_pass) VALUES('%e', '%e')", ReturnPlayerName(playerid), buf);
+    mysql_format(dbCon, query, sizeof(query), "INSERT INTO `masters` (`acc_name`, `acc_pass`) VALUES('%s', '%e')", ReturnPlayerName(playerid), buf);
 	mysql_tquery(dbCon, query, "OnPlayerRegister", "d", playerid);
 
     return 1;

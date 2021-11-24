@@ -2892,11 +2892,11 @@ CMD:setcar(playerid, params[])
 		new
 			plates[32], randset[3], Excamplae[32]; 
 			
-		randset[0] = random(sizeof(possibleVehiclePlates)); 
-		randset[1] = random(sizeof(possibleVehiclePlates)); 
-		randset[2] = random(sizeof(possibleVehiclePlates)); 
+		randset[0] = random(sizeof(VehiclePlateChar)); 
+		randset[1] = random(sizeof(VehiclePlateChar)); 
+		randset[2] = random(sizeof(VehiclePlateChar)); 
 
-        format(Excamplae, 32, "%d%s%s%s%d%d%d", random(9), possibleVehiclePlates[randset[0]], possibleVehiclePlates[randset[1]], possibleVehiclePlates[randset[2]], random(9), random(9));
+        format(Excamplae, 32, "%d%s%s%s%d%d%d", random(9), VehiclePlateChar[randset[0]], VehiclePlateChar[randset[1]], VehiclePlateChar[randset[2]], random(9), random(9));
 
 		if(sscanf(b_str, "s[32]", plates))
 			return SendUsageMessage(playerid, "/setcar vehicleid plates [plates]"); 

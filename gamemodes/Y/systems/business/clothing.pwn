@@ -10,6 +10,15 @@ hook OnPlayerConnect(playerid)
 }
 
 
+new pick_cloth[2];
+hook OnGameModeInit()
+{
+    pick_cloth[0] = CreateDynamicPickup(1329, 1, 1103.0364,-1440.3457,15.7969, -1, -1, -1, -1);
+    return 1;
+}
+
+
+
 
 stock SetPlayerClothing(playerid)
 {
@@ -62,7 +71,8 @@ CMD:buyclothing(playerid, params[])
     if(IsPlayerInAnyVehicle(playerid))
         return SendErrorMessage(playerid, "คุณต้องลงจากยานพาหนะ");
 
-    //if()
+    if(!IsPlayerInRangeOfPoint(playerid, 3.0, 1103.0364,-1440.3457,15.7969))
+        return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดซื้อ Item");
 
     new idx = 0;
 
@@ -83,6 +93,7 @@ CMD:buyclothing(playerid, params[])
 }
 
 
+alias:clothing("cloth")
 CMD:clothing(playerid, params[])
 {
     new type[20], str_2[20];
@@ -94,13 +105,13 @@ CMD:clothing(playerid, params[])
         return 1;
     }
     
-    if(!strcmp(type, "list", true))
+    if(strcmp(type, "list", true) == 0 || strcmp(type, "l", true) == 0)
     {
         ShowClothing(playerid);
         PlayerCloID[playerid] = 0;
         return 1;
     }
-    else if(!strcmp(type, "give", true))
+    else if(strcmp(type, "give", true) == 0 || strcmp(type, "g", true) == 0)
     {
         new tagetid, id, idx = -1;
 

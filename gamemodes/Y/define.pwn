@@ -66,6 +66,8 @@
 #define PLAYER_EDIT_OBJECT (1)
 #define PLAYER_EDIT_CLOTHING (2)
 
+#define MONEY_MAX_SAVING	5000000
+
 
 
 

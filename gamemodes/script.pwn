@@ -121,6 +121,7 @@ enum {
 #include "Y/function.pwn"
 #include "Y/mysql/database.pwn"
 
+#include "Y/systems/textdraw/showmodel.pwn"
 #include "Y/systems/vehicle/vehicles.pwn"
 #include "Y/systems/vehicle/fuel.pwn"
 #include "Y/systems/vehicle/carmod.pwn"
@@ -139,7 +140,7 @@ enum {
 #include "Y/systems/phone.pwn"
 #include "Y/systems/business/ui_buy.pwn"
 #include "Y/systems/business/vehbuy.pwn"
-#include "Y/systems/business/skin.pwn"
+#include "Y/systems/business/testbuyveh.pwn"
 #include "Y/systems/anim.pwn"
 #include "Y/systems/furniture/computer.pwn"
 #include "Y/systems/furniture/boombox.pwn"

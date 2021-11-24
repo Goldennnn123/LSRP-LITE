@@ -356,13 +356,7 @@ CMD:duty(playerid, params[])
 		return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในเฟคชั่น");
 	
 	if(FactionInfo[PlayerInfo[playerid][pFaction]][eFactionType] != GOVERMENT)
-		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล"); 
-
-	if(!IsPlayerInRangeOfPoint(playerid, 5.0, FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][0], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][1], FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawn][2]))
-			return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
-
-	if(GetPlayerVirtualWorld(playerid) != FactionInfo[PlayerInfo[playerid][pFaction]][eFactionSpawnWorld])
-			return SendErrorMessage(playerid, "คุณไม่ได้อยู่จุดล็อกเกอร์");
+		return SendClientMessage(playerid, COLOR_RED, "ACCESS DENIED:{FFFFFF} คุณไม่ใช่หน่วยงานรัฐบาล");
 
 	
 	if(ReturnFactionJob(playerid) == POLICE)
@@ -371,65 +365,20 @@ CMD:duty(playerid, params[])
 		{
 			PlayerInfo[playerid][pDuty] = true;
 
-			for(new i = 0; i < 4; i++)
-			{
-				playerWeaponsSave[playerid][i] = PlayerInfo[playerid][pGun][i];
-				playerWeaponsAmmoSave[playerid][i] = PlayerInfo[playerid][pGunAmmo][i];
-			}
-
-			SendFactionMessageEx(1,playerid, "HQ: %s %s has gone on duty", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-			SendClientMessage(playerid, COLOR_WHITE, "สิ่งที่คุณจะได้รับ: Spraycan, Nitestick, Desert Eagle (60), Health(100)");
-
-			new str[128];
-			format(str, sizeof(str), "ได้หยิบตราประจำตัวออกมาจากตู้ล็อกเกอร์");
-			callcmd::me(playerid, str);
-
-			SendDiscordMessageEx("duty-roster", "```HQ: %s %s has gone on duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-
-			SetPlayerHealth(playerid, 100);
-			SetPlayerArmour(playerid, 100);
-
-			TakePlayerGuns(playerid);
-
-			GivePlayerWeaponEx(playerid, 24, 100);
-			GivePlayerWeaponEx(playerid, 3, 1);
-			GivePlayerWeaponEx(playerid, 41, 350);
-
 			if(!PlayerInfo[playerid][pAdminDuty] && !PlayerInfo[playerid][pTesterDuty])
 				SetPlayerColor(playerid, COLOR_COP);
 
+			SendClientMessage(playerid, COLOR_LIGHTGREEN, "You Are On Duty Now!");
 			return 1;
 		}
 		else
 		{
 			PlayerInfo[playerid][pDuty] = false;
 
-			ResetPlayerWeapons(playerid);
-
-			for(new i = 0; i < 4; i++)
-			{
-				PlayerInfo[playerid][pGun][i] = 0; PlayerInfo[playerid][pGunAmmo][i] = 0;
-
-				if(playerWeaponsSave[playerid][i])
-					GivePlayerGun(playerid, playerWeaponsSave[playerid][i], playerWeaponsAmmoSave[playerid][i]);
-			}
-
-
-			SendFactionMessageEx(playerid, 0x8D8DFFFF, " HQ: %s %s has gone off duty", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-			new str[128];
-			format(str, sizeof(str), "วางตราประจำตัวไว้ที่ล็อคเกอร์");
-			callcmd::me(playerid, str);
-
-			SendDiscordMessageEx("duty-roster", "```HQ: %s %s has gone off duty```", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-
-			SetPlayerArmour(playerid, 0);
-			SetPlayerHealth(playerid, 100);
-
 			if(!PlayerInfo[playerid][pAdminDuty])
 			SetPlayerColor(playerid, COLOR_WHITE);
 
-			if(GetPlayerSkin(playerid) != PlayerInfo[playerid][pLastSkin])
-				SetPlayerSkin(playerid, PlayerInfo[playerid][pLastSkin]);
+			SendClientMessage(playerid, COLOR_LIGHTGREEN, "You Are Off Duty Now!");
 			return 1;
 		}
 	}

@@ -581,7 +581,7 @@ public CallPaycheck()
 			{
 				SendClientMessageEx(i, COLOR_LIGHTRED, "คุณไม่ได้รับ PayCheck เนื่องจากคุณมีการ AFK ไป %s วินาที ซึ่งเรากำหนดให้แค่ไม่เกิน 120 วินาที",MoneyFormat(AFKCount[i]));
 				format(str, sizeof(str), "[%s] %s(DBID:%d) not paid PayCheck",ReturnDate(), ReturnRealName(i,0), PlayerInfo[i][pDBID]);
-				SendDiscordMessageEx("873794322720497706", str);
+				SendDiscordMessageEx("not-paycheck", str);
 				continue;
 			}
 		}
@@ -756,7 +756,7 @@ public CallPaycheck()
 
 	new str[120];
 	format(str, sizeof(str), "[%s] Paycheck Now",ReturnDate());
-	SendDiscordMessageEx("881588578365366322", str);
+	SendDiscordMessageEx("paycheck-hour", str);
 	return 1;
 }
 
@@ -1095,8 +1095,10 @@ stock SetPlayerSpawn(playerid)
             }
             case SPAWN_AT_LASTPOS: 
             {
-                PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_DEFAULT;
-                SpawnPlayer(playerid);
+                SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld]);
+        		SetPlayerInterior(playerid, PlayerInfo[playerid][pLastInterior]);
+
+        		SetPlayerPos(playerid, PlayerInfo[playerid][pLastPosX], PlayerInfo[playerid][pLastPosY], PlayerInfo[playerid][pLastPosZ]);
             }
 
         }

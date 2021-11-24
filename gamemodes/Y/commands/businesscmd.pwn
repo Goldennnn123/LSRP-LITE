@@ -1,4 +1,16 @@
+
+#include <YSI_Coding\y_hooks>
+
+
 new PlayerSkinCloseID[MAX_PLAYERS];
+
+new buy_weapon[2];
+
+hook OnGameModeInit()
+{
+    buy_weapon[0] = CreateDynamicPickup(1239, 2, 1410.8884,-10.3149,1000.9465, -1, -1, -1, 300);
+    return 1;
+}
 
 hook OP_Connect(playerid)
 {
@@ -162,23 +174,46 @@ CMD:createdrinkmenu(playerid, params[])
 
 CMD:buy(playerid, params[])
 {
-    new id = PlayerInfo[playerid][pInsideBusiness];
+
+    if(IsPlayerInRangeOfPoint(playerid, 2.0, 1410.8884,-10.3149,1000.9465)) /// SHOP POLICE HARBOR STATION
+    {
+        if(ReturnFactionJob(playerid) != POLICE)
+            return SendErrorMessage(playerid, "คุณไม่ใช่เจ้าหน้าที่ตำรวจ");
+
+        if(!PlayerInfo[playerid][pDuty])
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่ในการทำหน้าที่ตำรวจ");
+        
+        PlayerInfo[playerid][pGUI] = 6;
+        SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
+        MenuStore_AddItem(playerid, 1, 348, "Desert Eagle", 500, "Desert Eagle - 100 Ammo", 200);
+        MenuStore_AddItem(playerid, 2, 349, "Shotgun", 550, "Shotgun - 50 Ammo", 200);
+        MenuStore_AddItem(playerid, 3, 356, "M4", 1000, "M4 - 250 Ammo", 200);
+        MenuStore_AddItem(playerid, 4, 334, "Nightstick", 100, "Nightstick", 200);
+        MenuStore_AddItem(playerid, 5, 365, "Spraycan", 100, "Spraycan - 100 Ammo", 200);
+        MenuStore_AddItem(playerid, 6, 1242, "Armour", 50, "Armour - 1", 200);
+        MenuStore_AddItem(playerid, 7, 19942, "Radio", 100, "Radio - 1", 200);
+        MenuStore_Show(playerid, SHOP_POLICE, "SHOP POLICE");
+        return 1;
+    }
+    else
+    {
+        new id = PlayerInfo[playerid][pInsideBusiness];
     
+        if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE)
+            return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านสดวกซื้อ");
 
-    if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE)
-        return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านสดวกซื้อ");
-
-    PlayerInfo[playerid][pGUI] = 6;
-    SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
-    MenuStore_AddItem(playerid, 1, 18919, "OOC Mask", 100, "OOC Mask use /mask", 200);
-    MenuStore_AddItem(playerid, 2, 367, "Camera", 50, "Cemara To Take Photo", 200);
-    MenuStore_AddItem(playerid, 3, 325, "Flower", 10, "Flower", 200);
-    MenuStore_AddItem(playerid, 4, 19897, "Cigarette", 25, "Flower", 200);
-    MenuStore_AddItem(playerid, 5, 2226, "BoomBox", 500, "BoomBox use music staion", 200);
-    MenuStore_AddItem(playerid, 6, 336, "Baseball Bat", 250, "Baseball Bat", 200);
-    MenuStore_AddItem(playerid, 7, 1650, "GasCan", 2000, "GasCan use /refill", 200);
-    MenuStore_Show(playerid, Shop, "SHOP");
-    return 1;
+        PlayerInfo[playerid][pGUI] = 6;
+        SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
+        MenuStore_AddItem(playerid, 1, 18919, "OOC Mask", 100, "OOC Mask use /mask", 200);
+        MenuStore_AddItem(playerid, 2, 367, "Camera", 50, "Cemara To Take Photo", 200);
+        MenuStore_AddItem(playerid, 3, 325, "Flower", 10, "Flower", 200);
+        MenuStore_AddItem(playerid, 4, 19897, "Cigarette", 25, "Flower", 200);
+        MenuStore_AddItem(playerid, 5, 2226, "BoomBox", 500, "BoomBox use music staion", 200);
+        MenuStore_AddItem(playerid, 6, 336, "Baseball Bat", 250, "Baseball Bat", 200);
+        MenuStore_AddItem(playerid, 7, 1650, "GasCan", 2000, "GasCan use /refill", 200);
+        MenuStore_Show(playerid, Shop, "SHOP");
+        return 1;
+    }
 }
 
 CMD:bank(playerid, params[])

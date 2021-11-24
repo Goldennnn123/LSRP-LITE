@@ -76,3 +76,55 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     CharacterSave(playerid);
     return true;
 }
+
+
+Store:SHOP_POLICE(playerid, response, itemid, modelid, price, amount, itemname[])
+{
+    if(!response)
+        return true;
+
+    if(GetPlayerMoney(playerid) < price)
+        return SendClientMessage(playerid, -1, "คุณมีเงินไม่เพียงพอ");
+
+    if(itemid == 1)
+    {   
+        GivePlayerValidWeapon(playerid, 24, 100);
+    }
+    if(itemid == 2)
+    {
+        GivePlayerValidWeapon(playerid, 25, 50);
+    }
+    if(itemid == 3)
+    {
+        GivePlayerValidWeapon(playerid, 31, 250);
+    }
+    if(itemid == 4)
+    {
+        GivePlayerValidWeapon(playerid, 3, 1);
+    }
+    if(itemid == 5)
+    {
+        GivePlayerValidWeapon(playerid, 41, 100);
+    }
+    if(itemid == 6)
+    {
+        GivePlayerArmour(playerid, 100);
+    }
+     if(itemid == 7)
+    {
+        if(PlayerInfo[playerid][pHasRadio])
+		    return SendErrorMessage(playerid, "คุณมีวิทยุแล้ว");
+
+         PlayerInfo[playerid][pHasRadio] = true;
+    }
+
+    
+    new string[128];
+    format(string, 128, "คุณได้ซื้อ %dx %s", amount, itemname);
+    SendClientMessage(playerid, -1, string);
+
+    GlobalInfo[G_GovCash]-= price;
+    Saveglobal();
+    CharacterSave(playerid);
+    return true;
+}

@@ -439,16 +439,15 @@ public Query_LoadCharacter(playerid)
 
 	cache_get_value_name_int(0, "pHouseKey",PlayerInfo[playerid][pHouseKey]);
 
-	cache_get_value_name_int(0, "pHasid_card",PlayerInfo[playerid][pHasid_card]);
+	/*cache_get_value_name_int(0, "pHasid_card",PlayerInfo[playerid][pHasid_card]);
 	cache_get_value_name(0, "pId_dob",PlayerInfo[playerid][pId_dob]);
 	cache_get_value_name_int(0, "pId_number",PlayerInfo[playerid][pId_number]);
 	cache_get_value_name(0, "pId_gebder",PlayerInfo[playerid][pId_gebder]);
-	cache_get_value_name(0, "pid_expire",PlayerInfo[playerid][pid_expire]);
+	cache_get_value_name(0, "pid_expire",PlayerInfo[playerid][pid_expire]);*/
 
 	new CheckAccount[MAX_STRING];
 	mysql_format(dbCon, CheckAccount, sizeof(CheckAccount), "SELECT * FROM `bannedlist` WHERE `MasterDBID` = '%d'",e_pAccountData[playerid][mDBID]);
 	mysql_tquery(dbCon, CheckAccount, "CheckBanAccount", "d",playerid);
-
 	return 1;
 }
 
@@ -470,44 +469,15 @@ public OnplayerCache(playerid)
 		if(ReturnFactionJob(playerid) == POLICE)
 		{
 			PlayerInfo[playerid][pDuty] = true;
-			SendFactionMessageEx(playerid, COLOR_COP, "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-			SendDiscordMessageEx("duty-roster", "HQ: %s %s has gone on duty (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-			
 			SetPlayerColor(playerid, COLOR_COP);
-			SetPlayerHealth(playerid, 100);
-			SetPlayerArmour(playerid, 100);
-
-			TakePlayerGuns(playerid);
-
-			GivePlayerWeapon(playerid, 24, 100);
-			GivePlayerWeapon(playerid, 3, 1);
-			GivePlayerWeapon(playerid, 41, 350);
 		}
 		else if(ReturnFactionJob(playerid) == SHERIFF)
 		{
 			PlayerInfo[playerid][pDuty] = true;
-			SendFactionMessageEx(playerid, COLOR_COP, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้ (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-
-			SetPlayerHealth(playerid, 100);
-			SetPlayerArmour(playerid, 100);
-
-			TakePlayerGuns(playerid);
-
-			GivePlayerWeapon(playerid, 24, 100);
-			GivePlayerWeapon(playerid, 3, 1);
-			GivePlayerWeapon(playerid, 41, 350);
 		}
 		else if(ReturnFactionJob(playerid) == MEDIC)
 		{
 			SendFactionMessageEx(playerid, 0xFF8282FF, "HQ: %s %s ได้เริ่มปฏิบัตหน้าที่แล้วตอนนี้ (Crashed)", ReturnFactionRank(playerid), ReturnName(playerid, 0));
-
-			SetPlayerColor(playerid, 0xFF8282FF);
-			SetPlayerHealth(playerid, 100);
-			SetPlayerArmour(playerid, 100);
-
-			TakePlayerGuns(playerid);
-
-			GivePlayerWeapon(playerid, 42, 500);
 		}
 	}
 
@@ -886,6 +856,8 @@ stock ResetPlayerCharacter(playerid)
 	}
 
 	ResetPlayerWeapons(playerid);
+
+	PlayerEdit[playerid] = PLAYER_EDIT_NONE;
 	SendClientMessage(playerid, COLOR_GREY, "ล้างตัวแปรตัวละคร สำเร็จ");
 	return 1;
 }

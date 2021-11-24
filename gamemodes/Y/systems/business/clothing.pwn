@@ -1,8 +1,6 @@
 
 #include <YSI_Coding\y_hooks>
 
-new PlayerSeClo[MAX_PLAYERS], PlayerSeCloBuy[MAX_PLAYERS], PlayerSeCloBuySect[MAX_PLAYERS], PlayerCloID[MAX_PLAYERS];
-
 hook OnPlayerConnect(playerid)
 {
     PlayerSeClo[playerid] = 0;
@@ -58,18 +56,15 @@ stock SetPlayerClothing(playerid)
     return 1;
 }
 
-
+alias:buyclothing("buyc")
 CMD:buyclothing(playerid, params[])
 {
     if(IsPlayerInAnyVehicle(playerid))
         return SendErrorMessage(playerid, "คุณต้องลงจากยานพาหนะ");
 
+    //if()
 
-    if(PlayerInfo[playerid][pCash] < 700)
-        return SendErrorMessage(playerid, "คุณมีเงินไม่เพียงพอ (700)");
-
-    
-    new str[255], longstr[255], idx = -1;
+    new idx = 0;
 
     for(new i = 1; i < MAX_PLAYER_CLOTHING; i++)
     {        
@@ -83,86 +78,7 @@ CMD:buyclothing(playerid, params[])
     
     PlayerSeCloBuySect[playerid] = idx;
 
-    if(IsPlayerInRangeOfPoint(playerid, 3.5, 1103.0127,-1440.1101,15.7969))
-    {
-        format(str, sizeof(str), "Hammer\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "Crowbar\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "BlackHat\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "HardHat\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "Screwdriver\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "HoldAllEdited\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "MedicCase\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "CapTrucker\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "GlassesType\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "WatchType\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "PoliceGlasses\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "bassguitar\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "Flashlight\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "case_1\n");
-        strcat(longstr, str);
-        format(str, sizeof(str), "para_pack\n");
-        strcat(longstr, str);
-
-        Dialog_Show(playerid, D_CLOTHING_BUY, DIALOG_STYLE_LIST, "BUY CLOTHING:", longstr, "ยืนยัน", "ยกเลิก");
-        PlayerSeClo[playerid] = 0;
-        return 1;
-    }
-    else if(IsPlayerInRangeOfPoint(playerid, 3.5, 264.9105,108.3571,1004.6172))
-    {
-        format(str, sizeof(str), "Police Officer II Badge\n"); //0
-        strcat(longstr, str);
-        format(str, sizeof(str), "Police Officer III Badge\n"); //1
-        strcat(longstr, str);
-        format(str, sizeof(str), "Police Officer III+1 Badge\n"); //2
-        strcat(longstr, str);
-        format(str, sizeof(str), "Police Officer III+1 Badge\n"); //3
-        strcat(longstr, str);
-        format(str, sizeof(str), "Police Sergeant I Badge\n"); //4
-        strcat(longstr, str);
-        format(str, sizeof(str), "Police Sergeant II Badge\n"); //5
-        strcat(longstr, str);
-        format(str, sizeof(str), "Police Detective I Badge\n"); //6
-        strcat(longstr, str);
-        format(str, sizeof(str), "Police Detective II Badge\n"); //7
-        strcat(longstr, str);
-        format(str, sizeof(str), "Police Detective III Badge\n"); //8
-        strcat(longstr, str);
-        format(str, sizeof(str), "Armour\n"); //9
-        strcat(longstr, str);
-        format(str, sizeof(str), "policeHat\n"); //10
-        strcat(longstr, str);
-        format(str, sizeof(str), "PoliceShield\n"); //11
-        strcat(longstr, str);
-        format(str, sizeof(str), "PoliceHelmet\n"); //12
-        strcat(longstr, str);
-        format(str, sizeof(str), "SWATHelmet\n"); //13
-        strcat(longstr, str);
-
-        Dialog_Show(playerid, D_CLOTHING_BUY_POLICE, DIALOG_STYLE_LIST, "BUY CLOTHING:", longstr, "ยืนยัน", "ยกเลิก");
-        PlayerSeClo[playerid] = 0;
-        return 1;
-    }
-    else if(IsPlayerInRangeOfPoint(playerid, 3.5, 1103.5233,-1457.8855,15.7969))
-    {
-        Dialog_Show(playerid, D_CLOTHING_BUY_ID, DIALOG_STYLE_INPUT, "BUY CLOTHING:", "ใส่เลขที่คุณต้องการลงไป", "ยืนยัน", "ยกเลิก");
-        PlayerSeClo[playerid] = 0;
-        return 1;
-    }
-    else SendErrorMessage(playerid, "คุณไมได้อยู่จุดซื้อ Clothing");
-
+    ShowClothmenu(playerid);
     return 1;
 }
 
@@ -844,19 +760,6 @@ Dialog:D_CLOTHING_LIST(playerid, response, listitem, inputtext[])
     return 1;
 }
 
-Dialog:D_CLOTHING_BUY_ID(playerid, response, listitem, inputtext[])
-{
-    if(!response)
-        return 1;
-
-    new id = strval(inputtext);
-
-    PlayerSeCloBuy[playerid] = id;
-    SetPlayerAttachedObject(playerid, 6, id, 2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,1.0,1.0);
-    EditAttachedObject(playerid, 6);
-    return 1;
-}
-
 Dialog:D_CLOTHING_SELECT(playerid, response, listitem, inputtext[])
 {
     if(!response)
@@ -1136,7 +1039,9 @@ public Query_InsertClothing(playerid, modelid, index, boneid, Float:fOffsetX, Fl
 
     SendClientMessageEx(playerid, COLOR_GREEN, "คุณได้ทำการซื้อ %d สำเร็จแล้ว",id);
     PlayerSeCloBuy[playerid] = 0;
+    PlayerEdit[playerid] = PLAYER_EDIT_NONE;
     RemovePlayerAttachedObject(playerid, index);
+    
     CharacterSave(playerid);
     return 1;
 }

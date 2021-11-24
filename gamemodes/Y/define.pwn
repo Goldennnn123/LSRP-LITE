@@ -62,5 +62,11 @@
 #define MANAGEMENT		(5)
 
 
+#define PLAYER_EDIT_NONE (0)
+#define PLAYER_EDIT_OBJECT (1)
+#define PLAYER_EDIT_CLOTHING (2)
+
+
+
 
 

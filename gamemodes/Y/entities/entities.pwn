@@ -202,8 +202,8 @@ enum E_PLAYER_DATA
 
 new PlayerInfo[MAX_PLAYERS][E_PLAYER_DATA], PlayerCheckpoint[MAX_PLAYERS], bool:PlayerEditObject[MAX_PLAYERS];
 new PlayerDrugUse[MAX_PLAYERS], bool:MealOder[MAX_PLAYERS]; new PlayerText:RadioStats[MAX_PLAYERS];
-new playerblock[MAX_PLAYERS];
-new playershottick[MAX_PLAYERS];
+new playerblock[MAX_PLAYERS], playershottick[MAX_PLAYERS], PlayerEdit[MAX_PLAYERS];
+new PlayerSeClo[MAX_PLAYERS], PlayerSeCloBuy[MAX_PLAYERS], PlayerSeCloBuySect[MAX_PLAYERS], PlayerCloID[MAX_PLAYERS];
 
 
 enum P_MASTER_ACCOUNTS

@@ -150,7 +150,7 @@ CMD:helpmes(playerid, params[])
             
 			new str[120];
 			format(str, sizeof(str), "[%s] %s Acccept Helpme %s",ReturnDate(), ReturnRealName(playerid,0), ReturnRealName(HelpmeData[helpmeid][hHelpmeBy],0));
-			SendDiscordMessageEx("884634051795906610",str);
+			SendDiscordMessageEx("support-chat",str);
 
 			ClearHelpme(helpmeid);
             return 1;
@@ -170,7 +170,7 @@ CMD:helpmes(playerid, params[])
             DeletePVar(HelpmeData[helpmeid][hHelpmeBy], "HelpmeNows");
 			new str[120];
 			format(str, sizeof(str), "[%s] %s Disregard Helpme %s",ReturnDate(), ReturnRealName(playerid,0), ReturnRealName(HelpmeData[helpmeid][hHelpmeBy],0));
-			SendDiscordMessageEx("884634051795906610",str);
+			SendDiscordMessageEx("support-chat",str);
 
             ClearHelpme(helpmeid);
             return 1;

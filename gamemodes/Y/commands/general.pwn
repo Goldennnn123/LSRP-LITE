@@ -87,7 +87,7 @@ CMD:logout(playerid, params[])
 
 	new str[120];
 	format(str, sizeof(str), "[%s] %s(DBID: %d) Log Out In Game", ReturnDate(),ReturnRealName(playerid,0), PlayerInfo[playerid][pDBID]);
-	SendDiscordMessageEx("873978832762314803", str);
+	SendDiscordMessageEx("connecnt", str);
 
 
 	/*if(PlayerInfo[playerid][pVehicleSpawned])
@@ -1669,6 +1669,7 @@ CMD:pc(playerid, params[])
 
 CMD:admins(playerid, params[])
 {
+	
 	new bool:adminOn = false;
 	
 	foreach (new i : Player)
@@ -1682,7 +1683,7 @@ CMD:admins(playerid, params[])
 		
 		foreach(new i : Player)
 		{
-			if(PlayerInfo[i][pAdminDuty] && PlayerInfo[i][pAdmin] < 6)
+			if(PlayerInfo[i][pAdminDuty])
 			{
 				SendClientMessageEx(playerid, COLOR_DARKGREEN, "(Level: %d) %s - On Duty: Yes", PlayerInfo[i][pAdmin], e_pAccountData[i][mForumName]);
 			}
@@ -1801,7 +1802,7 @@ CMD:pay(playerid, params[])
 	}
 	
 	format(str, sizeof(str), "[%s] %s pay to %s amount: $%s",ReturnDate(), ReturnRealName(playerid), ReturnRealName(playerb), MoneyFormat(amount));
-	SendDiscordMessageEx("862580814528774144", str);
+	SendDiscordMessageEx("money", str);
 
 	GiveMoney(playerid, -amount); GiveMoney(playerb, amount);
 	return 1;
@@ -2007,11 +2008,11 @@ CMD:setspawn(playerid, params[])
 	if(sscanf(params, "i", id))
 	{
 		SendUsageMessage(playerid, "/setspawn [spawn id]");
-		SendClientMessage(playerid, COLOR_WHITE, "1. สนามบิน, 2. บ้าน, 3. เฟคชั่น");
+		SendClientMessage(playerid, COLOR_WHITE, "1. สนามบิน, 2. บ้าน, 3. เฟคชั่น, 4.จุดล่าสุด");
 		return 1;
 	}
 
-	if(id > 3 || id < 1)
+	if(id > 4 || id < 1)
 		return SendErrorMessage(playerid, "ไอ้ดีสปาว มีเพียง (1-4)");
 
 	switch(id)
@@ -2023,6 +2024,7 @@ CMD:setspawn(playerid, params[])
 
 			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_DEFAULT; 
 			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น สนามบิน");
+			CharacterSave(playerid);
 		}
 		case 2:
 		{
@@ -2037,6 +2039,7 @@ CMD:setspawn(playerid, params[])
 			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_HOUSE;
 			PlayerInfo[playerid][pSpawnHouse] = id_house;
 			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น บ้าน %s", HouseInfo[id_house][HouseName]);
+			CharacterSave(playerid);
 		}
 		case 3:
 		{
@@ -2050,6 +2053,13 @@ CMD:setspawn(playerid, params[])
 
 			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_FACTION;
 			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดของคุณเป็น เฟคชั่น");
+			CharacterSave(playerid);
+		}
+		case 4:
+		{
+			PlayerInfo[playerid][pSpawnPoint] = SPAWN_AT_LASTPOS;
+			SendServerMessage(playerid, "คุณได้ทำการเซ็ตจุดเกิดเป็นจุดเกิด ล่าสุด");
+			CharacterSave(playerid);
 		}
 	}
 	return 1;
@@ -2475,7 +2485,7 @@ CMD:helpme(playerid, params[])
 	
 	new str[60];
 	format(str, sizeof(str), "[%s] %s Helpme now", ReturnDate(),ReturnRealName(playerid,0));
-	SendDiscordMessageEx("884634051795906610", str);
+	SendDiscordMessageEx("support-chat", str);
 			
 	OnPlayerHelpme(playerid, idx, PlayerHelpme[playerid]);
 	return 1;
@@ -3512,7 +3522,7 @@ public HelpUpPLayer(playerid, tagerid)
 
 	new str[150];
 	format(str, sizeof(str), "%s Helpup %s", ReturnRealName(playerid,0), ReturnRealName(tagerid,0));
-	SendDiscordMessage("helpup", str);
+	SendDiscordMessage("death", str);
 	return 1;
 }
 
@@ -3587,7 +3597,7 @@ hook OnPlayerDisconnect(playerid, reason)
 				ClearHelpme(i);
 
 				format(str, sizeof(str), "[%s] %s Disconnect Helpme therefore deleted %s",ReturnDate(),ReturnRealName(playerid,0));
-				SendDiscordMessageEx("848148148714209311",str);
+				SendDiscordMessageEx("support-chat",str);
 				DeletePVar(playerid, "HelpmeNows");
 			}
         }

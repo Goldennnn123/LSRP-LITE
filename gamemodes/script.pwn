@@ -43,6 +43,7 @@
 =======================================================================================================*/
 DEFINE_HOOK_REPLACEMENT(Select, Sel);
 DEFINE_HOOK_REPLACEMENT(OnPlayer, OP_);
+DEFINE_HOOK_REPLACEMENT(OnModelSelection, OM_);
 
 /*======================================================================================================
 										[Declarations]
@@ -201,19 +202,12 @@ enum {
 #include "Y/Interior/house/house8.pwn"
 #include "Y/Interior/house/house9.pwn"
 #include "Y/Interior/house/house10.pwn"
-/*#include "Y/Interior/business/biz1.pwn"
-#include "Y/Interior/business/biz2.pwn"
-#include "Y/Interior/business/biz3.pwn"
-#include "Y/Interior/business/pizza.pwn"
-#include "Y/Interior/business/bar2.pwn"
-#include "Y/Interior/business/SOS_BAR.pwn"
-#include "Y/Interior/business/Bank.pwn"*/
-//#include "Y/Interior/lsfd/hq_hpsital.pwn"
 
 #include "Y/Interior/lspd/wilshire.pwn"
 #include "Y/Interior/lspd/jail.pwn"
+#include "Y/Interior/lspd/lspd_harbor.pwn"
 
-
+#include "Y/Map/harbor.pwn"
 #include "Y/Map/415garage.pwn"
 #include "Y/Map/garagegas.pwn"
 #include "Y/Map/ps.pwn"
@@ -238,15 +232,13 @@ enum {
 main() { }
 
 
-
-
 forward OnCheatDetected(playerid, ip_address[], type, code);
 public OnCheatDetected(playerid, ip_address[], type, code)
 {
     new str[120];
 
-    if(PlayerInfo[playerid][pAdmin])
-        return 1;
+    /*if(PlayerInfo[playerid][pAdmin])
+        return 1;*/
     
     if(IsPlayerAndroid(playerid) == true)
         return 1;
@@ -395,6 +387,7 @@ public OnGameModeInit() {
     SetGameModeText(GM_VERSION);
 
     SetNameTagDrawDistance(10.0);
+
     
     mysql_tquery(dbCon, "SELECT * FROM factions ORDER BY dbid ASC", "Query_LoadFactions");
     mysql_tquery(dbCon, "SELECT * FROM House ORDER BY HouseDBID", "Query_LoadHouse");

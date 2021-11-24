@@ -1038,7 +1038,7 @@ stock Send911Message(playerid, type)
     Caller: %s, Phone: %d, Trace: %s\n\
     Service required: Police\n\
     Location: %s",ReturnName(playerid, 0), PlayerInfo[playerid][pPhone], ReturnLocation(playerid),ReturnLocation(playerid));
-	SendDiscordMessageEx("872542313426059294", str);
+	SendDiscordMessageEx("lspd-chat", str);
 	
 
     Player911Type[playerid] = 0;

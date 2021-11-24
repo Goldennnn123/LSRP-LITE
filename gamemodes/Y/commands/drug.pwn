@@ -315,7 +315,7 @@ CMD:usedrug(playerid, params[])
             callcmd::ame(playerid, str);
 
             format(str, sizeof(str), "%s use drug 'Cocaine'",ReturnRealName(playerid, 0));
-            SendDiscordMessageEx("866676805569609768", str);
+            SendDiscordMessageEx("drug", str);
             return 1;
         }
         case 2:
@@ -335,7 +335,7 @@ CMD:usedrug(playerid, params[])
             callcmd::ame(playerid, str);
 
             format(str, sizeof(str), "%s use drug 'Cannabis'",ReturnRealName(playerid, 0));
-            SendDiscordMessageEx("866676805569609768", str);
+            SendDiscordMessageEx("drug", str);
         }
         case 3:
         {
@@ -354,7 +354,7 @@ CMD:usedrug(playerid, params[])
             callcmd::ame(playerid, str);
 
             format(str, sizeof(str), "%s use drug 'Heroin'",ReturnRealName(playerid, 0));
-            SendDiscordMessageEx("866676805569609768", str);
+            SendDiscordMessageEx("drug", str);
         }
     }
     return 1;

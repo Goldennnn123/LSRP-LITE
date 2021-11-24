@@ -31,6 +31,7 @@ CMD:acmds(playerid, params[])
 	{
 		SendClientMessage(playerid, COLOR_DARKGREEN, "Lead Admin Commands");
 		SendClientMessage(playerid, -1, "/callpaycheck, /setdonater, /factions, /setmoney, /makeleader, /makefaction"); 
+		SendClientMessage(playerid, -1, "/adminall"); 
 
 	}
 	if(PlayerInfo[playerid][pAdmin] >= MANAGEMENT)
@@ -3087,7 +3088,7 @@ CMD:setdonater(playerid, params[])
 		SendClientMessageEx(playerid, COLOR_LIGHTRED, "คุณได้ลบ %s ออกจากการเป็น Donater ระดับ %d แล้ว",ReturnName(tagetid,0));
 		
 		format(str, sizeof(str), "Administrators: Delete %s Leave form Danater Level %d", PlayerInfo[tagetid][pDonater]);
-		SendDiscordMessageEx("848145977978126336", str);
+		SendDiscordMessageEx("admin-log", str);
 		PlayerInfo[tagetid][pDonater] = 0;
 		CharacterSave(tagetid);
 		return 1;
@@ -3105,7 +3106,7 @@ CMD:setdonater(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เพิ่มให้ %s เป็น Donater ระดับ",ReturnName(tagetid,0), level);
 			
 			format(str, sizeof(str), "Administrators: Give Donater Level %d for %s %d", level, ReturnName(tagetid, 0));
-			SendDiscordMessageEx("848145977978126336", str);
+			SendDiscordMessageEx("admin-log", str);
 			SendAdminMessage(3, str);
 			CharacterSave(tagetid);
 			return 1;
@@ -3117,7 +3118,7 @@ CMD:setdonater(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เพิ่มให้ %s เป็น Donater ระดับ",ReturnName(tagetid,0), level);
 			
 			format(str, sizeof(str), "Administrators: Give Donater Level %d for %s %d", level, ReturnName(tagetid, 0));
-			SendDiscordMessageEx("848145977978126336", str);
+			SendDiscordMessageEx("admin-log", str);
 			SendAdminMessage(3, str);
 			CharacterSave(tagetid);
 			return 1;
@@ -3129,7 +3130,7 @@ CMD:setdonater(playerid, params[])
 			SendClientMessageEx(playerid, COLOR_HELPME, "คุณได้เพิ่มให้ %s เป็น Donater ระดับ",ReturnName(tagetid,0), level);
 			
 			format(str, sizeof(str), "Administrators: Give Donater Level %d for %s %d", level, ReturnName(tagetid, 0));
-			SendDiscordMessageEx("848145977978126336", str);
+			SendDiscordMessageEx("admin-log", str);
 			SendAdminMessage(3, str);
 			CharacterSave(tagetid);
 			return 1;
@@ -3276,6 +3277,23 @@ CMD:makefaction(playerid, params[])
 	
 	return 1;
 }
+
+CMD:adminall(playerid, params[])
+{
+	SendClientMessage(playerid, COLOR_GREY, "Admins Online:");
+	foreach (new i : Player)
+	{
+		if(PlayerInfo[i][pAdmin])
+		{
+			if(PlayerInfo[i][pAdminDuty])
+				SendClientMessageEx(playerid, COLOR_DARKGREEN, "[%s] %s", AdminLevelName(PlayerInfo[i][pAdmin]), ReturnRealName(playerid));
+			else SendClientMessageEx(playerid, COLOR_GREY, "[%s] %s", AdminLevelName(PlayerInfo[i][pAdmin]), ReturnRealName(playerid));
+			
+		
+		}
+	}
+	return 1;
+}
 //LEAD_ADMIN;
 
 // MANAGEMENT;
@@ -3347,15 +3365,15 @@ CMD:makeadmin(playerid, params[])
 	if(level == 0)
 	{
 		PlayerInfo[playerb][pAdmin] = 0;
-		SendClientMessageEx(playerb, -1, "{FF5722}ADMIN SYSTEM:{FFFFFF}คุณได้ถูกลบจากการเป็นผู้ดูแลระบบแล้ว ขอบคุณที่เคยเป็นส่วนนึงในตำแหน่งนี้");
+		SendClientMessageEx(playerb, -1, "คุณได้ถูกลบจากการเป็นผู้ดูแลระบบแล้ว ขอบคุณที่เคยเป็นส่วนนึงในตำแหน่งนี้");
 		CharacterSave(playerb);
 		return 1;
 	}
-	if(level > 1338)
-		return SendErrorMessage(playerid, "คุณไม่สามารถให้ต่ำแหน่งผู้ดูแลระบบที่มากกว่า (1338) ได้");
+	if(level > 6)
+		return SendErrorMessage(playerid, "คุณไม่สามารถให้ต่ำแหน่งผู้ดูแลระบบที่มากกว่า (6) ได้");
 
 	PlayerInfo[playerb][pAdmin] = level;
-	SendClientMessageEx(playerb, -1, "{FF5722}ADMIN SYSTEM:{FFFFFF}คุณได้รับต่ำแหน่งผู้ดูแลระบบ (%d)",level);
+	SendClientMessageEx(playerb, -1, "คุณได้รับต่ำแหน่งผู้ดูแลระบบ (%d)",level);
 	new str[MAX_STRING];
 	format(str, sizeof(str), "%s ได้เพื่มต่ำแหน่งผู้ดูแลระบบ %d ให้กับ %s",ReturnRealName(playerid,0),level,ReturnRealName(playerb,0));
 	SendAdminMessage(4,str);
@@ -3706,4 +3724,22 @@ Dialog:D_COMPUTER_SETOWNER(playerid, response, listitem, inputtext[])
 	DeletePVar(playerid, "D_SELECT_EDITCOM");
 	callcmd::setcom(playerid, "check");
 	return 1;
+}
+
+stock AdminLevelName(level)
+{
+	new str[120];
+	
+	switch(level)
+	{
+		case 1: format(str, sizeof(str), "Game Admin Level 1");
+		case 2: format(str, sizeof(str), "Game Admin Level 2");
+		case 3: format(str, sizeof(str), "Senior Admin");
+		case 4: format(str, sizeof(str), "Lead Admin");
+		case 5: format(str, sizeof(str), "Management");
+		case 6: format(str, sizeof(str), "Founder");
+		default: format(str, sizeof(str), "Not Role");
+	}
+
+	return str;
 }

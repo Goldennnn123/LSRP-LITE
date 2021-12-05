@@ -37,6 +37,7 @@
 #include <nex-ac_en.lang>
 #include <cec>
 #include <walking_styles>
+#include <td-actions>
 
 /*======================================================================================================
 										[Macros]
@@ -226,6 +227,7 @@ enum {
 
 #include "Y/systems/textdraw/computer.pwn"
 #include "Y/systems/textdraw/blindfold.pwn"
+#include "Y/systems/textdraw/td-action.pwn"
 //#include "Y/systems/textdraw/mdc.pwn"
 
 #if SETUP_TABLE

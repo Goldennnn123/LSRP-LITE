@@ -1010,7 +1010,16 @@ stock SetPlayerSpawn(playerid)
 	if(GetPVarInt(playerid, "HideGUI"))
 		PlayerTextDrawShow(playerid, RadioStats[playerid]);
 
-    if(PlayerInfo[playerid][pAdminjailed] == true)
+	if(!PlayerInfo[playerid][pTutorial])
+	{
+		SetPlayerCameraPos(playerid, 1450.2858,-912.3414,84.3133);
+		SetPlayerCameraLookAt(playerid,1415.9854,-809.7775,75.7696, 0);
+		SetPlayerPos(playerid, 1415.9854,-809.7775,75.7696);
+		ShowDialogSpawn(playerid);
+		return 1;
+	}
+
+    else if(PlayerInfo[playerid][pAdminjailed] == true)
     {
         SendClientMessageEx(playerid, COLOR_REDEX, "[ADMIN JAIL:] เวลาที่อยู่ในคุกแอดมินของคุณยังไม่หมดจำเป็นต้องอยู่ในคุกอีก %d วินาที",PlayerInfo[playerid][pAdminjailTime]);
         ClearAnimations(playerid); 
@@ -1029,7 +1038,6 @@ stock SetPlayerSpawn(playerid)
         CharacterSave(playerid);
         StopAudioStreamForPlayer(playerid);
     }
-
     else if (PlayerInfo[playerid][pTimeout]) {
 
         // ตั้งค่าผู้เล่นให้กลับที่เดิมและสถานะบางอย่างเหมือนเดิม
@@ -1051,7 +1059,6 @@ stock SetPlayerSpawn(playerid)
 		mysql_format(dbCon, query, sizeof(query), "SELECT * FROM `cache` WHERE C_DBID = '%d'",PlayerInfo[playerid][pDBID]);
 		mysql_tquery(dbCon, query, "OnplayerCache", "d",playerid);
     }
-
     else if(PlayerInfo[playerid][pSpectating] != INVALID_PLAYER_ID)
     {
         SetPlayerVirtualWorld(playerid, PlayerInfo[playerid][pLastWorld]);
@@ -1108,4 +1115,71 @@ stock SetPlayerSpawn(playerid)
 	mysql_format(dbCon, query, sizeof(query), "DELETE FROM `cache` WHERE `C_DBID` = '%d'",PlayerInfo[playerid][pDBID]);
 	mysql_tquery(dbCon, query);
     return 1;
+}
+
+
+stock ShowDialogSpawn(playerid)
+{
+	new str[255], longstr[255];
+
+	format(str, sizeof(str), "Ganton Bus Stop\n");
+	strcat(longstr, str);
+	format(str, sizeof(str), "Idlewood Bus Stop\n");
+	strcat(longstr, str);
+	format(str, sizeof(str), "Jefferson Bus Stop\n");
+	strcat(longstr, str);
+
+	Dialog_Show(playerid, D_SET_SPAWN_START, DIALOG_STYLE_LIST, "เลือกจุดเกิดเริ่มต้น", longstr, "ยืนยัน", "ยกเลิก");
+	return 1;
+}
+
+
+Dialog:D_SET_SPAWN_START(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+	{
+		SendClientMessage(playerid, COLOR_LIGHTRED, "คุณไม่ได้เลือกจุดเกิดทำให้คุณถูกแตะ");
+		KickEx(playerid);
+		return 1;
+	}
+
+
+	// ยังไม่ผ่านบทเรียน / ตัวละครใหม่
+	PlayerInfo[playerid][pLevel] = 1;
+	PlayerInfo[playerid][pCash] = DEFAULT_PLAYER_CASH;
+		
+	PlayerInfo[playerid][pTutorial] = true;
+	SetCameraBehindPlayer(playerid);
+	
+	switch(listitem)
+	{
+		case 0: //ganton
+		{
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้เลือกเกิดที่ย่าน Ganton โปรดเลือกสกินเพื่อเล่นบทบาทด้วย");
+			SetPlayerPos(playerid, 2279.3052,-1739.9686,13.5469);
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			ShowSkinModelMenu(playerid);
+			return 1;
+		}
+		case 1: //Idlewood
+		{
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้เลือกเกิดที่ย่าน Idlewood โปรดเลือกสกินเพื่อเล่นบทบาทด้วย");
+			SetPlayerPos(playerid, 2036.2422,-1757.5090,13.5469);
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			ShowSkinModelMenu(playerid);
+			return 1;
+		}
+		case 2: //Jefferson
+		{
+			SendClientMessage(playerid, COLOR_YELLOWEX, "คุณได้เลือกเกิดที่ย่าน Jefferson โปรดเลือกสกินเพื่อเล่นบทบาทด้วย");
+			SetPlayerPos(playerid, 2202.2676,-1134.0295,25.7459);
+			SetPlayerVirtualWorld(playerid, 0);
+			SetPlayerInterior(playerid, 0);
+			ShowSkinModelMenu(playerid);
+			return 1;
+		}
+	}
+	return 1;
 }

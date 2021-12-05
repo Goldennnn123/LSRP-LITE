@@ -390,6 +390,7 @@ public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
         {
             SetPlayerSkin(playerid, modelid);
             PlayerInfo[playerid][pLastSkin] = modelid;
+            TogglePlayerControllable(playerid, 1);
             return 1;
         }
     }
@@ -399,6 +400,7 @@ public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
         {
             SetPlayerSkin(playerid, modelid);
             PlayerInfo[playerid][pLastSkin] = modelid;
+            TogglePlayerControllable(playerid, 1);
             return 1;
         }
     }

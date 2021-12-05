@@ -497,14 +497,6 @@ public LoadCharacter(playerid)
 	;
 	
 	ResetPlayerMoney(playerid);
-
-	if (!PlayerInfo[playerid][pTutorial]) {
-		// ยังไม่ผ่านบทเรียน / ตัวละครใหม่
-		PlayerInfo[playerid][pLevel] = 1;
-		PlayerInfo[playerid][pCash] = DEFAULT_PLAYER_CASH;
-		
-		PlayerInfo[playerid][pTutorial] = true;
-	}
     BitFlag_On(gPlayerBitFlag[playerid], IS_LOGGED);
 
 	if(!PlayerInfo[playerid][pWhitelist])

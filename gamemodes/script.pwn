@@ -140,7 +140,6 @@ enum {
 #include "Y/systems/phone.pwn"
 #include "Y/systems/business/ui_buy.pwn"
 #include "Y/systems/business/vehbuy.pwn"
-#include "Y/systems/business/testbuyveh.pwn"
 #include "Y/systems/anim.pwn"
 #include "Y/systems/furniture/computer.pwn"
 #include "Y/systems/furniture/boombox.pwn"
@@ -207,6 +206,7 @@ enum {
 #include "Y/Interior/lspd/wilshire.pwn"
 #include "Y/Interior/lspd/jail.pwn"
 #include "Y/Interior/lspd/lspd_harbor.pwn"
+#include "Y/Interior/lsfd/hq_hpsital.pwn"
 
 #include "Y/Map/harbor.pwn"
 #include "Y/Map/415garage.pwn"
@@ -216,6 +216,8 @@ enum {
 #include "Y/Map/pump.pwn"
 #include "Y/Map/lsrplite_map.pwn"
 #include "Y/Map/car_buy.pwn"
+#include "Y/Map/chinatown.pwn"
+#include "Y/Map/grovest.pwn"
 
 
 #include "Y/systems/discord/discord.pwn"

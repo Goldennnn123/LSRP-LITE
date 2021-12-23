@@ -3368,6 +3368,13 @@ CMD:cw(playerid, params[])
 }
 
 
+CMD:guied(playerid, params[])
+{
+	ShowPlayerGuid(playerid);
+	return 1;
+}
+
+
 CMD:pullincar(playerid, params[])
 {
 	new

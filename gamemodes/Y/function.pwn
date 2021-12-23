@@ -1188,12 +1188,6 @@ Dialog:D_SET_SPAWN_START(playerid, response, listitem, inputtext[])
 }
 
 
-CMD:testd(playerid, params[])
-{
-	ShowPlayerGuid(playerid);
-	return 1;
-}
-
 stock ShowPlayerGuid(playerid)
 {
 	new str[4000], longstr[4000];

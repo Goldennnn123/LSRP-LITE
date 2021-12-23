@@ -5,6 +5,8 @@
  */
 #include <YSI_Coding\y_va>
 
+#define WEB_SITE_FORUM "www.lsrplite.in.th/forum"
+
 static
     chat_msgOut[144];
 
@@ -1150,6 +1152,7 @@ Dialog:D_SET_SPAWN_START(playerid, response, listitem, inputtext[])
 		
 	PlayerInfo[playerid][pTutorial] = true;
 	SetCameraBehindPlayer(playerid);
+	ShowPlayerGuid(playerid);
 	
 	switch(listitem)
 	{
@@ -1181,5 +1184,103 @@ Dialog:D_SET_SPAWN_START(playerid, response, listitem, inputtext[])
 			return 1;
 		}
 	}
+	return 1;
+}
+
+
+CMD:testd(playerid, params[])
+{
+	ShowPlayerGuid(playerid);
+	return 1;
+}
+
+stock ShowPlayerGuid(playerid)
+{
+	new str[4000], longstr[4000];
+
+	if(PlayerInfo[playerid][pInsideBusiness])
+	{
+		format(str, sizeof(str), "{45B39D}GUIED BUSINESS!!{FFFFFF}\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "กิจการธุรกิจต่างๆที่มีอยู่ภายในเมืองมีมากมายหลายๆรูปแบบซึ่งแต่ละรูปแบบจะถูกกำหนดโดยผู้เล่นที่เป็นเจ้าของกิจการ มีสิทธิ์ในการทำกิจการทุกกิจการได้\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "ซึ่งในกิจการนั้นก็มีรูปแบบและกฎที่แตกต่างและยืดหยุ่นออกไปตามรูปแบบของกิจการต่างๆ ซึ่งการที่จะเข้าใจนั้นอาจจะยากนิดหน่อยแต่เชื่อได้เลยว่าเป็นเรื่องที่สนุก\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "และไม่แพ้กับเรื่องไหนๆเลยก็ตาม การมีกิจการนั้นจะคุณสามารถที่จะทำการติดต่อผู้ดูแลเกี่ยวกับเรื่อง Business ได้ที่ฟอรั่มหรือช่องทางดิสคอร์ดได้ตลอด และเขา\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "จะเป็นผู้ที่คอยแนะนำการเปิดกิจการของคุณได้ ซึ่งแต่ละกิจการมีการพึ่งพาผู้เล่นในการเล่นสวมบทบาทต่างๆ ยังไงก็แล้วแต่คุณสามารถที่จะดูกิจการอื่นๆที่คุณอยู่ตรงนี้เป็นตัวอย่าง\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "หรือคุณจะไปขอคำแนะนำจากผู้ดูแลได้ตลอด ยังไงเราขอให้คุณมีความสุขกับวงการธุรกิจที่คุณหวังไว้\n");
+		strcat(longstr, str);
+	}
+	else if(PlayerInfo[playerid][pInsideProperty])
+	{
+		format(str, sizeof(str), "{45B39D}GUIED HOUSE!!{FFFFFF}\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "\n\n\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "เป็นเรื่องที่ดีที่คุณสงสัยในเรื่องนี้ เกี่ยวกับระบบ บ้านของเราปจุบันนี้เรามีบ้านที่ผู้เล่นสามารถขอเปิดได้ทันที โดยเราจะมีบทบาทต่างๆภายใน IC ให้ผู้เล่นได้เลือกเล่นกัน\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "และการขอเปิดบ้านคุณนั้นสามารถทำมันได้ฟรีโดยไม่ต้องเสียเงินผ่านระบบ OOC ใดๆทั้งนั้น ซึ่งถ้าคุณเป็นเจ้าของบ้านคุณนั้นก็จะได้รับสิทธิ์มากมายในการมีอยู่ของบ้านตัวเอง\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "คุณนั้นสามารถที่จะเช็คคำสั่งทั้งหมดที่เกี่ยวกับบ้านได้โดยการพิพม์ /housecmds จะมีการแสดงคำสั่งทั้งหมดที่เกี่ยวข้องกับบ้านมาให้คุณได้ทันที\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "หากคุณมีบ้านเป็นของตนเองคุณสามารถที่จะนำอาวุธของคุณนั้นมาเก็บไว้ที่บ้านเพื่อกันมันหายได้ หรือจะเป็นพวกยาเสพติดก็ตามที\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "\n\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "{C0392B}คำเตือน!!:{FFFFFF}\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "บ้านนั้นเป็นสิ่งที่ผู้เล่นทุกคนควรจะมีไว้เพื่อไว้ในการใช้เล่นบทบาทและเป็นที่เก็บอาวุธของเราหรือสิ่งต่างๆทุกสิ่ง และถ้าคุณมีบ้านภาระค่าใช้จ่ายในการจ่าย ค่าไฟบ้านก็จะมีเพิ่มขึ้นตามการใช้งาน\n");
+		strcat(longstr, str);
+	}
+	else if(IsPlayerInAnyVehicle(playerid))
+	{
+		format(str, sizeof(str), "{45B39D}GUIED VEHICLE!!{FFFFFF}\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "ตอนนี้คุณอยู่บนยานพาหนะไม่ว่ายานพานะนี้จะเป็นของคุณหรือไม่แต่ที่สำคัญคือคุณไม่ควรใช้ยานพานหะไปในทางที่ ผิดกฎของเซิร์ฟเวอร์\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "การขับยานพาหนะทุกชนิดคุณควรจะนึกถึงการขับแบบ Roleplay Driving เราไม่ได้หมายถึงให้คุณขับตามจราจรแต่เราหมายถึงความสมจริงในการจับยานพาหนะ \n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "เพราะคงไม่มีใครที่จะเอายานพาหนะที่หรูหราไปขับอยู่บนทางลาดชันหรือภูเขาอะไรก็ตาม การขับยานพาหนะเราควรนึกถึงตัวเครื่องของรถแต่ละคัน และควรใช้มันให้เป็นประโชยน์\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "สิ่งที่คุณนั้นควรทำในตอนที่ยานพาหนะของคุณเสียคือการติดต่อช่างภายในเมือง หรือทำอย่างไรก็ได้ให้มีความ Roleplay ที่สุด เราไม่ได้เคร่งคัดอะไรขนาดนั้น\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "สิ่แต่เราหวังว่าจะได้รับการขับรถที่ดีจากคุณ และถ้าหากคุณต้องการที่จะรู้คำสั่งของยานพาหนะทั้งหมดให้คุณพิพม์ /(v)ehicle ได้ทันที \n");
+		strcat(longstr, str);
+	}
+	else
+	{
+		format(str, sizeof(str), "{229954}ยืนดีตอนรับ ผู้เล่น %s ครับ!!{FFFFFF}\n", ReturnRealName(playerid));
+		strcat(longstr, str);
+		format(str, sizeof(str), "อับดับแรกขอตอนรับเข้าสู่เมือง Los Santos คุณเป็นผุ้เล่นใหม่ใช่หรือไม่ เป็นเรื่องที่ดีถ้าคุณจะอ่านข้อความของเราสะหหน่อยนะ\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "นี่เป็นการจำลองการใช้ชีวิตในเมือง Los Santos ที่มีการจำลองมาจากเมือง los Angeles จากประเทศ อเมริกา\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "\n\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "{D35400}เรื่องแรก{FFFFFF}\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "คุณนั้นมีเงินติดตัวอยู่ $5,000 ทางทีดีคุณควรเอาเงินพวกนี้ใช้อย่างประหยัดโดยการคุณจะเอาไปใช้ในในการต่อยอดอาชีพ\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "ซึ่งจะภายในเมืองของเรานั้นมีอาชีพเล็กๆน้อยให้ผู้เล่นทำเพลินไม่ต้องแข่งกับเวลาอะไรมากมาย ซึ่งการใช้จ่ายเงินของผู้เล่น\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "ในแต่ละครั้งจะมีระบบภาษีคอยเป็นเงินสบทบให้กับการทำงานในอาชีพของทุกๆอาชีพวนไปมาอยู่ ขอให้ผู้เล่นทุกคนใช้เงินอยางระมัดระวัง!\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "\n\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "{D35400}เรื่องที่สอง{FFFFFF}\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "เซิร์ฟเวอร์ของเวอร์ Roleplay แบบคาสสิคอาจจะไม่ถูกใจหลายๆคนเท่าไหร่นักถ้าอยากจะอยากเข้ามาเล่นคุณสามารถเข้ามาเล่นได้แต่จำเป็นจะต้องทำตามกฎของเรา\n");
+		strcat(longstr, str);
+		format(str, sizeof(str), "ที่มีอยู่ภายในเซิร์ฟเวอร์ซึ่งสามารถดูได้ที่เว็บ %s\n", WEB_SITE_FORUM);
+		strcat(longstr, str);
+	}
+
+	Dialog_Show(playerid, DEFAULT_DIALOG, DIALOG_STYLE_MSGBOX, "Player Guied", longstr, "ยืนยัน", "");
 	return 1;
 }

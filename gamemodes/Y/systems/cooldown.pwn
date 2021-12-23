@@ -8,7 +8,7 @@
 new cooldowns[MAX_PLAYERS][MAX_COOLDOWNS];
 new cooldowns_expire[MAX_PLAYERS][MAX_COOLDOWNS];
 
-SetCooldown(playerid,type,amount)
+stock SetCooldown(playerid,type,amount)
 {
 
 	cooldowns[playerid][type] = gettime();
@@ -16,7 +16,7 @@ SetCooldown(playerid,type,amount)
 
 }
 
-HasCooldown(playerid,type)
+stock HasCooldown(playerid,type)
 {
 	new diff = (gettime() - cooldowns[playerid][type]);
 	if(diff >= cooldowns_expire[playerid][type]) return false;

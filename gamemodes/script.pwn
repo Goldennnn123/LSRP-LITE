@@ -102,6 +102,7 @@ enum {
 
 // เอกลักษณ์
 #include "Y/entities/entities.pwn"
+#include "Y/entities/veh.pwn"
 #include "Y/entities/computer.pwn"
 #include "Y/entities/fine.pwn"
 #include "Y/entities/helpme.pwn"
@@ -228,6 +229,7 @@ enum {
 #include "Y/systems/textdraw/computer.pwn"
 #include "Y/systems/textdraw/blindfold.pwn"
 #include "Y/systems/textdraw/td-action.pwn"
+#include "Y/systems/cctv/cctv.pwn"
 //#include "Y/systems/textdraw/mdc.pwn"
 
 #if SETUP_TABLE

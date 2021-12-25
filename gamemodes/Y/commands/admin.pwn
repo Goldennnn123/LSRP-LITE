@@ -251,7 +251,7 @@ CMD:gotojob(playerid, params[])
 		}
 		case 2:
 		{
-			SetPlayerPos(playerid, -242.5856,-235.4501,2.4297);
+			SetPlayerPos(playerid, 2483.477, -2120.070, 13.546);
 			SetPlayerInterior(playerid, 0); SetPlayerVirtualWorld(playerid, 0);
 	
 			if(PlayerInfo[playerid][pInsideProperty] || PlayerInfo[playerid][pInsideBusiness])
@@ -755,7 +755,7 @@ CMD:sethp(playerid, params[])
 	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
 		
-	if(health > 200)
+	if(health > 200 || health < 1)
 		return SendErrorMessage(playerid, "คุณไม่สามารถเซ็ตเลือดได้เกิน 200"); 
 		
 	SetPlayerHealth(playerb, health);

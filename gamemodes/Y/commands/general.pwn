@@ -21,7 +21,7 @@ hook OnPlayerConnect(playerid)
 
 CMD:help(playerid, params[])
 {
-	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrplite.xyz___________");
+	SendClientMessage(playerid, COLOR_DARKGREEN, "___________www.lsrplite.in.th___________");
 	SendClientMessage(playerid, COLOR_GRAD2,"[ACCOUNT] /stats /levelup /myweapon /setspawn /license /fines /frisk");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /pay /time /buy /call /coin /admins /housecmds /blindfold /gps /makegps /editgps /cigarettes");
 	SendClientMessage(playerid, COLOR_GRAD2,"[GENERAL] /global /bitsamphelp /setstation /boombox /clothing /buyclothing /takegun");

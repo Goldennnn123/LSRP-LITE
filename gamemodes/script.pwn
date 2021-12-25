@@ -159,12 +159,13 @@ enum {
 
 //#include "Y/jobs/farmer.pwn"
 #include "Y/jobs/fisher.pwn"
-#include "Y/jobs/trucker.pwn"
+//#include "Y/jobs/trucker.pwn"
 #include "Y/jobs/mechanic.pwn"
 //#include "Y/jobs/miner.pwn"
 #include "Y/jobs/electrician.pwn"
 #include "Y/jobs/fuel.pwn"
 #include "Y/jobs/taxi.pwn"
+#include "Y/jobs/truck.pwn"
 
 #include "Y/mysql/CharacterSave.pwn"
 #include "Y/mysql/SaveVehicle.pwn"
@@ -210,6 +211,15 @@ enum {
 #include "Y/Interior/lspd/lspd_harbor.pwn"
 #include "Y/Interior/lsfd/hq_hpsital.pwn"
 
+#include "Y/Interior/business/Bank.pwn"
+#include "Y/Interior/business/Bar1.pwn"
+#include "Y/Interior/business/Bar2.pwn"
+#include "Y/Interior/business/Bar3.pwn"
+#include "Y/Interior/business/biz1.pwn"
+#include "Y/Interior/business/biz2.pwn"
+#include "Y/Interior/business/biz3.pwn"
+#include "Y/Interior/business/pizza.pwn"
+
 #include "Y/Map/harbor.pwn"
 #include "Y/Map/415garage.pwn"
 #include "Y/Map/garagegas.pwn"
@@ -220,6 +230,7 @@ enum {
 #include "Y/Map/car_buy.pwn"
 #include "Y/Map/chinatown.pwn"
 #include "Y/Map/grovest.pwn"
+#include "Y/Map/xmass.pwn"
 
 
 #include "Y/systems/discord/discord.pwn"
@@ -424,8 +435,6 @@ public OnGameModeInit() {
     DeathLog = CreateLog("server/deathlog");
     chatlog = CreateLog("server/chatlog");
     
-    SendDiscordMessage("dev-chat", ">>> สวัสดี");
-    
     return 1;
 }
 
@@ -464,20 +473,16 @@ public OnPlayerConnect(playerid) {
     ResetPlayerCharacter(playerid);
 
 	new query[90];
-    new musicrandom = random(3);
+    new musicrandom = random(2);
     switch(musicrandom)
     {
         case 0:
         {
-            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/1eEMxGxXUiXJ"); // Alt J Breezeblocks
+            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/19UHoxtICKtN"); // Alt J Breezeblocks
         }
         case 1:
         {
-            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/16hBMrz3ySPF"); // Blinding Lights [Acoustic Version] - The Weeknd
-        }
-        case 2:
-        {
-            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/134nwjnrnmTd"); // Timber - Pitbull.
+            PlayAudioStreamForPlayer(playerid, "https://media1.vocaroo.com/mp3/1iJjMS256RgV"); // Blinding Lights [Acoustic Version] - The Weeknd
         }
     }
 

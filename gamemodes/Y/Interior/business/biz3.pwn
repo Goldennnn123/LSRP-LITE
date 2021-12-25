@@ -8,7 +8,7 @@
 
 	hook OnGameModeInit() {
 
-			// 4 Dragons - Crusher
+		// 4 Dragons - Crusher
 	    CreateDynamicObject(2773, 828.79999, 432.89999, 1072.40002,   0.00000, 0.00000, 0.00000);
 		CreateDynamicObject(2773, 835.26337, 431.73953, 1072.40002,   0.00000, 0.00000, 0.00000);
 		CreateDynamicObject(2773, 835.33551, 426.04196, 1072.40002,   0.00000, 0.00000, 0.00000);

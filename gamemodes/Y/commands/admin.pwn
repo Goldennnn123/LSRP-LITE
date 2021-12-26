@@ -13,7 +13,7 @@ CMD:acmds(playerid, params[])
 		SendClientMessage(playerid, -1, "/acceptreport (/ar), /disregardreport (/dr), /slap, /freeze, /unfreeze, /spec, /gotols");  
 		SendClientMessage(playerid, -1, "/gotosf, /gotodl, /gotolv, /gotobu, /gotomo, /gotopo, /resapwncar");  
 		SendClientMessage(playerid, -1, "/gotocar, /getcar, /listmasks, /dropinfo, /aooc, /setname, /revice");
-		SendClientMessage(playerid, -1, "/forcerspawn, /listweapons, /clearchat, /setidcar");  
+		SendClientMessage(playerid, -1, "/forcerspawn, /listweapons, /clearchat, /setidcar, /vstats");  
 	}
 	if(PlayerInfo[playerid][pAdmin] >= GAME_ADMIN_LV_2)
 	{

@@ -4,6 +4,7 @@
 #define MODEL_CUSTOM_SKIN_MENU (1)
 #define MODEL_CLOTHING_MENU (2)
 #define MODEL_VEHBUY_MENU   (3)
+#define MODEL_VEHFIND_MENU   (4)
 
 
 enum C_MODEL_ID
@@ -235,6 +236,68 @@ stock ShowModelVehicleBuy(playerid)
 }
 
 
+stock ShowVehicleFind(playerid)
+{
+    new thread[255];
+
+    new Cache:cache;
+
+    new
+		vehicleDBID,
+		vehicleModel,
+		vehicleLockLevel,
+		vehicleAlarmLevel,
+		vehicleImmobLevel,
+		vehicleTimesDestroyed,
+		vehiclePlates[32]
+	;
+    new List:veh_id = list_new();
+
+
+    for(new i = 1; i < MAX_PLAYER_VEHICLES; i++)
+	{
+		if(PlayerInfo[playerid][pOwnedVehicles][i])
+		{
+			mysql_format(dbCon, thread, sizeof(thread), "SELECT * FROM vehicles WHERE VehicleDBID = %i", PlayerInfo[playerid][pOwnedVehicles][i]);
+
+            cache = mysql_query(dbCon, thread);
+	
+            if(!cache_num_rows())
+                break;
+                
+            else
+            {
+                cache_get_value_name_int(0,"VehicleDBID",vehicleDBID);
+                cache_get_value_name_int(0,"VehicleModel",vehicleModel);
+
+                cache_get_value_name_int(0,"VehicleLockLevel",vehicleLockLevel);
+                cache_get_value_name_int(0,"VehicleAlarmLevel",vehicleAlarmLevel);
+                cache_get_value_name_int(0,"VehicleImmobLevel",vehicleImmobLevel);
+
+                cache_get_value_name_int(0,"VehicleTimesDestroyed",vehicleTimesDestroyed);
+
+                cache_get_value_name(0,"VehiclePlates",vehiclePlates,32);
+
+
+                for(new id = 0; id < MAX_VEHICLES; id++)
+                {
+                    if(VehicleInfo[id][eVehicleDBID] != vehicleDBID)
+                        continue;
+
+                    AddModelMenuItem(veh_id, vehicleModel, ReturnVehicleModelName(vehicleModel), true,-19.000000, 0.000000, -62.000000);
+
+                }
+
+            }
+        
+            cache_delete(cache);
+		}
+	}
+
+    ShowModelSelectionMenu(playerid, "VEHICLE", MODEL_VEHFIND_MENU, veh_id);
+    return 1;
+}
+
 
 public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
 {
@@ -291,6 +354,29 @@ public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
             ShowVehiclePreview(playerid, g_aDealershipDatas[veh_id][V_Model], g_aDealershipDatas[veh_id][V_PRICE]);
             return 1;
         }
+    }
+    else if(extraid == MODEL_VEHFIND_MENU)
+    {
+        new idx;
+
+        for(new id = 1; id < MAX_VEHICLES; id++)
+        {
+            if(VehicleInfo[id][eVehicleModel] == modelid)
+            {
+                if(VehicleInfo[id][eVehicleOwnerDBID] != PlayerInfo[playerid][pDBID])
+                    continue;
+
+                idx = id;
+
+            }
+        }
+
+        new 
+			Float:fetchPos[3];
+		
+		GetVehiclePos(idx, fetchPos[0], fetchPos[1], fetchPos[2]);
+		SetPlayerCheckpoint(playerid, fetchPos[0], fetchPos[1], fetchPos[2], 3.0);
+        return 1;
     }
     return 1;
 }

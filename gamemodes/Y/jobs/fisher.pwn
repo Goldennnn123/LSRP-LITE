@@ -278,7 +278,7 @@ CMD:fish(playerid, params[]) {
         
                         PlayerInfo[playerid][pFishes]+=Fishlbs;
 
-                        if(PlayerInfo[playerid][pFishes] > 5000)
+                        if(PlayerInfo[playerid][pFishes] > 1000)
                         {
                             FishingPlace[playerid]=-1;
 
@@ -315,7 +315,7 @@ CMD:fish(playerid, params[]) {
 
                         PlayerInfo[playerid][pFishes]+=Fishlbs;
 
-                        if(PlayerInfo[playerid][pFishes] > 1000)
+                        if(PlayerInfo[playerid][pFishes] > 100)
                         {
                             FishingPlace[playerid]=-1;
                             SendClientMessage(playerid, COLOR_DARKGREEN, "ตกปลาพอแล้ว");

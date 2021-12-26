@@ -40,6 +40,8 @@ hook OnPlayerConnect(playerid)
 	SellVehData[playerid][S_ID] = INVALID_PLAYER_ID;
 	SellVehData[playerid][S_BY] = INVALID_PLAYER_ID;
 	SellVehData[playerid][S_VID] = INVALID_VEHICLE_ID;
+
+	ClearUnscramble(playerid);
 	return 1;
 }
 
@@ -1038,21 +1040,15 @@ CMD:vehicle(playerid, params[])
 	}
 	else if(!strcmp(oneString, "find"))
 	{
-		SendClientMessage(playerid, COLOR_LIGHTRED, "คำสั่งนี้ยังไม่เปิดให้ใช้งาน");
-		return 1;
-
-		/*if(PlayerInfo[playerid][pVehicleSpawned] == false) 
-			return SendErrorMessage(playerid, "คุณไม่ได้นำรถออกมา");
-			
-		if(IsVehicleOccupied(PlayerInfo[playerid][pVehicleSpawnedID]))
-			return SendErrorMessage(playerid, "รถของคุณยังมีการเคลื่อนที่อยู่");
-			
-		new 
+		
+		ShowVehicleFind(playerid);
+	
+		/*new 
 			Float:fetchPos[3];
 		
 		GetVehiclePos(PlayerInfo[playerid][pVehicleSpawnedID], fetchPos[0], fetchPos[1], fetchPos[2]);
-		SetPlayerCheckpoint(playerid, fetchPos[0], fetchPos[1], fetchPos[2], 3.0);
-		return 1;*/
+		SetPlayerCheckpoint(playerid, fetchPos[0], fetchPos[1], fetchPos[2], 3.0);*/
+		return 1;
 	}
 	else if(!strcmp(oneString, "stats"))
 	{
@@ -1362,6 +1358,50 @@ CMD:carget(playerid, params[])
 	SendDiscordMessageEx("vehicle-park-get", "[%s] %s Get Vehicle %s(%d)",ReturnDate(), ReturnRealName(playerid), ReturnVehicleName(vehicleid), VehicleInfo[vehicleid][eVehicleDBID]);
 
 	SaveVehicle(vehicleid);
+	return 1;
+}
+
+
+CMD:vstats(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+	
+	new vehicleid;
+
+	if(!IsPlayerInAnyVehicle(playerid))
+	{
+		if(sscanf(params, "d", vehicleid))
+			return SendUsageMessage(playerid, "/vstats <id>");
+
+		
+		if(!IsValidVehicle(vehicleid))
+			return SendErrorMessage(playerid, "ไม่มีไอดีรถที่คุณต้องการ");
+
+
+		if(VehicleInfo[vehicleid][eVehicleAdminSpawn] == true)
+			return SendErrorMessage(playerid, "คุณไม่สามารถลบรถที่ไม่ใช่รถเสกได้"); 
+
+
+
+		SendClientMessageEx(playerid, COLOR_WHITE, "เจ้าของรถ: %s", ReturnDBIDName(VehicleInfo[vehicleid][eVehicleOwnerDBID]));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle DBID: %d",VehicleInfo[vehicleid][eVehicleDBID]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Life Span: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%i]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Security: Lock Level[%i], Alarm Level[%i], Immobilizer[%i]", VehicleInfo[vehicleid][eVehicleLockLevel], VehicleInfo[vehicleid][eVehicleAlarmLevel], VehicleInfo[vehicleid][eVehicleImmobLevel]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Misc: Primary Color[%d], Secondary Color[%d], License Plate[%s]",VehicleInfo[vehicleid][eVehicleColor1],VehicleInfo[vehicleid][eVehicleColor2], VehicleInfo[vehicleid][eVehiclePlates]);
+		return 1;
+	}
+	else
+	{
+		vehicleid = GetPlayerVehicleID(playerid);
+
+		
+		SendClientMessageEx(playerid, COLOR_WHITE, "เจ้าของรถ: %s", ReturnDBIDName(VehicleInfo[vehicleid][eVehicleOwnerDBID]));
+		SendClientMessageEx(playerid, COLOR_WHITE, "Vehicle DBID: %d",VehicleInfo[vehicleid][eVehicleDBID]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Life Span: Engine Life[%.2f], Battery Life[%.2f], Times Destroyed[%i]", VehicleInfo[vehicleid][eVehicleEngine], VehicleInfo[vehicleid][eVehicleBattery], VehicleInfo[vehicleid][eVehicleTimesDestroyed]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Security: Lock Level[%i], Alarm Level[%i], Immobilizer[%i]", VehicleInfo[vehicleid][eVehicleLockLevel], VehicleInfo[vehicleid][eVehicleAlarmLevel], VehicleInfo[vehicleid][eVehicleImmobLevel]);
+		SendClientMessageEx(playerid, COLOR_WHITE, "Misc: Primary Color[%d], Secondary Color[%d], License Plate[%s]",VehicleInfo[vehicleid][eVehicleColor1],VehicleInfo[vehicleid][eVehicleColor2], VehicleInfo[vehicleid][eVehiclePlates]);
+	}
 	return 1;
 }
 

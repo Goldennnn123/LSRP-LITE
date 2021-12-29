@@ -2,7 +2,6 @@
 
 #define SHOT_MS 700
 
-new PlayerText:Unscrambler_PTD[MAX_PLAYERS][7]; 
 new PlayerText:Statsvehicle[MAX_PLAYERS];
 
 new gLastCar[MAX_PLAYERS];
@@ -41,7 +40,6 @@ hook OnPlayerConnect(playerid)
 	SellVehData[playerid][S_BY] = INVALID_PLAYER_ID;
 	SellVehData[playerid][S_VID] = INVALID_VEHICLE_ID;
 
-	ClearUnscramble(playerid);
 	return 1;
 }
 
@@ -104,14 +102,6 @@ hook OP_PickUpDynamicPickup(playerid, STREAMER_TAG_PICKUP:pickupid)
 	return 1;
 }
 
-static const UnscrambleWord[][] = {
-	"SPIDER", "DROP", "HIRE", "EARTH", "GOLD", "HEART", "FLOWER", "KNIFE",
-	"POOL", "BEACH", "HEEL", "APPLE", "ART", "BEAN", "BEHIND", "AWAY",
-	"COOKIE", "DANCE", "SALE", "SEXY", "BULLET", "GRAPE", "GROUND", "FLIP", "DIRT",
-	"PRIDE", "AROUSE", "SOUP", "CIRCUS", "VERBA", "RENT", "REFUND", "HUMAN", "ANIMAL",
-	"SNOOP", "FOUR", "TURKEY", "HOLE", "HUMOR"
-}
-;
 
 static stock g_arrVehicleNames[][] = {
     "Landstalker", "Bravura", "Buffalo", "Linerunner", "Perrenial", "Sentinel", "Dumper", "Firetruck", "Trashmaster",
@@ -320,108 +310,6 @@ stock ScrambleWord(const str[])
 	return scam;
 }
 
-stock CreateUnscrambleTextdraw(playerid, bool:showTextdraw = true)
-{
-	if(showTextdraw)
-	{
-		//Unscrambler Textdraws:
-		Unscrambler_PTD[playerid][0] = CreatePlayerTextDraw(playerid, 199.873275, 273.593383, "<UNSCRAMBLED_WORD>");
-		PlayerTextDrawLetterSize(playerid, Unscrambler_PTD[playerid][0], 0.206330, 1.118813);
-		PlayerTextDrawAlignment(playerid, Unscrambler_PTD[playerid][0], 1);
-		PlayerTextDrawColor(playerid, Unscrambler_PTD[playerid][0], -1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][0], 0);
-		PlayerTextDrawSetOutline(playerid, Unscrambler_PTD[playerid][0], 1);
-		PlayerTextDrawBackgroundColor(playerid, Unscrambler_PTD[playerid][0], 255);
-		PlayerTextDrawFont(playerid, Unscrambler_PTD[playerid][0], 2);
-		PlayerTextDrawSetProportional(playerid, Unscrambler_PTD[playerid][0], 1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][0], 0);
-		PlayerTextDrawShow(playerid, Unscrambler_PTD[playerid][0]);
-
-		Unscrambler_PTD[playerid][1] = CreatePlayerTextDraw(playerid, 137.369461, 273.593383, "/unscramble");
-		PlayerTextDrawLetterSize(playerid, Unscrambler_PTD[playerid][1], 0.206330, 1.118813);
-		PlayerTextDrawAlignment(playerid, Unscrambler_PTD[playerid][1], 1);
-		PlayerTextDrawColor(playerid, Unscrambler_PTD[playerid][1], -490707969);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][1], 0);
-		PlayerTextDrawSetOutline(playerid, Unscrambler_PTD[playerid][1], 1);
-		PlayerTextDrawBackgroundColor(playerid, Unscrambler_PTD[playerid][1], 255);
-		PlayerTextDrawFont(playerid, Unscrambler_PTD[playerid][1], 2);
-		PlayerTextDrawSetProportional(playerid, Unscrambler_PTD[playerid][1], 1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][1], 0);
-		PlayerTextDrawShow(playerid, Unscrambler_PTD[playerid][1]);
-
-		Unscrambler_PTD[playerid][2] = CreatePlayerTextDraw(playerid, 305.179687, 273.593383, "TO_UNSCRAMBLE_THE_WORD");
-		PlayerTextDrawLetterSize(playerid, Unscrambler_PTD[playerid][2], 0.206330, 1.118813);
-		PlayerTextDrawAlignment(playerid, Unscrambler_PTD[playerid][2], 1);
-		PlayerTextDrawColor(playerid, Unscrambler_PTD[playerid][2], -2147483393);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][2], 0);
-		PlayerTextDrawSetOutline(playerid, Unscrambler_PTD[playerid][2], 1);
-		PlayerTextDrawBackgroundColor(playerid, Unscrambler_PTD[playerid][2], 255);
-		PlayerTextDrawFont(playerid, Unscrambler_PTD[playerid][2], 2);
-		PlayerTextDrawSetProportional(playerid, Unscrambler_PTD[playerid][2], 1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][2], 0);
-		PlayerTextDrawShow(playerid, Unscrambler_PTD[playerid][2]);
-
-		Unscrambler_PTD[playerid][3] = CreatePlayerTextDraw(playerid, 141.369705, 285.194091, "scrambledword");
-		PlayerTextDrawLetterSize(playerid, Unscrambler_PTD[playerid][3], 0.206330, 1.118813);
-		PlayerTextDrawAlignment(playerid, Unscrambler_PTD[playerid][3], 1);
-		PlayerTextDrawColor(playerid, Unscrambler_PTD[playerid][3], -1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][3], 0);
-		PlayerTextDrawSetOutline(playerid, Unscrambler_PTD[playerid][3], 1);
-		PlayerTextDrawBackgroundColor(playerid, Unscrambler_PTD[playerid][3], 255);
-		PlayerTextDrawFont(playerid, Unscrambler_PTD[playerid][3], 2);
-		PlayerTextDrawSetProportional(playerid, Unscrambler_PTD[playerid][3], 1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][3], 0);
-		PlayerTextDrawShow(playerid, Unscrambler_PTD[playerid][3]);
-
-		Unscrambler_PTD[playerid][4] = CreatePlayerTextDraw(playerid, 137.902801, 296.924377, "YOU_HAVE");
-		PlayerTextDrawLetterSize(playerid, Unscrambler_PTD[playerid][4], 0.206330, 1.118813);
-		PlayerTextDrawAlignment(playerid, Unscrambler_PTD[playerid][4], 1);
-		PlayerTextDrawColor(playerid, Unscrambler_PTD[playerid][4], -2147483393);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][4], 0);
-		PlayerTextDrawSetOutline(playerid, Unscrambler_PTD[playerid][4], 1);
-		PlayerTextDrawBackgroundColor(playerid, Unscrambler_PTD[playerid][4], 255);
-		PlayerTextDrawFont(playerid, Unscrambler_PTD[playerid][4], 2);
-		PlayerTextDrawSetProportional(playerid, Unscrambler_PTD[playerid][4], 1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][4], 0);
-		PlayerTextDrawShow(playerid, Unscrambler_PTD[playerid][4]);
-
-		Unscrambler_PTD[playerid][5] = CreatePlayerTextDraw(playerid, 184.539016, 297.024383, "001");
-		PlayerTextDrawLetterSize(playerid, Unscrambler_PTD[playerid][5], 0.206330, 1.118813);
-		PlayerTextDrawAlignment(playerid, Unscrambler_PTD[playerid][5], 1);
-		PlayerTextDrawColor(playerid, Unscrambler_PTD[playerid][5], -1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][5], 0);
-		PlayerTextDrawSetOutline(playerid, Unscrambler_PTD[playerid][5], 1);
-		PlayerTextDrawBackgroundColor(playerid, Unscrambler_PTD[playerid][5], 255);
-		PlayerTextDrawFont(playerid, Unscrambler_PTD[playerid][5], 2);
-		PlayerTextDrawSetProportional(playerid, Unscrambler_PTD[playerid][5], 1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][5], 0);
-		PlayerTextDrawShow(playerid, Unscrambler_PTD[playerid][5]);
-
-		Unscrambler_PTD[playerid][6] = CreatePlayerTextDraw(playerid, 202.540191, 297.124389, "SECONDS_LEFT_TO_FINISh.");
-		PlayerTextDrawLetterSize(playerid, Unscrambler_PTD[playerid][6], 0.206330, 1.118813);
-		PlayerTextDrawAlignment(playerid, Unscrambler_PTD[playerid][6], 1);
-		PlayerTextDrawColor(playerid, Unscrambler_PTD[playerid][6], -2147483393);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][6], 0);
-		PlayerTextDrawSetOutline(playerid, Unscrambler_PTD[playerid][6], 1);
-		PlayerTextDrawBackgroundColor(playerid, Unscrambler_PTD[playerid][6], 255);
-		PlayerTextDrawFont(playerid, Unscrambler_PTD[playerid][6], 2);
-		PlayerTextDrawSetProportional(playerid, Unscrambler_PTD[playerid][6], 1);
-		PlayerTextDrawSetShadow(playerid, Unscrambler_PTD[playerid][6], 0);
-		PlayerTextDrawShow(playerid, Unscrambler_PTD[playerid][6]);
-	}
-	else
-	{
-		PlayerTextDrawDestroy(playerid, Unscrambler_PTD[playerid][0]);
-		PlayerTextDrawDestroy(playerid, Unscrambler_PTD[playerid][1]);
-		PlayerTextDrawDestroy(playerid, Unscrambler_PTD[playerid][2]);
-		PlayerTextDrawDestroy(playerid, Unscrambler_PTD[playerid][3]);
-		PlayerTextDrawDestroy(playerid, Unscrambler_PTD[playerid][4]);
-		PlayerTextDrawDestroy(playerid, Unscrambler_PTD[playerid][5]);
-		PlayerTextDrawDestroy(playerid, Unscrambler_PTD[playerid][6]);
-	}
-	return 1;
-}
-
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	if(newstate == PLAYER_STATE_DRIVER)
@@ -438,6 +326,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ /engine");
 			SendClientMessage(playerid,COLOR_WHITE,"ข้อแนะ: คุณสามารถออกจากรถด้วยการพิมพ์ /exitveh(icle)");
 			TogglePlayerControllable(playerid, 0);
+			ClearUnscramble(playerid);
 		}
 	
 		if(VehicleInfo[vehicleid][eVehicleOwnerDBID] == PlayerInfo[playerid][pDBID])
@@ -540,43 +429,8 @@ CMD:engine(playerid, params[])
 	!PlayerInfo[playerid][pAdminDuty]
 	)
 	{
-		new idx, str[128];
-
-		
-		if(VehicleInfo[vehicleid][eVehicleEngineStatus] && !PlayerInfo[playerid][pAdminDuty])
-			return GameTextForPlayer(playerid, "~g~ENGINE IS ALREADY ON", 3000, 3);
-		
-		PlayerInfo[playerid][pUnscrambling] = true;
-	
-		for(new i = 0; i < sizeof(UnscrambleWord); i++)
-		{
-			idx = random(sizeof(UnscrambleWord));
-		}
-		
-		PlayerInfo[playerid][pUnscrambleID] = idx;
-		
-		switch(VehicleInfo[vehicleid][eVehicleImmobLevel])
-		{
-			case 1: PlayerInfo[playerid][pUnscramblerTime] = 125; 
-			case 2: PlayerInfo[playerid][pUnscramblerTime] = 100; 
-			case 3: PlayerInfo[playerid][pUnscramblerTime] = 75; 
-			case 4: PlayerInfo[playerid][pUnscramblerTime] = 50;
-			case 5: PlayerInfo[playerid][pUnscramblerTime] = 25;
-		}
-		
-		PlayerInfo[playerid][pUnscrambleTimer] = repeat OnPlayerUnscramble(playerid);
-
-		
-		CreateUnscrambleTextdraw(playerid);
-		TogglePlayerControllable(playerid, 1);
-
-		format(str, sizeof(str), "%s", UnscrambleWord[idx]); 
-		PlayerTextDrawSetString(playerid, Unscrambler_PTD[playerid][3], str);
-		
-		format(str, sizeof(str), "%d", PlayerInfo[playerid][pUnscramblerTime]);
-		PlayerTextDrawSetString(playerid, Unscrambler_PTD[playerid][5], str);
-	
-		return 1; 
+		SendErrorMessage(playerid, "คุณไม่มีกุญแจยานพาหนะคันนี้ พิพม์ /unscramble เพื่อต่อสายตรง!!!");
+		return 1;
 	}
 	
 	if(!VehicleInfo[vehicleid][eVehicleEngineStatus])
@@ -607,70 +461,65 @@ CMD:unscramble(playerid, params[])
 	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คุณไม่ได้ขับยานพาหนะ");
 		
-	if(!PlayerInfo[playerid][pUnscrambling])
+	if(PlayerInfo[playerid][pUnscrambling])
 		return SendClientMessage(playerid, COLOR_LIGHTRED, "คุณไม่ได้ต่อสายตรงยานพาหนะ");
 	
-	if(isnull(params)) return SendSyntaxMessage(playerid, "/(uns)cramble [คำถอดรหัส]");
-	
-	if(strequal(UnscrambleWord[PlayerInfo[playerid][pUnscrambleID]], params, true))
-	{ // ถ้าตอบถูก:
-	
-		PlayerInfo[playerid][pUnscrambleID] = random(sizeof(UnscrambleWord)); 
-		
-		new displayString[60], vehicleid = GetPlayerVehicleID(playerid);
-		
-		format(displayString, 60, "%s", ScrambleWord(UnscrambleWord[PlayerInfo[playerid][pUnscrambleID]]));
-		PlayerTextDrawSetString(playerid, Unscrambler_PTD[playerid][3], displayString); 
-		
-		//เวลาที่เพิ่มขึ้นจะขึ้นอยู่กับเลเวลของเตือนภัย:
-		PlayerInfo[playerid][pUnscramblerTime] += (7 - VehicleInfo[vehicleid][eVehicleImmobLevel]) * 2;
-		PlayerInfo[playerid][pScrambleSuccess]++; 
-		
-		PlayerPlaySound(playerid, 1052, 0, 0, 0);
+	new vehicleid = GetPlayerVehicleID(playerid);
 
-		//จะต่อสายตรงได้สำเร็จนั้น ขึ้นอยู่กับเลเวลเตือนภัย:
-		if(PlayerInfo[playerid][pScrambleSuccess] >= (VehicleInfo[vehicleid][eVehicleImmobLevel] * 2) + 2)
-		{
-			ClearUnscramble(playerid);
-			
-			GameTextForPlayer(playerid, "~g~ENGINE TURNED ON", 2000, 3); 
-			
-			SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s สตาร์ทเครื่องยนต์ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
-			ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
-		}	
-	}
-	else
-	{
-		PlayerPlaySound(playerid, 1055, 0, 0, 0); 
-		
-		PlayerInfo[playerid][pUnscrambleID] = random(sizeof(UnscrambleWord)); 
-		
-		new displayString[60];
-		
-		format(displayString, 60, "%s", ScrambleWord(UnscrambleWord[PlayerInfo[playerid][pUnscrambleID]]));
-		PlayerTextDrawSetString(playerid, Unscrambler_PTD[playerid][3], displayString); 
-		
-		PlayerInfo[playerid][pScrambleFailed]++; 
-		PlayerInfo[playerid][pUnscramblerTime] -= random(6)+1;
-		
-		if(PlayerInfo[playerid][pScrambleFailed] >= 5)
-		{
-			ClearUnscramble(playerid);
-			
-			new 
-				vehicleid = GetPlayerVehicleID(playerid)
-			;
-			
-			ToggleVehicleAlarms(vehicleid, true);
-			NotifyVehicleOwner(vehicleid);
-			
-			//ClearAnimations(playerid);
-			TogglePlayerControllable(playerid, 1);
-		}
-	}
-	
+	PlayerInfo[playerid][pUnscramblerTime] = 10 * VehicleInfo[vehicleid][eVehicleAlarmLevel];
+	PlayerInfo[playerid][pUnscrambleID] = vehicleid;
+	PlayerInfo[playerid][pUnscrambling] = true;
+
+
+	new str[255];
+	format(str, sizeof(str), "~y~You Are Unscramble %d", MoneyFormat(10 * VehicleInfo[vehicleid][eVehicleAlarmLevel]));
+	SendInfomationMess(playerid, str, 10 * VehicleInfo[vehicleid][eVehicleAlarmLevel]);
 	return 1;
 }
+
+stock ClearUnscramble(playerid)
+{
+	PlayerInfo[playerid][pUnscrambling] = false;
+	PlayerInfo[playerid][pUnscramblerTime] = 0;
+	PlayerInfo[playerid][pUnscrambleID] = INVALID_VEHICLE_ID;
+	PlayerInfo[playerid][pUnscrambling] = false;
+
+
+	return 1;
+}
+
+
+ptask PlayerUnscramble[1000](playerid) 
+{
+	if(PlayerInfo[playerid][pUnscrambling] == true)
+	{
+		if(GetPlayerVehicleID(playerid) != PlayerInfo[playerid][pUnscrambleID])
+		{
+			ClearUnscramble(playerid);
+			StopPlayerInfomation(playerid);
+			SendErrorMessage(playerid, "คุณได้ออกจากยานพาหนะในขณะที่คุณนั้นกำลัง");
+		}
+
+
+		if(PlayerInfo[playerid][pUnscramblerTime] > 1)
+		{
+			PlayerInfo[playerid][pUnscramblerTime]--;
+		}
+		else
+		{
+			new vehicleid = PlayerInfo[playerid][pUnscrambleID];
+
+			ClearUnscramble(playerid);
+			SendNearbyMessage(playerid, 20.0, COLOR_PURPLE, "> %s สตาร์ทเครื่องยนต์ %s", ReturnRealName(playerid), ReturnVehicleName(vehicleid)); 
+			ToggleVehicleEngine(vehicleid, true); VehicleInfo[vehicleid][eVehicleEngineStatus] = true;
+			TogglePlayerControllable(playerid, 1);
+			NotifyVehicleOwner(vehicleid);
+		}
+	}
+	return 1;
+}
+
+
 
 
 alias:vehicle("v")
@@ -2053,35 +1902,6 @@ stock SetVehicleHp(vehicleid)
 	return 1;
 }
 
-timer OnPlayerUnscramble[1000](playerid)
-{	
-	if(GetPlayerState(playerid) != PLAYER_STATE_DRIVER)
-	{
-		ClearUnscramble(playerid);
-		return 1;
-	}
-	
-	PlayerInfo[playerid][pUnscramblerTime]--;
-	
-	new timerString[20];
-	
-	format(timerString, 20, "%d", PlayerInfo[playerid][pUnscramblerTime]);
-	PlayerTextDrawSetString(playerid, Unscrambler_PTD[playerid][5], timerString);
-	
-	if(PlayerInfo[playerid][pUnscramblerTime] < 1)
-	{
-		ClearUnscramble(playerid);
-		
-		new vehicleid = GetPlayerVehicleID(playerid);
-			
-		ToggleVehicleAlarms(vehicleid, true);
-		NotifyVehicleOwner(vehicleid);
-		
-		//ClearAnimations(playerid);
-	}
-	return 1;
-}
-
 timer OnVehicleAlarm[5000](vehicleid)
 {
 	return ToggleVehicleAlarms(vehicleid, false);
@@ -3053,12 +2873,6 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	return 1;
 }
 
-hook OnPlayerExitVehicle(playerid, vehicleid)
-{
-	ClearUnscramble(playerid);
-	return 1;
-}
-
 
 stock IsCheckBike(vehicleid)
 {
@@ -3387,20 +3201,6 @@ public OnEmptyVehicleDamage(vehicleid,playerid,exems)
 			return 1;
 		}
 	}
-	return 1;
-}
-
-
-stock ClearUnscramble(playerid)
-{
-
-	CreateUnscrambleTextdraw(playerid, false);
-	stop PlayerInfo[playerid][pUnscrambleTimer];
-	PlayerInfo[playerid][pScrambleSuccess] = 0; 
-	PlayerInfo[playerid][pUnscrambling] = false;
-	PlayerInfo[playerid][pUnscrambleID] = 0;
-	PlayerInfo[playerid][pUnscramblerTime] = 0;
-	PlayerInfo[playerid][pScrambleFailed] = 0;
 	return 1;
 }
 

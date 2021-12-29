@@ -2,8 +2,12 @@
 
 #define MAX_COOLDOWNS 4
 
+
+
 #define COOLDOWN_CLOTHES  	0
 #define	COOLDOWN_FISHING	1
+#define COOLDOWN_UNS		2
+
 
 new cooldowns[MAX_PLAYERS][MAX_COOLDOWNS];
 new cooldowns_expire[MAX_PLAYERS][MAX_COOLDOWNS];

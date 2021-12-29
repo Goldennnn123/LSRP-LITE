@@ -166,6 +166,7 @@ enum {
 #include "Y/jobs/fuel.pwn"
 #include "Y/jobs/taxi.pwn"
 #include "Y/jobs/truck.pwn"
+#include "Y/jobs/pizza.pwn"
 
 #include "Y/mysql/CharacterSave.pwn"
 #include "Y/mysql/SaveVehicle.pwn"
@@ -230,7 +231,6 @@ enum {
 #include "Y/Map/car_buy.pwn"
 #include "Y/Map/chinatown.pwn"
 #include "Y/Map/grovest.pwn"
-#include "Y/Map/xmass.pwn"
 
 
 #include "Y/systems/discord/discord.pwn"
@@ -240,6 +240,7 @@ enum {
 #include "Y/systems/textdraw/computer.pwn"
 #include "Y/systems/textdraw/blindfold.pwn"
 #include "Y/systems/textdraw/td-action.pwn"
+#include "Y/systems/textdraw/information.pwn"
 #include "Y/systems/cctv/cctv.pwn"
 //#include "Y/systems/textdraw/mdc.pwn"
 

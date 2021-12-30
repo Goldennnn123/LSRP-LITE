@@ -131,6 +131,12 @@ hook OnPlayerEnterCheckpoint(playerid)
     return 1;
 }
 
+hook OnPlayerConnect(playerid)
+{
+    PlayerStartJobPizza[playerid] = false;
+    return 1;
+}
+
 ptask Vehicle_ResetPizza[1800000]() 
 {
     for(new i = 0; i < sizeof pizza_veh; i++)

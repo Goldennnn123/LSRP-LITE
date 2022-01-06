@@ -878,6 +878,10 @@ CMD:slap(playerid, params[])
 		
 	if(!BitFlag_Get(gPlayerBitFlag[playerb], IS_LOGGED))
 		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ"); 
+
+
+	if(IsPlayerInAnyVehicle(playerid))
+		ShowHudVehicle(playerid, false);
 		
 	GetPlayerPos(playerb, PlayerInfo[playerb][pLastPosX], PlayerInfo[playerb][pLastPosY], PlayerInfo[playerb][pLastPosZ]);
 	//Using the player variable to avoid making other variables; 
@@ -1732,6 +1736,37 @@ CMD:playertoplayer(playerid, params[])
 	SendClientMessageEx(player_2, COLOR_GREY, "ผู้ดูแลระบบ ได้นำ %s มาหาคุณ",ReturnName(player_1));
 	return 1;
 }
+
+CMD:addrepairbox(playerid, params[])
+{
+	if(!PlayerInfo[playerid][pAdmin])
+		return SendUnauthMessage(playerid);
+
+	new targetid, amount;
+	if(sscanf(params, "ud", targetid, amount))
+		return SendUsageMessage(playerid, "/addrepairbox <ชื่อบางส่วน/ไอดี> <จำนวน กล่องซ่อมรถ>");
+
+
+	if(!IsPlayerConnected(targetid))
+		return SendErrorMessage(playerid, "ผู้เล่นไม่ได้ทำการเชื่อมต่อกับเซืฟเวอร์"); 
+		
+	if(!BitFlag_Get(gPlayerBitFlag[targetid], IS_LOGGED))
+		return SendErrorMessage(playerid, "ผู้เล่นกำลังเข้าสู่ระบบ");
+
+
+	if(amount < 1 || amount > 999)
+		return SendErrorMessage(playerid, "คุณใส่จำนวนไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง (1-999)");
+
+	if(PlayerInfo[playerid][pJob] != JOB_MECHANIC)
+		return SendErrorMessage(playerid, "%s ไม่ได้เป็นอาชีพงานช่างยนต์", ReturnRealName(targetid));
+
+	PlayerInfo[targetid][pRepairBox] = amount;
+	SendClientMessageEx(targetid, COLOR_GREY, "คุณได้รับกล่องซ่อมยานพาหนะ มาจำนวน %d กล่อง", amount);
+	SendClientMessageEx(playerid, COLOR_DARKGREEN, "คุณได้ปรับจำนวนกล่องซ่อมยานพาหนะ ของ %s เป็น %d กล่อง", ReturnRealName(targetid), amount);
+	SendDiscordMessageEx("admin-log", "%s(%s) Set Repair Box %s is %d",ReturnRealName(playerid), e_pAccountData[playerid][mForumName], ReturnRealName(targetid), amount);
+	
+	return 1;
+}
 /// Admin Level: 1;
 
 
@@ -2332,7 +2367,7 @@ CMD:makebusiness(playerid,params[])
 		SendUsageMessage(playerid, "Type: 4.ร้านอาหาร 5.ธนาคาร  6.คลับ 7.ร้านขายเสื้อผ้า 8. บทบาท");
 		return 1;
 	}
-	if(type < 1 || type > 8)
+	if(type < 1 || type > 9)
 	{	
 		SendClientMessageEx(playerid,-1,"{0D47A1}BUSINESS {F57C00}SYSTEM:{FF0000} โปรดเลื่อกประเภทกิจการให้ถูก");
 		SendUsageMessage(playerid, "/makebusiness [ประเภท]");

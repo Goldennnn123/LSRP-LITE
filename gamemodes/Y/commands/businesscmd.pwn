@@ -199,19 +199,29 @@ CMD:buy(playerid, params[])
     {
         new id = PlayerInfo[playerid][pInsideBusiness];
     
-        if(BusinessInfo[id][BusinessType] != BUSINESS_TYPE_STORE)
-            return SendErrorMessage(playerid, "คุณไม่ได้อยู่ที่ร้านสดวกซื้อ");
-
-        PlayerInfo[playerid][pGUI] = 6;
-        SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
-        MenuStore_AddItem(playerid, 1, 18919, "OOC Mask", 100, "OOC Mask use /mask", 200);
-        MenuStore_AddItem(playerid, 2, 367, "Camera", 50, "Cemara To Take Photo", 200);
-        MenuStore_AddItem(playerid, 3, 325, "Flower", 10, "Flower", 200);
-        MenuStore_AddItem(playerid, 4, 19897, "Cigarette", 25, "Flower", 200);
-        MenuStore_AddItem(playerid, 5, 2226, "BoomBox", 500, "BoomBox use music staion", 200);
-        MenuStore_AddItem(playerid, 6, 336, "Baseball Bat", 250, "Baseball Bat", 200);
-        MenuStore_AddItem(playerid, 7, 1650, "GasCan", 2000, "GasCan use /refill", 200);
-        MenuStore_Show(playerid, Shop, "SHOP");
+        if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_STORE)
+        {
+            PlayerInfo[playerid][pGUI] = 6;
+            SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
+            MenuStore_AddItem(playerid, 1, 18919, "OOC Mask", 100, "OOC Mask use /mask", 200);
+            MenuStore_AddItem(playerid, 2, 367, "Camera", 50, "Cemara To Take Photo", 200);
+            MenuStore_AddItem(playerid, 3, 325, "Flower", 10, "Flower", 200);
+            MenuStore_AddItem(playerid, 4, 19897, "Cigarette", 25, "Flower", 200);
+            MenuStore_AddItem(playerid, 5, 2226, "BoomBox", 500, "BoomBox use music staion", 200);
+            MenuStore_AddItem(playerid, 6, 336, "Baseball Bat", 250, "Baseball Bat", 200);
+            MenuStore_AddItem(playerid, 7, 1650, "GasCan", 2000, "GasCan use /refill", 200);
+            MenuStore_Show(playerid, Shop, "SHOP");
+            return 1;
+        }
+        else if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_JOB)
+        {
+            PlayerInfo[playerid][pGUI] = 6;
+            SendClientMessage(playerid, -1, "พิพม์ /close เพื่อปิดหน้าต่างการซื้อ หรือกด esc");
+            MenuStore_AddItem(playerid, 1, 19921, "Repair Box", 75, "Use In Repair Vehicle", 200);
+            MenuStore_Show(playerid, Shop_Job, "SHOP");
+            return 1;
+        }
+        else SendErrorMessage(playerid, "คุณไม่ได้อยู่ในร้าน");
         return 1;
     }
 }

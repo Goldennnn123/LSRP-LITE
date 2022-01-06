@@ -77,6 +77,30 @@ Store:Shop(playerid, response, itemid, modelid, price, amount, itemname[])
     return true;
 }
 
+Store:Shop_Job(playerid, response, itemid, modelid, price, amount, itemname[])
+{
+    if(!response)
+        return true;
+    
+    if(GetPlayerMoney(playerid) < price)
+        return SendClientMessage(playerid, -1, "คุณมีเงินไม่เพียงพอ");
+
+    if(itemid == 1)
+    {   
+        PlayerInfo[playerid][pRepairBox] += amount;
+    }
+
+
+    new string[128];
+    format(string, 128, "คุณได้ซื้อ %dx %s", amount, itemname);
+    SendClientMessage(playerid, -1, string);
+
+    GlobalInfo[G_GovCash]-= price;
+    Saveglobal();
+    CharacterSave(playerid);
+    return 1;
+}
+
 
 Store:SHOP_POLICE(playerid, response, itemid, modelid, price, amount, itemname[])
 {

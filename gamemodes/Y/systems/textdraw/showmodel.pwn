@@ -5,6 +5,7 @@
 #define MODEL_CLOTHING_MENU (2)
 #define MODEL_VEHBUY_MENU   (3)
 #define MODEL_VEHFIND_MENU   (4)
+#define MODEL_COMP_MENU   (5)
 
 
 enum C_MODEL_ID
@@ -299,6 +300,21 @@ stock ShowVehicleFind(playerid)
 }
 
 
+stock ShowAllComponents(playerid)
+{
+    new List:Compo = list_new();
+    new str[125];
+
+    for(new i = 1000; i <= 1193; i++)
+    {
+        format(str, sizeof(str), "%d",i);
+        AddModelMenuItem(Compo, i, str, true,-19.000000, 0.000000, -62.000000);
+    }
+
+    ShowModelSelectionMenu(playerid, "Components", MODEL_COMP_MENU, Compo);
+    return 1;
+}
+
 public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
 {
     if(extraid == MODEL_SELECTION_SKIN_MENU)
@@ -357,6 +373,10 @@ public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
     }
     else if(extraid == MODEL_VEHFIND_MENU)
     {
+        if(response != MODEL_RESPONSE_SELECT)
+            return 1;
+
+        
         new idx;
 
         for(new id = 1; id < MAX_VEHICLES; id++)
@@ -376,6 +396,33 @@ public OnModelSelectionResponse(playerid, extraid, index, modelid, response)
 		
 		GetVehiclePos(idx, fetchPos[0], fetchPos[1], fetchPos[2]);
 		SetPlayerCheckpoint(playerid, fetchPos[0], fetchPos[1], fetchPos[2], 3.0);
+        return 1;
+    }
+    else if(extraid == MODEL_COMP_MENU)
+    {
+        if(response == MODEL_RESPONSE_SELECT)
+        {
+            if(!IsPlayerInAnyVehicle(playerid))
+                return SendErrorMessage(playerid, "คุณไม่ได้อยู่ยนยานพาหนะ");
+
+            if(PlayerInfo[playerid][pRepairBox] < 10)
+                return SendErrorMessage(playerid, "คุณมีอะไหล่ไม่เพียงพอต่อการทำ");
+
+            new vehicleid = GetPlayerVehicleID(playerid);
+
+            if(!CheckVehicleModel(playerid, vehicleid, modelid))
+                return 1;
+
+            PlayerInfo[playerid][pRepairBox] -= 10;
+
+            AddVehicleComponent(vehicleid, modelid);
+            new slotid = GetVehicleComponentType(modelid);
+            VehicleInfo[vehicleid][eVehicleMod][slotid] = modelid;
+            SaveVehicle(vehicleid);
+            CharacterSave(playerid);
+            SendInfomationMess(playerid, "~g~Add Component Now!!!",5);
+            return 1;
+        }
         return 1;
     }
     return 1;

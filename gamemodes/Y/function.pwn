@@ -1009,8 +1009,6 @@ public StopChatting(playerid) ApplyAnimation(playerid, "CARRY", "crry_prtial", 4
 
 stock SetPlayerSpawn(playerid)
 {
-	if(GetPVarInt(playerid, "HideGUI"))
-		PlayerTextDrawShow(playerid, RadioStats[playerid]);
 
 	if(!PlayerInfo[playerid][pTutorial])
 	{

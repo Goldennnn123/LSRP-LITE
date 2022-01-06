@@ -439,6 +439,8 @@ public Query_LoadCharacter(playerid)
 
 	cache_get_value_name_int(0, "pHouseKey",PlayerInfo[playerid][pHouseKey]);
 
+	cache_get_value_name_int(0, "pRepairBox",PlayerInfo[playerid][pRepairBox]);
+
 	/*cache_get_value_name_int(0, "pHasid_card",PlayerInfo[playerid][pHasid_card]);
 	cache_get_value_name(0, "pId_dob",PlayerInfo[playerid][pId_dob]);
 	cache_get_value_name_int(0, "pId_number",PlayerInfo[playerid][pId_number]);

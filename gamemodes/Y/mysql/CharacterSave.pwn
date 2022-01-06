@@ -208,6 +208,7 @@ stock CharacterSave(playerid, force = false,thread = MYSQL_TYPE_THREAD)
         mysql_bool(query, "pTogPm",PlayerInfo[playerid][pTogPm]);
 
         mysql_int(query, "pHouseKey",PlayerInfo[playerid][pHouseKey]);
+        mysql_int(query, "pRepairBox",PlayerInfo[playerid][pRepairBox]);
 
 		mysql_finish(query);
         

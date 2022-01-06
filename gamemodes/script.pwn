@@ -167,6 +167,7 @@ enum {
 #include "Y/jobs/taxi.pwn"
 #include "Y/jobs/truck.pwn"
 #include "Y/jobs/pizza.pwn"
+#include "Y/jobs/mec.pwn"
 
 #include "Y/mysql/CharacterSave.pwn"
 #include "Y/mysql/SaveVehicle.pwn"
@@ -242,6 +243,7 @@ enum {
 #include "Y/systems/textdraw/td-action.pwn"
 #include "Y/systems/textdraw/information.pwn"
 #include "Y/systems/cctv/cctv.pwn"
+#include "Y/systems/textdraw/hud_veh.pwn"
 //#include "Y/systems/textdraw/mdc.pwn"
 
 #if SETUP_TABLE
@@ -492,35 +494,6 @@ public OnPlayerConnect(playerid) {
     GetPlayerName(playerid, pname, sizeof(pname));
 	new maxname = strlen(pname);
 
-
-    RadioStats[playerid] = CreatePlayerTextDraw(playerid, 500.000000, 168.000000, "~b~RADIO:INFO~n~CHAN: 911~n~SLOIT: 1");
-	PlayerTextDrawFont(playerid, RadioStats[playerid], 3);
-	PlayerTextDrawLetterSize(playerid, RadioStats[playerid], 0.300000, 1.100000);
-	PlayerTextDrawTextSize(playerid, RadioStats[playerid], 609.500000, 17.000000);
-	PlayerTextDrawSetOutline(playerid, RadioStats[playerid], 1);
-	PlayerTextDrawSetShadow(playerid, RadioStats[playerid], 0);
-	PlayerTextDrawAlignment(playerid, RadioStats[playerid], 1);
-	PlayerTextDrawColor(playerid, RadioStats[playerid], -1029514497);
-	PlayerTextDrawBackgroundColor(playerid, RadioStats[playerid], 255);
-	PlayerTextDrawBoxColor(playerid, RadioStats[playerid], 50);
-	PlayerTextDrawUseBox(playerid, RadioStats[playerid], 0);
-	PlayerTextDrawSetProportional(playerid, RadioStats[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, RadioStats[playerid], 0);
-
-    Statsvehicle[playerid] = CreatePlayerTextDraw(playerid, 501.000000, 138.000000, "~b~km/h: ~g~~n~~b~Fuel: ~g~");
-	PlayerTextDrawFont(playerid, Statsvehicle[playerid], 3);
-	PlayerTextDrawLetterSize(playerid, Statsvehicle[playerid], 0.320833, 1.100000);
-	PlayerTextDrawTextSize(playerid, Statsvehicle[playerid], 609.500000, 17.000000);
-	PlayerTextDrawSetOutline(playerid, Statsvehicle[playerid], 1);
-	PlayerTextDrawSetShadow(playerid, Statsvehicle[playerid], 0);
-	PlayerTextDrawAlignment(playerid, Statsvehicle[playerid], 1);
-	PlayerTextDrawColor(playerid, Statsvehicle[playerid], -1029514497);
-	PlayerTextDrawBackgroundColor(playerid, Statsvehicle[playerid], 255);
-	PlayerTextDrawBoxColor(playerid, Statsvehicle[playerid], 50);
-	PlayerTextDrawUseBox(playerid, Statsvehicle[playerid], 0);
-	PlayerTextDrawSetProportional(playerid, Statsvehicle[playerid], 1);
-	PlayerTextDrawSetSelectable(playerid, Statsvehicle[playerid], 0);
-
 	for(new i=0; i<maxname; i++)
 	{
 		if(pname[i] == '_')
@@ -563,8 +536,6 @@ hook OnPlayerDisconnect(playerid, reason)
 	
 	PlayerInfo[playerid][pLastOnlineTime] = secondsConnection;
 
-    PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
-	PlayerTextDrawDestroy(playerid, RadioStats[playerid]);
 
     // บันทึกว่าหลุด
 	if(reason == 0) {

@@ -192,6 +192,7 @@ enum E_PLAYER_DATA
 	pHouseKey,
 	pBusinessKey,
 	pGasCan,
+	pRepairBox,
 
 	bool:pHasid_card,
 	pId_dob[50],

@@ -16,6 +16,7 @@ hook OnPlayerConnect(playerid)
 
 	FriskInfo[playerid][Frisk_ID] = INVALID_PLAYER_ID;
 	FriskInfo[playerid][Frisk_BY] = INVALID_PLAYER_ID;
+	SetPVarInt(playerid, "HideHud", 1);
 	return 1;
 }
 
@@ -236,11 +237,6 @@ CMD:jobhelp(playerid, params[])
 	if(PlayerInfo[playerid][pJob] == JOB_MECHANIC)
 	{
  		SendClientMessage(playerid,COLOR_LIGHTRED,"คำสั่งของพนักงานช่างยนต์:");
-		SendClientMessage(playerid,COLOR_WHITE,"/service (คำสั่งซ่อมยานพาหนะ)");
-		SendClientMessage(playerid,COLOR_WHITE,"/checkcomponents (เช็ค อะไหล่)");
-		SendClientMessage(playerid,COLOR_WHITE,"/buycomponents (ซื้อ อะไหล่)");
-		SendClientMessage(playerid,COLOR_WHITE,"/changcolorvehicle (เปลี่ยนสียานพาหนะ)");
-		SendClientMessage(playerid,COLOR_WHITE,"/tune (แต่งยานพาหนะ)");
 	}
 
 	if(PlayerInfo[playerid][pJob] == JOB_MINER)
@@ -1664,6 +1660,10 @@ CMD:stats(playerid, params[])
 
 CMD:pc(playerid, params[])
 {
+	if(PlayerShowMecMenu[playerid])
+		return MecJobShow(playerid, false);
+	
+	
 	return SelectTextDraw(playerid, COLOR_GRAD1);
 }
 
@@ -3256,21 +3256,16 @@ CMD:meal(playerid, params[])
 alias:hidehud("toghud")
 CMD:hidehud(playerid, params[])
 {
-	if(!GetPVarInt(playerid, "HideGUI"))
+	if(GetPVarInt(playerid, "HideHud"))
 	{
-		PlayerTextDrawHide(playerid, Statsvehicle[playerid]);
-		PlayerTextDrawHide(playerid, RadioStats[playerid]);
-		SetPVarInt(playerid, "HideGUI",1);
+		ShowHudVehicle(playerid, false);
+		DeletePVar(playerid, "HideHud");
+		
 	}
 	else
 	{
-		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-		{
-			PlayerTextDrawShow(playerid, Statsvehicle[playerid]);
-		}
-
-		PlayerTextDrawShow(playerid, RadioStats[playerid]);
-		DeletePVar(playerid, "HideGUI");
+		SetPVarInt(playerid, "HideHud", 1);
+		ShowHudVehicle(playerid, true);
 	}
 	return 1;
 }
@@ -3599,6 +3594,9 @@ hook OnPlayerDisconnect(playerid, reason)
 			}
         }
     }
+
+	if(GetPVarInt(playerid, "HideHud"))
+        ShowHudVehicle(playerid, false);
 
 	
 	return 1;

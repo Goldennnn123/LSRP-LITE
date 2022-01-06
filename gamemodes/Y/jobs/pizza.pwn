@@ -99,8 +99,8 @@ hook OnPlayerEnterCheckpoint(playerid)
         if(PlayerCheckpoint[playerid] == 11)
         {
             PizzaStock[vehicleid]--;
-            GiveMoney(playerid, 200);
-            GlobalInfo[G_GovCash]+= 150;
+            GiveMoney(playerid, 65);
+            GlobalInfo[G_GovCash]+= 350;
             CharacterSave(playerid);
 
             SendClientMessageEx(playerid, COLOR_LIGHTGREEN, "คุณได้รับเงินจำนวน $%s จากการส่งอาหาร",MoneyFormat(200));

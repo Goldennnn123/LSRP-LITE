@@ -2,7 +2,6 @@
 
 #define SHOT_MS 700
 
-new PlayerText:Statsvehicle[MAX_PLAYERS];
 
 new gLastCar[MAX_PLAYERS];
 new gPassengerCar[MAX_PLAYERS];
@@ -72,11 +71,6 @@ hook OnPlayerDisconnect(playerid, reason)
 		SellVehData[tagetid][S_ID] = INVALID_PLAYER_ID;
 		SellVehData[tagetid][S_BY] = INVALID_PLAYER_ID;
 		SellVehData[tagetid][S_VID] = INVALID_VEHICLE_ID;
-	}
-
-	if(IsPlayerInAnyVehicle(playerid))
-	{
-		PlayerTextDrawDestroy(playerid, Statsvehicle[playerid]);
 	}
 	return 1;
 }
@@ -316,11 +310,6 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 
-		if(!GetPVarInt(playerid,"HideGUI"))
-		{
-			PlayerTextDrawShow(playerid, Statsvehicle[playerid]);
-		}
-
 		if(!VehicleInfo[vehicleid][eVehicleEngineStatus] && !IsRentalVehicle(vehicleid) && !HasNoEngine(vehicleid))
 		{
 			SendClientMessage(playerid, COLOR_DARKGREEN, "เครื่องยนต์ดับอยู่ /engine");
@@ -354,10 +343,6 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			}
 		}
 		gLastCar[playerid] = vehicleid;
-	}
-	else
-	{
-		PlayerTextDrawHide(playerid, Statsvehicle[playerid]);
 	}
 
 	if (newstate == PLAYER_STATE_PASSENGER) {
@@ -2176,6 +2161,9 @@ public LoadCarPark()
 				AddVehicleComponent(vehicleid, VehicleInfo[vehicleid][eVehicleMod][j]);
 			}
 
+			VehicleInfo[vehicleid][eVehicleLocked] = true;
+			SetVehicleParamsEx(vehicleid, 0, 0, 0, 1, 0, 0, 0);
+
 		}
 	}
 	return 1;
@@ -2593,14 +2581,14 @@ stock GetVehicleHood(vehicleid, &Float:x, &Float:y, &Float:z)
 
 hook OnPlayerUpdate(playerid)
 {
-	new str[120];
+	/*new str[120];
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 
 		format(str, sizeof(str), "~b~km/h: ~g~%d~n~~b~Fuel: ~g~%.1f", GetVehicleSpeed(vehicleid), VehicleInfo[vehicleid][eVehicleFuel]);
-		PlayerTextDrawSetString(playerid, Statsvehicle[playerid], str);
-	}
+		//PlayerTextDrawSetString(playerid, Statsvehicle[playerid], str);
+	}*/
 	return 1;
 }
 

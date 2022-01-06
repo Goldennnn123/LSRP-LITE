@@ -9,6 +9,7 @@
 #define BUSINESS_TYPE_CLUB          (6)
 #define BUSINESS_TYPE_SKIN          (7)
 #define BUSINESS_TYPE_ROLE          (8)
+#define BUSINESS_TYPE_JOB          (9)
 
 
 new PlayerSelectBusiness[MAX_PLAYERS];
@@ -226,6 +227,11 @@ stock ShowSelectBusiness(playerid)
             format(infoString, sizeof(infoString), "ประเภท: บทบาท\n");
             strcat(showString, infoString);
         }
+        else if(BusinessInfo[id][BusinessType] == BUSINESS_TYPE_JOB)
+        {
+            format(infoString, sizeof(infoString), "ประเภท: ร้านอุปกรณ์\n");
+            strcat(showString, infoString);
+        }
     }
 
     format(infoString, sizeof(infoString), "ราคากิจการ: %s\n", MoneyFormat(BusinessInfo[id][BusinessPrice]));
@@ -287,6 +293,7 @@ stock ShowSelectBusinessType(playerid)
     strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}คลับ\n"); 
     strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}ร้านขายเสื้อผ้า\n"); 
     strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}บทบาท\n"); 
+    strcat(select_type, "{FF0033}[ {FFFF33}! {FF0033}] {90CAF9}ร้านอุปกรณ์\n"); 
 
     Dialog_Show(playerid, DIALOG_BU_TYPE, DIALOG_STYLE_LIST, "เปลี่ยนประเภทกิจการ", select_type, "ยืนยัน", "ยกเลิก");
     return 1;
@@ -482,6 +489,16 @@ Dialog:DIALOG_BU_TYPE(playerid, response, listitem, inputtext[])
         case 6:
         {
             BusinessInfo[id][BusinessType] = BUSINESS_TYPE_SKIN;
+            SaveBusiness(id);
+        }
+        case 7:
+        {
+            BusinessInfo[id][BusinessType] = BUSINESS_TYPE_ROLE;
+            SaveBusiness(id);
+        }
+        case 8:
+        {
+            BusinessInfo[id][BusinessType] = BUSINESS_TYPE_JOB;
             SaveBusiness(id);
         }
     }
@@ -909,6 +926,11 @@ stock SendBusinessType(playerid, id)
 		{
 			SendClientMessageEx(playerid, COLOR_DARKGREEN, "ยินดีตอยรับเข้าสู่ร้าน %s", BusinessInfo[id][BusinessName]);
 			SendClientMessage(playerid, COLOR_WHITE, "Available commands: /skin"); 
+		}
+        case BUSINESS_TYPE_JOB:
+		{
+			SendClientMessageEx(playerid, COLOR_DARKGREEN, "ยินดีตอยรับเข้าสู่ร้าน %s", BusinessInfo[id][BusinessName]);
+			SendClientMessage(playerid, COLOR_WHITE, "Available commands: /buy"); 
 		}
 	}
 	return 1;
